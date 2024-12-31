@@ -11,10 +11,12 @@ class GlowButton extends StatelessWidget {
     this.spreadRadius,
     required this.onPressed,
     this.border,
+    this.padding,
   });
 
   final Widget child;
   final Color color;
+  final EdgeInsets? padding;
   final Color glowColor;
   final double? blurRadius;
   final double? spreadRadius;
@@ -47,10 +49,11 @@ class GlowButton extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
-          padding: EdgeInsets.symmetric(
-            vertical: 20,
-            horizontal: size.width * .35,
-          ),
+          padding: padding ??
+              EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: size.width * .35,
+              ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

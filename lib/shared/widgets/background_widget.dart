@@ -41,7 +41,7 @@ class BackgroundWidget extends ConsumerWidget {
         ),
         Positioned.fill(
           child: Container(
-            color: Colors.black38,
+            color: Colors.black.withValues(alpha: .65),
           ),
         ),
         child,

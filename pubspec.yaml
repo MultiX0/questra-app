@@ -42,6 +42,7 @@ dependencies:
   toastification: ^2.3.0
   hexcolor: ^3.0.1
   flutter_glow: ^0.3.2
+  flutter_lucide: ^1.6.1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,9 @@ flutter:
     - family: DaysOne
       fonts:
         - asset: assets/fonts/DaysOne-Regular.ttf
+    - family: Sixtyfour
+      fonts:
+        - asset: assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   # For details regarding fonts from package dependencies,

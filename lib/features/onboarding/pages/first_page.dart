@@ -77,8 +77,12 @@ class OnboardingFirstPage extends ConsumerWidget {
                   GlowButton(
                     glowColor: HexColor('002333').withValues(alpha: 0.15),
                     color: Color.fromARGB(151, 99, 206, 255),
-                    child: Text("Arise!"),
                     onPressed: () => context.push(Routes.homePage),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: size.width * .35,
+                    ),
+                    child: Text("Arise!"),
                   ),
                   const SizedBox(
                     height: 25,
