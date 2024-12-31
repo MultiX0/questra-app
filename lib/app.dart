@@ -1,0 +1,25 @@
+import 'package:questra_app/router.dart';
+
+import 'imports.dart';
+
+class App extends ConsumerStatefulWidget {
+  const App({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> {
+  @override
+  Widget build(BuildContext context) {
+    final router = ref.watch(routerProvider);
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        routeInformationParser: router.routeInformationParser,
+        routeInformationProvider: router.routeInformationProvider,
+        routerDelegate: router.routerDelegate,
+        debugShowCheckedModeBanner: false,
+      ),
+    );
+  }
+}
