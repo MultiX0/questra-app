@@ -10,6 +10,7 @@ class GlowButton extends StatelessWidget {
     this.blurRadius,
     this.spreadRadius,
     required this.onPressed,
+    this.border,
   });
 
   final Widget child;
@@ -18,6 +19,7 @@ class GlowButton extends StatelessWidget {
   final double? blurRadius;
   final double? spreadRadius;
   final Function() onPressed;
+  final Border? border;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,11 @@ class GlowButton extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          width: 1,
-          color: HexColor('002333').withValues(alpha: 0.15),
-        ),
+        border: border ??
+            Border.all(
+              width: 1,
+              color: HexColor('002333').withValues(alpha: 0.15),
+            ),
         boxShadow: [
           BoxShadow(
             color: glowColor,

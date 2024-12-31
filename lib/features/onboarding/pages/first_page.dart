@@ -1,4 +1,5 @@
 import 'package:questra_app/imports.dart';
+import 'package:questra_app/shared/constants/app_fonts.dart';
 import 'package:questra_app/shared/widgets/glow_button.dart';
 import 'package:questra_app/shared/widgets/glow_text.dart';
 
@@ -39,7 +40,7 @@ class OnboardingFirstPage extends ConsumerWidget {
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(
-                vertical: size.width * .35,
+                vertical: size.height * .15,
                 horizontal: 15,
               ),
               child: Column(
@@ -48,15 +49,36 @@ class OnboardingFirstPage extends ConsumerWidget {
                   GlowText(
                     text: "Level Up Your Life!",
                     glowColor: HexColor('7AD5FF'),
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontFamily: AppFonts.header,
+                      fontWeight: FontWeight.bold,
+                      color: HexColor('7AD5FF'),
+                    ),
                   ),
                   const SizedBox(
                     height: 15,
+                  ),
+                  GlowText(
+                    text: "Embark on your personalized\nquest journey now",
+                    textAlign: TextAlign.center,
+                    glowColor: Colors.white,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: AppFonts.primary,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    blurRadius: 3,
+                  ),
+                  const SizedBox(
+                    height: 35,
                   ),
                   GlowButton(
                     glowColor: HexColor('002333').withValues(alpha: 0.15),
                     color: Color.fromARGB(151, 99, 206, 255),
                     child: Text("Arise!"),
-                    onPressed: () {},
+                    onPressed: () => context.push(Routes.homePage),
                   ),
                   const SizedBox(
                     height: 25,
@@ -81,24 +103,3 @@ class OnboardingFirstPage extends ConsumerWidget {
     );
   }
 }
-// ElevatedButton(
-//       style: ElevatedButton.styleFrom(
-//         backgroundColor: Color.fromARGB(151, 99, 206, 255),
-//         textStyle: TextStyle(
-//           fontWeight: FontWeight.bold,
-//           fontSize: 18,
-//         ),
-//         padding: EdgeInsets.symmetric(
-//           vertical: 20,
-//           horizontal: size.width * .35,
-//         ),
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(10),
-//         ),
-//         foregroundColor: AppColors.whiteColor,
-//       ),
-//       onPressed: () {},
-//       child: Text(
-//         "Arise!",
-//       ),
-//     );

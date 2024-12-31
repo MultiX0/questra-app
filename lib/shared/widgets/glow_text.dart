@@ -1,47 +1,69 @@
-import 'package:questra_app/imports.dart';
+import 'package:flutter/material.dart';
 import 'package:questra_app/shared/constants/app_fonts.dart';
 
 class GlowText extends StatelessWidget {
   const GlowText({
     super.key,
-    this.blurRadius,
     required this.glowColor,
-    this.spreadRadius,
     required this.text,
     this.style,
     this.textAlign,
+    this.blurRadius = 10.0,
+    this.spreadRadius = 2.0,
   });
 
   final Color glowColor;
   final TextStyle? style;
   final String text;
-  final double? blurRadius;
-  final double? spreadRadius;
+  final double blurRadius;
+  final double spreadRadius;
   final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            blurRadius: blurRadius ?? 8,
-            color: glowColor,
-            spreadRadius: spreadRadius ?? 2,
-          )
-        ],
-      ),
-      child: Text(
-        text,
-        textAlign: textAlign ?? TextAlign.center,
-        style: style ??
-            TextStyle(
-              fontSize: 28,
-              fontFamily: AppFonts.header,
-              fontWeight: FontWeight.bold,
-              color: HexColor('7AD5FF'),
-            ),
-      ),
+    return Stack(
+      children: [
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: style?.fontSize ?? 14,
+            fontWeight: style?.fontWeight ?? FontWeight.bold,
+            fontFamily: style?.fontFamily ?? AppFonts.header,
+            foreground: Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = spreadRadius
+              ..color = glowColor.withValues(alpha: .5),
+          ),
+          textAlign: textAlign ?? TextAlign.center,
+        ),
+        // Main Text Layer
+        Text(
+          text,
+          style: style?.copyWith(
+                shadows: [
+                  BoxShadow(
+                    color: glowColor,
+                    blurRadius: blurRadius,
+                    spreadRadius: spreadRadius,
+                  ),
+                ],
+              ) ??
+              TextStyle(
+                fontSize: 28,
+                fontFamily: AppFonts.header,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                shadows: [
+                  BoxShadow(
+                    color: glowColor,
+                    blurRadius: blurRadius,
+                    spreadRadius: spreadRadius,
+                  ),
+                ],
+              ),
+          textAlign: textAlign ?? TextAlign.center,
+        ),
+      ],
     );
   }
 }
