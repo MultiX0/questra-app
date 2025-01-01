@@ -297,7 +297,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GlowText(
                         glowColor: AppColors.whiteColor,
@@ -310,17 +311,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ),
                       const SizedBox(
-                        width: 5,
+                        height: 5,
                       ),
-                      Expanded(
-                        child: GlowText(
-                          glowColor: AppColors.whiteColor,
-                          text: "Forge the Core: Build the System Backbone",
-                          style: TextStyle(
-                            color: AppColors.whiteColor,
-                            fontFamily: AppFonts.primary,
-                            fontSize: 14,
-                          ),
+                      GlowText(
+                        textAlign: TextAlign.start,
+                        glowColor: AppColors.whiteColor,
+                        text: "Forge the Core: Build the System Backbone",
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontFamily: AppFonts.primary,
+                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -328,7 +328,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SizedBox(
                     height: 14,
                   ),
-                  Row(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GlowText(
@@ -342,16 +342,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ),
                       const SizedBox(
-                        width: 5,
+                        height: 5,
                       ),
-                      Expanded(
-                        child: Text(
-                          "You are tasked with building the brain of the app—an AI-powered quest system that seamlessly personalizes user challenges. Like Sung Jin-Woo, you must wield your developer tools and “arise” a robust system that adapts to every user’s journey.",
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontFamily: AppFonts.primary,
-                            fontSize: 13,
-                          ),
+                      Text(
+                        "You are tasked with building the brain of the app—an AI-powered quest system that seamlessly personalizes user challenges. Like Sung Jin-Woo, you must wield your developer tools and “arise” a robust system that adapts to every user’s journey.",
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontFamily: AppFonts.primary,
+                          fontSize: 13,
                         ),
                       ),
                     ],

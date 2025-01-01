@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/shared/widgets/background_widget.dart';
@@ -45,10 +46,10 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
 
                 if (screenWidth < 600) {
                   // Mobile
-                  navBarHeight = 110;
+                  navBarHeight = 80;
                 } else if (screenWidth < 1024) {
                   // Tablet
-                  navBarHeight = 140;
+                  navBarHeight = 90;
                 } else if (screenWidth < 1440) {
                   // Laptop
                   navBarHeight = 100;
@@ -56,31 +57,26 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
                   // Desktop
                   navBarHeight = 120;
                 }
-                return SizedBox(
+                return CupertinoTabBar(
                   height: navBarHeight,
-                  child: BottomNavigationBar(
-                    selectedItemColor: AppColors.whiteColor,
-                    unselectedItemColor: Colors.grey[600],
-                    backgroundColor: Colors.black,
-                    currentIndex: widget.navigationShell.currentIndex,
-                    onTap: (int index) => onTap(context, index),
-                    items: [
-                      BottomNavigationBarItem(
-                        icon: Icon(LucideIcons.book_text),
-                        label: '',
+                  backgroundColor: navigationBarColor,
+                  currentIndex: widget.navigationShell.currentIndex,
+                  onTap: (int index) => onTap(context, index),
+                  activeColor: HexColor('7AD5FF'),
+                  inactiveColor: AppColors.scaffoldBackground.withValues(alpha: .25),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: Icon(LucideIcons.book_text),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(LucideIcons.diamond),
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(
+                        LucideIcons.user,
                       ),
-                      BottomNavigationBarItem(
-                        icon: Icon(LucideIcons.diamond),
-                        label: '',
-                      ),
-                      BottomNavigationBarItem(
-                        icon: Icon(
-                          LucideIcons.user,
-                        ),
-                        label: '',
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             )
