@@ -25,7 +25,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           padding: EdgeInsets.symmetric(horizontal: 20),
           children: [
             SizedBox(
-              height: kToolbarHeight,
+              height: kToolbarHeight / 2,
             ),
             Center(
               child: GlowText(
@@ -41,7 +41,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               ),
             ),
             SizedBox(
-              height: size.height * 0.05,
+              height: size.height * 0.025,
             ),
             SystemCard(
               child: Center(
@@ -248,6 +248,124 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            SystemCard(
+              padding: EdgeInsets.all(
+                20,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: size.width * .15,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(
+                            color: HexColor('43A7D5'),
+                            width: 0.75,
+                          ),
+                        ),
+                        child: Center(
+                          child: GlowText(
+                            glowColor: AppColors.whiteColor,
+                            text: "Quest",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w200,
+                              fontFamily: AppFonts.primary,
+                              color: AppColors.whiteColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      GlowText(
+                        glowColor: AppColors.whiteColor,
+                        text: "Quest Title:",
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFonts.primary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Expanded(
+                        child: GlowText(
+                          glowColor: AppColors.whiteColor,
+                          text: "Forge the Core: Build the System Backbone",
+                          style: TextStyle(
+                            color: AppColors.whiteColor,
+                            fontFamily: AppFonts.primary,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GlowText(
+                        glowColor: AppColors.whiteColor,
+                        text: "Description:",
+                        style: TextStyle(
+                          color: AppColors.whiteColor,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: AppFonts.primary,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Expanded(
+                        child: Text(
+                          "You are tasked with building the brain of the app—an AI-powered quest system that seamlessly personalizes user challenges. Like Sung Jin-Woo, you must wield your developer tools and “arise” a robust system that adapts to every user’s journey.",
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontFamily: AppFonts.primary,
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 14,
+                  ),
+                  GlowText(
+                    glowColor: Colors.white54,
+                    text: "Reward: +500 XP, +250 Coins, “Architect of Innovation” Badge",
+                    style: TextStyle(
+                      color: Colors.white54,
+                      fontFamily: AppFonts.primary,
+                      fontSize: 11,
                     ),
                   ),
                 ],
