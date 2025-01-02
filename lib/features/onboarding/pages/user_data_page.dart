@@ -49,59 +49,61 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     return OnboardingBg(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Form(
-          key: _key,
-          child: Center(
-            child: ListView(
-              shrinkWrap: true,
-              padding: EdgeInsets.symmetric(
-                horizontal: 35,
+        body: SafeArea(
+          child: Form(
+            key: _key,
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                ),
+                children: [
+                  OnboardingTitle(),
+                  const SizedBox(
+                    height: kToolbarHeight - 10,
+                  ),
+                  NeonTextField(
+                    controller: _nameController,
+                    labelText: 'Full name',
+                    glowColor: HexColor('7AD5FF'),
+                    hintText: 'Player name ...',
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  NeonTextField(
+                    controller: _birthDayController,
+                    labelText: 'Birthday',
+                    icon: LucideIcons.calendar,
+                    glowColor: HexColor('7AD5FF'),
+                    hintText: 'Player Birthday ...',
+                    readOnly: true,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  NeonTextField(
+                    controller: _birthDayController,
+                    labelText: 'Gender',
+                    icon: LucideIcons.chevron_down,
+                    glowColor: HexColor('7AD5FF'),
+                    readOnly: true,
+                    hintText: 'Player Gender ...',
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  NeonTextField(
+                    controller: _birthDayController,
+                    labelText: 'fitness/activity',
+                    icon: LucideIcons.chevron_down,
+                    glowColor: HexColor('7AD5FF'),
+                    readOnly: true,
+                    hintText: 'General fitness/activity level',
+                  ),
+                ],
               ),
-              children: [
-                OnboardingTitle(),
-                const SizedBox(
-                  height: kToolbarHeight,
-                ),
-                NeonTextField(
-                  controller: _nameController,
-                  labelText: 'Full name',
-                  glowColor: HexColor('7AD5FF'),
-                  hintText: 'Player name ...',
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                NeonTextField(
-                  controller: _birthDayController,
-                  labelText: 'Birthday',
-                  icon: LucideIcons.calendar,
-                  glowColor: HexColor('7AD5FF'),
-                  hintText: 'Player Birthday ...',
-                  readOnly: true,
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                NeonTextField(
-                  controller: _birthDayController,
-                  labelText: 'Gender',
-                  icon: LucideIcons.chevron_down,
-                  glowColor: HexColor('7AD5FF'),
-                  readOnly: true,
-                  hintText: 'Player Gender ...',
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                NeonTextField(
-                  controller: _birthDayController,
-                  labelText: 'fitness/activity',
-                  icon: LucideIcons.chevron_down,
-                  glowColor: HexColor('7AD5FF'),
-                  readOnly: true,
-                  hintText: 'General fitness/activity level',
-                ),
-              ],
             ),
           ),
         ),
@@ -112,7 +114,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
             color: Color.fromARGB(151, 99, 206, 255),
             onPressed: () => context.push(Routes.homePage),
             padding: EdgeInsets.symmetric(
-              vertical: 20,
+              vertical: 15,
               horizontal: size.width * .35,
             ),
             child: Text("Next"),

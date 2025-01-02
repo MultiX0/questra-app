@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:questra_app/app.dart';
+import 'package:questra_app/theme/app_theme.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'imports.dart';
@@ -13,6 +15,7 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
   _supabaseInit();
+  editChromeSystem();
   runApp(ProviderScope(child: const App()));
 }
 
@@ -30,4 +33,15 @@ Future<void> _supabaseInit() async {
     log(e.toString());
     throw Exception(e);
   }
+}
+
+void editChromeSystem() {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: AppColors.primary,
+    systemNavigationBarIconBrightness: Brightness.light,
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+  ));
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: [SystemUiOverlay.top, SystemUiOverlay.top]);
 }

@@ -14,7 +14,6 @@ class MyNavBar extends ConsumerStatefulWidget {
 }
 
 class _MyNavBarState extends ConsumerState<MyNavBar> {
-  bool _isNavBarVisible = true;
   final Color navigationBarColor = HexColor('22B2F4').withValues(alpha: 0.15);
   int page = 0;
 
@@ -32,65 +31,53 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BackgroundWidget(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: widget.navigationShell,
+        extendBody: true,
+        body: BackgroundWidget(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: widget.navigationShell,
+          ),
         ),
-      ),
-      bottomNavigationBar: _isNavBarVisible
-          ? LayoutBuilder(
-              builder: (context, constraints) {
-                final screenWidth = constraints.maxWidth;
-                double navBarHeight;
+        bottomNavigationBar: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = constraints.maxWidth;
+            double navBarHeight;
 
-                if (screenWidth < 600) {
-                  // Mobile
-                  navBarHeight = 80;
-                } else if (screenWidth < 1024) {
-                  // Tablet
-                  navBarHeight = 90;
-                } else if (screenWidth < 1440) {
-                  // Laptop
-                  navBarHeight = 100;
-                } else {
-                  // Desktop
-                  navBarHeight = 120;
-                }
-                return CupertinoTabBar(
-                  height: navBarHeight,
-                  backgroundColor: navigationBarColor,
-                  currentIndex: widget.navigationShell.currentIndex,
-                  onTap: (int index) => onTap(context, index),
-                  activeColor: HexColor('7AD5FF'),
-                  inactiveColor: AppColors.scaffoldBackground.withValues(alpha: .25),
-                  items: [
-                    BottomNavigationBarItem(
-                      icon: Icon(LucideIcons.book_text),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(LucideIcons.diamond),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(
-                        LucideIcons.user,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            )
-          : null,
-      floatingActionButton: !_isNavBarVisible
-          ? FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  _isNavBarVisible = true;
-                });
-              },
-              child: const Icon(Icons.menu),
-            )
-          : null,
-    );
+            if (screenWidth < 600) {
+              // Mobile
+              navBarHeight = 60;
+            } else if (screenWidth < 1024) {
+              // Tablet
+              navBarHeight = 90;
+            } else if (screenWidth < 1440) {
+              // Laptop
+              navBarHeight = 100;
+            } else {
+              // Desktop
+              navBarHeight = 120;
+            }
+            return CupertinoTabBar(
+              height: navBarHeight,
+              backgroundColor: navigationBarColor.withValues(alpha: .15),
+              currentIndex: widget.navigationShell.currentIndex,
+              onTap: (int index) => onTap(context, index),
+              activeColor: HexColor('7AD5FF'),
+              inactiveColor: navigationBarColor.withValues(alpha: .25),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(LucideIcons.book_text),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(LucideIcons.diamond),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(
+                    LucideIcons.user,
+                  ),
+                ),
+              ],
+            );
+          },
+        ));
   }
 }

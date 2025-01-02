@@ -13,14 +13,17 @@ class OnboardingBg extends ConsumerWidget {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.asset(
-            fit: BoxFit.cover,
-            Assets.getImage('onboarding_bg.png'),
+          child: Opacity(
+            opacity: 0.15,
+            child: Image.asset(
+              fit: BoxFit.cover,
+              Assets.getImage('onboarding_bg.png'),
+            ),
           ),
         ),
         Positioned.fill(
           child: Opacity(
-            opacity: 0.85,
+            opacity: 0.25,
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -28,7 +31,6 @@ class OnboardingBg extends ConsumerWidget {
                   end: Alignment.bottomCenter,
                   colors: [
                     HexColor('22B2F4'),
-                    Colors.black,
                     HexColor('14688E'),
                   ],
                 ),

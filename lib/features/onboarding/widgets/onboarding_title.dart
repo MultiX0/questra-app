@@ -15,12 +15,11 @@ class OnboardingTitle extends ConsumerWidget {
     return Column(
       children: [
         Center(
-          child: GlowText(
+          child: Text(
+            title ?? "Be a player now!",
             textAlign: TextAlign.center,
-            text: title ?? "Be a player now!",
-            glowColor: HexColor('7AD5FF'),
             style: TextStyle(
-              fontSize: 28,
+              fontSize: 26,
               fontFamily: AppFonts.header,
               fontWeight: FontWeight.bold,
               color: HexColor('7AD5FF'),
@@ -28,11 +27,11 @@ class OnboardingTitle extends ConsumerWidget {
           ),
         ),
         const SizedBox(
-          height: 15,
+          height: 10,
         ),
         Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 35,
+            horizontal: 5,
           ),
           child: Center(
             child: GlowText(
@@ -41,7 +40,7 @@ class OnboardingTitle extends ConsumerWidget {
               textAlign: TextAlign.center,
               glowColor: Colors.white,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 15,
                 fontFamily: AppFonts.primary,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,

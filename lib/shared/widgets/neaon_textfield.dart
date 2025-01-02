@@ -67,7 +67,7 @@ class NeonTextField extends StatelessWidget {
           hintText: hintText,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 20,
-            vertical: 20,
+            vertical: 15,
           ),
           hintStyle: TextStyle(
             fontSize: 16,

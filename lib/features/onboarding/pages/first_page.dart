@@ -14,14 +14,17 @@ class OnboardingFirstPage extends ConsumerWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              fit: BoxFit.cover,
-              Assets.getImage('onboarding_bg.png'),
+            child: Opacity(
+              opacity: 0.15,
+              child: Image.asset(
+                fit: BoxFit.cover,
+                Assets.getImage('onboarding_bg.png'),
+              ),
             ),
           ),
           Positioned.fill(
             child: Opacity(
-              opacity: 0.8,
+              opacity: 0.25,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -29,7 +32,6 @@ class OnboardingFirstPage extends ConsumerWidget {
                     end: Alignment.bottomCenter,
                     colors: [
                       HexColor('22B2F4'),
-                      Colors.black,
                       HexColor('14688E'),
                     ],
                   ),
@@ -46,9 +48,8 @@ class OnboardingFirstPage extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  GlowText(
-                    text: "Level Up Your Life!",
-                    glowColor: HexColor('7AD5FF'),
+                  Text(
+                    "Level Up Your Life!",
                     style: TextStyle(
                       fontSize: 28,
                       fontFamily: AppFonts.header,
@@ -81,7 +82,7 @@ class OnboardingFirstPage extends ConsumerWidget {
                       Routes.onboardingController,
                     ),
                     padding: EdgeInsets.symmetric(
-                      vertical: 20,
+                      vertical: 15,
                       horizontal: size.width * .35,
                     ),
                     child: Text("Arise!"),
