@@ -43,6 +43,7 @@ dependencies:
   hexcolor: ^3.0.1
   flutter_glow: ^0.3.2
   flutter_lucide: ^1.6.1
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +71,7 @@ flutter:
   assets:
     - assets/glb/
     - assets/images/
+    - .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,6 +97,9 @@ flutter:
     - family: Sixtyfour
       fonts:
         - asset: assets/fonts/Sixtyfour-Regular-VariableFont_BLED,SCAN.ttf
+    - family: LeckerliOne
+      fonts:
+        - asset: assets/fonts/LeckerliOne-Regular.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   # For details regarding fonts from package dependencies,
