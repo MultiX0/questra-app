@@ -15,8 +15,11 @@ class OnboardingTitle extends ConsumerWidget {
     return Column(
       children: [
         Center(
-          child: Text(
-            title ?? "Be a player now!",
+          child: GlowText(
+            text: title ?? "Be a player now!",
+            glowColor: HexColor('7AD5FF'),
+            blurRadius: 25,
+            spreadRadius: 1,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 26,
@@ -39,13 +42,14 @@ class OnboardingTitle extends ConsumerWidget {
                   "Join the adventure! Share your details to get personalized quests and start leveling up!",
               textAlign: TextAlign.center,
               glowColor: Colors.white,
+              spreadRadius: 1,
               style: TextStyle(
                 fontSize: 15,
                 fontFamily: AppFonts.primary,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
               ),
-              blurRadius: 3,
+              blurRadius: 20,
             ),
           ),
         ),

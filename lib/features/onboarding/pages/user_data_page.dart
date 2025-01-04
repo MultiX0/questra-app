@@ -1,9 +1,9 @@
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
+import 'package:questra_app/features/onboarding/widgets/select_gender_widget.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/widgets/glow_button.dart';
-import 'package:questra_app/shared/widgets/neaon_textfield.dart';
+import 'package:questra_app/shared/utils/bottom_sheet.dart';
 
 class UserDataPage extends ConsumerStatefulWidget {
   const UserDataPage({
@@ -23,7 +23,20 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   late TextEditingController _genderController;
   late TextEditingController _activityController;
 
+  late FocusNode genderFocusNode;
+
+  String gender = '';
+
   final _key = GlobalKey<FormState>();
+
+  void change(v) {
+    setState(() {
+      gender = v;
+      _genderController.text = v == 'm' ? "Male" : "Female";
+    });
+    context.pop();
+    genderFocusNode.unfocus();
+  }
 
   @override
   void initState() {
@@ -32,6 +45,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     _birthDayController = TextEditingController();
     _genderController = TextEditingController();
     _activityController = TextEditingController();
+    genderFocusNode = FocusNode();
   }
 
   @override
@@ -41,6 +55,16 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     _genderController.dispose();
     _activityController.dispose();
     super.dispose();
+  }
+
+  void genderSheet() {
+    openSheet(
+      context: context,
+      body: SelectGenderWidget(
+        changeVal: (v) => change(v),
+        group: gender,
+      ),
+    );
   }
 
   @override
@@ -84,7 +108,15 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     height: 15,
                   ),
                   NeonTextField(
-                    controller: _birthDayController,
+                    focusNode: genderFocusNode,
+                    onTap: genderSheet,
+                    controller: _genderController,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'please select your gender';
+                      }
+                      return null;
+                    },
                     labelText: 'Gender',
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
@@ -95,6 +127,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     height: 15,
                   ),
                   NeonTextField(
+                    // onTap: genderSheet,
                     controller: _birthDayController,
                     labelText: 'fitness/activity',
                     icon: LucideIcons.chevron_down,

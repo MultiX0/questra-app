@@ -10,6 +10,8 @@ class NeonTextField extends StatelessWidget {
   final IconData? icon;
   final Function()? onTap;
   final bool? readOnly;
+  final FocusNode? focusNode;
+  final String? Function(String?)? validator;
 
   const NeonTextField({
     super.key,
@@ -22,6 +24,8 @@ class NeonTextField extends StatelessWidget {
     this.icon,
     this.onTap,
     this.readOnly,
+    this.focusNode,
+    this.validator,
   });
 
   @override
@@ -42,7 +46,9 @@ class NeonTextField extends StatelessWidget {
           ),
         ],
       ),
-      child: TextField(
+      child: TextFormField(
+        validator: validator,
+        focusNode: focusNode,
         readOnly: readOnly ?? false,
         controller: controller,
         onChanged: onChanged,
@@ -89,7 +95,7 @@ class NeonTextField extends StatelessWidget {
           ),
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          fillColor: Colors.black.withValues(alpha: .6),
+          fillColor: Colors.black.withValues(alpha: .5),
         ),
       ),
     );
