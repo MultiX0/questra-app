@@ -1,8 +1,13 @@
+import 'dart:developer';
+
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
+import 'package:questra_app/features/onboarding/widgets/select_avtivity_level.dart';
 import 'package:questra_app/features/onboarding/widgets/select_gender_widget.dart';
 import 'package:questra_app/imports.dart';
+import 'package:intl/intl.dart';
 import 'package:questra_app/shared/utils/bottom_sheet.dart';
 
 class UserDataPage extends ConsumerStatefulWidget {
@@ -24,19 +29,14 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   late TextEditingController _activityController;
 
   late FocusNode genderFocusNode;
+  late FocusNode activityFocusNode;
+  late FocusNode birthDayFocusNode;
 
   String gender = '';
+  String activityLevel = '';
+  DateTime? selectedDate;
 
   final _key = GlobalKey<FormState>();
-
-  void change(v) {
-    setState(() {
-      gender = v;
-      _genderController.text = v == 'm' ? "Male" : "Female";
-    });
-    context.pop();
-    genderFocusNode.unfocus();
-  }
 
   @override
   void initState() {
@@ -46,6 +46,8 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     _genderController = TextEditingController();
     _activityController = TextEditingController();
     genderFocusNode = FocusNode();
+    activityFocusNode = FocusNode();
+    birthDayFocusNode = FocusNode();
   }
 
   @override
@@ -54,6 +56,9 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     _birthDayController.dispose();
     _genderController.dispose();
     _activityController.dispose();
+    genderFocusNode.dispose();
+    activityFocusNode.dispose();
+    birthDayFocusNode.dispose();
     super.dispose();
   }
 
@@ -61,9 +66,63 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     openSheet(
       context: context,
       body: SelectGenderWidget(
-        changeVal: (v) => change(v),
+        changeVal: (v) {
+          setState(() {
+            gender = v;
+            _genderController.text = v == 'm' ? "Male" : "Female";
+          });
+          context.pop();
+          genderFocusNode.unfocus();
+        },
         group: gender,
       ),
+    );
+  }
+
+  // 'sedentary', 'lightly' 'active', 'moderately' 'active', 'very active', 'athletic'
+
+  void activitySheet() {
+    openSheet(
+      context: context,
+      body: SelectAvtivityLevel(
+        changeVal: (v) {
+          setState(() {
+            activityLevel = v;
+            _activityController.text = v;
+          });
+          activityFocusNode.unfocus();
+          context.pop();
+        },
+        group: activityLevel,
+      ),
+    );
+  }
+
+  void birthDateSheet() {
+    picker.DatePicker.showDatePicker(
+      context,
+      theme: picker.DatePickerTheme(
+        backgroundColor: AppColors.scaffoldBackground,
+        itemStyle: TextStyle(
+          color: AppColors.whiteColor,
+        ),
+        cancelStyle: TextStyle(color: Colors.white60),
+      ),
+      showTitleActions: true,
+      maxTime: DateTime.now().subtract(const Duration(days: 365 * 16)),
+      onChanged: (date) {
+        final d = DateFormat.yMMMMd('en_US').format(date);
+        log(d);
+        setState(() {
+          _birthDayController.text = d;
+          selectedDate = date;
+        });
+      },
+      onConfirm: (date) {
+        birthDayFocusNode.unfocus();
+      },
+      currentTime: DateTime.now(),
+      locale: picker.LocaleType.en,
     );
   }
 
@@ -97,6 +156,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     height: 15,
                   ),
                   NeonTextField(
+                    onTap: birthDateSheet,
                     controller: _birthDayController,
                     labelText: 'Birthday',
                     icon: LucideIcons.calendar,
@@ -127,8 +187,15 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     height: 15,
                   ),
                   NeonTextField(
-                    // onTap: genderSheet,
-                    controller: _birthDayController,
+                    onTap: activitySheet,
+                    focusNode: activityFocusNode,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'please select your fitness/activity level';
+                      }
+                      return null;
+                    },
+                    controller: _activityController,
                     labelText: 'fitness/activity',
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
