@@ -4,8 +4,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' 
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
-import 'package:questra_app/features/onboarding/widgets/select_avtivity_level.dart';
-import 'package:questra_app/features/onboarding/widgets/select_gender_widget.dart';
+import 'package:questra_app/features/onboarding/widgets/select_radio_widget.dart';
 import 'package:questra_app/imports.dart';
 import 'package:intl/intl.dart';
 import 'package:questra_app/shared/utils/bottom_sheet.dart';
@@ -65,11 +64,16 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   void genderSheet() {
     openSheet(
       context: context,
-      body: SelectGenderWidget(
+      body: SelectRadioWidget(
+        title: 'Select Gender',
+        choices: [
+          'Male',
+          'Female',
+        ],
         changeVal: (v) {
           setState(() {
             gender = v;
-            _genderController.text = v == 'm' ? "Male" : "Female";
+            _genderController.text = v;
           });
           context.pop();
           genderFocusNode.unfocus();
@@ -84,7 +88,15 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   void activitySheet() {
     openSheet(
       context: context,
-      body: SelectAvtivityLevel(
+      body: SelectRadioWidget(
+        title: "Select fitness/activity level",
+        choices: [
+          'sedentary',
+          'lightly active',
+          'moderately active',
+          'very active',
+          'athletic',
+        ],
         changeVal: (v) {
           setState(() {
             activityLevel = v;
@@ -212,7 +224,9 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
           child: GlowButton(
             glowColor: HexColor('002333').withValues(alpha: 0.15),
             color: Color.fromARGB(151, 99, 206, 255),
-            onPressed: () => context.push(Routes.homePage),
+            onPressed: () {
+              widget.next();
+            },
             padding: EdgeInsets.symmetric(
               vertical: 15,
               horizontal: size.width * .35,

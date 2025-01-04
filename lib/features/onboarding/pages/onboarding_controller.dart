@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:questra_app/features/onboarding/pages/user_data_page.dart';
+import 'package:questra_app/features/onboarding/pages/user_preferences_page.dart';
 import 'package:questra_app/imports.dart';
 
 class OnboardingController extends ConsumerStatefulWidget {
@@ -17,17 +20,22 @@ class _OnboardingControllerState extends ConsumerState<OnboardingController> {
   }
 
   void next() {
-    _controller.nextPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeIn,
-    );
+    log("next");
+    setState(() {
+      _controller.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
   }
 
   void prevs() {
-    _controller.previousPage(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
+    setState(() {
+      _controller.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   @override
@@ -44,6 +52,10 @@ class _OnboardingControllerState extends ConsumerState<OnboardingController> {
       children: [
         UserDataPage(
           next: next,
+        ),
+        UserPreferencesPage(
+          next: next,
+          prev: prevs,
         ),
       ],
     );
