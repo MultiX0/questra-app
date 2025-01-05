@@ -1,5 +1,4 @@
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/theme/app_theme.dart';
 
 class GlowButton extends StatelessWidget {
   const GlowButton({
@@ -38,7 +37,7 @@ class GlowButton extends StatelessWidget {
           BoxShadow(
             color: glowColor,
             blurRadius: blurRadius ?? 20,
-            spreadRadius: spreadRadius ?? 2,
+            spreadRadius: spreadRadius ?? 1.5,
           ),
         ],
       ),

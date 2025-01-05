@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/widgets/background_widget.dart';
+import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
 class MyNavBar extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;

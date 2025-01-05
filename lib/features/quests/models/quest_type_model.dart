@@ -1,4 +1,4 @@
-import '../../../shared/constants/key_names.dart';
+import '../../../core/shared/constants/key_names.dart';
 
 class QuestTypeModel {
   final int id;

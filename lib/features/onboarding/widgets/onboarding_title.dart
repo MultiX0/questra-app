@@ -1,6 +1,6 @@
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/constants/app_fonts.dart';
-import 'package:questra_app/shared/widgets/glow_text.dart';
+import 'package:questra_app/core/shared/constants/app_fonts.dart';
+import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class OnboardingTitle extends ConsumerWidget {
   const OnboardingTitle({

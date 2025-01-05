@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:questra_app/features/onboarding/pages/user_data_page.dart';
 import 'package:questra_app/features/onboarding/pages/user_preferences_page.dart';
+import 'package:questra_app/features/onboarding/pages/user_quest_types.dart';
 import 'package:questra_app/imports.dart';
 
 class OnboardingController extends ConsumerStatefulWidget {
@@ -54,6 +55,10 @@ class _OnboardingControllerState extends ConsumerState<OnboardingController> {
           next: next,
         ),
         UserPreferencesPage(
+          next: next,
+          prev: prevs,
+        ),
+        UserQuestTypes(
           next: next,
           prev: prevs,
         ),

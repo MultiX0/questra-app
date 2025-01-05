@@ -1,0 +1,135 @@
+import 'package:questra_app/features/onboarding/widgets/next_button.dart';
+import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
+import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
+import 'package:questra_app/features/quests/controller/quests_controller.dart';
+import 'package:questra_app/imports.dart';
+import 'package:questra_app/core/shared/constants/app_fonts.dart';
+import 'package:questra_app/core/shared/widgets/glow_text.dart';
+
+class UserQuestTypes extends ConsumerStatefulWidget {
+  const UserQuestTypes({
+    super.key,
+    required this.next,
+    required this.prev,
+  });
+
+  final VoidCallback prev;
+  final VoidCallback next;
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _UserQuestTypesState();
+}
+
+class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
+  List<int> typeIds = [];
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final typesRef = ref.watch(getAllQuestTypesProvider);
+    return OnboardingBg(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        bottomNavigationBar: AccountSetupNextButton(
+          next: widget.next,
+          size: size,
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              SizedBox(
+                height: size.height * 0.15,
+              ),
+              OnboardingTitle(
+                title: "Preferences",
+              ),
+              SizedBox(
+                height: size.height * 0.05,
+              ),
+              GlowText(
+                text: "Quest types",
+                spreadRadius: 1,
+                blurRadius: 25,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontFamily: AppFonts.primary,
+                  color: AppColors.whiteColor,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+                glowColor: Colors.white,
+              ),
+              SizedBox(
+                height: size.height * 0.025,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: typesRef.when(
+                    data: (types) {
+                      return Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: types
+                            .map(
+                              (type) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (typeIds.contains(type.id)) {
+                                      typeIds.remove(type.id);
+                                    } else {
+                                      typeIds.add(type.id);
+                                    }
+                                  });
+                                },
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  margin: EdgeInsets.only(top: 5),
+                                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: .4),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: typeIds.contains(type.id)
+                                          ? Colors.purpleAccent
+                                          : HexColor('7AD5FF'),
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: typeIds.contains(type.id)
+                                            ? Colors.purpleAccent.withValues(alpha: .3)
+                                            : HexColor('7AD5FF').withValues(alpha: .3),
+                                        spreadRadius: 0.25,
+                                        blurRadius: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    type.name,
+                                    style: TextStyle(
+                                      color: AppColors.whiteColor,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      );
+                    },
+                    error: (error, _) => Center(
+                      child: Text("Error"),
+                    ),
+                    loading: () => Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

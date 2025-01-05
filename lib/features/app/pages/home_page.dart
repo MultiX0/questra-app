@@ -1,10 +1,10 @@
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/constants/app_fonts.dart';
-import 'package:questra_app/shared/widgets/background_widget.dart';
-import 'package:questra_app/shared/widgets/glow_text.dart';
-import 'package:questra_app/shared/widgets/system_card.dart';
+import 'package:questra_app/core/shared/constants/app_fonts.dart';
+import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:questra_app/core/shared/widgets/system_card.dart';
 import 'package:questra_app/theme/app_theme.dart';
 
 class HomePage extends ConsumerStatefulWidget {

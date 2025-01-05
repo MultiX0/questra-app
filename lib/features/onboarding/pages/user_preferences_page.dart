@@ -1,9 +1,10 @@
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:questra_app/features/onboarding/widgets/next_button.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
 import 'package:questra_app/features/onboarding/widgets/select_radio_widget.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/utils/bottom_sheet.dart';
+import 'package:questra_app/core/shared/utils/bottom_sheet.dart';
 
 class UserPreferencesPage extends ConsumerStatefulWidget {
   const UserPreferencesPage({
@@ -209,19 +210,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
             ),
           ),
         ),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(35),
-          child: GlowButton(
-            glowColor: HexColor('002333').withValues(alpha: 0.15),
-            color: Color.fromARGB(151, 99, 206, 255),
-            onPressed: () => context.push(Routes.homePage),
-            padding: EdgeInsets.symmetric(
-              vertical: 15,
-              horizontal: size.width * .35,
-            ),
-            child: Text("Next"),
-          ),
-        ),
+        bottomNavigationBar: AccountSetupNextButton(next: widget.next, size: size),
       ),
     );
   }

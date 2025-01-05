@@ -1,7 +1,7 @@
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/shared/constants/app_fonts.dart';
-import 'package:questra_app/shared/widgets/glow_button.dart';
-import 'package:questra_app/shared/widgets/glow_text.dart';
+import 'package:questra_app/core/shared/constants/app_fonts.dart';
+import 'package:questra_app/core/shared/widgets/glow_button.dart';
+import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class OnboardingFirstPage extends ConsumerWidget {
   const OnboardingFirstPage({super.key});
@@ -48,8 +48,12 @@ class OnboardingFirstPage extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    "Level Up Your Life!",
+                  GlowText(
+                    text: "Level Up Your Life!",
+                    textAlign: TextAlign.center,
+                    glowColor: HexColor('7AD5FF'),
+                    spreadRadius: .75,
+                    blurRadius: 30,
                     style: TextStyle(
                       fontSize: 28,
                       fontFamily: AppFonts.header,
@@ -76,7 +80,9 @@ class OnboardingFirstPage extends ConsumerWidget {
                     height: 35,
                   ),
                   GlowButton(
-                    glowColor: HexColor('002333').withValues(alpha: 0.15),
+                    spreadRadius: 1.5,
+                    blurRadius: 20,
+                    glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
                     color: Color.fromARGB(151, 99, 206, 255),
                     onPressed: () => context.push(
                       Routes.onboardingController,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:questra_app/shared/constants/app_fonts.dart';
+import 'package:questra_app/core/shared/constants/app_fonts.dart';
 
 class GlowText extends StatelessWidget {
   const GlowText({
