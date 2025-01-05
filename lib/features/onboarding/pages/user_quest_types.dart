@@ -39,7 +39,7 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
           child: Column(
             children: [
               SizedBox(
-                height: size.height * 0.15,
+                height: size.height * 0.1,
               ),
               OnboardingTitle(
                 title: "Preferences",

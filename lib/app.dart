@@ -15,6 +15,7 @@ class _AppState extends ConsumerState<App> {
     final router = ref.watch(routerProvider);
     return ToastificationWrapper(
       child: MaterialApp.router(
+        theme: AppTheme.darkModeAppTheme,
         routeInformationParser: router.routeInformationParser,
         routeInformationProvider: router.routeInformationProvider,
         routerDelegate: router.routerDelegate,

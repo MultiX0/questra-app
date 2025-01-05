@@ -13,7 +13,12 @@ class AccountSetupNextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(35),
+      padding: EdgeInsets.only(
+        left: 35,
+        right: 35,
+        bottom: 35,
+        top: 15,
+      ),
       child: GlowButton(
         glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
         color: Color.fromARGB(151, 99, 206, 255),
