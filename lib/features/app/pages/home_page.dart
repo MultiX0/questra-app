@@ -29,9 +29,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                 height: 15,
               ),
               Center(
-                child: Text(
-                  // glowColor: HexColor('7AD5FF').withValues(alpha: 0.8),
-                  "Questra",
+                child: GlowText(
+                  glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
+                  spreadRadius: 0.75,
+                  blurRadius: 30,
+                  text: "Questra",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -42,7 +44,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.025,
+                height: size.height * 0.03,
               ),
               SystemCard(
                 padding: EdgeInsets.symmetric(vertical: 25),

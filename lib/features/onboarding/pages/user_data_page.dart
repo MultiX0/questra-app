@@ -132,6 +132,12 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
         });
       },
       onConfirm: (date) {
+        final d = DateFormat.yMMMMd('en_US').format(date);
+        log(d);
+        setState(() {
+          _birthDayController.text = d;
+          selectedDate = date;
+        });
         birthDayFocusNode.unfocus();
       },
       currentTime: DateTime.now(),

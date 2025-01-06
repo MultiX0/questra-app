@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -21,7 +23,8 @@ class UserGoalsSetup extends ConsumerStatefulWidget {
 }
 
 class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
-  final List<String> goals = ["test", "test2"];
+  final List<String> goals = [];
+  final Map<String, bool> _showGoals = {};
 
   late TextEditingController _controller;
 
@@ -34,18 +37,23 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
   @override
   void dispose() {
     _controller.dispose();
+
     super.dispose();
   }
 
   void addGoal() {
     final text = _controller.text.trim();
-    if (text.isEmpty) {
-      return;
-    }
+    if (text.isEmpty) return;
 
     setState(() {
       goals.add(text);
+      _showGoals[text] = false;
     });
+
+    Future.microtask(() {
+      setState(() => _showGoals[text] = true);
+    });
+
     _controller.clear();
   }
 
@@ -56,7 +64,10 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
-          next: widget.next,
+          next: () {
+            // widget.next
+            context.go(Routes.homePage);
+          },
           size: size,
         ),
         body: SafeArea(
@@ -130,27 +141,34 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
                   height: size.height * 0.025,
                 ),
                 Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                    children: goals.map((goal) {
-                      return Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: HexColor('7AD5FF').withValues(alpha: .15),
-                          border: Border.all(
-                            color: HexColor('7AD5FF'),
+                  child: GridView.builder(
+                    itemCount: goals.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 15,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemBuilder: (context, index) {
+                      final goal = goals[goals.length - 1 - index];
+                      return AnimatedScale(
+                        scale: _showGoals[goal] == true ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                        child: Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: HexColor('7AD5FF').withValues(alpha: .15),
+                            border: Border.all(color: HexColor('7AD5FF')),
+                          ),
+                          child: Text(
+                            goal,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        child: Text(
-                          goal,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
                       );
-                    }).toList(),
+                    },
                   ),
                 ),
               ],

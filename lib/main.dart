@@ -37,7 +37,7 @@ Future<void> _supabaseInit() async {
 
 void editChromeSystem() {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: AppColors.primary,
+    systemNavigationBarColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.light,
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
