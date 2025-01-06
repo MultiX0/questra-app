@@ -24,8 +24,8 @@ class UserGoalsSetup extends ConsumerStatefulWidget {
 
 class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
   final List<String> goals = [];
-  final Map<String, bool> _showGoals = {};
 
+  final Map<String, bool> _showGoals = {};
   late TextEditingController _controller;
 
   @override
@@ -50,7 +50,7 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       _showGoals[text] = false;
     });
 
-    Future.microtask(() {
+    Future.delayed(const Duration(milliseconds: 50), () {
       setState(() => _showGoals[text] = true);
     });
 
@@ -64,10 +64,7 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
-          next: () {
-            // widget.next
-            context.go(Routes.homePage);
-          },
+          next: widget.next,
           size: size,
         ),
         body: SafeArea(
@@ -149,7 +146,7 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
                       mainAxisSpacing: 15,
                     ),
                     itemBuilder: (context, index) {
-                      final goal = goals[goals.length - 1 - index];
+                      final goal = goals[index];
                       return AnimatedScale(
                         scale: _showGoals[goal] == true ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 300),
