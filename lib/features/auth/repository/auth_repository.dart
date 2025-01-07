@@ -20,7 +20,7 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, UserModel?>((ref) 
 });
 
 final isLoggedInProvider = StateProvider<bool>((ref) {
-  return false;
+  return true;
 });
 
 class AuthNotifier extends StateNotifier<UserModel?> {
@@ -185,6 +185,19 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     } catch (e) {
       log(e.toString());
       return false;
+    }
+  }
+
+  Future<bool> availableUsername(String username) async {
+    try {
+      final data = await _supabase
+          .from(TableNames.players)
+          .select('*')
+          .eq(KeyNames.username, username.trim());
+      return data.isEmpty;
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
     }
   }
 

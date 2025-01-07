@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:questra_app/imports.dart';
 
 class NeonTextField extends StatelessWidget {
@@ -12,6 +13,8 @@ class NeonTextField extends StatelessWidget {
   final bool? readOnly;
   final FocusNode? focusNode;
   final String? Function(String?)? validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final int? maxLength;
 
   const NeonTextField({
     super.key,
@@ -26,6 +29,8 @@ class NeonTextField extends StatelessWidget {
     this.readOnly,
     this.focusNode,
     this.validator,
+    this.inputFormatters,
+    this.maxLength,
   });
 
   @override
@@ -48,10 +53,12 @@ class NeonTextField extends StatelessWidget {
       ),
       child: TextFormField(
         validator: validator,
+        inputFormatters: inputFormatters,
         focusNode: focusNode,
         readOnly: readOnly ?? false,
         controller: controller,
         onChanged: onChanged,
+        maxLength: maxLength,
         cursorColor: glowColor,
         style: const TextStyle(
           color: Colors.white60,

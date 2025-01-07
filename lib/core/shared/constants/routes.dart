@@ -9,4 +9,5 @@ class Routes {
   static const userSetupGoalsPage = '/userSetupGoalsPage';
   static const setupAccountPage = '/setupAccountPage';
   static const onboardingController = '/onboardingController';
+  static const splash = '/splash';
 }

@@ -1,19 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-
+import 'package:questra_app/core/providers/supabase_provider.dart';
 import 'package:questra_app/features/auth/repository/auth_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OnboardingFirstPage extends ConsumerWidget {
   const OnboardingFirstPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final supabase = ref.watch(supabaseProvider);
     final size = MediaQuery.sizeOf(context);
+
+    void handleLogin() async {
+      final logged = await ref.read(authStateProvider.notifier).googleSignIn();
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Stack(
@@ -89,16 +93,7 @@ class OnboardingFirstPage extends ConsumerWidget {
                     blurRadius: 20,
                     glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
                     color: Color.fromARGB(151, 99, 206, 255),
-                    onPressed: () async {
-                      final data = await ref.read(authStateProvider.notifier).googleSignIn();
-                      log("the sign in data is $data");
-                      if (data) {
-                        log("the user id is ${Supabase.instance.client.auth.currentUser?.id}");
-                        context.push(
-                          Routes.onboardingController,
-                        );
-                      }
-                    },
+                    onPressed: handleLogin,
                     padding: EdgeInsets.symmetric(
                       vertical: 15,
                       horizontal: size.width * .35,
