@@ -37,4 +37,5 @@ class KeyNames {
   static const difficulty = 'difficulty';
   static const assigned_at = 'assigned_at';
   static const completed_at = 'completed_at';
+  static const username = 'username';
 }

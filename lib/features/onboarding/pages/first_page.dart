@@ -1,6 +1,8 @@
+import 'dart:developer';
+
+import 'package:questra_app/features/auth/repository/auth_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
-import 'package:questra_app/core/shared/widgets/glow_button.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class OnboardingFirstPage extends ConsumerWidget {
@@ -84,9 +86,10 @@ class OnboardingFirstPage extends ConsumerWidget {
                     blurRadius: 20,
                     glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
                     color: Color.fromARGB(151, 99, 206, 255),
-                    onPressed: () => context.push(
-                      Routes.onboardingController,
-                    ),
+                    onPressed: () async {
+                      final data = await ref.read(authStateProvider.notifier).googleSignIn();
+                      log("the sign in data is $data");
+                    },
                     padding: EdgeInsets.symmetric(
                       vertical: 15,
                       horizontal: size.width * .35,
