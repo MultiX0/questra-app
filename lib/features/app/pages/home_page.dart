@@ -1,11 +1,11 @@
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:questra_app/core/shared/utils/custom_toast.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/core/shared/widgets/system_card.dart';
-import 'package:questra_app/theme/app_theme.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -47,17 +47,41 @@ class _HomePageState extends ConsumerState<HomePage> {
                 height: size.height * 0.03,
               ),
               SystemCard(
-                padding: EdgeInsets.symmetric(vertical: 25),
-                child: Center(
-                  child: Text(
-                    "Sun Dec 29",
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontFamily: AppFonts.header,
-                      color: AppColors.primary.withValues(alpha: .45),
+                onTap: () {
+                  CustomToast.systemToast("the shop is comming soon!");
+                },
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GlowText(
+                      blurRadius: 20,
+                      spreadRadius: 0.75,
+                      glowColor: AppColors.whiteColor,
+                      text: "Marketplace",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: AppFonts.header,
+                        color: AppColors.whiteColor,
+                      ),
+                      // glowColor: AppColors.whiteColor,
                     ),
-                    // glowColor: AppColors.whiteColor,
-                  ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    GlowText(
+                      blurRadius: 20,
+                      spreadRadius: 0.5,
+                      glowColor: AppColors.whiteColor,
+                      text:
+                          "Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontFamily: AppFonts.primary,
+                        color: AppColors.whiteColor,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(

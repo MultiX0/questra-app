@@ -2,6 +2,7 @@ import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
+import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 
 import 'imports.dart';
 
@@ -58,6 +59,10 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.onboardingController,
           child: const OnboardingController(),
+        ),
+        buildRoute(
+          path: Routes.setupAccountPage,
+          child: const SetupAccountPage(),
         ),
       ],
     );

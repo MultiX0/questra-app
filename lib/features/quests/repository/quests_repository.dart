@@ -20,6 +20,7 @@ class QuestsRepository {
   Future<List<QuestTypeModel>> getAllQuestTypes() async {
     try {
       final data = await _questTypesTable.select('*');
+      log("quest types: $data");
       final types = data.map((type) => QuestTypeModel.fromMap(type)).toList();
       return types;
     } catch (e) {

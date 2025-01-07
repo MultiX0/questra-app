@@ -38,4 +38,10 @@ class KeyNames {
   static const assigned_at = 'assigned_at';
   static const completed_at = 'completed_at';
   static const username = 'username';
+  static const activity_level = 'activity_level';
+  static const learning_style = 'learning_style';
+  static const preferred_times = 'preferred_times';
+  static const motivation_level = 'motivation_level';
+  static const time_availability = 'time_availability';
+  static const social_interactions = 'social_interactions';
 }

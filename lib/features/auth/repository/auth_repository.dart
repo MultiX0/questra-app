@@ -130,6 +130,9 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         accessToken: accessToken,
       );
 
+      final session = _supabase.auth.currentSession;
+      log('Current session: ${session?.toJson()}');
+
       return user.user != null;
     } catch (e) {
       log('Google sign in error: ${e.toString()}');

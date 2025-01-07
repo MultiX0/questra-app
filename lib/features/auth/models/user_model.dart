@@ -1,4 +1,6 @@
 import 'package:questra_app/core/shared/constants/key_names.dart';
+import 'package:questra_app/features/profiles/models/user_goal_model.dart';
+import 'package:questra_app/features/profiles/models/user_preferences_model.dart';
 
 class UserModel {
   final String id;
@@ -7,6 +9,8 @@ class UserModel {
   final String username;
   final bool is_online;
   final String? avatar;
+  final List<UserGoalModel>? goals;
+  final List<UserPreferencesModel>? user_preferences;
   UserModel({
     required this.id,
     required this.joined_at,
@@ -14,6 +18,8 @@ class UserModel {
     required this.username,
     required this.is_online,
     required this.avatar,
+    this.goals,
+    this.user_preferences,
   });
 
   UserModel copyWith({
@@ -23,6 +29,8 @@ class UserModel {
     String? username,
     bool? is_online,
     String? avatar,
+    List<UserGoalModel>? goals,
+    List<UserPreferencesModel>? user_preferences,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -31,6 +39,8 @@ class UserModel {
       username: username ?? this.username,
       is_online: is_online ?? this.is_online,
       avatar: avatar ?? this.avatar,
+      goals: goals ?? this.goals,
+      user_preferences: user_preferences ?? this.user_preferences,
     );
   }
 

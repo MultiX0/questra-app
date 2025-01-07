@@ -64,7 +64,9 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
-          next: widget.next,
+          next: () {
+            context.go(Routes.setupAccountPage);
+          },
           size: size,
         ),
         body: SafeArea(

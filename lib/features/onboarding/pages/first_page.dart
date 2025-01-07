@@ -1,9 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:questra_app/features/auth/repository/auth_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class OnboardingFirstPage extends ConsumerWidget {
   const OnboardingFirstPage({super.key});
@@ -89,6 +92,12 @@ class OnboardingFirstPage extends ConsumerWidget {
                     onPressed: () async {
                       final data = await ref.read(authStateProvider.notifier).googleSignIn();
                       log("the sign in data is $data");
+                      if (data) {
+                        log("the user id is ${Supabase.instance.client.auth.currentUser?.id}");
+                        context.push(
+                          Routes.onboardingController,
+                        );
+                      }
                     },
                     padding: EdgeInsets.symmetric(
                       vertical: 15,
