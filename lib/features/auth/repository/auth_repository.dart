@@ -6,6 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
+import 'package:questra_app/features/goals/repository/goals_repository.dart';
+import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -82,8 +84,20 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
       if (userEvent != null && userEvent.isNotEmpty) {
         final user = UserModel.fromMap(userEvent);
+
         if (state != user && user.id.isNotEmpty) {
-          state = user;
+          if (state!.goals == null || state?.user_preferences == null) {
+            final prefs = await _ref
+                .read(userPreferencesControllerProvider.notifier)
+                .getUserPreferences(user.id);
+            final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(user.id);
+            state = user.copyWith(
+              goals: goals,
+              user_preferences: prefs,
+            );
+          } else {
+            state = user;
+          }
           log("the user data is updated");
         }
         _stateStreamController.add(state);

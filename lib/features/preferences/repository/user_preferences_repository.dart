@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
@@ -18,6 +19,20 @@ class UserPreferencesRepository {
   Future<void> insertPreferences(UserPreferencesModel prefs) async {
     try {
       await _prefsTable.insert(prefs.toMap());
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<UserPreferencesModel?> getUserPreferences(String user_id) async {
+    try {
+      final data = await _prefsTable.select("*").eq(KeyNames.user_id, user_id).maybeSingle();
+      if (data != null) {
+        return UserPreferencesModel.fromMap(data);
+      }
+
+      return null;
     } catch (e) {
       log(e.toString());
       throw Exception(e);

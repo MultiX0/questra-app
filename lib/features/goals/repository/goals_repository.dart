@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/imports.dart';
@@ -19,6 +20,17 @@ class GoalsRepository {
       for (final goal in goals) {
         await _goalsTable.insert(goal.toMap());
       }
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<List<UserGoalModel>> getUserGoals(String user_id) async {
+    try {
+      final data = await _goalsTable.select('*').eq(KeyNames.user_id, user_id);
+      final goals = data.map((goal) => UserGoalModel.fromMap(goal)).toList();
+      return goals;
     } catch (e) {
       log(e.toString());
       throw Exception(e);
