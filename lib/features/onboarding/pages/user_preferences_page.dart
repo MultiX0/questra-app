@@ -1,8 +1,10 @@
 import 'package:flutter_lucide/flutter_lucide.dart';
+import 'package:questra_app/core/providers/accounts_provider.dart';
 import 'package:questra_app/features/onboarding/widgets/next_button.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
 import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
 import 'package:questra_app/features/onboarding/widgets/select_radio_widget.dart';
+import 'package:questra_app/features/profiles/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/utils/bottom_sheet.dart';
 
@@ -44,6 +46,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
     _socialInteractionsController = TextEditingController();
     _availabilityController = TextEditingController();
     _difficultyController = TextEditingController();
+    // _learningStyle
 
     socialInteractionsNode = FocusNode();
     difficultyNode = FocusNode();
@@ -136,6 +139,24 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
     );
   }
 
+  void handleNext() async {
+    if (_key.currentState!.validate()) {
+      final localUser = ref.read(localUserProvider);
+      widget.next();
+      // final prefernces = UserPreferencesModel(
+      //   id: -1,
+      //   user_id: localUser?.id ?? "",
+      //   difficulty: difficulty,
+      //   activity_level: ,
+      //   learning_style: ,
+      //   preferred_times: preferred_times,
+      //   motivation_level: motivation_level,
+      //   time_availability: time_availability,
+      //   social_interactions: social_interactions,
+      // );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -162,6 +183,13 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                     onTap: selectSocialInteractions,
                     controller: _socialInteractionsController,
                     labelText: 'social interactions',
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'please select your social interactions';
+                      }
+
+                      return null;
+                    },
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
                     hintText: 'e.g (Cooperative)',
@@ -210,7 +238,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(next: widget.next, size: size),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
       ),
     );
   }

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
@@ -23,11 +21,17 @@ final routerProvider = Provider<GoRouter>(
       initialLocation: Routes.splash,
       debugLogDiagnostics: kDebugMode,
       navigatorKey: _key,
-      redirect: (context, state) async {
+      redirect: (context, state) {
         final isLoggedIn = ref.watch(isLoggedInProvider);
+        final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;
         if (!isLoggedIn) {
           return Routes.onboardingPage;
         }
+
+        if (inOnboardingPage && isLoggedIn) {
+          return Routes.splash;
+        }
+
         return null;
       },
       routes: [

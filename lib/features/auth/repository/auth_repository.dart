@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/providers/accounts_provider.dart';
@@ -13,7 +14,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final serverClientId = dotenv.env['SERVERCLIENTID'] ?? '';
-final clientId = dotenv.env['CLIENTID'] ?? '';
+final clientId = dotenv.env[kDebugMode ? 'CLIENTID' : 'CLIENTID_RELEASE'] ?? '';
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, UserModel?>((ref) {
   return AuthNotifier(ref: ref);
@@ -132,6 +133,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
       final session = _supabase.auth.currentSession;
       log('Current session: ${session?.toJson()}');
+
+      _ref.read(isLoggedInProvider.notifier).state = true;
 
       return user.user != null;
     } catch (e) {

@@ -30,7 +30,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     _userSubscription = ref.read(authStateProvider.notifier).stateStream.listen((user) async {
       log("the user data is $user");
       if (mounted) {
-        if (user!.id.isNotEmpty) {
+        if (user != null && user.id.isNotEmpty) {
           final valid = await ref.read(authStateProvider.notifier).hasValidAccount();
 
           if (!valid) {
@@ -44,7 +44,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             context.go(Routes.homePage);
           }
         } else {
-          ref.watch(isLoggedInProvider.notifier).state = false;
+          ref.read(isLoggedInProvider.notifier).state = false;
           // context.go(Routes.onboardingPage);
         }
       }

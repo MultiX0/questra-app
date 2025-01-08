@@ -184,7 +184,10 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
       );
 
       widget.next();
+      return;
     }
+
+    CustomToast.systemToast("System: please fill all the fields!");
   }
 
   @override
@@ -216,8 +219,8 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                       if (val == null || val.isEmpty) {
                         return 'please enter valid name';
                       }
-                      if (val.length < 6) {
-                        return 'the name should contains at least 6 characters';
+                      if (val.length < 4) {
+                        return 'the name should contains at least 4 characters';
                       }
 
                       return null;

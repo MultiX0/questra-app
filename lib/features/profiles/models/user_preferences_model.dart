@@ -49,7 +49,6 @@ class UserPreferencesModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      KeyNames.user_preference_id: id,
       KeyNames.user_id: user_id,
       KeyNames.difficulty: difficulty,
       KeyNames.activity_level: activity_level,

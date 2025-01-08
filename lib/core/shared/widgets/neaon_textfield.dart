@@ -66,6 +66,7 @@ class NeonTextField extends StatelessWidget {
         ),
         onTap: onTap,
         decoration: InputDecoration(
+          counter: const SizedBox(),
           suffixIcon: icon != null
               ? Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -100,6 +101,24 @@ class NeonTextField extends StatelessWidget {
               width: 2.5,
             ),
           ),
+          // errorText: '',
+          errorStyle: TextStyle(fontSize: 10),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: Colors.red.withValues(alpha: .5),
+              width: 2,
+            ),
+          ),
+
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: glowColor.withValues(alpha: .5),
+              width: 2,
+            ),
+          ),
+
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           fillColor: Colors.black.withValues(alpha: .5),
