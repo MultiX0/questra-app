@@ -2,9 +2,7 @@ import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/imports.dart';
 
 class CustomToast {
-  static void systemToast(
-    String content,
-  ) {
+  static void systemToast(String content, {bool? systemMessage}) {
     Toastification().show(
       borderSide: BorderSide(
         color: HexColor('43A7D5'),
@@ -17,7 +15,7 @@ class CustomToast {
       autoCloseDuration: const Duration(
         seconds: 3,
       ),
-      title: Text(content),
+      title: Text((systemMessage != null && systemMessage) ? "System: $content" : content),
       icon: Icon(LucideIcons.hexagon),
     );
   }

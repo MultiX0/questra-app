@@ -5,21 +5,21 @@ class UserPreferencesModel {
   final int id;
   final String user_id;
   final String difficulty;
-  final String activity_level;
+  final String? activity_level;
   final String learning_style;
-  final List preferred_times;
-  final String motivation_level;
-  final String time_availability;
+  final List? preferred_times;
+  final String? motivation_level;
+  final String? time_availability;
   final String social_interactions;
   UserPreferencesModel({
     required this.id,
     required this.user_id,
     required this.difficulty,
-    required this.activity_level,
+    this.activity_level,
     required this.learning_style,
-    required this.preferred_times,
-    required this.motivation_level,
-    required this.time_availability,
+    this.preferred_times,
+    this.motivation_level,
+    this.time_availability,
     required this.social_interactions,
   });
 

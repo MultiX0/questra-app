@@ -1,12 +1,5 @@
-import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:questra_app/core/providers/accounts_provider.dart';
-import 'package:questra_app/features/onboarding/widgets/next_button.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
-import 'package:questra_app/features/onboarding/widgets/select_radio_widget.dart';
 import 'package:questra_app/features/profiles/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/utils/bottom_sheet.dart';
 
 class UserPreferencesPage extends ConsumerStatefulWidget {
   const UserPreferencesPage({
@@ -26,14 +19,17 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
   late TextEditingController _socialInteractionsController;
   late TextEditingController _availabilityController;
   late TextEditingController _difficultyController;
+  late TextEditingController _learningStyleController;
 
   late FocusNode socialInteractionsNode;
   late FocusNode difficultyNode;
   late FocusNode availabilityNode;
+  late FocusNode learningStyleNode;
 
   String socialInteractions = '';
   String availability = '';
   String difficulty = '';
+  String learningStyle = '';
 
   DateTime? selectedDate;
 
@@ -46,11 +42,13 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
     _socialInteractionsController = TextEditingController();
     _availabilityController = TextEditingController();
     _difficultyController = TextEditingController();
+    _learningStyleController = TextEditingController();
     // _learningStyle
 
     socialInteractionsNode = FocusNode();
     difficultyNode = FocusNode();
     availabilityNode = FocusNode();
+    learningStyleNode = FocusNode();
   }
 
   @override
@@ -58,10 +56,13 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
     _socialInteractionsController.dispose();
     _availabilityController.dispose();
     _difficultyController.dispose();
+    _learningStyleController.dispose();
 
     socialInteractionsNode.dispose();
     difficultyNode.dispose();
     availabilityNode.dispose();
+    learningStyleNode.dispose();
+
     super.dispose();
   }
 
@@ -139,22 +140,49 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
     );
   }
 
+  void selectLearningStyle() {
+    openSheet(
+      context: context,
+      body: SelectRadioWidget(
+          changeVal: (val) {
+            setState(() {
+              learningStyle = val;
+              _learningStyleController.text = val;
+            });
+            learningStyleNode.unfocus();
+            context.pop();
+          },
+          group: learningStyle,
+          choices: [],
+          title: "Select Prefered Learning Style"),
+    );
+  }
+
   void handleNext() async {
     if (_key.currentState!.validate()) {
       final localUser = ref.read(localUserProvider);
       widget.next();
-      // final prefernces = UserPreferencesModel(
-      //   id: -1,
-      //   user_id: localUser?.id ?? "",
-      //   difficulty: difficulty,
-      //   activity_level: ,
-      //   learning_style: ,
-      //   preferred_times: preferred_times,
-      //   motivation_level: motivation_level,
-      //   time_availability: time_availability,
-      //   social_interactions: social_interactions,
-      // );
+      final prefernces = UserPreferencesModel(
+        id: -1,
+        user_id: localUser?.id ?? "",
+        difficulty: difficulty,
+        activity_level: null,
+        learning_style: learningStyle,
+        preferred_times: null,
+        motivation_level: null,
+        time_availability: availability,
+        social_interactions: socialInteractions,
+      );
+
+      ref.read(localUserProvider.notifier).state = localUser?.copyWith(
+        user_preferences: [
+          prefernces,
+        ],
+      );
+      return;
     }
+
+    CustomToast.systemToast("please fill all the fields!", systemMessage: true);
   }
 
   @override
@@ -186,6 +214,26 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                     validator: (val) {
                       if (val == null || val.isEmpty) {
                         return 'please select your social interactions';
+                      }
+
+                      return null;
+                    },
+                    icon: LucideIcons.chevron_down,
+                    glowColor: HexColor('7AD5FF'),
+                    hintText: 'e.g (Cooperative)',
+                    readOnly: true,
+                    focusNode: socialInteractionsNode,
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  NeonTextField(
+                    onTap: selectLearningStyle,
+                    controller: _learningStyleController,
+                    labelText: 'learning style',
+                    validator: (val) {
+                      if (val == null || val.isEmpty) {
+                        return 'please select learning style';
                       }
 
                       return null;

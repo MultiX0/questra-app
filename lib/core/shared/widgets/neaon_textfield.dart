@@ -101,8 +101,8 @@ class NeonTextField extends StatelessWidget {
               width: 2.5,
             ),
           ),
-          // errorText: '',
-          errorStyle: TextStyle(fontSize: 10),
+          errorText: '',
+          errorStyle: TextStyle(fontSize: 0),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
@@ -110,7 +110,6 @@ class NeonTextField extends StatelessWidget {
               width: 2,
             ),
           ),
-
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
@@ -118,7 +117,6 @@ class NeonTextField extends StatelessWidget {
               width: 2,
             ),
           ),
-
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           fillColor: Colors.black.withValues(alpha: .5),

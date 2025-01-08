@@ -2,19 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
-import 'package:flutter_lucide/flutter_lucide.dart';
-import 'package:questra_app/core/providers/accounts_provider.dart';
-import 'package:questra_app/core/providers/supabase_provider.dart';
-import 'package:questra_app/core/shared/utils/custom_toast.dart';
-import 'package:questra_app/features/auth/models/user_model.dart';
-import 'package:questra_app/features/auth/repository/auth_repository.dart';
-import 'package:questra_app/features/onboarding/widgets/next_button.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
-import 'package:questra_app/features/onboarding/widgets/select_radio_widget.dart';
 import 'package:questra_app/imports.dart';
 import 'package:intl/intl.dart';
-import 'package:questra_app/core/shared/utils/bottom_sheet.dart';
 
 class UserDataPage extends ConsumerStatefulWidget {
   const UserDataPage({
@@ -187,7 +176,13 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
       return;
     }
 
-    CustomToast.systemToast("System: please fill all the fields!");
+    if (_nameController.text.trim().length < 4 || _usernameController.text.trim().length < 4) {
+      CustomToast.systemToast("name and username should be more than 4 characters",
+          systemMessage: true);
+      return;
+    }
+
+    CustomToast.systemToast("please fill all the fields!", systemMessage: true);
   }
 
   @override
