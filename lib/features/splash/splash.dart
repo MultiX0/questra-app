@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:questra_app/features/auth/models/user_model.dart';
-import 'package:questra_app/features/auth/repository/auth_repository.dart';
 import 'package:questra_app/imports.dart';
-
-import '../onboarding/widgets/onboarding_bg.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/providers/supabase_provider.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/quests/models/quest_type_model.dart';
 import 'package:questra_app/imports.dart';

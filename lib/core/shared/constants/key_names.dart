@@ -44,4 +44,5 @@ class KeyNames {
   static const motivation_level = 'motivation_level';
   static const time_availability = 'time_availability';
   static const social_interactions = 'social_interactions';
+  static const quest_types = 'quest_types';
 }

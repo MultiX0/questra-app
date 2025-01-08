@@ -1,6 +1,6 @@
 import 'package:questra_app/core/shared/constants/key_names.dart';
-import 'package:questra_app/features/profiles/models/user_goal_model.dart';
-import 'package:questra_app/features/profiles/models/user_preferences_model.dart';
+import 'package:questra_app/features/goals/models/user_goal_model.dart';
+import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 
 class UserModel {
   final String id;
@@ -10,7 +10,7 @@ class UserModel {
   final bool is_online;
   final String? avatar;
   final List<UserGoalModel>? goals;
-  final List<UserPreferencesModel>? user_preferences;
+  final UserPreferencesModel? user_preferences;
   UserModel({
     required this.id,
     required this.joined_at,
@@ -30,7 +30,7 @@ class UserModel {
     bool? is_online,
     String? avatar,
     List<UserGoalModel>? goals,
-    List<UserPreferencesModel>? user_preferences,
+    UserPreferencesModel? user_preferences,
   }) {
     return UserModel(
       id: id ?? this.id,

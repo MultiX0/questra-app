@@ -1,6 +1,3 @@
-import 'package:questra_app/features/onboarding/widgets/next_button.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
 import 'package:questra_app/features/quests/controller/quests_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
@@ -22,6 +19,23 @@ class UserQuestTypes extends ConsumerStatefulWidget {
 
 class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
   List<int> typeIds = [];
+
+  void handleNext() {
+    if (typeIds.length > 8 || typeIds.length < 5) {
+      CustomToast.systemToast(
+        "you need to select 5 to 8 quest types",
+        systemMessage: true,
+      );
+      return;
+    }
+
+    final localUser = ref.read(localUserProvider);
+    ref.read(localUserProvider.notifier).state = localUser?.copyWith(
+      user_preferences: localUser.user_preferences?.copyWith(questTypes: typeIds),
+    );
+
+    widget.next();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,9 +1,10 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/providers/supabase_provider.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
-import 'package:questra_app/features/profiles/models/user_goal_model.dart';
+import 'package:questra_app/features/goals/models/user_goal_model.dart';
+import 'package:questra_app/features/goals/repository/goals_repository.dart';
+import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -19,22 +20,25 @@ class ProfileRepository {
   SupabaseQueryBuilder get _profilesTable => _client.from(TableNames.players);
   SupabaseQueryBuilder get _userGoalsTable => _client.from(TableNames.user_goals);
 
+  Future<bool> insertProfile(UserModel user) async {
+    try {
+      await _profilesTable.insert(user.toMap());
+      await Future.wait([
+        _ref.read(userPreferencesRepositoryProvider).insertPreferences(user.user_preferences!),
+        _ref.read(goalsRepositoryProvider).insertGoals(goals: user.goals!)
+      ]);
+      return true;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    }
+  }
+
   Future<List<UserGoalModel>> getAllUserGoals(String user_id) async {
     try {
       final data = await _userGoalsTable.select('*').eq(KeyNames.user_id, user_id);
       final goalsList = data.map((goal) => UserGoalModel.fromMap(goal)).toList();
       return goalsList;
-    } catch (e) {
-      log(e.toString());
-      throw Exception(e);
-    }
-  }
-
-  Future<void> insertNewGoal(List<UserGoalModel> goals) async {
-    try {
-      for (final goals in goals) {
-        await _userGoalsTable.insert(goals.toMap());
-      }
     } catch (e) {
       log(e.toString());
       throw Exception(e);

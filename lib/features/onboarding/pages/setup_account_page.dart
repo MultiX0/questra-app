@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
+import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/imports.dart';
 
 class SetupAccountPage extends ConsumerStatefulWidget {
@@ -33,8 +33,14 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
     );
     _timer = Timer(
       const Duration(seconds: 2),
-      () {
-        context.go(Routes.homePage);
+      () async {
+        final localUser = ref.read(localUserProvider);
+        final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
+        if (data) {
+          await Future.delayed(const Duration(seconds: 2));
+          if (!mounted) return;
+          context.go(Routes.splash);
+        }
       },
     );
     super.initState();

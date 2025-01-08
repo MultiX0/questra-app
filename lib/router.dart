@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
-import 'package:questra_app/features/auth/repository/auth_repository.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';

@@ -40,7 +40,6 @@ class UserGoalModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      KeyNames.user_goal_id: id,
       KeyNames.created_at: created_at.toIso8601String(),
       KeyNames.user_id: user_id,
       KeyNames.goal_description: description,

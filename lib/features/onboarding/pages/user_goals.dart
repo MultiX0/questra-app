@@ -1,11 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_lucide/flutter_lucide.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
-import 'package:questra_app/features/onboarding/widgets/next_button.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_bg.dart';
-import 'package:questra_app/features/onboarding/widgets/onboarding_title.dart';
+import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/imports.dart';
 
 class UserGoalsSetup extends ConsumerStatefulWidget {
@@ -57,6 +54,36 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
     _controller.clear();
   }
 
+  void handleNext() {
+    if (goals.length < 4) {
+      CustomToast.systemToast(
+        "add at least 4 clear goals with specific content, (you can edit or add new goals later)",
+        systemMessage: true,
+      );
+      return;
+    }
+
+    final localUser = ref.read(localUserProvider);
+
+    final goalsList = goals
+        .map(
+          (goal) => UserGoalModel(
+            id: -1,
+            created_at: DateTime.now(),
+            user_id: localUser?.id ?? "",
+            description: goal,
+            status: "in_progress",
+          ),
+        )
+        .toList();
+
+    ref.read(localUserProvider.notifier).state = localUser?.copyWith(
+      goals: goalsList,
+    );
+
+    context.go(Routes.setupAccountPage);
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -64,9 +91,7 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
-          next: () {
-            context.go(Routes.setupAccountPage);
-          },
+          next: handleNext,
           size: size,
         ),
         body: SafeArea(
