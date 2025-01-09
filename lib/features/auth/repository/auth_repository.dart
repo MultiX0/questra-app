@@ -75,6 +75,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           id: _supabase.auth.currentUser?.id ?? '',
           name: '',
           username: '',
+          gender: '',
           joined_at: DateTime.now(),
           avatar: '',
           is_online: false,
@@ -86,7 +87,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         final user = UserModel.fromMap(userEvent);
 
         if (state != user && user.id.isNotEmpty) {
-          if (state!.goals == null || state?.user_preferences == null) {
+          if (state?.goals == null || state?.user_preferences == null) {
             final prefs = await _ref
                 .read(userPreferencesControllerProvider.notifier)
                 .getUserPreferences(user.id);

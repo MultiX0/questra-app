@@ -19,13 +19,16 @@ class ProfileRepository {
   SupabaseClient get _client => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _profilesTable => _client.from(TableNames.players);
   SupabaseQueryBuilder get _userGoalsTable => _client.from(TableNames.user_goals);
+  SupabaseQueryBuilder get _datesTable => _client.from(TableNames.users_metadata);
 
   Future<bool> insertProfile(UserModel user) async {
     try {
       await _profilesTable.insert(user.toMap());
       await Future.wait([
         _ref.read(userPreferencesRepositoryProvider).insertPreferences(user.user_preferences!),
-        _ref.read(goalsRepositoryProvider).insertGoals(goals: user.goals!)
+        _ref.read(goalsRepositoryProvider).insertGoals(goals: user.goals!),
+        _datesTable.insert(
+            {KeyNames.birth_date: user.birth_date?.toIso8601String(), KeyNames.id: user.id}),
       ]);
       return true;
     } catch (e) {

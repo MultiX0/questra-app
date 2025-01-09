@@ -10,4 +10,5 @@ class TableNames {
   static const user_goals = 'user_goals';
   static const user_preferences = 'user_preferences';
   static const user_quests = 'user_quests';
+  static const users_metadata = 'users_metadata';
 }

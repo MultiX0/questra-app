@@ -5,7 +5,9 @@ import 'package:questra_app/features/preferences/models/user_preferences_model.d
 class UserModel {
   final String id;
   final DateTime joined_at;
+  final DateTime? birth_date;
   final String name;
+  final String gender;
   final String username;
   final bool is_online;
   final String? avatar;
@@ -19,7 +21,9 @@ class UserModel {
     required this.is_online,
     required this.avatar,
     this.goals,
+    required this.gender,
     this.user_preferences,
+    this.birth_date,
   });
 
   UserModel copyWith({
@@ -29,6 +33,8 @@ class UserModel {
     String? username,
     bool? is_online,
     String? avatar,
+    DateTime? birth_date,
+    String? gender,
     List<UserGoalModel>? goals,
     UserPreferencesModel? user_preferences,
   }) {
@@ -38,6 +44,8 @@ class UserModel {
       name: name ?? this.name,
       username: username ?? this.username,
       is_online: is_online ?? this.is_online,
+      birth_date: birth_date ?? this.birth_date,
+      gender: gender ?? this.gender,
       avatar: avatar ?? this.avatar,
       goals: goals ?? this.goals,
       user_preferences: user_preferences ?? this.user_preferences,
@@ -47,11 +55,12 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       KeyNames.id: id,
-      KeyNames.joined_at: joined_at.millisecondsSinceEpoch,
+      KeyNames.joined_at: joined_at.toIso8601String(),
       KeyNames.name: name,
       KeyNames.username: username,
       KeyNames.is_online: is_online,
       KeyNames.avatar: avatar,
+      KeyNames.gender: gender.toLowerCase(),
     };
   }
 
@@ -63,6 +72,7 @@ class UserModel {
       username: map[KeyNames.username] ?? "",
       is_online: map[KeyNames.is_online] ?? false,
       avatar: map[KeyNames.avatar],
+      gender: map[KeyNames.gender] ?? "male",
     );
   }
 

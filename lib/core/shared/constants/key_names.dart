@@ -45,4 +45,6 @@ class KeyNames {
   static const time_availability = 'time_availability';
   static const social_interactions = 'social_interactions';
   static const quest_types = 'quest_types';
+  static const birth_date = 'birth_date';
+  static const gender = 'gender';
 }

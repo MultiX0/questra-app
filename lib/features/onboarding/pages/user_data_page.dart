@@ -169,6 +169,8 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
         name: _nameController.text.trim(),
         username: username,
         is_online: true,
+        birth_date: selectedDate,
+        gender: gender.toLowerCase(),
         avatar: "",
       );
 

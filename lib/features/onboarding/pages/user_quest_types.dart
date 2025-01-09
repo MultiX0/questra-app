@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:questra_app/features/quests/controller/quests_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/constants/app_fonts.dart';
@@ -30,8 +32,10 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
     }
 
     final localUser = ref.read(localUserProvider);
+    final updatedPrefs = localUser?.user_preferences?.copyWith(questTypes: typeIds);
+    log("the quest types of this user is $updatedPrefs");
     ref.read(localUserProvider.notifier).state = localUser?.copyWith(
-      user_preferences: localUser.user_preferences?.copyWith(questTypes: typeIds),
+      user_preferences: updatedPrefs,
     );
 
     widget.next();
@@ -45,7 +49,7 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
-          next: widget.next,
+          next: handleNext,
           size: size,
         ),
         body: Padding(

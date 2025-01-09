@@ -106,7 +106,7 @@ class NeonTextField extends StatelessWidget {
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: Colors.red.withValues(alpha: .5),
+              color: glowColor.withValues(alpha: .5),
               width: 2,
             ),
           ),

@@ -34,12 +34,25 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
     _timer = Timer(
       const Duration(seconds: 2),
       () async {
-        final localUser = ref.read(localUserProvider);
-        final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
-        if (data) {
-          await Future.delayed(const Duration(seconds: 2));
-          if (!mounted) return;
-          context.go(Routes.splash);
+        try {
+          final localUser = ref.read(localUserProvider);
+          final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
+          if (data) {
+            await Future.delayed(const Duration(seconds: 1));
+            if (!mounted) return;
+            final user = ref.watch(authStateProvider);
+            if (user != null) {
+              context.go(Routes.homePage);
+            }
+            context.go(Routes.splash);
+          }
+        } catch (e) {
+          context.go(Routes.onboardingController);
+          CustomToast.systemToast(
+            "it seems we facing an error please try again",
+            systemMessage: true,
+          );
+          rethrow;
         }
       },
     );

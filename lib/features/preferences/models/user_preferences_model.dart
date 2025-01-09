@@ -6,7 +6,7 @@ class UserPreferencesModel {
   final String user_id;
   final String difficulty;
   final String? activity_level;
-  final List? questTypes;
+  final List<int>? questTypes;
   final List? preferred_times;
   final String? motivation_level;
   final String? time_availability;
@@ -32,7 +32,7 @@ class UserPreferencesModel {
     String? motivation_level,
     String? time_availability,
     String? social_interactions,
-    List? questTypes,
+    List<int>? questTypes,
   }) {
     return UserPreferencesModel(
       id: id ?? this.id,
@@ -70,6 +70,7 @@ class UserPreferencesModel {
       motivation_level: map[KeyNames.motivation_level] ?? "",
       time_availability: map[KeyNames.time_availability] ?? "",
       social_interactions: map[KeyNames.social_interactions] ?? "",
+      questTypes: List<int>.from(map[KeyNames.quest_types] ?? []),
     );
   }
 

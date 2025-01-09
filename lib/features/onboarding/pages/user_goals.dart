@@ -89,6 +89,11 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
     final size = MediaQuery.sizeOf(context);
     return OnboardingBg(
       child: Scaffold(
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: widget.prev,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         bottomNavigationBar: AccountSetupNextButton(
           next: handleNext,

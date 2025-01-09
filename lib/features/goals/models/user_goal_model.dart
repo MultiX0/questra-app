@@ -55,7 +55,8 @@ class UserGoalModel {
       created_at: DateTime.tryParse(map[KeyNames.created_at]) ?? DateTime.now(),
       user_id: map[KeyNames.user_id] ?? "",
       description: map[KeyNames.goal_description] ?? "",
-      target_date: DateTime.tryParse(map[KeyNames.target_date]),
+      target_date:
+          map[KeyNames.target_date] == null ? null : DateTime.tryParse(map[KeyNames.target_date]),
       status: map[KeyNames.status] ?? "",
       updated_at: DateTime.tryParse(map[KeyNames.updated_at] ?? ""),
     );
