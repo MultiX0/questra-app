@@ -7,6 +7,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
+import 'package:questra_app/features/leveling/models/levels_model.dart';
+import 'package:questra_app/features/leveling/repository/leveling_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
@@ -66,8 +68,24 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .stream(primaryKey: [KeyNames.id])
           .eq(KeyNames.id, userId)
           .debounceTime(const Duration(seconds: 1)),
+
+      _supabase
+          .from(TableNames.player_levels)
+          .stream(primaryKey: [KeyNames.user_id])
+          .eq(KeyNames.user_id, userId)
+          .debounceTime(
+            const Duration(milliseconds: 600),
+          )
+
+      // _ref.watch(levelingRepositoryProvider).playerLevelStream(userId),
     ]).listen((events) async {
       final userEvent = events[0].isNotEmpty ? events[0].first : null;
+      final levelEvent = events[1].isNotEmpty ? events[1].first : null;
+
+      if (levelEvent == null) {
+        await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+      }
+
       log("the user event is $userEvent");
 
       if (userEvent == null) {
@@ -102,6 +120,13 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           log("the user data is updated");
         }
         _stateStreamController.add(state);
+      }
+
+      if (levelEvent != null && levelEvent.isNotEmpty) {
+        final levelModel = LevelsModel.fromMap(levelEvent);
+        if (state?.level != levelModel) {
+          state = state?.copyWith(level: levelModel);
+        }
       }
     }, onError: (error) async {
       log('User data stream error: $error');

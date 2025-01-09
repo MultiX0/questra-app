@@ -1,5 +1,6 @@
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
+import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 
 class UserModel {
@@ -13,6 +14,7 @@ class UserModel {
   final String? avatar;
   final List<UserGoalModel>? goals;
   final UserPreferencesModel? user_preferences;
+  final LevelsModel? level;
   UserModel({
     required this.id,
     required this.joined_at,
@@ -24,6 +26,7 @@ class UserModel {
     required this.gender,
     this.user_preferences,
     this.birth_date,
+    this.level,
   });
 
   UserModel copyWith({
@@ -37,6 +40,7 @@ class UserModel {
     String? gender,
     List<UserGoalModel>? goals,
     UserPreferencesModel? user_preferences,
+    LevelsModel? level,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -49,6 +53,7 @@ class UserModel {
       avatar: avatar ?? this.avatar,
       goals: goals ?? this.goals,
       user_preferences: user_preferences ?? this.user_preferences,
+      level: level ?? this.level,
     );
   }
 
