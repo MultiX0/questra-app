@@ -1,16 +1,32 @@
+import 'dart:developer';
+
 import 'package:questra_app/core/shared/constants/key_names.dart';
+import 'package:questra_app/core/shared/utils/levels_calc.dart';
 
 class LevelsModel {
   final String user_id;
   final DateTime? updated_at;
-  final int level;
-  final int xp;
+  int level;
+  int xp;
   LevelsModel({
     required this.user_id,
     this.updated_at,
     required this.level,
     required this.xp,
   });
+
+  void addXp(int xp) {
+    this.xp += xp;
+    while (this.xp >= calculateXpForLevel(level)) {
+      this.xp -= calculateXpForLevel(level);
+      levelUp();
+    }
+  }
+
+  void levelUp() {
+    level++;
+    log('Congratulations! You leveled up to $level!');
+  }
 
   LevelsModel copyWith({
     String? user_id,
