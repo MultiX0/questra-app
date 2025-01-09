@@ -1,4 +1,11 @@
+int calculateHigherXpForLevel(int level) {
+  return (100 * (level * level) - (200 * level) + 400).toInt();
+}
+
 int calculateXpForLevel(int level) {
+  if (level >= 20) {
+    return calculateHigherXpForLevel(level);
+  }
   return (100 * (level * level) - (200 * level) + 400).toInt();
 }
 

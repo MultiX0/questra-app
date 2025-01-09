@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/imports.dart';
 
 class LevelsModel {
   final String user_id;
@@ -17,6 +16,7 @@ class LevelsModel {
 
   void addXp(int xp) {
     this.xp += xp;
+
     while (this.xp >= calculateXpForLevel(level)) {
       this.xp -= calculateXpForLevel(level);
       levelUp();
@@ -25,7 +25,10 @@ class LevelsModel {
 
   void levelUp() {
     level++;
-    log('Congratulations! You leveled up to $level!');
+    CustomToast.systemToast(
+      'Congratulations! You leveled up to $level!',
+      systemMessage: true,
+    );
   }
 
   LevelsModel copyWith({
