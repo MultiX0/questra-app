@@ -81,9 +81,11 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     ]).listen((events) async {
       final userEvent = events[0].isNotEmpty ? events[0].first : null;
       final levelEvent = events[1].isNotEmpty ? events[1].first : null;
+      LevelsModel? _level;
 
       if (levelEvent == null) {
-        await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+        final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+        _level = level;
       }
 
       log("the user event is $userEvent");
@@ -113,9 +115,12 @@ class AuthNotifier extends StateNotifier<UserModel?> {
             state = user.copyWith(
               goals: goals,
               user_preferences: prefs,
+              level: _level,
             );
           } else {
-            state = user;
+            state = user.copyWith(
+              level: _level,
+            );
           }
           log("the user data is updated");
         }

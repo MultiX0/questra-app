@@ -15,6 +15,7 @@ class UserModel {
   final List<UserGoalModel>? goals;
   final UserPreferencesModel? user_preferences;
   final LevelsModel? level;
+
   UserModel({
     required this.id,
     required this.joined_at,

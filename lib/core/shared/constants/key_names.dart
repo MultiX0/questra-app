@@ -47,4 +47,5 @@ class KeyNames {
   static const quest_types = 'quest_types';
   static const birth_date = 'birth_date';
   static const gender = 'gender';
+  static const estimated_completion_time = 'estimated_completion_time';
 }

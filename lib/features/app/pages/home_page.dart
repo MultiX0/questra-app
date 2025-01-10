@@ -1,7 +1,7 @@
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
+import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
@@ -15,34 +15,40 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
+    // final size = MediaQuery.sizeOf(context);
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: GlowText(
+            glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
+            spreadRadius: 0.75,
+            blurRadius: 30,
+            text: "Questra",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 28,
+              color: HexColor('7AD5FF'),
+              fontFamily: AppFonts.header,
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () {
+                ref.read(aiFunctionsProvider).generateQuests();
+              },
+              icon: Icon(LucideIcons.hexagon),
+            ),
+          ],
+        ),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 15,
-              ),
-              Center(
-                child: GlowText(
-                  glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
-                  spreadRadius: 0.75,
-                  blurRadius: 30,
-                  text: "Questra",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 28,
-                    color: HexColor('7AD5FF'),
-                    fontFamily: AppFonts.header,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: size.height * 0.03,
               ),
               SystemCard(
                 onTap: () {

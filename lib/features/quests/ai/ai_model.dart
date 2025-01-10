@@ -19,12 +19,12 @@ class AiModel {
     },
   );
 
-  Future<Response<dynamic>> makeAiResponse({
+  Future<String> makeAiResponse({
     int? maxTokens,
     required List<Map<String, dynamic>> content,
   }) async {
     try {
-      return await dio.post(
+      final res = await dio.post(
         _deepinfra_api,
         options: _options,
         data: jsonEncode({
@@ -36,9 +36,10 @@ class AiModel {
           "max_tokens": maxTokens ?? 500,
           "frequency_penalty": 0.0,
           "presence_penalty": 0.0,
-          "stop": ["}"],
+          // "stop": ["}"],
         }),
       );
+      return res.data['choices'][0]['message']['content'].toString();
     } catch (e) {
       log(e.toString());
       throw Exception(e.toString());

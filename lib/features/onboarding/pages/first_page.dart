@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class OnboardingFirstPage extends ConsumerWidget {
