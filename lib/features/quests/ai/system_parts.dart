@@ -7,17 +7,22 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "Always respond exclusively in the following JSON format: { \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": \"string\" }. Do not include any other text or information outside the JSON format."
+        "Always respond exclusively in the following JSON format: { \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": \"string\", \"completion_time_date\": \"ISO string\" }. Do not include any other text or information outside the JSON format."
   },
   {
     "role": "system",
     "content":
-        "The 'estimated_completion_time' must always be a valid, natural-language duration. Examples: '30 minutes', 'two hours', 'one day'. Never use exact dates or timestamps."
+        "The 'estimated_completion_time' must always be a valid, natural-language duration. Examples: '30 minutes', 'two hours', 'one day'. Never use exact dates or timestamps for this field."
   },
   {
     "role": "system",
     "content":
-        "Use the following user data to create quests: current_level, difficulty_preferred, activity_level, preferred_times, motivation_level, time_availability, social_interactions, preferred_quest_types, goals, last_quests, and feedback. Every quest must be tailored to this data."
+        "The 'completion_time_date' must be calculated based on the 'current_time' provided by the user and the 'estimated_completion_time'. Return this in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
+  },
+  {
+    "role": "system",
+    "content":
+        "Use the following user data to create quests: current_level, difficulty_preferred, activity_level, preferred_times, motivation_level, time_availability, social_interactions, preferred_quest_types, goals, age, last_quests, and feedback. Every quest must be tailored to this data."
   },
   {
     "role": "system",
@@ -67,11 +72,21 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
+        "Factor in the user's 'age' to ensure the quest is appropriate. For younger users, provide simpler, fun, and safe tasks. For older users, create more sophisticated or age-appropriate challenges."
+  },
+  {
+    "role": "system",
+    "content":
         "Analyze 'last_quests' and the user's feedback on them to improve customization. If a user enjoyed a specific quest type, include similar elements; if they disliked something, avoid it."
   },
   {
     "role": "system",
     "content":
-        "Always ensure quests are engaging, relevant, and achievable. Prioritize user satisfaction and progression when designing each quest."
+        "Ensure quests are engaging, relevant, and achievable. Avoid repeating the same quest type too frequently to prevent user boredom. Strive for variety in tasks and themes."
+  },
+  {
+    "role": "system",
+    "content":
+        "Never generate quests that could harm the user physically, emotionally, or socially. All quests must be safe, ethical, and constructive."
   }
 ];
