@@ -1,13 +1,14 @@
 import 'package:questra_app/imports.dart';
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
+import 'package:questra_app/router.dart';
 
-class NoneActiveQuestsWidget extends StatelessWidget {
+class NoneActiveQuestsWidget extends ConsumerWidget {
   const NoneActiveQuestsWidget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
 
     return SystemCard(
@@ -47,7 +48,9 @@ class NoneActiveQuestsWidget extends StatelessWidget {
               foregroundColor: AppColors.whiteColor,
               textStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
-            onPressed: () {},
+            onPressed: () {
+              ref.read(navigationShellProvider).goBranch(1);
+            },
             child: Text("Details"),
           )
         ],

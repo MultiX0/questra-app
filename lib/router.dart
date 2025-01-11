@@ -5,15 +5,16 @@ import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/features/quests/pages/quests_page.dart';
+import 'package:questra_app/features/quests/pages/view_quest_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
 
 import 'imports.dart';
 
 final _key = GlobalKey<NavigatorState>();
 
-// final navigationShellProvider = Provider<StatefulNavigationShell>((ref) {
-//   throw UnimplementedError();
-// });
+final navigationShellProvider = Provider<StatefulNavigationShell>((ref) {
+  throw UnimplementedError();
+});
 
 final routerProvider = Provider<GoRouter>(
   (ref) {
@@ -63,8 +64,13 @@ final routerProvider = Provider<GoRouter>(
             ),
           ],
           builder: (state, context, shell) {
-            return MyNavBar(
-              navigationShell: shell,
+            return ProviderScope(
+              overrides: [
+                navigationShellProvider.overrideWithValue(shell),
+              ],
+              child: MyNavBar(
+                navigationShell: shell,
+              ),
             );
           },
         ),
@@ -83,6 +89,10 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.splash,
           child: const SplashPage(),
+        ),
+        buildRoute(
+          path: Routes.viewQuest,
+          child: const ViewQuestPage(),
         ),
       ],
     );

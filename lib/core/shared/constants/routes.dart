@@ -10,4 +10,5 @@ class Routes {
   static const setupAccountPage = '/setupAccountPage';
   static const onboardingController = '/onboardingController';
   static const splash = '/splash';
+  static const viewQuest = '/viewQuest';
 }

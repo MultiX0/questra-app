@@ -18,13 +18,13 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: GlowText(
         glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
-        spreadRadius: 0.75,
+        spreadRadius: 0.5,
         blurRadius: 30,
         text: title,
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 28,
+          fontSize: 24,
           color: HexColor('7AD5FF'),
           fontFamily: AppFonts.header,
         ),

@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/imports.dart';
@@ -6,14 +7,20 @@ class QuestCard extends ConsumerWidget {
   const QuestCard({
     super.key,
     required this.questModel,
+    this.viewPage,
+    this.onTap,
   });
 
   final QuestModel questModel;
+  final bool? viewPage;
+  final Function()? onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isView = viewPage != null && viewPage == true;
     final size = MediaQuery.sizeOf(context);
     return SystemCard(
+      onTap: onTap,
       padding: EdgeInsets.all(
         20,
       ),
@@ -66,6 +73,8 @@ class QuestCard extends ConsumerWidget {
                   fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
+                spreadRadius: 0.5,
+                blurRadius: 15,
               ),
               const SizedBox(
                 height: 5,
@@ -97,14 +106,16 @@ class QuestCard extends ConsumerWidget {
                   fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
+                spreadRadius: 0.5,
+                blurRadius: 15,
               ),
               const SizedBox(
                 height: 5,
               ),
               Text(
                 questModel.description,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                maxLines: isView ? null : 1,
+                overflow: isView ? null : TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.white70,
                   fontFamily: AppFonts.primary,
@@ -125,7 +136,21 @@ class QuestCard extends ConsumerWidget {
               fontFamily: AppFonts.primary,
               fontSize: 10,
             ),
+            spreadRadius: 0.5,
+            blurRadius: 15,
           ),
+          if (isView) ...[
+            const SizedBox(
+              height: 14,
+            ),
+            Text(
+              "Finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date)}",
+              style: TextStyle(
+                fontWeight: FontWeight.w200,
+                fontSize: 11,
+              ),
+            ),
+          ],
         ],
       ),
     );

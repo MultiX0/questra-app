@@ -9,6 +9,7 @@ class SystemCard extends StatelessWidget {
     this.padding,
     this.borderRadius,
     this.onTap,
+    this.isButton,
   });
 
   final Color? color;
@@ -17,6 +18,7 @@ class SystemCard extends StatelessWidget {
   final EdgeInsets? padding;
   final double? borderRadius;
   final Function()? onTap;
+  final bool? isButton;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +26,11 @@ class SystemCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        constraints: BoxConstraints(
-          minWidth: size.width,
-        ),
+        constraints: (isButton != null && isButton!)
+            ? null
+            : BoxConstraints(
+                minWidth: size.width,
+              ),
         decoration: BoxDecoration(
           color: color ?? HexColor('7AD5FF').withValues(alpha: .05),
           border: border ??

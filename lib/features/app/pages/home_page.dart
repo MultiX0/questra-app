@@ -1,6 +1,5 @@
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
-import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -22,14 +21,14 @@ class _HomePageState extends ConsumerState<HomePage> {
         backgroundColor: Colors.transparent,
         appBar: TheAppBar(
           title: 'Questra',
-          actions: [
-            IconButton(
-              onPressed: () {
-                ref.read(aiFunctionsProvider).generateQuests();
-              },
-              icon: Icon(LucideIcons.hexagon),
-            ),
-          ],
+          // actions: [
+          // IconButton(
+          // onPressed: () {
+          // ref.read(aiFunctionsProvider).generateQuests();
+          // },
+          // icon: Icon(LucideIcons.hexagon),
+          // ),
+          // ],
         ),
         body: SafeArea(
           child: ListView(
