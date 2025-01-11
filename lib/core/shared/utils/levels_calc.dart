@@ -23,6 +23,20 @@ int questXp(int level, String difficulty) {
   }
 }
 
+int calculateQuestCoins(int level, String difficulty) {
+  int baseCoins = 50; // A base value for coins that can be adjusted as needed
+  switch (difficulty.toLowerCase()) {
+    case 'easy':
+      return (baseCoins * level * 0.5).toInt(); // Easy quests give 50% of base
+    case 'medium':
+      return (baseCoins * level * 1.0).toInt(); // Medium quests give full base
+    case 'hard':
+      return (baseCoins * level * 1.5).toInt(); // Hard quests give 150% of base
+    default:
+      return 0; // Default for invalid difficulty
+  }
+}
+
 // class Player {
 //   int level = 1;
 //   int currentXp = 0;

@@ -16,6 +16,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     // final size = MediaQuery.sizeOf(context);
+
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,

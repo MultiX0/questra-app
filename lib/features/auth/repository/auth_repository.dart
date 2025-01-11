@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
@@ -10,6 +9,7 @@ import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/leveling/repository/leveling_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
+import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -104,7 +104,9 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       }
 
       if (userEvent != null && userEvent.isNotEmpty) {
-        final user = UserModel.fromMap(userEvent);
+        var user = UserModel.fromMap(userEvent);
+        final data = await _ref.read(profileRepositoryProvider).getUserBirthDate(user.id);
+        user = user.copyWith(birth_date: DateTime.tryParse(data));
 
         if (state != user && user.id.isNotEmpty) {
           if (state?.goals == null || state?.user_preferences == null) {

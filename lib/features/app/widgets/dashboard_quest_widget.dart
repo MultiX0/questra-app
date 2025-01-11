@@ -1,14 +1,24 @@
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:questra_app/features/app/widgets/none_active_quests_widget.dart';
+import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/imports.dart';
 
-class DashboardQuestWidget extends StatelessWidget {
+class DashboardQuestWidget extends ConsumerWidget {
   const DashboardQuestWidget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final quests = ref.watch(currentOngointQuestsProvider);
+
+    if (quests == null || quests.isEmpty) {
+      return NoneActiveQuestsWidget();
+    }
+
+    final firstQuest = quests.first;
+
     return SystemCard(
       padding: EdgeInsets.all(
         20,
@@ -68,7 +78,7 @@ class DashboardQuestWidget extends StatelessWidget {
               ),
               Text(
                 // glowColor: AppColors.whiteColor,
-                "Forge the Core: Build the System Backbone",
+                firstQuest.title,
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: AppColors.whiteColor,
@@ -98,8 +108,8 @@ class DashboardQuestWidget extends StatelessWidget {
                 height: 5,
               ),
               Text(
-                "You are tasked with building the brain of the app—an AI-powered quest system that seamlessly personalizes user challenges. Like Sung Jin-Woo, you must wield your developer tools and “arise” a robust system that adapts to every user’s journey.",
-                maxLines: 2,
+                firstQuest.description,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: Colors.white70,
@@ -114,7 +124,8 @@ class DashboardQuestWidget extends StatelessWidget {
           ),
           GlowText(
             glowColor: Colors.white54,
-            text: "Reward: +500 XP, +250 Coins, “Architect of Innovation” Badge",
+            text:
+                "Reward: +${firstQuest.xp_reward} XP, +${firstQuest.coin_reward} Coins${firstQuest.owned_title != null ? ", “${firstQuest.owned_title}” Title" : ''}",
             style: TextStyle(
               color: Colors.white54,
               fontFamily: AppFonts.primary,

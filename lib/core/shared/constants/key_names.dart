@@ -48,4 +48,8 @@ class KeyNames {
   static const birth_date = 'birth_date';
   static const gender = 'gender';
   static const estimated_completion_time = 'estimated_completion_time';
+  static const quest_title = 'quest_title';
+  static const owned_title = 'owned_title';
+  static const expected_completion_time_date = 'expected_completion_time_date';
+  static const title = 'title';
 }

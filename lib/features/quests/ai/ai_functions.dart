@@ -1,7 +1,13 @@
+// import 'dart:convert';
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/quests/ai/ai_model.dart';
 import 'package:questra_app/features/quests/ai/system_parts.dart';
+import 'package:questra_app/features/quests/models/quest_model.dart';
+import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -14,17 +20,27 @@ class AiFunctions {
   List<Map<String, dynamic>> get systePrompts => questGeneratorSystemPrompts;
   UserModel? get _user => _ref.watch(authStateProvider);
 
-  Future<void> generateQuests() async {
+  Future<void> generateQuests({int? errors, String? errorExplain}) async {
     try {
+      CustomToast.systemToast(
+        "making new quest for you....",
+        systemMessage: true,
+      );
+
       final preferredQuestTypes = await _ref.read(questsRepositoryProvider).getQuestTypesByIds(
             _user?.user_preferences?.questTypes,
           );
 
-      final lastUserQuests =
-          await _ref.read(questsRepositoryProvider).getLastUserQuests(_user?.id ?? "");
+      String userId = _user?.id ?? "";
+
+      final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
 
       final ongoingQuests =
-          await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(_user?.id ?? "");
+          await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(userId);
+
+      final feedbacks = await _ref.read(questsRepositoryProvider).getUserFeedbacks(userId);
+
+      final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
 
       String _userPrompt = '''
                 {
@@ -39,6 +55,10 @@ class AiFunctions {
                     "motivation_level": "${_user?.user_preferences?.motivation_level ?? 'high'}",
                     "time_availability": "${_user?.user_preferences?.time_availability ?? '1 hour'}",
                     "social_interactions": "${_user?.user_preferences?.social_interactions ?? 'solo'}",
+                    "feedbacks": "${feedbacks.map((feedback) => feedback.toJson()).toList()}",
+                    "user_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
+                    "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
+                    "current_time": ${DateTime.now().toIso8601String()},
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
@@ -56,19 +76,103 @@ class AiFunctions {
             "content": _userPrompt,
           },
           ...systePrompts,
+          if (errorExplain != null)
+            {
+              "role": "system",
+              "content": errorExplain,
+            },
         ],
       );
       log(questResponse);
+      await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
       log(e.toString());
       throw Exception(e);
     }
   }
 
-  Future<void> handleQuestResponse() async {
-    try {} catch (e) {
+  Future<void> handleQuestResponse(String res, int errors) async {
+    try {
+      final user = _user!;
+      final data = isJson(res);
+      if (data != null) {
+        String? titleId;
+        if (data['player_title'] != null) {
+          titleId =
+              await _ref.read(profileRepositoryProvider).insertTitle(user.id, data['player_title']);
+        }
+
+        final difficulty = data['difficulty'];
+        final questTitle = data['quest_title'];
+        final questDescription = data['quest_description'];
+        final estimated_completion_time = data['estimated_completion_time'];
+        final completion_time_date = data['completion_time_date'];
+
+        if (questTitle == null ||
+            questDescription == null ||
+            difficulty == null ||
+            estimated_completion_time == null ||
+            completion_time_date == null) {
+          generateQuests(
+            errors: errors + 1,
+            errorExplain:
+                "Missing required fields: quest_title, player_title, quest_description, difficulty, estimated_completion_time, completion_time_date. Please regenerate.",
+          );
+        }
+
+        final currentLevel = user.level?.level ?? 1;
+        final xp_reward = questXp(currentLevel, data['difficulty']);
+        final coin_reward = calculateQuestCoins(currentLevel, data['difficulty']);
+
+        final QuestModel quest = QuestModel(
+          id: "",
+          created_at: DateTime.now(),
+          user_id: user.id,
+          description: questDescription,
+          xp_reward: xp_reward,
+          coin_reward: coin_reward,
+          difficulty: difficulty,
+          status: 'in_progress',
+          estimated_completion_time: estimated_completion_time,
+          title: questTitle,
+          expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
+              DateTime.now().add(const Duration(hours: 2)),
+          owned_title: titleId,
+          assigned_at: DateTime.now(),
+        );
+
+        final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
+        List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
+
+        currentQuests = [...currentQuests, quest.copyWith(id: questId)];
+
+        _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
+
+        return;
+      }
+
+      throw Exception("the data is not json type");
+    } catch (e) {
+      if (errors >= 1) {
+        CustomToast.systemToast(
+          "we faceing an error while we making your quests, please try again later!",
+          systemMessage: true,
+        );
+        return;
+      }
+      generateQuests(errors: errors + 1);
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  Map<String, dynamic>? isJson(String _json) {
+    try {
+      final data = json.decode(_json);
+      return data;
+    } catch (e) {
+      log("the response is not json");
+      return null;
     }
   }
 }

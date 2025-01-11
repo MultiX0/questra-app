@@ -31,12 +31,11 @@ class AiModel {
           "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
           "messages": content,
           "temperature": 0.0,
-          "top_p": 0.9,
-          "top_k": 50,
-          "max_tokens": maxTokens ?? 500,
+          "top_p": 0.7,
+          "top_k": 30,
+          "max_tokens": maxTokens ?? 700,
           "frequency_penalty": 0.0,
           "presence_penalty": 0.0,
-          // "stop": ["}"],
         }),
       );
       return res.data['choices'][0]['message']['content'].toString();

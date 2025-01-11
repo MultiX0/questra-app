@@ -1,17 +1,20 @@
 import 'package:questra_app/core/shared/constants/key_names.dart';
 
 class QuestModel {
-  final int id;
+  final String id;
   final DateTime created_at;
   final String user_id;
+  final String title;
   final String description;
   final int xp_reward;
   final int coin_reward;
   final String difficulty;
   final String status;
   final String estimated_completion_time;
+  final String? owned_title;
   final DateTime? assigned_at;
   final DateTime? completed_at;
+  final DateTime expected_completion_time_date;
   QuestModel({
     required this.id,
     required this.created_at,
@@ -22,12 +25,15 @@ class QuestModel {
     required this.difficulty,
     required this.status,
     required this.estimated_completion_time,
+    required this.title,
+    this.owned_title,
     this.assigned_at,
     this.completed_at,
+    required this.expected_completion_time_date,
   });
 
   QuestModel copyWith({
-    int? id,
+    String? id,
     DateTime? created_at,
     String? user_id,
     String? description,
@@ -38,6 +44,9 @@ class QuestModel {
     String? estimated_completion_time,
     DateTime? assigned_at,
     DateTime? completed_at,
+    String? owned_title,
+    String? title,
+    DateTime? expected_completion_time_date,
   }) {
     return QuestModel(
       id: id ?? this.id,
@@ -51,35 +60,45 @@ class QuestModel {
       estimated_completion_time: estimated_completion_time ?? this.estimated_completion_time,
       assigned_at: assigned_at ?? this.assigned_at,
       completed_at: completed_at ?? this.completed_at,
+      title: title ?? this.title,
+      expected_completion_time_date:
+          expected_completion_time_date ?? this.expected_completion_time_date,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      // 'id': id,
+      KeyNames.user_quest_id: id,
       // 'created_at': created_at.toI,
       KeyNames.user_id: user_id,
+      KeyNames.quest_title: title,
       KeyNames.quest_description: description,
       KeyNames.xp_reward: xp_reward,
       KeyNames.coin_reward: coin_reward,
-      KeyNames.difficulty: difficulty,
+      KeyNames.difficulty: difficulty.toLowerCase(),
       KeyNames.status: status,
       KeyNames.assigned_at: assigned_at?.toIso8601String(),
       KeyNames.completed_at: completed_at?.toIso8601String(),
       KeyNames.estimated_completion_time: estimated_completion_time,
+      KeyNames.owned_title: owned_title,
+      KeyNames.expected_completion_time_date: expected_completion_time_date.toIso8601String(),
     };
   }
 
   factory QuestModel.fromMap(Map<String, dynamic> map) {
     return QuestModel(
-      id: map[KeyNames.user_quest_id] ?? -1,
+      id: map[KeyNames.user_quest_id] ?? "",
       created_at: DateTime.tryParse(map[KeyNames.created_at]) ?? DateTime.now(),
       user_id: map[KeyNames.user_id] ?? '',
+      title: map[KeyNames.quest_title] ?? '',
       description: map[KeyNames.quest_description] ?? "",
       xp_reward: map[KeyNames.xp_reward] ?? 0,
       coin_reward: map[KeyNames.coin_reward] ?? 0,
       difficulty: map[KeyNames.difficulty] ?? '',
       estimated_completion_time: map[KeyNames.estimated_completion_time] ?? "",
+      expected_completion_time_date:
+          DateTime.tryParse(map[KeyNames.expected_completion_time_date]) ??
+              DateTime.now().add(const Duration(hours: 2)),
       status: map[KeyNames.status] ?? "",
       assigned_at:
           map[KeyNames.assigned_at] != null ? DateTime.tryParse(map[KeyNames.assigned_at]) : null,

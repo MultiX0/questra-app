@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:questra_app/features/quests/providers/quests_providers.dart';
+import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -35,6 +37,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               return;
             }
           }
+
+          final quests = await ref.read(questsRepositoryProvider).currentlyOngoingQuests(user.id);
+          ref.read(currentOngointQuestsProvider.notifier).state = quests;
 
           if (mounted) {
             context.go(Routes.homePage);
