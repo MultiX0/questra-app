@@ -8,8 +8,8 @@ class GlowText extends StatelessWidget {
     required this.text,
     this.style,
     this.textAlign,
-    this.blurRadius = 10.0,
-    this.spreadRadius = 2.0,
+    this.blurRadius = 15.0,
+    this.spreadRadius = 0.5,
   });
 
   final Color glowColor;
