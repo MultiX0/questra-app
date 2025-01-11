@@ -65,7 +65,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         backgroundColor: Colors.transparent,
         body: Center(
           child: Image.asset(
-            Assets.getImage('app_logo.png'),
+            Assets.getImage('splash_icon.png'),
             fit: BoxFit.cover,
           ),
         ),

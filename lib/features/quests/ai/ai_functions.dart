@@ -38,6 +38,8 @@ class AiFunctions {
       final ongoingQuests =
           await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(userId);
 
+      log("currentlly there is ${ongoingQuests.length} quests");
+
       final feedbacks = await _ref.read(questsRepositoryProvider).getUserFeedbacks(userId);
 
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);

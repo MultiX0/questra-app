@@ -85,7 +85,7 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
                   duration: const Duration(milliseconds: 600),
                   opacity: opacity,
                   child: Image.asset(
-                    Assets.getImage('app_logo.png'),
+                    Assets.getImage('splash_icon.png'),
                     fit: BoxFit.cover,
                   ),
                 ),

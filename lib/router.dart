@@ -1,9 +1,10 @@
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
+import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
 
 import 'imports.dart';
@@ -18,7 +19,7 @@ final routerProvider = Provider<GoRouter>(
   (ref) {
     return GoRouter(
       initialLocation: Routes.splash,
-      debugLogDiagnostics: kDebugMode,
+      debugLogDiagnostics: false,
       navigatorKey: _key,
       redirect: (context, state) {
         final isLoggedIn = ref.watch(isLoggedInProvider);
@@ -48,7 +49,7 @@ final routerProvider = Provider<GoRouter>(
               routes: [
                 buildRoute(
                   path: Routes.quests,
-                  child: const SizedBox(),
+                  child: const QuestsPage(),
                 ),
               ],
             ),

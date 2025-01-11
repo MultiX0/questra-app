@@ -20,21 +20,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: GlowText(
-            glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
-            spreadRadius: 0.75,
-            blurRadius: 30,
-            text: "Questra",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 28,
-              color: HexColor('7AD5FF'),
-              fontFamily: AppFonts.header,
-            ),
-          ),
-          centerTitle: true,
+        appBar: TheAppBar(
+          title: 'Questra',
           actions: [
             IconButton(
               onPressed: () {

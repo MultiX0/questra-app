@@ -23,3 +23,4 @@ export 'package:flutter_lucide/flutter_lucide.dart';
 export 'package:questra_app/core/shared/widgets/system_card.dart';
 export 'package:questra_app/core/shared/constants/app_fonts.dart';
 export 'package:flutter_dotenv/flutter_dotenv.dart';
+export 'package:questra_app/core/shared/widgets/the_appbar.dart';

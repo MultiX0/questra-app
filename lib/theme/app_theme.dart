@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import '/imports.dart';
 
 class AppTheme {
