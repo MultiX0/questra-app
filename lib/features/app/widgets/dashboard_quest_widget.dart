@@ -18,8 +18,10 @@ class DashboardQuestWidget extends ConsumerWidget {
     }
 
     final firstQuest = quests.first;
+    final duration = const Duration(seconds: 2);
 
     return SystemCard(
+      duration: duration,
       padding: EdgeInsets.all(
         20,
       ),

@@ -20,6 +20,7 @@ class QuestCard extends ConsumerWidget {
     final isView = viewPage != null && viewPage == true;
     final size = MediaQuery.sizeOf(context);
     return SystemCard(
+      duration: const Duration(milliseconds: 800),
       onTap: onTap,
       padding: EdgeInsets.all(
         20,

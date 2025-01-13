@@ -1,6 +1,6 @@
 import 'package:questra_app/imports.dart';
 
-class SystemCard extends StatelessWidget {
+class SystemCard extends StatefulWidget {
   const SystemCard({
     super.key,
     this.border,
@@ -10,6 +10,7 @@ class SystemCard extends StatelessWidget {
     this.borderRadius,
     this.onTap,
     this.isButton,
+    this.duration = const Duration(seconds: 1),
   });
 
   final Color? color;
@@ -19,32 +20,88 @@ class SystemCard extends StatelessWidget {
   final double? borderRadius;
   final Function()? onTap;
   final bool? isButton;
+  final Duration duration;
+
+  @override
+  State<SystemCard> createState() => _SystemCardState();
+}
+
+class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.duration,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.1,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Interval(0.5, 1.0, curve: Curves.easeIn),
+    ));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        constraints: (isButton != null && isButton!)
-            ? null
-            : BoxConstraints(
-                minWidth: size.width,
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: GestureDetector(
+            onTap: widget.onTap,
+            child: AnimatedContainer(
+              duration: widget.duration,
+              constraints: (widget.isButton != null && widget.isButton!)
+                  ? null
+                  : BoxConstraints(
+                      minWidth: size.width,
+                    ),
+              decoration: BoxDecoration(
+                color: widget.color ?? HexColor('7AD5FF').withValues(alpha: .05),
+                border: widget.border ??
+                    Border.all(
+                      color: HexColor('43A7D5'),
+                      width: 0.75,
+                    ),
+                borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
               ),
-        decoration: BoxDecoration(
-          color: color ?? HexColor('7AD5FF').withValues(alpha: .05),
-          border: border ??
-              Border.all(
-                color: HexColor('43A7D5'),
-                width: 0.75,
+              child: Padding(
+                padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 40),
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: widget.child,
+                ),
               ),
-          borderRadius: BorderRadius.circular(borderRadius ?? 8),
-        ),
-        child: Padding(
-          padding: padding ?? const EdgeInsets.symmetric(vertical: 40),
-          child: child,
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

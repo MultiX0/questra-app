@@ -10,6 +10,7 @@ class UserDashboardWidget extends ConsumerWidget {
     final size = MediaQuery.sizeOf(context);
     final user = ref.watch(authStateProvider)!;
     return SystemCard(
+      duration: const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -14,6 +14,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final duration = const Duration(seconds: 2);
     // final size = MediaQuery.sizeOf(context);
 
     return BackgroundWidget(
@@ -38,6 +39,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 height: 15,
               ),
               SystemCard(
+                duration: duration,
                 onTap: () {
                   CustomToast.systemToast("the shop is comming soon!");
                 },

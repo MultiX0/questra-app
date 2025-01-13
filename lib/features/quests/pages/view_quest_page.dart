@@ -1,8 +1,8 @@
-import 'dart:developer';
-
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
+import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/providers/quests_providers.dart';
+import 'package:questra_app/features/quests/widgets/finish_quest.dart';
 import 'package:questra_app/imports.dart';
 
 class ViewQuestPage extends ConsumerStatefulWidget {
@@ -13,17 +13,12 @@ class ViewQuestPage extends ConsumerStatefulWidget {
 }
 
 class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
-  void finish() {
-    // TODO design the ui of the  alert dialog of the system
-    // TODO design the upload pic of the quest that completed
-    // TODO make the quest feedback section
+  bool _finish = false;
 
-    final quest = ref.watch(viewQuestProvider)!;
-    final quests = ref.read(currentOngointQuestsProvider) ?? [];
-    quests.remove(quest);
-    context.pop();
-    log("the quest is removing ...");
-    ref.read(currentOngointQuestsProvider.notifier).state = quests;
+  void finish() {
+    setState(() {
+      _finish = !_finish;
+    });
   }
 
   void skip() {
@@ -35,50 +30,62 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
     final quest = ref.watch(viewQuestProvider)!;
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "View Quest"),
+        appBar: TheAppBar(
+          title: "View Quest",
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              QuestCard(
-                questModel: quest,
-                viewPage: true,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SystemCard(
-                    onTap: finish,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
-                    isButton: true,
-                    child: Text(
-                      "finish",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                      ),
-                    ),
-                  ),
-                  SystemCard(
-                    onTap: skip,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
-                    isButton: true,
-                    child: Text(
-                      "skip",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+          child: (_finish) ? buildFinish() : buildBody(quest),
         ),
       ),
+    );
+  }
+
+  Widget buildFinish() => Center(
+        child: FinishQuestWidget(
+          cancel: finish,
+        ),
+      );
+
+  Column buildBody(QuestModel quest) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        QuestCard(
+          questModel: quest,
+          viewPage: true,
+        ),
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SystemCard(
+              onTap: finish,
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+              isButton: true,
+              child: Text(
+                "finish",
+                style: TextStyle(
+                  fontFamily: AppFonts.header,
+                ),
+              ),
+            ),
+            SystemCard(
+              onTap: skip,
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+              isButton: true,
+              child: Text(
+                "skip",
+                style: TextStyle(
+                  fontFamily: AppFonts.header,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

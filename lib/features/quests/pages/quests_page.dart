@@ -16,7 +16,7 @@ class QuestsPage extends ConsumerStatefulWidget {
 class _QuestsPageState extends ConsumerState<QuestsPage> {
   @override
   Widget build(BuildContext context) {
-    final activeQuests = ref.watch(currentOngointQuestsProvider);
+    final activeQuests = ref.watch(currentOngointQuestsProvider) ?? [];
     final size = MediaQuery.sizeOf(context);
 
     return BackgroundWidget(
@@ -30,10 +30,10 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
             const SizedBox(
               height: 15,
             ),
-            if (activeQuests == null || activeQuests.isEmpty) ...[
+            if (activeQuests.isEmpty) ...[
               NewQuestsSystemCard(),
             ] else ...[
-              ActiveQuestsCarousel(quests: activeQuests),
+              ActiveQuestsCarousel(),
             ],
             SizedBox(
               height: size.height * 0.075,

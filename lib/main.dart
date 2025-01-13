@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:questra_app/app.dart';
+import 'package:questra_app/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'imports.dart';
@@ -13,7 +15,10 @@ Future<void> main() async {
 
   await dotenv.load(fileName: '.env');
 
+  // init the databases
   _supabaseInit();
+  _firebaseInit();
+
   editChromeSystem();
   runApp(ProviderScope(child: const App()));
 }
@@ -43,4 +48,13 @@ void editChromeSystem() {
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
       overlays: [SystemUiOverlay.top, SystemUiOverlay.top]);
+}
+
+Future<void> _firebaseInit() async {
+  try {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  } catch (e) {
+    log(e.toString());
+    throw Exception(e);
+  }
 }

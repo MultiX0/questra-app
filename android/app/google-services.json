@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "289602236276",
+    "project_id": "remindeme-d926a",
+    "storage_bucket": "remindeme-d926a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289602236276:android:a1b9f3dbba4bdb39c4c621",
+        "android_client_info": {
+          "package_name": "app.questra.quest"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD2_01aondz8i4K9U6E68ebroizExBMJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289602236276:android:7ff458ceef407c0bc4c621",
+        "android_client_info": {
+          "package_name": "site.remindeme.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBD2_01aondz8i4K9U6E68ebroizExBMJg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

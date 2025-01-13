@@ -60,6 +60,7 @@ class AppTheme {
 class AppColors {
   static Color scaffoldBackground = HexColor("#020403");
   static Color primary = HexColor('#7AD5FF');
+  static Color redColor = HexColor('FF7A7C');
   static Color whiteColor = HexColor('#f1f2f4');
   static Color aiChatCard = HexColor('#34514F').withValues(alpha: .6);
   static Color userChatCard = HexColor('#30726D').withValues(alpha: .8);

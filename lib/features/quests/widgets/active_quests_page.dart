@@ -1,30 +1,32 @@
+import 'dart:developer';
+
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
-import 'package:questra_app/features/quests/models/quest_model.dart';
+import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/navs/navs.dart';
 
 class ActiveQuestsCarousel extends ConsumerWidget {
-  const ActiveQuestsCarousel({
-    super.key,
-    required this.quests,
-  });
-
-  final List<QuestModel> quests;
+  const ActiveQuestsCarousel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final length = quests.length;
+    final quests = ref.watch(currentOngointQuestsProvider) ?? [];
+
+    log(quests.length.toString());
+
+    if (quests.isEmpty) {
+      return const SizedBox.shrink(); // Or a placeholder widget
+    }
 
     return ExpandableCarousel.builder(
+      key: ValueKey('quest-carousel-${quests.length}'),
       options: ExpandableCarouselOptions(
-        autoPlay: length > 1 ? true : false,
+        autoPlay: quests.length > 1,
         autoPlayAnimationDuration: const Duration(milliseconds: 800),
-        // aspectRatio: 1,
         viewportFraction: 1,
-        // enlargeFactor: 0.8,
         autoPlayCurve: Curves.ease,
-        enableInfiniteScroll: length > 1 ? true : false,
+        enableInfiniteScroll: quests.length > 1,
         enlargeCenterPage: true,
         floatingIndicator: true,
         showIndicator: false,
@@ -32,11 +34,12 @@ class ActiveQuestsCarousel extends ConsumerWidget {
       itemCount: quests.length,
       itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex) {
         final quest = quests[itemIndex];
-        return QuestCard(
-          questModel: quest,
-          onTap: () {
-            Navs(context, ref).viewQuest(quest);
-          },
+        return KeyedSubtree(
+          key: ValueKey('quest-${quest.id}'), // Assuming quest has an id field
+          child: QuestCard(
+            questModel: quest,
+            onTap: () => Navs(context, ref).viewQuest(quest),
+          ),
         );
       },
     );
