@@ -10,6 +10,12 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
+  // @override
+  // void initState() {
+  //   ref.read(authStateProvider.notifier).logout();
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);

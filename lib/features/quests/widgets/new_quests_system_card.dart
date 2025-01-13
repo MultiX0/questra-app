@@ -1,4 +1,5 @@
 import 'package:flutter_glow/flutter_glow.dart';
+import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/imports.dart';
 
 class NewQuestsSystemCard extends ConsumerWidget {
@@ -45,7 +46,12 @@ class NewQuestsSystemCard extends ConsumerWidget {
               foregroundColor: AppColors.whiteColor,
               textStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              // CustomToast.systemToast("making new quest for you...", systemMessage: true);
+              await ref.read(aiFunctionsProvider).generateQuests();
+              await ref.read(aiFunctionsProvider).generateQuests();
+              CustomToast.systemToast("done..", systemMessage: true);
+            },
             child: Text("new quests"),
           )
         ],

@@ -83,11 +83,6 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       final levelEvent = events[1].isNotEmpty ? events[1].first : null;
       LevelsModel? _level;
 
-      if (levelEvent == null) {
-        final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
-        _level = level;
-      }
-
       log("the user event is $userEvent");
 
       if (userEvent == null) {
@@ -127,6 +122,13 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           log("the user data is updated");
         }
         _stateStreamController.add(state);
+      }
+
+      final validAccount = _ref.watch(hasValidAccountProvider);
+
+      if (levelEvent == null && validAccount) {
+        final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+        _level = level;
       }
 
       if (levelEvent != null && levelEvent.isNotEmpty) {
