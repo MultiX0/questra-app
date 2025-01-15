@@ -250,6 +250,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     }
   }
 
+  void updateState(UserModel user) {
+    state = user;
+  }
+
   @override
   void dispose() {
     _authStateSubscription.cancel();

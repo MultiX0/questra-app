@@ -19,11 +19,11 @@ class LevelsModel {
 
     while (this.xp >= calculateXpForLevel(level)) {
       this.xp -= calculateXpForLevel(level);
-      levelUp();
+      _levelUp();
     }
   }
 
-  void levelUp() {
+  void _levelUp() {
     level++;
     CustomToast.systemToast(
       'Congratulations! You leveled up to $level!',

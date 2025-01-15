@@ -1,7 +1,11 @@
 import 'dart:developer';
 
+import 'package:intl/intl.dart';
+import 'package:questra_app/core/enums/status_enum.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
+import 'package:questra_app/features/leveling/models/levels_model.dart';
+import 'package:questra_app/features/leveling/repository/leveling_repository.dart';
 import 'package:questra_app/features/quests/models/feedback_model.dart';
 import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/models/quest_type_model.dart';
@@ -140,6 +144,49 @@ class QuestsRepository {
     } catch (e) {
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  Future<void> finishQuest(QuestModel quest) async {
+    try {
+      final now = DateTime.now();
+      final user = _ref.read(authStateProvider);
+      if (now.isBefore(quest.expected_completion_time_date)) {
+        throw Exception(
+            "you need to wait until ${DateFormat('MMM d, yyyy • h:mm a').format(quest.expected_completion_time_date)}");
+      }
+
+      if (now.add(Duration(hours: 3)).isAfter(quest.expected_completion_time_date)) {
+        await _updateQuestStatus(StatusEnum.failed, quest.id);
+        throw Exception('this quest is expired you will recive the penalties');
+      }
+
+      await _updateQuestStatus(StatusEnum.completed, quest.id);
+      LevelsModel level = user?.level ?? LevelsModel(user_id: user!.id, level: 1, xp: 0);
+      level.addXp(quest.xp_reward);
+
+      await _updateUserLevel(user!.id, level);
+      _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
+    } catch (e) {
+      log(e.toString());
+      throw Exception("Please try again later...");
+    }
+  }
+
+  Future<void> _updateUserLevel(String userId, LevelsModel levelModel) async {
+    try {
+      await _ref.read(levelingRepositoryProvider).updateUserLevelData(userId, levelModel);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> _updateQuestStatus(StatusEnum status, String questId) async {
+    try {
+      await _playerQuestsTable.update({KeyNames.status: status, KeyNames.user_quest_id: questId});
+    } catch (e) {
+      log(e.toString());
     }
   }
 

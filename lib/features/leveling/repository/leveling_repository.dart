@@ -60,4 +60,13 @@ class LevelingRepository {
       throw Exception(e);
     }
   }
+
+  Future<void> updateUserLevelData(String userId, LevelsModel levelModel) async {
+    try {
+      await _levelingTable.upsert(levelModel.toMap()).eq(KeyNames.user_id, userId);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }
