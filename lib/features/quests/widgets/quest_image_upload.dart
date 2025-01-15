@@ -68,17 +68,8 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
               ),
             ),
           ),
-          Center(
-            child: GestureDetector(
-              onTap: finish,
-              child: Text(
-                "[ done ]",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
+          SystemCardButton(
+            onTap: finish,
           ),
         ],
       ),

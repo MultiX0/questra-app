@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:intl/intl.dart';
 import 'package:questra_app/core/enums/status_enum.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
+import 'package:questra_app/core/shared/utils/app_date_format.dart';
 import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/leveling/repository/leveling_repository.dart';
 import 'package:questra_app/features/quests/models/feedback_model.dart';
@@ -153,7 +153,7 @@ class QuestsRepository {
       final user = _ref.read(authStateProvider);
       if (now.isBefore(quest.expected_completion_time_date)) {
         throw Exception(
-            "you need to wait until ${DateFormat('MMM d, yyyy • h:mm a').format(quest.expected_completion_time_date)}");
+            "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}");
       }
 
       if (now.add(Duration(hours: 3)).isAfter(quest.expected_completion_time_date)) {

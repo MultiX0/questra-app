@@ -92,32 +92,17 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
           const SizedBox(
             height: 20,
           ),
-          Center(
-            child: GestureDetector(
-              onTap: finish,
-              child: Text(
-                "[ Yes, I’ve Completed It ]",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.primary,
-                ),
-              ),
-            ),
+          SystemCardButton(
+            onTap: finish,
+            text: "Yes, I’ve Completed It",
           ),
           const SizedBox(
             height: 20,
           ),
-          Center(
-            child: GestureDetector(
-              onTap: widget.cancel,
-              child: Text(
-                "[ No, I’ll Keep Working ]",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.redColor,
-                ),
-              ),
-            ),
+          SystemCardButton(
+            onTap: widget.cancel,
+            text: "No, I’ll Keep Working",
+            doneButton: false,
           ),
           const SizedBox(
             height: 10,

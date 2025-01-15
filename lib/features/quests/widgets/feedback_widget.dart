@@ -1,13 +1,47 @@
+import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
 
-final _controller = TextEditingController();
-
-class QuestFeedbackWidget extends ConsumerWidget {
+class QuestFeedbackWidget extends ConsumerStatefulWidget {
   const QuestFeedbackWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _QuestFeedbackWidgetState();
+}
+
+class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
+  late TextEditingController _controller;
+  bool done = false;
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void finish() async {
+    final quest = ref.watch(viewQuestProvider)!;
+    final result = await ref
+        .read(questsControllerProvider.notifier)
+        .finishQuest(context: context, quest: quest);
+    if (result) {
+      setState(() {
+        done = true;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+
+    if (done) {
+      return QuestCompletionWidget();
+    }
 
     return Center(
       child: ListView(
@@ -70,17 +104,8 @@ class QuestFeedbackWidget extends ConsumerWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Center(
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "[ done ]",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
+                SystemCardButton(
+                  onTap: finish,
                 ),
               ],
             ),

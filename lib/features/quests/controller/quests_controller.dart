@@ -1,4 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+
+import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/models/quest_type_model.dart';
+import 'package:questra_app/features/quests/providers/functions..dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -25,6 +31,27 @@ class QuestsController extends StateNotifier<bool> {
     } catch (e) {
       state = false;
       rethrow;
+    }
+  }
+
+  Future<bool> finishQuest({
+    required BuildContext context,
+    required QuestModel quest,
+  }) async {
+    try {
+      state = true;
+      await _repository.finishQuest(quest);
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      state = false;
+
+      return true;
+    } catch (e) {
+      state = false;
+      log(e.toString());
+      CustomToast.systemToast(e.toString(), systemMessage: true);
+
+      context.pop();
+      return false;
     }
   }
 }
