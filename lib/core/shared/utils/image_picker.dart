@@ -11,6 +11,7 @@ Future<List<File>> imagePicker() async {
     final images = await _picker.openPicker(
       pickerOptions: HLPickerOptions(
         mediaType: MediaType.image,
+        maxSelectedAssets: 3,
       ),
       cropping: true,
     );
