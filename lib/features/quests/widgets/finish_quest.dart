@@ -1,8 +1,4 @@
-import 'dart:developer';
-import 'dart:ffi';
-
-import 'package:questra_app/features/quests/models/quest_model.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
+import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
 
 class FinishQuestWidget extends ConsumerStatefulWidget {
@@ -18,49 +14,38 @@ class FinishQuestWidget extends ConsumerStatefulWidget {
 }
 
 class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
-  bool durationDone = false;
-  double width = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final size = MediaQuery.sizeOf(context);
-
-      setState(() {
-        width = size.width;
-      });
-      await Future.delayed(const Duration(seconds: 1));
-      setState(() {
-        durationDone = true;
-      });
-    });
-  }
+  bool done = false;
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-
     void finish() {
-      // TODO design the ui of the  alert dialog of the system
-      // TODO design the upload pic of the quest that completed
-      // TODO make the quest feedback section
+      setState(() {
+        done = true;
+      });
 
-      final quest = ref.watch(viewQuestProvider)!;
-      List<QuestModel> quests = List.from(ref.read(currentOngointQuestsProvider) ?? []);
+      return;
+      // // TODO design the ui of the  alert dialog of the system
+      // // TODO design the upload pic of the quest that completed
+      // // TODO make the quest feedback section
 
-      quests.removeWhere((q) => q.id == quest.id);
-      ref.read(currentOngointQuestsProvider);
-      ref.invalidate(currentOngointQuestsProvider);
+      // final quest = ref.watch(viewQuestProvider)!;
+      // List<QuestModel> quests = List.from(ref.read(currentOngointQuestsProvider) ?? []);
 
-      context.pop();
-      log("the quest is removing ...");
-      log(quests.toString());
-      ref.read(currentOngointQuestsProvider.notifier).state = quests;
+      // quests.removeWhere((q) => q.id == quest.id);
+      // ref.read(currentOngointQuestsProvider);
+      // ref.invalidate(currentOngointQuestsProvider);
+
+      // context.pop();
+      // log("the quest is removing ...");
+      // log(quests.toString());
+      // ref.read(currentOngointQuestsProvider.notifier).state = quests;
+    }
+
+    if (done) {
+      return QuestImageUpload();
     }
 
     return SystemCard(
-      isButton: !durationDone,
       padding: EdgeInsets.all(20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -108,11 +93,14 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
             height: 20,
           ),
           Center(
-            child: Text(
-              "[ Yes, I’ve Completed It ]",
-              style: TextStyle(
-                fontSize: 16,
-                color: AppColors.primary,
+            child: GestureDetector(
+              onTap: finish,
+              child: Text(
+                "[ Yes, I’ve Completed It ]",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.primary,
+                ),
               ),
             ),
           ),
