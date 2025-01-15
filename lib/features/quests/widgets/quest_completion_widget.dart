@@ -41,12 +41,21 @@ class QuestCompletionWidget extends ConsumerWidget {
             height: 10,
           ),
           Text(
-            'your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
+            '- Your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
             ),
           ),
+          if (quest.owned_title != null && quest.owned_title!.isNotEmpty) ...[
+            Text(
+              '- Earned title: ${quest.owned_title}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
           const SizedBox(
             height: 20,
           ),
