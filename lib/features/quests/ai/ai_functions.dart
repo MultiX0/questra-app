@@ -7,7 +7,6 @@ import 'package:questra_app/features/profiles/repository/profile_repository.dart
 import 'package:questra_app/features/quests/ai/ai_model.dart';
 import 'package:questra_app/features/quests/ai/system_parts.dart';
 import 'package:questra_app/features/quests/models/quest_model.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -141,6 +140,7 @@ class AiFunctions {
               DateTime.now().add(const Duration(hours: 2)),
           owned_title: titleId,
           assigned_at: DateTime.now(),
+          images: [],
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);

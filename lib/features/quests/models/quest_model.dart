@@ -15,6 +15,7 @@ class QuestModel {
   final DateTime? assigned_at;
   final DateTime? completed_at;
   final DateTime expected_completion_time_date;
+  final List images;
   QuestModel({
     required this.id,
     required this.created_at,
@@ -25,6 +26,7 @@ class QuestModel {
     required this.difficulty,
     required this.status,
     required this.estimated_completion_time,
+    required this.images,
     required this.title,
     this.owned_title,
     this.assigned_at,
@@ -47,6 +49,7 @@ class QuestModel {
     String? owned_title,
     String? title,
     DateTime? expected_completion_time_date,
+    List? images,
   }) {
     return QuestModel(
       id: id ?? this.id,
@@ -63,6 +66,7 @@ class QuestModel {
       title: title ?? this.title,
       expected_completion_time_date:
           expected_completion_time_date ?? this.expected_completion_time_date,
+      images: images ?? this.images,
     );
   }
 
@@ -82,6 +86,7 @@ class QuestModel {
       KeyNames.estimated_completion_time: estimated_completion_time,
       KeyNames.owned_title: owned_title,
       KeyNames.expected_completion_time_date: expected_completion_time_date.toIso8601String(),
+      KeyNames.images: images,
     };
   }
 
@@ -104,6 +109,7 @@ class QuestModel {
           map[KeyNames.assigned_at] != null ? DateTime.tryParse(map[KeyNames.assigned_at]) : null,
       completed_at:
           map[KeyNames.completed_at] != null ? DateTime.tryParse(map[KeyNames.completed_at]) : null,
+      images: List.from(map[KeyNames.images] ?? []),
     );
   }
 

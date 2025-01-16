@@ -162,7 +162,7 @@ class QuestsRepository {
         throw Exception('this quest is expired you will recive the penalties');
       }
 
-      await _updateQuestStatus(StatusEnum.completed, quest.id);
+      await _updateQuest(quest.copyWith(status: StatusEnum.failed.name));
       LevelsModel level = user?.level ?? LevelsModel(user_id: user!.id, level: 1, xp: 0);
       level.addXp(quest.xp_reward);
 
@@ -188,6 +188,15 @@ class QuestsRepository {
       await _playerQuestsTable.update({KeyNames.status: status, KeyNames.user_quest_id: questId});
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  Future<void> _updateQuest(QuestModel quest) async {
+    try {
+      await _playerQuestsTable.upsert(quest.toMap());
+    } catch (e) {
+      log(e.toString());
+      throw Exception(appError);
     }
   }
 

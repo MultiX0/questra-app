@@ -29,6 +29,7 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
   }
 
   void finish() {
+    ref.read(questImagesProvider.notifier).state = _images;
     setState(() {
       done = true;
     });

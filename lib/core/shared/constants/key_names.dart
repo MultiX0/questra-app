@@ -52,4 +52,5 @@ class KeyNames {
   static const owned_title = 'owned_title';
   static const expected_completion_time_date = 'expected_completion_time_date';
   static const title = 'title';
+  static const images = 'images';
 }

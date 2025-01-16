@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/utils/upload_storage.dart';
 import 'package:questra_app/features/quests/models/feedback_model.dart';
 import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/models/quest_type_model.dart';
@@ -42,11 +43,17 @@ class QuestsController extends StateNotifier<bool> {
   }) async {
     try {
       state = true;
+
+      final images = await _uploadImages(quest.id);
+      final _quest = quest.copyWith(images: images);
+
       await _repository.finishQuest(
-        quest: quest,
+        quest: _quest,
         feedback: feedback,
       );
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      _ref.read(questImagesProvider.notifier).state = null;
+
       state = false;
 
       return true;
@@ -57,6 +64,25 @@ class QuestsController extends StateNotifier<bool> {
 
       context.pop();
       return false;
+    }
+  }
+
+  Future<List<String>> _uploadImages(String questId) async {
+    try {
+      final userId = _ref.read(authStateProvider)?.id;
+      final _images = _ref.read(questImagesProvider) ?? [];
+      List<String> links = [];
+
+      for (final image in _images) {
+        final link =
+            await UploadStorage.uploadImages(image: image, path: "$userId/quests/$questId/");
+        links.add(link);
+      }
+
+      return links;
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
     }
   }
 }
