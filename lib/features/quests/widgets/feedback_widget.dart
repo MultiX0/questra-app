@@ -1,3 +1,4 @@
+import 'package:questra_app/core/shared/constants/constants.dart';
 import 'package:questra_app/features/quests/models/feedback_model.dart';
 import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
@@ -12,6 +13,8 @@ class QuestFeedbackWidget extends ConsumerStatefulWidget {
 class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   late TextEditingController _controller;
   late TextEditingController _feedbackStatusController;
+
+  String feedbackTypeGroup = '';
 
   bool done = false;
   @override
@@ -61,6 +64,24 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
     );
   }
 
+  void selectFeedbackType() {
+    openSheet(
+      context: context,
+      body: SelectRadioWidget(
+        changeVal: (val) {
+          setState(() {
+            _feedbackStatusController.text = val;
+            feedbackTypeGroup = val;
+          });
+          context.pop();
+        },
+        group: feedbackTypeGroup,
+        choices: questFeedbackTypes,
+        title: "Feedback type",
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -97,9 +118,31 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
                 const SizedBox(
                   height: 15,
                 ),
+                TextField(
+                  controller: _feedbackStatusController,
+                  onTap: selectFeedbackType,
+                  readOnly: true,
+                  cursorColor: AppColors.primary,
+                  decoration: InputDecoration(
+                    filled: false,
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                      color: AppColors.primary,
+                    )),
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeight.w200,
+                      fontSize: 14,
+                      color: Colors.white.withValues(alpha: .86),
+                    ),
+                    hintText: "select feedback type",
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: size.width * .3,
+                    maxHeight: size.width * .25,
                   ),
                   child: TextField(
                     controller: _controller,
