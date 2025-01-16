@@ -118,48 +118,11 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
                 const SizedBox(
                   height: 15,
                 ),
-                TextField(
-                  controller: _feedbackStatusController,
-                  onTap: selectFeedbackType,
-                  readOnly: true,
-                  cursorColor: AppColors.primary,
-                  decoration: InputDecoration(
-                    filled: false,
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                      color: AppColors.primary,
-                    )),
-                    hintStyle: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 14,
-                      color: Colors.white.withValues(alpha: .86),
-                    ),
-                    hintText: "select feedback type",
-                  ),
-                ),
+                buildFeedbackTypeForm(),
                 const SizedBox(
                   height: 15,
                 ),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: size.width * .25,
-                  ),
-                  child: TextField(
-                    controller: _controller,
-                    maxLines: null,
-                    cursorColor: AppColors.primary,
-                    decoration: InputDecoration(
-                      filled: false,
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        fontSize: 14,
-                        color: Colors.white.withValues(alpha: .86),
-                      ),
-                      hintText: "please enter your feedback here ...",
-                    ),
-                  ),
-                ),
+                buildFeedbackForm(size),
                 const SizedBox(
                   height: 15,
                 ),
@@ -180,6 +143,51 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  ConstrainedBox buildFeedbackForm(Size size) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: size.width * .25,
+      ),
+      child: TextField(
+        controller: _controller,
+        maxLines: null,
+        cursorColor: AppColors.primary,
+        decoration: InputDecoration(
+          filled: false,
+          border: InputBorder.none,
+          hintStyle: TextStyle(
+            fontWeight: FontWeight.w200,
+            fontSize: 14,
+            color: Colors.white.withValues(alpha: .86),
+          ),
+          hintText: "please enter your feedback here ...",
+        ),
+      ),
+    );
+  }
+
+  TextField buildFeedbackTypeForm() {
+    return TextField(
+      controller: _feedbackStatusController,
+      onTap: selectFeedbackType,
+      readOnly: true,
+      cursorColor: AppColors.primary,
+      decoration: InputDecoration(
+        filled: false,
+        border: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        hintStyle: TextStyle(
+          fontWeight: FontWeight.w200,
+          fontSize: 14,
+          color: Colors.white.withValues(alpha: .86),
+        ),
+        hintText: "select feedback type",
       ),
     );
   }
