@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:questra_app/features/quests/models/feedback_model.dart';
 import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/models/quest_type_model.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
@@ -37,10 +38,14 @@ class QuestsController extends StateNotifier<bool> {
   Future<bool> finishQuest({
     required BuildContext context,
     required QuestModel quest,
+    FeedbackModel? feedback,
   }) async {
     try {
       state = true;
-      await _repository.finishQuest(quest);
+      await _repository.finishQuest(
+        quest: quest,
+        feedback: feedback,
+      );
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       state = false;
 

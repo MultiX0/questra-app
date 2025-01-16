@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/enums/status_enum.dart';
+import 'package:questra_app/core/shared/constants/constants.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/core/shared/utils/app_date_format.dart';
@@ -147,7 +148,7 @@ class QuestsRepository {
     }
   }
 
-  Future<void> finishQuest(QuestModel quest) async {
+  Future<void> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
     try {
       final now = DateTime.now();
       final user = _ref.read(authStateProvider);
@@ -169,7 +170,7 @@ class QuestsRepository {
       _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
     } catch (e) {
       log(e.toString());
-      throw Exception("Please try again later...");
+      throw Exception(appError);
     }
   }
 
@@ -187,6 +188,17 @@ class QuestsRepository {
       await _playerQuestsTable.update({KeyNames.status: status, KeyNames.user_quest_id: questId});
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  Future<void> insertFeedback(FeedbackModel feedback) async {
+    try {
+      await _questsFeedbackTable.insert(
+        feedback.toMap(),
+      );
+    } catch (e) {
+      log(e.toString());
+      throw Exception(appError);
     }
   }
 

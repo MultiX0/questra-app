@@ -5,7 +5,7 @@ class FeedbackModel {
   final int user_feedback_id;
   final DateTime created_at;
   final String user_id;
-  final int user_quest_id;
+  final String user_quest_id;
   final String feedback_type;
   final String description;
   final QuestModel? quest;
@@ -23,7 +23,7 @@ class FeedbackModel {
     int? user_feedback_id,
     DateTime? created_at,
     String? user_id,
-    int? user_quest_id,
+    String? user_quest_id,
     String? feedback_type,
     QuestModel? quest,
     String? description,

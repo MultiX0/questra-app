@@ -1,3 +1,4 @@
+import 'package:questra_app/features/quests/models/feedback_model.dart';
 import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
 
@@ -10,29 +11,54 @@ class QuestFeedbackWidget extends ConsumerStatefulWidget {
 
 class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   late TextEditingController _controller;
+  late TextEditingController _feedbackStatusController;
+
   bool done = false;
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+    _feedbackStatusController = TextEditingController();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _feedbackStatusController.dispose();
     super.dispose();
   }
 
   void finish() async {
     final quest = ref.watch(viewQuestProvider)!;
-    final result = await ref
-        .read(questsControllerProvider.notifier)
-        .finishQuest(context: context, quest: quest);
+
+    FeedbackModel? feedbackModel;
+
+    if (_controller.text.trim().isNotEmpty) {
+      feedbackModel = setFeedback(quest.id);
+    }
+
+    final result = await ref.read(questsControllerProvider.notifier).finishQuest(
+          context: context,
+          quest: quest,
+          feedback: feedbackModel,
+        );
     if (result) {
       setState(() {
         done = true;
       });
     }
+  }
+
+  FeedbackModel setFeedback(String questId) {
+    final user = ref.read(authStateProvider);
+    return FeedbackModel(
+      user_feedback_id: -1,
+      created_at: DateTime.now(),
+      user_id: user?.id ?? "",
+      user_quest_id: questId,
+      feedback_type: _feedbackStatusController.text.trim(),
+      description: _controller.text.trim(),
+    );
   }
 
   @override
