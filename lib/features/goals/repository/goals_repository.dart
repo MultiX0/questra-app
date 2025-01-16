@@ -1,10 +1,7 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/constants/key_names.dart';
-import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/imports.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final goalsRepositoryProvider = Provider<GoalsRepository>((ref) => GoalsRepository(ref: ref));
 

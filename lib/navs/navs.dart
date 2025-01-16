@@ -1,5 +1,3 @@
-import 'package:questra_app/features/quests/models/quest_model.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class Navs {

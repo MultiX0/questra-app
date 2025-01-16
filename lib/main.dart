@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:questra_app/app.dart';
 import 'package:questra_app/firebase_options.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'imports.dart';
 

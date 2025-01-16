@@ -1,6 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
-import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/imports.dart';
 

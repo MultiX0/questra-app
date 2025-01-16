@@ -1,11 +1,7 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/constants/key_names.dart';
-import 'package:questra_app/core/shared/constants/table_names.dart';
-import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final levelingRepositoryProvider =
     Provider<LevelingRepository>((ref) => LevelingRepository(ref: ref));

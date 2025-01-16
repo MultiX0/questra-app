@@ -1,14 +1,10 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/constants/key_names.dart';
-import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
 import 'package:questra_app/features/profiles/models/player_title_model.dart';
 import 'package:questra_app/imports.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   return ProfileRepository(ref: ref);

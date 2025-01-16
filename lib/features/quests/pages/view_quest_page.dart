@@ -1,7 +1,5 @@
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
-import 'package:questra_app/features/quests/models/quest_model.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/features/quests/widgets/finish_quest.dart';
 import 'package:questra_app/imports.dart';
 

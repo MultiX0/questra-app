@@ -1,6 +1,5 @@
 // ignore_for_file: file_names
 
-import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/imports.dart';
 
 final questFunctionsProvider = Provider<QuestFunctions>((ref) => QuestFunctions(ref: ref));

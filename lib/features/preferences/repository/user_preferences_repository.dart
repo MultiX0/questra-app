@@ -1,10 +1,7 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/constants/key_names.dart';
-import 'package:questra_app/core/shared/constants/table_names.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 final userPreferencesRepositoryProvider =
     Provider<UserPreferencesRepository>((ref) => UserPreferencesRepository(ref: ref));

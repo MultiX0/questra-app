@@ -1,6 +1,5 @@
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/app/widgets/none_active_quests_widget.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class DashboardQuestWidget extends ConsumerWidget {

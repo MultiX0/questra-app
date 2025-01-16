@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
-import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/imports.dart';
 
 class QuestCard extends ConsumerWidget {

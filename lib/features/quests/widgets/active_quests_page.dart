@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
-import 'package:questra_app/features/quests/providers/quests_providers.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/navs/navs.dart';
 

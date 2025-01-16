@@ -6,7 +6,6 @@ import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/quests/ai/ai_model.dart';
 import 'package:questra_app/features/quests/ai/system_parts.dart';
-import 'package:questra_app/features/quests/models/quest_model.dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 

@@ -1,8 +1,6 @@
 import 'dart:developer';
 
-import 'package:questra_app/features/quests/controller/quests_controller.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/constants/app_fonts.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class UserQuestTypes extends ConsumerStatefulWidget {
