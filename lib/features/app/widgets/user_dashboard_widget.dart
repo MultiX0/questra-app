@@ -1,3 +1,4 @@
+import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
@@ -180,7 +181,7 @@ class UserDashboardWidget extends ConsumerWidget {
           Center(
             child: RichText(
               text: TextSpan(
-                text: "100/",
+                text: "${user.level?.xp ?? 0}/",
                 style: TextStyle(
                   fontFamily: AppFonts.primary,
                   fontSize: 12,
@@ -189,7 +190,7 @@ class UserDashboardWidget extends ConsumerWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: '300',
+                    text: '${calculateXpForLevel(user.level?.level ?? 1)}',
                     style: TextStyle(
                       fontFamily: AppFonts.primary,
                       fontWeight: FontWeight.w300,

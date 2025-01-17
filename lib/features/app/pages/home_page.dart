@@ -15,21 +15,12 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(seconds: 2);
-    // final size = MediaQuery.sizeOf(context);
 
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: TheAppBar(
           title: 'Questra',
-          // actions: [
-          // IconButton(
-          // onPressed: () {
-          // ref.read(aiFunctionsProvider).generateQuests();
-          // },
-          // icon: Icon(LucideIcons.hexagon),
-          // ),
-          // ],
         ),
         body: SafeArea(
           child: ListView(
