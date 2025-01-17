@@ -57,9 +57,15 @@ class LevelingRepository {
     }
   }
 
-  Future<void> updateUserLevelData(String userId, LevelsModel levelModel) async {
+  Future<void> updateUserLevelData(LevelsModel levelModel) async {
     try {
-      await _levelingTable.upsert(levelModel.toMap()).eq(KeyNames.user_id, userId);
+      final user = _ref.read(authStateProvider);
+      log("the user level model that needs to update ${levelModel.toMap()}");
+      log("level ${levelModel.level}\nxp:${levelModel.xp}");
+      await _levelingTable.update({
+        KeyNames.xp: levelModel.xp,
+        KeyNames.level: levelModel.level,
+      }).eq(KeyNames.user_id, user!.id);
     } catch (e) {
       log(e.toString());
       throw Exception(e);

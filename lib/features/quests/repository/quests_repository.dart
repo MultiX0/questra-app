@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/imports.dart';
 
 final questsRepositoryProvider = Provider<QuestsRepository>((ref) {
@@ -136,35 +137,74 @@ class QuestsRepository {
     }
   }
 
-  Future<void> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
+  Future<QuestModel?> getQuestById(String questId) async {
     try {
-      final now = DateTime.now();
-      final user = _ref.read(authStateProvider);
-      if (now.isBefore(quest.expected_completion_time_date)) {
-        throw Exception(
-            "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}");
+      final data =
+          await _playerQuestsTable.select("*").eq(KeyNames.user_quest_id, questId).maybeSingle();
+      if (data == null) {
+        throw "the quest is not found";
       }
-
-      if (now.add(Duration(hours: 3)).isAfter(quest.expected_completion_time_date)) {
-        await _updateQuestStatus(StatusEnum.failed, quest.id);
-        throw Exception('this quest is expired you will recive the penalties');
-      }
-
-      await _updateQuest(quest.copyWith(status: StatusEnum.failed.name));
-      LevelsModel level = user?.level ?? LevelsModel(user_id: user!.id, level: 1, xp: 0);
-      level.addXp(quest.xp_reward);
-
-      await _updateUserLevel(user!.id, level);
-      _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
+      final questData = QuestModel.fromMap(data);
+      return questData;
     } catch (e) {
       log(e.toString());
-      throw Exception(appError);
+      throw Exception(e);
+    }
+  }
+
+  Future<QuestModel> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
+    try {
+      final unix = DateTime.now().millisecondsSinceEpoch;
+      final now = DateTime.now();
+      final user = _ref.read(authStateProvider);
+      final expectedTimestamp = quest.expected_completion_time_date.millisecondsSinceEpoch;
+      final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
+
+      final _quest = await getQuestById(quest.id);
+      if (_quest?.status.trim() == StatusEnum.completed.name) {
+        throw 'This quest is already completed';
+      }
+
+      if (feedback != null) {
+        await insertFeedback(feedback);
+      }
+
+      if (now.isBefore(quest.expected_completion_time_date)) {
+        throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
+      }
+
+      if (unix > expiryTimestamp) {
+        await _updateQuestStatus(StatusEnum.failed, quest.id);
+        throw 'this quest is expired you will receive the penalties';
+      }
+
+      final updatedQuest = quest.copyWith(
+        status: StatusEnum.completed.name,
+        completed_at: DateTime.now(),
+      );
+
+      await updateQuest(updatedQuest);
+
+      LevelsModel level = user?.level ?? LevelsModel(user_id: user!.id, level: 1, xp: 0);
+      final levelData = addXp(quest.xp_reward, {
+        "xp": level.xp,
+        "level": level.level,
+      });
+
+      level = level.copyWith(xp: levelData['xp'], level: levelData['level']);
+      await _updateUserLevel(user!.id, level);
+
+      _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
+      return updatedQuest;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
     }
   }
 
   Future<void> _updateUserLevel(String userId, LevelsModel levelModel) async {
     try {
-      await _ref.read(levelingRepositoryProvider).updateUserLevelData(userId, levelModel);
+      await _ref.read(levelingRepositoryProvider).updateUserLevelData(levelModel);
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -173,15 +213,20 @@ class QuestsRepository {
 
   Future<void> _updateQuestStatus(StatusEnum status, String questId) async {
     try {
-      await _playerQuestsTable.update({KeyNames.status: status, KeyNames.user_quest_id: questId});
+      await _playerQuestsTable
+          .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId}).eq(
+              KeyNames.user_quest_id, questId);
     } catch (e) {
       log(e.toString());
     }
   }
 
-  Future<void> _updateQuest(QuestModel quest) async {
+  Future<void> updateQuest(QuestModel quest) async {
     try {
-      await _playerQuestsTable.upsert(quest.toMap());
+      final questMap = quest.toMap();
+      questMap.remove(KeyNames.user_quest_id);
+
+      await _playerQuestsTable.update(questMap).eq(KeyNames.user_quest_id, quest.id);
     } catch (e) {
       log(e.toString());
       throw Exception(appError);

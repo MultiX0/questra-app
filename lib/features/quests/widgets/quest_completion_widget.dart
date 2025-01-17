@@ -9,6 +9,7 @@ class QuestCompletionWidget extends ConsumerWidget {
     return SystemCard(
       padding: EdgeInsets.all(20),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -31,10 +32,11 @@ class QuestCompletionWidget extends ConsumerWidget {
             height: 15,
           ),
           Text(
-            "Your dedication and skills have led you to triumph. The realm celebrates your success—great rewards await you!",
+            "Your dedication and skills have led you to triumph. The realm celebrates your success great rewards await you!",
             style: TextStyle(
               fontWeight: FontWeight.w200,
               color: AppColors.descriptionColor,
+              fontSize: 13,
             ),
           ),
           const SizedBox(

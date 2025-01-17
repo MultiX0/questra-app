@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
 
@@ -19,26 +21,24 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
   @override
   Widget build(BuildContext context) {
     void finish() {
+      final now = DateTime.timestamp();
+      final quest = ref.read(viewQuestProvider)!;
+
+      log(quest.toMap().toString());
+
+      if (now.isBefore(quest.expected_completion_time_date)) {
+        CustomToast.systemToast(
+            "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}",
+            systemMessage: true);
+        widget.cancel;
+        return;
+      }
+
       setState(() {
         done = true;
       });
 
       return;
-      // // TODO design the ui of the  alert dialog of the system
-      // // TODO design the upload pic of the quest that completed
-      // // TODO make the quest feedback section
-
-      // final quest = ref.watch(viewQuestProvider)!;
-      // List<QuestModel> quests = List.from(ref.read(currentOngointQuestsProvider) ?? []);
-
-      // quests.removeWhere((q) => q.id == quest.id);
-      // ref.read(currentOngointQuestsProvider);
-      // ref.invalidate(currentOngointQuestsProvider);
-
-      // context.pop();
-      // log("the quest is removing ...");
-      // log(quests.toString());
-      // ref.read(currentOngointQuestsProvider.notifier).state = quests;
     }
 
     if (done) {

@@ -45,7 +45,7 @@ class FeedbackModel {
       // 'created_at': created_at.millisecondsSinceEpoch,
       KeyNames.user_id: user_id,
       KeyNames.user_quest_id: user_quest_id,
-      KeyNames.feedback_type: feedback_type,
+      KeyNames.feedback_type: feedback_type.toLowerCase(),
       KeyNames.description: description,
     };
   }
@@ -56,7 +56,7 @@ class FeedbackModel {
       KeyNames.created_at: created_at.toIso8601String(),
       KeyNames.user_id: user_id,
       KeyNames.user_quest_id: user_quest_id,
-      KeyNames.feedback_type: feedback_type,
+      KeyNames.feedback_type: feedback_type.toLowerCase(),
       KeyNames.description: description,
       "quest": quest?.toMap(),
     };

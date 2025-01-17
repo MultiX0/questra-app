@@ -1,34 +1,16 @@
-import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/imports.dart';
 
 class LevelsModel {
   final String user_id;
   final DateTime? updated_at;
-  int level;
-  int xp;
+  final int level;
+  final int xp;
   LevelsModel({
     required this.user_id,
     this.updated_at,
     required this.level,
     required this.xp,
   });
-
-  void addXp(int xp) {
-    this.xp += xp;
-
-    while (this.xp >= calculateXpForLevel(level)) {
-      this.xp -= calculateXpForLevel(level);
-      _levelUp();
-    }
-  }
-
-  void _levelUp() {
-    level++;
-    CustomToast.systemToast(
-      'Congratulations! You leveled up to $level!',
-      systemMessage: true,
-    );
-  }
 
   LevelsModel copyWith({
     String? user_id,
@@ -47,7 +29,6 @@ class LevelsModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       KeyNames.user_id: user_id,
-      // KeyNames.updated_at: updated_at.millisecondsSinceEpoch,
       KeyNames.level: level,
       KeyNames.xp: xp,
     };

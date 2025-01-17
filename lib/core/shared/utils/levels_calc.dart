@@ -37,6 +37,23 @@ int calculateQuestCoins(int level, String difficulty) {
   }
 }
 
+Map<String, int> addXp(int xp, Map<String, int> currentData) {
+  int currentXp = currentData['xp'] ?? 0;
+  int currentLevel = currentData['level'] ?? 1;
+
+  currentXp += xp;
+
+  while (currentXp >= calculateXpForLevel(currentLevel)) {
+    currentXp -= calculateXpForLevel(currentLevel);
+    currentLevel++;
+  }
+
+  return {
+    "xp": currentXp,
+    "level": currentLevel,
+  };
+}
+
 // class Player {
 //   int level = 1;
 //   int currentXp = 0;

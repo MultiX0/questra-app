@@ -41,13 +41,15 @@ class QuestsController extends StateNotifier<bool> {
     try {
       state = true;
 
-      final images = await _uploadImages(quest.id);
-      final _quest = quest.copyWith(images: images);
-
-      await _repository.finishQuest(
-        quest: _quest,
+      QuestModel updatedQuest = await _repository.finishQuest(
+        quest: quest,
         feedback: feedback,
       );
+
+      final images = await _uploadImages(quest.id);
+      updatedQuest = updatedQuest.copyWith(images: images);
+      await _repository.updateQuest(updatedQuest);
+
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       _ref.read(questImagesProvider.notifier).state = null;
 
@@ -55,6 +57,10 @@ class QuestsController extends StateNotifier<bool> {
 
       return true;
     } catch (e) {
+      if (e.toString().contains('expired')) {
+        _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      }
+
       state = false;
       log(e.toString());
       CustomToast.systemToast(e.toString(), systemMessage: true);

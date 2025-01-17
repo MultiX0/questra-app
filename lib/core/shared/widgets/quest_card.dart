@@ -144,7 +144,7 @@ class QuestCard extends ConsumerWidget {
               height: 14,
             ),
             Text(
-              "Finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date)}",
+              "Expected finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date)}",
               style: TextStyle(
                 fontWeight: FontWeight.w200,
                 fontSize: 11,

@@ -55,6 +55,18 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
               fontSize: 18,
             ),
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            "Note: for more safety for your account from false reports we suggest at least to select one image for the quest that you've done.",
+            style: TextStyle(
+              // fontFamily: AppFonts.header,
+              fontWeight: FontWeight.w200,
+              color: AppColors.descriptionColor,
+              fontSize: 12,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: kTextTabBarHeight),
             child: SystemCard(

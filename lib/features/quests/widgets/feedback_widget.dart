@@ -1,3 +1,4 @@
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
 
@@ -83,6 +84,7 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final isLoading = ref.watch(questsControllerProvider);
 
     if (done) {
       return QuestCompletionWidget();
@@ -134,9 +136,19 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
                 const SizedBox(
                   height: 10,
                 ),
-                SystemCardButton(
-                  onTap: finish,
-                ),
+                if (isLoading) ...[
+                  // beat
+                  Center(
+                    child: LoadingAnimationWidget.beat(
+                      color: AppColors.primary,
+                      size: 30,
+                    ),
+                  )
+                ] else ...[
+                  SystemCardButton(
+                    onTap: finish,
+                  ),
+                ],
               ],
             ),
           ),
@@ -177,6 +189,26 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       decoration: InputDecoration(
         filled: false,
         border: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        errorBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        disabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+          color: AppColors.primary,
+        )),
+        focusedErrorBorder: UnderlineInputBorder(
             borderSide: BorderSide(
           color: AppColors.primary,
         )),

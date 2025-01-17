@@ -12,9 +12,12 @@ class CustomToast {
       ),
       applyBlurEffect: true,
       autoCloseDuration: const Duration(
-        seconds: 3,
+        seconds: 5,
       ),
-      title: Text((systemMessage != null && systemMessage) ? "System: $content" : content),
+      title: Text(
+        (systemMessage != null && systemMessage) ? "System: $content" : content,
+        maxLines: 5,
+      ),
       icon: Icon(LucideIcons.hexagon),
     );
   }

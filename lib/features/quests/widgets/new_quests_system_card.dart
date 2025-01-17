@@ -47,10 +47,9 @@ class NewQuestsSystemCard extends ConsumerWidget {
               textStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
             onPressed: () async {
-              // CustomToast.systemToast("making new quest for you...", systemMessage: true);
+              CustomToast.systemToast("making new quest for you...", systemMessage: true);
               await ref.read(aiFunctionsProvider).generateQuests();
               await ref.read(aiFunctionsProvider).generateQuests();
-              CustomToast.systemToast("done..", systemMessage: true);
             },
             child: Text("new quests"),
           )

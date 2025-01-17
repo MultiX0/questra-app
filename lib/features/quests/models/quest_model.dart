@@ -34,6 +34,26 @@ class QuestModel {
     required this.expected_completion_time_date,
   });
 
+  factory QuestModel.newQuest({required QuestModel quest}) {
+    return QuestModel(
+      id: quest.id,
+      created_at: quest.created_at,
+      user_id: quest.user_id,
+      description: quest.description,
+      xp_reward: quest.xp_reward,
+      coin_reward: quest.coin_reward,
+      difficulty: quest.difficulty,
+      status: quest.status,
+      estimated_completion_time: quest.estimated_completion_time,
+      images: quest.images,
+      title: quest.title,
+      assigned_at: quest.assigned_at,
+      completed_at: quest.completed_at,
+      owned_title: quest.owned_title,
+      expected_completion_time_date: quest.expected_completion_time_date,
+    );
+  }
+
   QuestModel copyWith({
     String? id,
     DateTime? created_at,
@@ -73,14 +93,13 @@ class QuestModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       KeyNames.user_quest_id: id,
-      // 'created_at': created_at.toI,
       KeyNames.user_id: user_id,
       KeyNames.quest_title: title,
       KeyNames.quest_description: description,
       KeyNames.xp_reward: xp_reward,
       KeyNames.coin_reward: coin_reward,
       KeyNames.difficulty: difficulty.toLowerCase(),
-      KeyNames.status: status,
+      KeyNames.status: status.toLowerCase(),
       KeyNames.assigned_at: assigned_at?.toIso8601String(),
       KeyNames.completed_at: completed_at?.toIso8601String(),
       KeyNames.estimated_completion_time: estimated_completion_time,
