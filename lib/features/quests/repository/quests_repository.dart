@@ -30,6 +30,18 @@ class QuestsRepository {
     }
   }
 
+  Future<List<QuestModel>> getQuestsArchive(String user_id) async {
+    try {
+      final data =
+          await _playerQuestsTable.select("*").neq(KeyNames.status, StatusEnum.in_progress.name);
+      final quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
+      return quests;
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
   Future<List<FeedbackModel>> getUserFeedbacks(String user_id) async {
     try {
       final data = await _questsFeedbackTable.select('''

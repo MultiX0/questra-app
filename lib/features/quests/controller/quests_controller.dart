@@ -33,6 +33,15 @@ class QuestsController extends StateNotifier<bool> {
     }
   }
 
+  Future<List<QuestModel>> getQuestsArchive(String user_id) async {
+    try {
+      return await _repository.getQuestsArchive(user_id);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
   Future<bool> finishQuest({
     required BuildContext context,
     required QuestModel quest,

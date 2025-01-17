@@ -1,12 +1,17 @@
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/imports.dart';
 
-class QuestsArchiveWidget extends StatelessWidget {
+class QuestsArchiveWidget extends ConsumerWidget {
   const QuestsArchiveWidget({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isEmpty = ref.watch(isArchiveEmptyProvider);
+    final archiveData = ref.watch(questArchiveProvider);
+    final partData = archiveData.getRange(0, 6).toList();
     return SystemCard(
       padding: EdgeInsets.all(15),
       child: Column(
@@ -36,19 +41,66 @@ class QuestsArchiveWidget extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          buildArchiveItem(
-            title: "1 - Build the System Backbone",
-            status: StatusEnum.completed,
-          ),
-          buildArchiveItem(
-            title: "2 - Code Crunch",
-            status: StatusEnum.skipped,
-          ),
-          buildArchiveItem(
-            title: "3 - Productivity Boost",
-            status: StatusEnum.failed,
-          ),
+          if (isEmpty == true) ...[
+            buildEmptyState(),
+          ] else if (isEmpty == false) ...[
+            ...partData.asMap().entries.map((entry) {
+              final i = entry.key;
+              final quest = entry.value;
+
+              return buildArchiveItem(
+                title: "$i - ${quest.title}",
+                status: getStatusFromString(quest.status),
+              );
+            })
+          ],
+          if (isEmpty == null) ...[
+            Center(
+              child: LoadingAnimationWidget.beat(
+                color: AppColors.primary,
+                size: 30,
+              ),
+            ),
+          ],
+          if (archiveData.length > 7) ...[
+            Text(
+              "view more...",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: AppColors.descriptionColor,
+              ),
+            )
+          ],
         ],
+      ),
+    );
+  }
+
+  Padding buildEmptyState() {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              LucideIcons.hexagon,
+              color: AppColors.primary,
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            Text(
+              "There is no quests in the archive for now",
+              style: TextStyle(
+                fontWeight: FontWeight.w200,
+                color: AppColors.descriptionColor,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
