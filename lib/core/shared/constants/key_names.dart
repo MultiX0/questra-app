@@ -53,4 +53,8 @@ class KeyNames {
   static const expected_completion_time_date = 'expected_completion_time_date';
   static const title = 'title';
   static const images = 'images';
+  static const metadata = 'metadata';
+  static const price = 'price';
+  static const type = 'type';
+  static const image_url = 'image_url';
 }

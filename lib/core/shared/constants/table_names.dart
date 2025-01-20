@@ -12,4 +12,8 @@ class TableNames {
   static const user_quests = 'user_quests';
   static const users_metadata = 'users_metadata';
   static const player_titles = 'player_titles';
+  static const items = 'items';
+  static const player_owned_items = 'player_owned_items';
+  static const themes = 'themes';
+  static const transactions = 'transactions';
 }

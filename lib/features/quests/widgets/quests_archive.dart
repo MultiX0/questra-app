@@ -11,7 +11,7 @@ class QuestsArchiveWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isEmpty = ref.watch(isArchiveEmptyProvider);
     final archiveData = ref.watch(questArchiveProvider);
-    final partData = archiveData.getRange(0, 6).toList();
+    final partData = archiveData.length < 7 ? archiveData : archiveData.getRange(0, 6).toList();
     return SystemCard(
       padding: EdgeInsets.all(15),
       child: Column(
@@ -45,7 +45,7 @@ class QuestsArchiveWidget extends ConsumerWidget {
             buildEmptyState(),
           ] else if (isEmpty == false) ...[
             ...partData.asMap().entries.map((entry) {
-              final i = entry.key;
+              final i = entry.key + 1;
               final quest = entry.value;
 
               return buildArchiveItem(

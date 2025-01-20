@@ -9,3 +9,12 @@ const questFeedbackTypes = [
   "Engagement",
   "Other Suggestions",
 ];
+
+const marketPlaceItemsCategories = [
+  "utility",
+  "boost",
+  "consumable",
+  "cosmetic",
+  "defensive",
+  "theme",
+];

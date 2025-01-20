@@ -32,7 +32,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               SystemCard(
                 duration: duration,
                 onTap: () {
-                  CustomToast.systemToast("the shop is comming soon!");
+                  // CustomToast.systemToast("the shop is comming soon!");
+                  context.push(Routes.marketPlace);
                 },
                 padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                 child: Column(

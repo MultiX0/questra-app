@@ -1,6 +1,7 @@
 // import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
+import 'package:questra_app/features/marketplace/pages/marketplace_page.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
@@ -93,6 +94,10 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.viewQuest,
           child: const ViewQuestPage(),
+        ),
+        buildRoute(
+          path: Routes.marketPlace,
+          child: const MarketplacePage(),
         ),
       ],
     );

@@ -11,4 +11,5 @@ class Routes {
   static const onboardingController = '/onboardingController';
   static const splash = '/splash';
   static const viewQuest = '/viewQuest';
+  static const marketPlace = '/marketPlace';
 }

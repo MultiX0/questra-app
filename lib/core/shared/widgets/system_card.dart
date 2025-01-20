@@ -20,7 +20,7 @@ class SystemCard extends StatefulWidget {
   final double? borderRadius;
   final Function()? onTap;
   final bool? isButton;
-  final Duration duration;
+  final Duration? duration;
 
   @override
   State<SystemCard> createState() => _SystemCardState();
@@ -33,6 +33,9 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
 
   @override
   void initState() {
+    if (widget.duration == null) {
+      return;
+    }
     super.initState();
     _controller = AnimationController(
       vsync: this,
@@ -60,13 +63,42 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    _controller.dispose();
+    if (widget.duration != null) {
+      _controller.dispose();
+    }
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+
+    if (widget.duration == null) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          constraints: (widget.isButton != null && widget.isButton!)
+              ? null
+              : BoxConstraints(
+                  minWidth: size.width,
+                ),
+          decoration: BoxDecoration(
+            color: widget.color ?? HexColor('7AD5FF').withValues(alpha: .05),
+            border: widget.border ??
+                Border.all(
+                  color: HexColor('43A7D5'),
+                  width: 0.75,
+                ),
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
+          ),
+          child: Padding(
+            padding: widget.padding ?? const EdgeInsets.symmetric(vertical: 40),
+            child: widget.child,
+          ),
+        ),
+      );
+    }
 
     return AnimatedBuilder(
       animation: _controller,
@@ -76,7 +108,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
           child: GestureDetector(
             onTap: widget.onTap,
             child: AnimatedContainer(
-              duration: widget.duration,
+              duration: widget.duration!,
               constraints: (widget.isButton != null && widget.isButton!)
                   ? null
                   : BoxConstraints(

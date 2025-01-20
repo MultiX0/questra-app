@@ -10,8 +10,10 @@ class NoneActiveQuestsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final duration = const Duration(seconds: 2);
 
     return SystemCard(
+      duration: duration,
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: size.width * .15),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
