@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final questsRepositoryProvider = Provider<QuestsRepository>((ref) {
@@ -205,12 +206,29 @@ class QuestsRepository {
 
       level = level.copyWith(xp: levelData['xp'], level: levelData['level']);
       await _updateUserLevel(user!.id, level);
+      await _updateUserCoins(user: user, quest: updatedQuest);
 
       _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
       return updatedQuest;
     } catch (e) {
       log(e.toString());
       rethrow;
+    }
+  }
+
+  Future<void> _updateUserCoins({required UserModel user, required QuestModel quest}) async {
+    try {
+      final coins = calculateQuestCoins(
+        user.level?.level ?? 1,
+        quest.difficulty,
+      );
+
+      await _ref.read(walletRepositoryProvider).addCoins(
+            userId: user.id,
+            amount: coins,
+          );
+    } catch (e) {
+      log(e.toString());
     }
   }
 

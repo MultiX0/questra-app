@@ -36,4 +36,19 @@ class WalletRepository {
       throw Exception(e);
     }
   }
+
+  Future<void> addCoins({required String userId, required int amount}) async {
+    try {
+      final userWallet = await getUserWallet(userId);
+      final newBalance = userWallet.balance + amount;
+
+      await _walletTable.update({KeyNames.balance: newBalance}).eq(
+        KeyNames.user_id,
+        userId,
+      );
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }
