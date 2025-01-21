@@ -67,7 +67,7 @@ class FeedbackModel {
       user_feedback_id: map[KeyNames.user_feedback_id] ?? -1,
       created_at: DateTime.parse(map[KeyNames.created_at] ?? DateTime.now().toIso8601String()),
       user_id: map[KeyNames.user_id] ?? "",
-      user_quest_id: map[KeyNames.user_quest_id] ?? -1,
+      user_quest_id: map[KeyNames.user_quest_id] ?? "",
       feedback_type: map[KeyNames.feedback_type] ?? "",
       description: map[KeyNames.description] ?? "",
     );

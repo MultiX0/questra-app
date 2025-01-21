@@ -33,7 +33,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
             ),
           ],
         ),
-        body: buildBody(),
+        body: SafeArea(child: buildBody()),
       ),
     );
   }
@@ -164,9 +164,6 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 ),
               ),
             ],
-          ),
-          const SizedBox(
-            height: 5,
           ),
           Align(
             alignment: Alignment.centerRight,

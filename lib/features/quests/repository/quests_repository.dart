@@ -58,7 +58,11 @@ class QuestsRepository {
         status,
         assigned_at,
         completed_at,
-        estimated_completion_time
+        estimated_completion_time,
+        quest_title,
+        owned_title,
+        expected_completion_time_date,
+        images
       )
     ''').eq('user_id', user_id);
 
@@ -75,7 +79,7 @@ class QuestsRepository {
       return feedbacks;
     } catch (e) {
       log(e.toString());
-      throw Exception(e);
+      throw Exception("Feedback function error: $e");
     }
   }
 

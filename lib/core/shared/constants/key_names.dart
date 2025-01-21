@@ -58,4 +58,9 @@ class KeyNames {
   static const type = 'type';
   static const image_url = 'image_url';
   static const balance = 'balance';
+  static const ownership_id = 'ownership_id';
+  static const item_id = 'item_id';
+  static const quantity = 'quantity';
+  static const is_active = 'is_active';
+  static const acquired_at = 'acquired_at';
 }

@@ -20,27 +20,28 @@ class AiFunctions {
 
   Future<void> generateQuests({int? errors, String? errorExplain}) async {
     try {
-      CustomToast.systemToast(
-        "making new quest for you....",
-        systemMessage: true,
-      );
-
+      log("here 1");
       final preferredQuestTypes = await _ref.read(questsRepositoryProvider).getQuestTypesByIds(
             _user?.user_preferences?.questTypes,
           );
+      log("here 2");
 
       String userId = _user?.id ?? "";
 
       final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
+      log("here 3");
 
       final ongoingQuests =
           await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(userId);
 
       log("currentlly there is ${ongoingQuests.length} quests");
+      log("here 4");
 
       final feedbacks = await _ref.read(questsRepositoryProvider).getUserFeedbacks(userId);
+      log("here 5");
 
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
+      log("here 6");
 
       String _userPrompt = '''
                 {
@@ -87,6 +88,9 @@ class AiFunctions {
       await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
       log(e.toString());
+      CustomToast.systemToast(
+        "there is an error, please try again later",
+      );
       throw Exception(e);
     }
   }

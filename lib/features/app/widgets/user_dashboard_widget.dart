@@ -162,7 +162,7 @@ class UserDashboardWidget extends ConsumerWidget {
                 ),
               ),
               AnimatedContainer(
-                duration: const Duration(milliseconds: 600),
+                duration: const Duration(milliseconds: 850),
                 width: barSize,
                 height: 8,
                 decoration: BoxDecoration(
