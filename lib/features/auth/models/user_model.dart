@@ -2,6 +2,7 @@ import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
+import 'package:questra_app/features/wallet/models/wallet_model.dart';
 
 class UserModel {
   final String id;
@@ -15,6 +16,7 @@ class UserModel {
   final List<UserGoalModel>? goals;
   final UserPreferencesModel? user_preferences;
   final LevelsModel? level;
+  final WalletModel? wallet;
 
   UserModel({
     required this.id,
@@ -28,6 +30,7 @@ class UserModel {
     this.user_preferences,
     this.birth_date,
     this.level,
+    this.wallet,
   });
 
   UserModel copyWith({
@@ -42,6 +45,7 @@ class UserModel {
     List<UserGoalModel>? goals,
     UserPreferencesModel? user_preferences,
     LevelsModel? level,
+    WalletModel? wallet,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -55,6 +59,7 @@ class UserModel {
       goals: goals ?? this.goals,
       user_preferences: user_preferences ?? this.user_preferences,
       level: level ?? this.level,
+      wallet: wallet ?? this.wallet,
     );
   }
 
@@ -96,7 +101,8 @@ class UserModel {
         other.name == name &&
         other.username == username &&
         other.is_online == is_online &&
-        other.avatar == avatar;
+        other.avatar == avatar &&
+        other.wallet == wallet;
   }
 
   @override
@@ -106,6 +112,7 @@ class UserModel {
         name.hashCode ^
         username.hashCode ^
         is_online.hashCode ^
-        avatar.hashCode;
+        avatar.hashCode ^
+        wallet.hashCode;
   }
 }

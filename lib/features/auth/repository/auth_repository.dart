@@ -6,6 +6,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
+import 'package:questra_app/features/wallet/models/wallet_model.dart';
+import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -63,20 +65,24 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .stream(primaryKey: [KeyNames.id])
           .eq(KeyNames.id, userId)
           .debounceTime(const Duration(seconds: 1)),
-
       _supabase
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
           .debounceTime(
             const Duration(milliseconds: 600),
-          )
-
-      // _ref.watch(levelingRepositoryProvider).playerLevelStream(userId),
+          ),
+      _supabase
+          .from(TableNames.wallet)
+          .stream(primaryKey: [KeyNames.user_id])
+          .eq(KeyNames.user_id, userId)
+          .debounceTime(
+            const Duration(seconds: 2),
+          ),
     ]).listen((events) async {
       final userEvent = events[0].isNotEmpty ? events[0].first : null;
       final levelEvent = events[1].isNotEmpty ? events[1].first : null;
-      LevelsModel? _level;
+      final walletEvent = events[2].isNotEmpty ? events[2].first : null;
 
       log("the user event is $userEvent");
 
@@ -93,6 +99,18 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         _stateStreamController.add(state);
       }
 
+      await _handleUserEvent(userEvent, userId);
+      await _handleLevelEvent(levelEvent, userId);
+      await _handleWalletEvent(walletEvent, userId);
+    }, onError: (error) async {
+      log('User data stream error: $error');
+      await Future.delayed(const Duration(seconds: 8));
+      _listenToUserData(userId);
+    });
+  }
+
+  Future<void> _handleUserEvent(Map<String, dynamic>? userEvent, String userId) async {
+    try {
       if (userEvent != null && userEvent.isNotEmpty) {
         var user = UserModel.fromMap(userEvent);
         final data = await _ref.read(profileRepositoryProvider).getUserBirthDate(user.id);
@@ -107,23 +125,28 @@ class AuthNotifier extends StateNotifier<UserModel?> {
             state = user.copyWith(
               goals: goals,
               user_preferences: prefs,
-              level: _level,
             );
           } else {
-            state = user.copyWith(
-              level: _level,
-            );
+            state = user;
           }
           log("the user data is updated");
         }
         _stateStreamController.add(state);
       }
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 
+  Future<void> _handleLevelEvent(Map<String, dynamic>? levelEvent, String userId) async {
+    try {
       final validAccount = _ref.watch(hasValidAccountProvider);
 
       if (levelEvent == null && validAccount) {
         final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
-        _level = level;
+        state = state?.copyWith(level: level);
+        return;
       }
 
       if (levelEvent != null && levelEvent.isNotEmpty) {
@@ -132,11 +155,27 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           state = state?.copyWith(level: levelModel);
         }
       }
-    }, onError: (error) async {
-      log('User data stream error: $error');
-      await Future.delayed(const Duration(seconds: 8));
-      _listenToUserData(userId);
-    });
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<void> _handleWalletEvent(Map<String, dynamic>? walletEvent, String userId) async {
+    try {
+      if (walletEvent != null) {
+        final _wallet = WalletModel.fromMap(walletEvent);
+        if (state?.wallet != _wallet) {
+          state = state?.copyWith(wallet: _wallet);
+        }
+      } else {
+        final _wallet = await _ref.read(walletRepositoryProvider).getUserWallet(userId);
+        state = state?.copyWith(wallet: _wallet);
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
   }
 
   Future<bool> googleSignIn() async {

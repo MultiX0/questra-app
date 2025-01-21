@@ -117,6 +117,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
 
   ListView buildLoadingCard() {
     return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 10),
       itemCount: 4,
       itemBuilder: (context, i) {
         return LoadingCard();
@@ -163,6 +164,19 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              "${item.price}\$",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary,
+              ),
+            ),
           ),
         ],
       ),

@@ -57,4 +57,5 @@ class KeyNames {
   static const price = 'price';
   static const type = 'type';
   static const image_url = 'image_url';
+  static const balance = 'balance';
 }

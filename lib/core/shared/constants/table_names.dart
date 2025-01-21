@@ -16,4 +16,5 @@ class TableNames {
   static const player_owned_items = 'player_owned_items';
   static const themes = 'themes';
   static const transactions = 'transactions';
+  static const wallet = 'wallet';
 }

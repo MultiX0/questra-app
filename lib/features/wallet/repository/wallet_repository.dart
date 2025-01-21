@@ -1,0 +1,39 @@
+import 'dart:developer';
+
+import 'package:questra_app/features/wallet/models/wallet_model.dart';
+import 'package:questra_app/imports.dart';
+
+final walletRepositoryProvider = Provider<WalletRepository>((ref) => WalletRepository(ref: ref));
+
+class WalletRepository {
+  final Ref _ref;
+  WalletRepository({required Ref ref}) : _ref = ref;
+
+  SupabaseClient get _client => _ref.watch(supabaseProvider);
+  SupabaseQueryBuilder get _walletTable => _client.from(TableNames.wallet);
+
+  Future<WalletModel> _insertWallet(String userId) async {
+    try {
+      final wallet = WalletModel(userId: userId, balance: 0);
+      await _walletTable.insert(wallet.toMap());
+      return wallet;
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<WalletModel> getUserWallet(String userId) async {
+    try {
+      final data = await _walletTable.select('*').eq(KeyNames.user_id, userId).maybeSingle();
+      if (data == null) {
+        return await _insertWallet(userId);
+      }
+
+      return WalletModel.fromMap(data);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
+}
