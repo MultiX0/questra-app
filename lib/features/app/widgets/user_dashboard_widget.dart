@@ -1,4 +1,5 @@
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
@@ -10,6 +11,11 @@ class UserDashboardWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
     final user = ref.watch(authStateProvider)!;
+    final barSize = totalXpBarWidth(
+      current: user.level?.xp.toDouble() ?? 0.0,
+      max: calculateXpForLevel(user.level?.level ?? 1).toDouble(),
+      width: size.width,
+    );
     return SystemCard(
       duration: const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
@@ -75,7 +81,7 @@ class UserDashboardWidget extends ConsumerWidget {
               const Spacer(),
               GlowText(
                 glowColor: Colors.white.withValues(alpha: .57),
-                text: 'Coins: 100\$',
+                text: 'Coins: ${user.wallet?.balance ?? 0}\$',
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: .57),
                   fontSize: 12,
@@ -155,8 +161,9 @@ class UserDashboardWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              Container(
-                width: size.width * .4,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 600),
+                width: barSize,
                 height: 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
