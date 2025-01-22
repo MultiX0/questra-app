@@ -97,4 +97,31 @@ class QuestsController extends StateNotifier<bool> {
       throw Exception(e);
     }
   }
+
+  Future<void> handleSkip({
+    required QuestModel quest,
+    required FeedbackModel feedback,
+    required BuildContext context,
+  }) async {
+    try {
+      state = true;
+      final userId = _ref.read(authStateProvider)?.id ?? "";
+
+      await _repository.handleSkip(
+        quest: quest,
+        userId: userId,
+        feedback: feedback,
+      );
+
+      CustomToast.systemToast("quest skipped successfully");
+      state = false;
+
+      context.pop();
+    } catch (e) {
+      state = false;
+      log(e.toString());
+      CustomToast.systemToast(e.toString(), systemMessage: true);
+      rethrow;
+    }
+  }
 }

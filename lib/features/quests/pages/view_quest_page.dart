@@ -1,5 +1,6 @@
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
+import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
 import 'package:questra_app/features/quests/widgets/finish_quest.dart';
 import 'package:questra_app/imports.dart';
 
@@ -12,15 +13,29 @@ class ViewQuestPage extends ConsumerStatefulWidget {
 
 class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
   bool _finish = false;
+  bool _skip = false;
 
   void finish() {
+    if (_skip) {
+      setState(() {
+        _skip = false;
+      });
+    }
     setState(() {
-      _finish = !_finish;
+      _finish = true;
     });
   }
 
   void skip() {
-    // TODO implement the quest skip functionality
+    if (_finish) {
+      setState(() {
+        _finish = false;
+      });
+    }
+
+    setState(() {
+      _skip = true;
+    });
   }
 
   @override
@@ -33,7 +48,11 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: (_finish) ? buildFinish() : buildBody(quest),
+          child: (_finish)
+              ? buildFinish()
+              : (_skip)
+                  ? buildSkip()
+                  : buildBody(quest),
         ),
       ),
     );
@@ -42,6 +61,12 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
   Widget buildFinish() => Center(
         child: FinishQuestWidget(
           cancel: finish,
+        ),
+      );
+
+  Widget buildSkip() => Center(
+        child: QuestFeedbackWidget(
+          skip: false,
         ),
       );
 

@@ -3,7 +3,12 @@ import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart
 import 'package:questra_app/imports.dart';
 
 class QuestFeedbackWidget extends ConsumerStatefulWidget {
-  const QuestFeedbackWidget({super.key});
+  const QuestFeedbackWidget({
+    super.key,
+    required this.skip,
+  });
+
+  final bool skip;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestFeedbackWidgetState();
@@ -31,6 +36,10 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   }
 
   void finish() async {
+    if (widget.skip) {
+      return skip();
+    }
+
     final quest = ref.watch(viewQuestProvider)!;
 
     FeedbackModel? feedbackModel;
@@ -49,6 +58,28 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
         done = true;
       });
     }
+  }
+
+  void skip() async {
+    final String skipString = _feedbackStatusController.text.trim();
+    if (skipString.isEmpty || skipString.length < 4) {
+      CustomToast.systemToast("please fill the skip reason", systemMessage: true);
+      return;
+    }
+
+    if (feedbackTypeGroup.isEmpty) {
+      CustomToast.systemToast("please fill the feedback type", systemMessage: true);
+      return;
+    }
+
+    final quest = ref.watch(viewQuestProvider)!;
+    FeedbackModel feedbackModel = setFeedback(quest.id);
+
+    await ref.read(questsControllerProvider.notifier).handleSkip(
+          quest: quest,
+          feedback: feedbackModel,
+          context: context,
+        );
   }
 
   FeedbackModel setFeedback(String questId) {

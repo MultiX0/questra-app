@@ -38,7 +38,9 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
   @override
   Widget build(BuildContext context) {
     if (done) {
-      return QuestFeedbackWidget();
+      return QuestFeedbackWidget(
+        skip: false,
+      );
     }
 
     return SystemCard(
