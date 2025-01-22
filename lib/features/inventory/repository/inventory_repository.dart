@@ -51,4 +51,13 @@ class InventoryRepository {
       throw Exception("Exception at getInventoryItems: $e");
     }
   }
+
+  Future<void> updateInventoryItem({required InventoryItem item, required String userId}) async {
+    try {
+      await _inventoryTable.update(item.toMap()).eq(KeyNames.item_id, item.id);
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e);
+    }
+  }
 }

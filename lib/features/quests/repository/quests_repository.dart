@@ -1,6 +1,9 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/features/inventory/models/inventory_model.dart';
+import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -278,5 +281,62 @@ class QuestsRepository {
     }
   }
 
-  // Future<>
+  Future<int> getSkippedQuestsCount(String userId) async {
+    try {
+      final data = await _client.rpc(
+        FunctionNames.questSkippedCounter,
+        params: {
+          "p_user_id": userId,
+        },
+      );
+
+      final count = int.tryParse(data);
+      return count ?? 0;
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Exception in getSkippedQuestsCount: $e');
+    }
+  }
+
+  Future<void> handleSkip({
+    required QuestModel quest,
+    required String userId,
+    required FeedbackModel feedback,
+  }) async {
+    try {
+      final skippedCount = await getSkippedQuestsCount(userId);
+      final userInv = await _ref.read(inventoryRepositoryProvider).getInventoryItems(userId);
+
+      InventoryItem? skipCard = userInv
+          .where(
+            (item) => item.id == skipCardId,
+          )
+          .firstOrNull;
+
+      if (skipCard == null || skipCard.quantity == 0) {
+        if (skippedCount > 2) {
+          throw ("you dont have any skip cards to do this action");
+        } else {
+          await _updateQuestStatus(StatusEnum.skipped, quest.id);
+          await insertFeedback(feedback);
+        }
+        return;
+      }
+
+      if (skipCard.quantity > 1) {
+        await _updateQuestStatus(StatusEnum.skipped, quest.id);
+        await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
+              item: skipCard.copyWith(quantity: (skipCard.quantity - 1)),
+              userId: userId,
+            );
+        await insertFeedback(feedback);
+        return;
+      }
+
+      throw Exception('');
+    } catch (e) {
+      log(e.toString());
+      throw appError;
+    }
+  }
 }
