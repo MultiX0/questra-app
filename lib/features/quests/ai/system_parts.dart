@@ -22,7 +22,12 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'completion_time_date' must be calculated based on the 'current_time' provided by the user and the 'estimated_completion_time' + one hour (or greater than 2 hour depends on the previuos user quests completion time). Return this in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
+        "The 'completion_time_date' must be calculated to fall within the same day as the quest is assigned. It is not necessary to set it as the current time plus the 'estimated_completion_time'; rather, it should provide a flexible deadline within that day. Additionally, when creating a new quest, take into account the 'estimated_completion_time' and the 'created_at' time of any already in_progress quest to avoid overlapping or conflicting time frames. Return this deadline in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
+  },
+  {
+    "role": "system",
+    "content":
+        "**When multiple in-progress quests exist:** Calculate total time commitment by summing their remaining durations (based on created_at and current_time). Ensure new quest's estimated_completion_time doesn't exceed user's daily time_availability minus this total. Prioritize spreading deadlines across available daytime hours."
   },
   {
     "role": "system",
@@ -107,7 +112,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "When generating quests, avoid overlapping with current or ongoing quests provided by the user. Ensure new quests offer fresh challenges, themes, or formats to maintain variety and excitement."
+        "When generating quests, avoid overlapping with current or ongoing quests provided by the user. Ensure new quests offer fresh challenges, themes, or formats to maintain variety and excitement. Take into account any active quest's 'created_at' time and its 'estimated_completion_time' when scheduling the new quest's 'completion_time_date' to ensure there is sufficient, non-conflicting time available for the user."
   },
   {
     "role": "system",
