@@ -66,7 +66,7 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
 
   Widget buildSkip() => Center(
         child: QuestFeedbackWidget(
-          skip: false,
+          skip: true,
         ),
       );
 

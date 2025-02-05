@@ -290,7 +290,8 @@ class QuestsRepository {
         },
       );
 
-      final count = int.tryParse(data);
+      final count = int.tryParse(data.toString());
+      log("the skipped quests count Is: $count");
       return count ?? 0;
     } catch (e) {
       log(e.toString());
@@ -306,12 +307,15 @@ class QuestsRepository {
     try {
       final skippedCount = await getSkippedQuestsCount(userId);
       final userInv = await _ref.read(inventoryRepositoryProvider).getInventoryItems(userId);
+      log(userInv.toString());
 
       InventoryItem? skipCard = userInv
           .where(
-            (item) => item.id == skipCardId,
+            (item) => item.itemId == skipCardId,
           )
           .firstOrNull;
+
+      log(skipCard.toString());
 
       if (skipCard == null || skipCard.quantity == 0) {
         if (skippedCount > 2) {
@@ -323,20 +327,21 @@ class QuestsRepository {
         return;
       }
 
-      if (skipCard.quantity > 1) {
+      if (skipCard.quantity >= 1) {
         await _updateQuestStatus(StatusEnum.skipped, quest.id);
         await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
-              item: skipCard.copyWith(quantity: (skipCard.quantity - 1)),
+              itemId: skipCard.itemId,
               userId: userId,
+              quantity: skipCard.quantity - 1,
             );
         await insertFeedback(feedback);
         return;
       }
 
-      throw Exception('');
+      throw Exception(appError);
     } catch (e) {
       log(e.toString());
-      throw appError;
+      rethrow;
     }
   }
 }

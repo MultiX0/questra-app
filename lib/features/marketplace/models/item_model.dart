@@ -11,12 +11,14 @@ class ItemModel {
   final String? image_url;
   final DateTime? created_at;
   final DateTime? updated_at;
+  final bool locked;
   ItemModel({
     required this.id,
     required this.name,
     this.description,
     required this.type,
     required this.price,
+    required this.locked,
     this.metadata,
     this.image_url,
     this.created_at,
@@ -33,6 +35,7 @@ class ItemModel {
     String? image_url,
     DateTime? created_at,
     DateTime? updated_at,
+    bool? locked,
   }) {
     return ItemModel(
       id: id ?? this.id,
@@ -44,6 +47,7 @@ class ItemModel {
       image_url: image_url ?? this.image_url,
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
+      locked: locked ?? this.locked,
     );
   }
 
@@ -56,6 +60,7 @@ class ItemModel {
       KeyNames.price: price,
       KeyNames.metadata: metadata,
       KeyNames.image_url: image_url,
+      KeyNames.locked: locked,
       KeyNames.created_at: created_at?.toIso8601String(),
       KeyNames.updated_at: updated_at?.toIso8601String(),
     };
@@ -76,12 +81,13 @@ class ItemModel {
           map[KeyNames.created_at] != null ? DateTime.parse(map[KeyNames.created_at]) : null,
       updated_at:
           map[KeyNames.updated_at] != null ? DateTime.parse(map[KeyNames.updated_at]) : null,
+      locked: map[KeyNames.locked] ?? false,
     );
   }
 
   @override
   String toString() {
-    return 'ItemModel(id: $id, name: $name, description: $description, type: $type, price: $price, metadata: $metadata, image_url: $image_url, created_at: $created_at, updated_at: $updated_at)';
+    return 'ItemModel(id: $id, name: $name, description: $description, type: $type, price: $price, metadata: $metadata, image_url: $image_url, created_at: $created_at, updated_at: $updated_at, locked: $locked)';
   }
 
   @override
@@ -96,7 +102,8 @@ class ItemModel {
         mapEquals(other.metadata, metadata) &&
         other.image_url == image_url &&
         other.created_at == created_at &&
-        other.updated_at == updated_at;
+        other.updated_at == updated_at &&
+        other.locked == locked;
   }
 
   @override
@@ -109,6 +116,7 @@ class ItemModel {
         metadata.hashCode ^
         image_url.hashCode ^
         created_at.hashCode ^
-        updated_at.hashCode;
+        updated_at.hashCode ^
+        locked.hashCode;
   }
 }

@@ -61,14 +61,16 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   }
 
   void skip() async {
-    final String skipString = _feedbackStatusController.text.trim();
-    if (skipString.isEmpty || skipString.length < 4) {
-      CustomToast.systemToast("please fill the skip reason", systemMessage: true);
+    if (feedbackTypeGroup.isEmpty) {
+      CustomToast.systemToast("please fill the feedback type", systemMessage: true);
       return;
     }
 
-    if (feedbackTypeGroup.isEmpty) {
-      CustomToast.systemToast("please fill the feedback type", systemMessage: true);
+    if (_controller.text.trim().length < 4) {
+      CustomToast.systemToast(
+        "please fill the feedback field",
+        systemMessage: true,
+      );
       return;
     }
 

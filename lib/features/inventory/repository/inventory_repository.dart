@@ -52,9 +52,19 @@ class InventoryRepository {
     }
   }
 
-  Future<void> updateInventoryItem({required InventoryItem item, required String userId}) async {
+  Future<void> updateInventoryItem(
+      {required String itemId, required String userId, required int quantity}) async {
     try {
-      await _inventoryTable.update(item.toMap()).eq(KeyNames.item_id, item.id);
+      int _localQuantity = quantity;
+      if (quantity < 0) {
+        _localQuantity = 0;
+      }
+      await _inventoryTable
+          .update({
+            KeyNames.quantity: _localQuantity,
+          })
+          .eq(KeyNames.item_id, itemId)
+          .eq(KeyNames.user_id, userId);
     } catch (e) {
       log(e.toString());
       throw Exception(e);

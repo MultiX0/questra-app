@@ -63,4 +63,5 @@ class KeyNames {
   static const quantity = 'quantity';
   static const is_active = 'is_active';
   static const acquired_at = 'acquired_at';
+  static const locked = 'locked';
 }

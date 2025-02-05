@@ -57,7 +57,7 @@ class UserDashboardWidget extends ConsumerWidget {
                 children: [
                   GlowText(
                     glowColor: Colors.white,
-                    text: user.name,
+                    text: user.username,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.white,

@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
+import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -114,11 +115,14 @@ class QuestsController extends StateNotifier<bool> {
       );
 
       CustomToast.systemToast("quest skipped successfully");
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      _ref.invalidate(questArchiveProvider);
       state = false;
 
       context.pop();
     } catch (e) {
       state = false;
+      context.pop();
       log(e.toString());
       CustomToast.systemToast(e.toString(), systemMessage: true);
       rethrow;

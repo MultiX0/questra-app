@@ -36,6 +36,8 @@
 
 
 
+
+
     <application
         android:label="Questra"
         android:name="${applicationName}"

@@ -22,7 +22,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'completion_time_date' must be calculated based on the 'current_time' provided by the user and the 'estimated_completion_time'. Return this in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
+        "The 'completion_time_date' must be calculated based on the 'current_time' provided by the user and the 'estimated_completion_time' + one hour (or greater than 2 hour depends on the previuos user quests completion time). Return this in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
   },
   {
     "role": "system",

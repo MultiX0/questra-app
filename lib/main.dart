@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 
 import 'package:questra_app/app.dart';
 import 'package:questra_app/firebase_options.dart';
+import 'package:workmanager/workmanager.dart';
 
+import 'core/services/background_service.dart';
 import 'imports.dart';
 
 Future<void> main() async {
@@ -17,9 +19,19 @@ Future<void> main() async {
   // init the databases
   _supabaseInit();
   _firebaseInit();
+  initWorkManager();
 
   editChromeSystem();
   runApp(ProviderScope(child: const App()));
+}
+
+void initWorkManager() {
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  Workmanager().registerPeriodicTask(
+    "questCheckTask",
+    "questCheck",
+    frequency: const Duration(minutes: 15),
+  );
 }
 
 final _url = dotenv.env['SUPABASE_URL'] ?? "";

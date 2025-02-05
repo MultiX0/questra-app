@@ -79,6 +79,10 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 filteredItems = filteredItems.where((item) => item.type == selected).toList();
               }
 
+              if (filteredItems.isEmpty) {
+                return SizedBox(child: Center(child: buildEmptyItems()));
+              }
+
               return AnimationLimiter(
                 child: ListView.builder(
                   padding: EdgeInsets.symmetric(horizontal: 10),
@@ -120,63 +124,90 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       itemCount: 4,
       itemBuilder: (context, i) {
-        return LoadingCard();
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: LoadingCard(),
+        );
       },
     );
   }
 
-  SystemCard buildCard(ItemModel item) {
-    return SystemCard(
-      duration: null,
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+  Widget buildCard(ItemModel item) {
+    return Stack(
+      children: [
+        SystemCard(
+          duration: null,
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildImage(item),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        item.name,
-                        style: TextStyle(
-                          fontFamily: AppFonts.header,
-                          fontSize: 18,
-                        ),
+              Row(
+                children: [
+                  buildImage(item),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            item.name,
+                            style: TextStyle(
+                              fontFamily: AppFonts.header,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            item.description ?? "comming soon...",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w200,
+                              color: AppColors.descriptionColor,
+                              fontSize: 13,
+                            ),
+                          )
+                        ],
                       ),
-                      Text(
-                        item.description ?? "comming soon...",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w200,
-                          color: AppColors.descriptionColor,
-                          fontSize: 13,
-                        ),
-                      )
-                    ],
+                    ),
+                  ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "${item.price}\$",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
             ],
           ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              "${item.price}\$",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+        ),
+        if (item.locked) ...[
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.black.withValues(
+                    alpha: 0.8,
+                  )),
+              child: Center(
+                child: Text(
+                  "Locked",
+                  style: TextStyle(
+                    fontFamily: AppFonts.header,
+                    fontSize: 20,
+                  ),
+                ),
               ),
             ),
           ),
         ],
-      ),
+      ],
     );
   }
 
@@ -234,6 +265,17 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
             ),
           );
         }).toList(),
+      ),
+    );
+  }
+
+  Widget buildEmptyItems() {
+    return SystemCard(
+      isButton: true,
+      padding: EdgeInsets.all(16),
+      child: Text(
+        "There is no items",
+        style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
       ),
     );
   }
