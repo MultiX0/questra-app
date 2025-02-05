@@ -1,3 +1,4 @@
+import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
 
 import 'imports.dart';
@@ -10,11 +11,16 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> {
-  // @override
-  // void initState() {
-  //   ref.read(authStateProvider.notifier).logout();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userId = ref.read(supabaseProvider).auth.currentUser?.id;
+      if (userId != null) {
+        await NotificationsRepository.insertLog(userId);
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
