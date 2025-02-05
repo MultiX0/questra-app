@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:questra_app/app.dart';
+import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/firebase_options.dart';
 import 'package:workmanager/workmanager.dart';
 
@@ -17,12 +19,22 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
   // init the databases
-  _supabaseInit();
-  _firebaseInit();
+  await _supabaseInit();
+  await _firebaseInit();
   initWorkManager();
+  await initNotifications();
 
   editChromeSystem();
   runApp(ProviderScope(child: const App()));
+}
+
+Future<void> initNotifications() async {
+  final FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
+  await notifications.initialize(
+    const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    ),
+  );
 }
 
 void initWorkManager() {
@@ -31,6 +43,7 @@ void initWorkManager() {
     "questCheckTask",
     "questCheck",
     frequency: const Duration(minutes: 15),
+    initialDelay: const Duration(seconds: 10),
   );
 }
 
@@ -43,6 +56,9 @@ Future<void> _supabaseInit() async {
       url: _url,
       anonKey: _key,
       debug: kDebugMode,
+      authOptions: FlutterAuthClientOptions(
+        localStorage: SecureLocalStorage(),
+      ),
     );
   } catch (e) {
     log(e.toString());

@@ -42,6 +42,12 @@
         android:label="Questra"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+
+        <service
+            android:name="com.transistorsoft.flutter.backgroundfetch.HeadlessJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

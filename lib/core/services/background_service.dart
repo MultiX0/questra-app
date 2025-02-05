@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:questra_app/core/services/secure_storage.dart';
+import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
 
@@ -10,6 +12,7 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     await _initializeSupabase();
     await _checkExpiringQuests();
+    await _sendSystemMessage();
     return true;
   });
 }
@@ -23,11 +26,23 @@ Future<void> _initializeSupabase() async {
       url: _url,
       anonKey: _key,
       debug: kDebugMode,
+      authOptions: FlutterAuthClientOptions(
+        localStorage: SecureLocalStorage(),
+      ),
     );
   } catch (e) {
     log(e.toString());
     throw Exception(e);
   }
+}
+
+Future<void> _sendSystemMessage() async {
+  final session = Supabase.instance.client.auth.currentSession;
+  if (session == null) return;
+
+  final userId = session.user.id;
+
+  await NotificationsRepository.sendNotificationFunction(userId);
 }
 
 Future<void> _checkExpiringQuests() async {
@@ -51,12 +66,12 @@ Future<void> _checkExpiringQuests() async {
     final timeLeft = expectedTime.difference(now);
 
     if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
-      _sendNotification('2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
+      sendNotification('2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
       await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
     }
 
     if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
-      _sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
+      sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
       await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
     }
   }
@@ -68,7 +83,7 @@ Future<void> _updateNotificationStatus(String questId, String column) async {
       .update({column: true}).eq('user_quest_id', questId);
 }
 
-Future<void> _sendNotification(String body, String title) async {
+Future<void> sendNotification(String body, String title) async {
   const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
     'quest_channel',
     'Quest Notifications',

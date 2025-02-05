@@ -189,18 +189,21 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
         ),
         if (item.locked) ...[
           Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.black.withValues(
-                    alpha: 0.8,
-                  )),
-              child: Center(
-                child: Text(
-                  "Locked",
-                  style: TextStyle(
-                    fontFamily: AppFonts.header,
-                    fontSize: 20,
+            child: GestureDetector(
+              onTap: () => CustomToast.systemToast("this item is locked for now"),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black.withValues(
+                      alpha: 0.8,
+                    )),
+                child: Center(
+                  child: Text(
+                    "Locked",
+                    style: TextStyle(
+                      fontFamily: AppFonts.header,
+                      fontSize: 20,
+                    ),
                   ),
                 ),
               ),

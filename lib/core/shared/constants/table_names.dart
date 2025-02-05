@@ -17,4 +17,5 @@ class TableNames {
   static const themes = 'themes';
   static const transactions = 'transactions';
   static const wallet = 'wallet';
+  static const login_logs = "login_logs";
 }
