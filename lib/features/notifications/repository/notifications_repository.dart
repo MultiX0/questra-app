@@ -97,6 +97,7 @@ class NotificationsRepository {
         ''';
 
       final res = await AiNotifications.makeAiResponse(
+        maxTokens: 500,
         content: [
           {"role": "user", "content": prompt},
           ...lifeImprovementSystemPrompts,
