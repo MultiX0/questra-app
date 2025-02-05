@@ -22,12 +22,12 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'completion_time_date' must be calculated to fall within the same day as the quest is assigned. It is not necessary to set it as the current time plus the 'estimated_completion_time'; rather, it should provide a flexible deadline within that day. Additionally, when creating a new quest, take into account the 'estimated_completion_time' and the 'created_at' time of any already in_progress quest to avoid overlapping or conflicting time frames. Return this deadline in ISO 8601 string format (e.g., 2025-01-08T14:00:00Z)."
+        "The 'completion_time_date' must represent the latest possible date and time by which the quest can be completed. It should provide flexibility for the user, allowing them to complete the task within the day or over multiple days, depending on the estimated_completion_time. For example, if the estimated_completion_time is '30 minutes', the completion_time_date could be set to the end of the same day (e.g., 23:59:59Z). If the quest is more complex, such as 'two days', the completion_time_date could extend to two days from the current date. Always ensure the completion_time_date is in ISO 8601 string format (e.g., 2025-01-08T23:59:59Z)."
   },
   {
     "role": "system",
     "content":
-        "**When multiple in-progress quests exist:** Calculate total time commitment by summing their remaining durations (based on created_at and current_time). Ensure new quest's estimated_completion_time doesn't exceed user's daily time_availability minus this total. Prioritize spreading deadlines across available daytime hours."
+        "When generating the 'completion_time_date', take into account the 'estimated_completion_time' and the 'created_at' time of any already in-progress quests. Ensure that new quests do not overlap with the completion windows of existing quests unless the user has sufficient time availability. For example, if a user has an ongoing quest with a 'completion_time_date' of 2025-01-08T14:00:00Z, the new quest's 'completion_time_date' should be scheduled after this time or allow sufficient buffer to avoid overwhelming the user."
   },
   {
     "role": "system",
@@ -112,7 +112,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "When generating quests, avoid overlapping with current or ongoing quests provided by the user. Ensure new quests offer fresh challenges, themes, or formats to maintain variety and excitement. Take into account any active quest's 'created_at' time and its 'estimated_completion_time' when scheduling the new quest's 'completion_time_date' to ensure there is sufficient, non-conflicting time available for the user."
+        "When generating quests, avoid overlapping with current or ongoing quests provided by the user. Ensure new quests offer fresh challenges, themes, or formats to maintain variety and excitement."
   },
   {
     "role": "system",
