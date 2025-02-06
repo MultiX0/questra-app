@@ -39,3 +39,4 @@ export 'package:questra_app/features/quests/models/quest_model.dart';
 export 'package:questra_app/features/quests/models/quest_type_model.dart';
 export 'package:supabase_flutter/supabase_flutter.dart';
 export 'package:uuid/uuid.dart';
+export 'package:unity_ads_plugin/unity_ads_plugin.dart';

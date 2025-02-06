@@ -20,9 +20,10 @@ Future<void> main() async {
 
   // init the databases
   await _supabaseInit();
-  await _firebaseInit();
+  _firebaseInit();
   initWorkManager();
   await initNotifications();
+  await initUnityAds();
 
   editChromeSystem();
   runApp(ProviderScope(child: const App()));
@@ -34,6 +35,15 @@ Future<void> initNotifications() async {
     const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     ),
+  );
+}
+
+Future<void> initUnityAds() async {
+  final PROJECT_GAME_ID = dotenv.env["UNITY_PROJECT_ID"] ?? "";
+  await UnityAds.init(
+    gameId: PROJECT_GAME_ID,
+    onComplete: () => log('Initialization Complete'),
+    onFailed: (error, message) => log('Initialization Failed: $error $message'),
   );
 }
 

@@ -1,4 +1,6 @@
 import 'package:flutter_glow/flutter_glow.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/imports.dart';
 
@@ -8,6 +10,7 @@ class NewQuestsSystemCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final isLoading = ref.watch(adsServiceProvider);
 
     return SystemCard(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: size.width * .15),
@@ -33,26 +36,36 @@ class NewQuestsSystemCard extends ConsumerWidget {
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-              backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(
-                  color: HexColor('7AD5FF'),
-                ),
+          if (isLoading) ...[
+            Center(
+              child: LoadingAnimationWidget.beat(
+                color: AppColors.primary,
+                size: 30,
               ),
-              foregroundColor: AppColors.whiteColor,
-              textStyle: TextStyle(fontWeight: FontWeight.bold),
+            )
+          ] else ...[
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
+                backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(
+                    color: HexColor('7AD5FF'),
+                  ),
+                ),
+                foregroundColor: AppColors.whiteColor,
+                textStyle: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onPressed: () async {
+                await ref.read(adsServiceProvider.notifier).showAd();
+                CustomToast.systemToast("making new quest for you...", systemMessage: true);
+                await ref.read(aiFunctionsProvider).generateQuests();
+                await ref.read(aiFunctionsProvider).generateQuests();
+              },
+              child: Text("new quests"),
             ),
-            onPressed: () async {
-              CustomToast.systemToast("making new quest for you...", systemMessage: true);
-              await ref.read(aiFunctionsProvider).generateQuests();
-              await ref.read(aiFunctionsProvider).generateQuests();
-            },
-            child: Text("new quests"),
-          )
+          ],
         ],
       ),
     );
