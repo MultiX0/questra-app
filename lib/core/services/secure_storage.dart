@@ -5,35 +5,51 @@ class SecureLocalStorage implements LocalStorage {
   final FlutterSecureStorage _secureStorage;
   static const _sessionKey = 'supabase_session';
 
-  // We'll store the session in memory so we can provide synchronous getters.
+  // Store session in memory for sync access
   String? _session;
 
   SecureLocalStorage([FlutterSecureStorage? secureStorage])
       : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
-  /// The access token getter returns the current session string.
-
-  /// Indicates whether a session (access token) is available.
-
-  /// Initializes the storage by attempting to read a previously persisted session.
+  /// Initializes storage and loads any existing session
   @override
   Future<void> initialize() async {
     _session = await _secureStorage.read(key: _sessionKey);
   }
 
-  /// Persists the given session (access token) to secure storage.
+  /// Gets the current stored session
+  Future<String?> getSession() async {
+    return _session ?? await _secureStorage.read(key: _sessionKey);
+  }
+
+  /// Persists session to secure storage
   @override
   Future<void> persistSession(String session) async {
     _session = session;
     await _secureStorage.write(key: _sessionKey, value: session);
   }
 
+  /// Removes the stored session
   @override
   Future<void> removePersistedSession() async {
     _session = null;
     await _secureStorage.delete(key: _sessionKey);
   }
 
+  /// Gets current access token
+  @override
+  Future<String?> accessToken() async {
+    return _session;
+  }
+
+  /// Checks if access token exists
+  @override
+  Future<bool> hasAccessToken() async {
+    final token = await getSession();
+    return token != null;
+  }
+
+  // Helper methods for general secure storage
   Future<String?> read(String key) {
     return _secureStorage.read(key: key);
   }
@@ -46,13 +62,14 @@ class SecureLocalStorage implements LocalStorage {
     return _secureStorage.delete(key: key);
   }
 
-  @override
-  Future<String?> accessToken() async {
-    return _session;
+  /// Gets all stored key/value pairs
+  Future<Map<String, String>> getAll() async {
+    return await _secureStorage.readAll();
   }
 
-  @override
-  Future<bool> hasAccessToken() async {
-    return _session != null;
+  /// Clears all stored data
+  Future<void> deleteAll() async {
+    await _secureStorage.deleteAll();
+    _session = null;
   }
 }

@@ -14,7 +14,7 @@ class _AppState extends ConsumerState<App> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final userId = ref.read(supabaseProvider).auth.currentUser?.id;
+      final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
         await NotificationsRepository.insertLog(userId);
       }

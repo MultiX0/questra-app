@@ -10,10 +10,16 @@ import 'package:questra_app/imports.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    await _initializeSupabase();
-    await _checkExpiringQuests();
-    await _sendSystemMessage();
-    return true;
+    try {
+      await _initializeSupabase();
+      await _checkExpiringQuests();
+      await _sendSystemMessage();
+      await sendNotification("test", "this is periodic test");
+      return true;
+    } catch (e) {
+      log('Background task failed: $e');
+      return false;
+    }
   });
 }
 
@@ -22,16 +28,18 @@ final _key = dotenv.env['SUPABASE_KEY'] ?? "";
 
 Future<void> _initializeSupabase() async {
   try {
+    final secureStorage = SecureLocalStorage();
+    await secureStorage.initialize();
+
     await Supabase.initialize(
       url: _url,
       anonKey: _key,
       debug: kDebugMode,
       authOptions: FlutterAuthClientOptions(
-        localStorage: SecureLocalStorage(),
-      ),
+          localStorage: secureStorage, detectSessionInUri: true, autoRefreshToken: true),
     );
   } catch (e) {
-    log(e.toString());
+    log('Failed to initialize Supabase: $e');
     throw Exception(e);
   }
 }
@@ -41,6 +49,7 @@ Future<void> _sendSystemMessage() async {
   if (session == null) return;
 
   final userId = session.user.id;
+  await Supabase.instance.client.from("test").insert({KeyNames.user_id: userId});
 
   await NotificationsRepository.sendNotificationFunction(userId);
 }
@@ -84,19 +93,33 @@ Future<void> _updateNotificationStatus(String questId, String column) async {
 }
 
 Future<void> sendNotification(String body, String title) async {
-  const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-    'quest_channel',
-    'Quest Notifications',
-    importance: Importance.max,
-    priority: Priority.high,
-  );
+  try {
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'quest_channel',
+      'Quest Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
+    );
 
-  const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
 
-  final FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
-  await notifications.initialize(const InitializationSettings(
-    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-  ));
+    final FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
 
-  await notifications.show(0, title, body, platformDetails);
+    await notifications.initialize(
+      const InitializationSettings(
+        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      ),
+    );
+
+    await notifications.show(
+      DateTime.now().millisecond, // unique ID for each notification
+      title,
+      body,
+      platformDetails,
+    );
+  } catch (e) {
+    log('Failed to send notification: $e');
+  }
 }

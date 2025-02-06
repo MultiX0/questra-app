@@ -38,12 +38,26 @@ Future<void> initNotifications() async {
 }
 
 void initWorkManager() {
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
+  Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: false,
+  );
+
   Workmanager().registerPeriodicTask(
     "questCheckTask",
     "questCheck",
     frequency: const Duration(minutes: 15),
     initialDelay: const Duration(seconds: 10),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+      requiresBatteryNotLow: false,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      requiresStorageNotLow: false,
+    ),
+    existingWorkPolicy: ExistingWorkPolicy.replace,
+    backoffPolicy: BackoffPolicy.linear,
+    backoffPolicyDelay: const Duration(minutes: 15),
   );
 }
 
@@ -52,12 +66,17 @@ final _key = dotenv.env['SUPABASE_KEY'] ?? "";
 
 Future<void> _supabaseInit() async {
   try {
+    final secureStorage = SecureLocalStorage();
+    await secureStorage.initialize();
+
     await Supabase.initialize(
       url: _url,
       anonKey: _key,
       debug: kDebugMode,
       authOptions: FlutterAuthClientOptions(
-        localStorage: SecureLocalStorage(),
+        localStorage: secureStorage,
+        detectSessionInUri: true,
+        autoRefreshToken: true,
       ),
     );
   } catch (e) {
