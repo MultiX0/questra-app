@@ -20,8 +20,8 @@ void callbackDispatcher() {
           await _sendSystemMessage();
 
           // Always send a test notification to verify background execution
-          await sendNotification(
-              "Background Task", "Background task executed at ${DateTime.now()}");
+          // await sendNotification(
+          //     "Background Task", "Background task executed at ${DateTime.now()}");
           break;
       }
       return Future.value(true);
@@ -34,13 +34,15 @@ void callbackDispatcher() {
   });
 }
 
-final _url = dotenv.env['SUPABASE_URL'] ?? "";
-final _key = dotenv.env['SUPABASE_KEY'] ?? "";
-
 Future<void> _initializeSupabase() async {
   try {
     final secureStorage = SecureLocalStorage();
     await secureStorage.initialize();
+
+    await dotenv.load(fileName: '.env');
+
+    final _url = dotenv.env['SUPABASE_URL'] ?? "";
+    final _key = dotenv.env['SUPABASE_KEY'] ?? "";
 
     await Supabase.initialize(
       url: _url,
@@ -56,44 +58,55 @@ Future<void> _initializeSupabase() async {
 }
 
 Future<void> _sendSystemMessage() async {
-  final session = Supabase.instance.client.auth.currentSession;
-  if (session == null) return;
+  try {
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session == null) return;
 
-  final userId = session.user.id;
-  await Supabase.instance.client.from("test").insert({KeyNames.user_id: userId});
+    final userId = session.user.id;
+    await Supabase.instance.client.from("test").insert({KeyNames.user_id: userId});
 
-  await NotificationsRepository.sendNotificationFunction(userId);
+    await NotificationsRepository.sendNotificationFunction(userId);
+  } catch (e) {
+    log(e.toString());
+    throw Exception(e);
+  }
 }
 
 Future<void> _checkExpiringQuests() async {
-  final session = Supabase.instance.client.auth.currentSession;
-  if (session == null) return;
+  try {
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session == null) return;
 
-  final userId = session.user.id;
-  final now = DateTime.now().toUtc();
+    final userId = session.user.id;
+    final now = DateTime.now().toUtc();
 
-  final response = await Supabase.instance.client
-      .from('user_quests')
-      .select()
-      .eq('user_id', userId)
-      .eq('status', 'in_progress')
-      .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
-      .gt('expected_completion_time_date', now)
-      .or('notified_two_hours.is.false,notified_one_hour.is.false');
+    final response = await Supabase.instance.client
+        .from('user_quests')
+        .select()
+        .eq('user_id', userId)
+        .eq('status', 'in_progress')
+        .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
+        .gt('expected_completion_time_date', now)
+        .or('notified_two_hours.is.false,notified_one_hour.is.false');
 
-  for (final quest in response) {
-    final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
-    final timeLeft = expectedTime.difference(now);
+    for (final quest in response) {
+      final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
+      final timeLeft = expectedTime.difference(now);
 
-    if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
-      sendNotification('2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
-      await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
+      if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
+        sendNotification(
+            '2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
+        await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
+      }
+
+      if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
+        sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
+        await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
+      }
     }
-
-    if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
-      sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
-      await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
-    }
+  } catch (e) {
+    log(e.toString());
+    rethrow;
   }
 }
 
