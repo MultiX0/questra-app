@@ -64,4 +64,8 @@ class KeyNames {
   static const is_active = 'is_active';
   static const acquired_at = 'acquired_at';
   static const locked = 'locked';
+  static const perfect_time_to_send = 'perfect_time_to_send';
+  static const next_perfect_time = 'next_perfect_time';
+  static const notification = 'notification';
+  static const sent_now = 'sent_now';
 }

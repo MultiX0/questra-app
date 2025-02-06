@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:questra_app/core/models/login_logs_model.dart';
 import 'package:questra_app/core/services/background_service.dart';
+import 'package:questra_app/features/notifications/models/notification_log_model.dart';
 import 'package:questra_app/features/quests/ai/ai_notifications.dart';
 import 'package:questra_app/features/quests/ai/notifications_system_parts.dart';
 import 'package:questra_app/imports.dart';
@@ -12,6 +13,7 @@ class NotificationsRepository {
   static final _client = Supabase.instance.client;
   static SupabaseQueryBuilder get _logsTable => _client.from(TableNames.login_logs);
   static SupabaseQueryBuilder get _playerQuestsTable => _client.from(TableNames.user_quests);
+  static SupabaseQueryBuilder get _notificationLogs => _client.from(TableNames.notification_logs);
 
   static Future<void> insertLog(final String userId) async {
     try {
@@ -57,6 +59,16 @@ class NotificationsRepository {
           await prefs.setString("next_perfect_time", NPTTS ?? "");
           await prefs.setString("notification", notification ?? "");
 
+          final notificationModel = _makeNotificationModel(
+            next_perfect_time: DateTime.parse(NPTTS.toString()),
+            notification: notification,
+            perfect_time_to_send: DateTime.parse(PTTS.toString()),
+            sent_now: sentNow,
+            userId: userId,
+          );
+
+          await insertNotificationLog(notificationModel);
+
           if (sentNow) {
             await sendNotification(notification, "System");
           }
@@ -74,6 +86,16 @@ class NotificationsRepository {
         await prefs.setString("next_perfect_time", NPTTS ?? "");
         await prefs.setString("notification", notification ?? "");
 
+        final notificationModel = _makeNotificationModel(
+          next_perfect_time: DateTime.parse(NPTTS.toString()),
+          notification: notification,
+          perfect_time_to_send: DateTime.parse(PTTS.toString()),
+          sent_now: sentNow,
+          userId: userId,
+        );
+
+        await insertNotificationLog(notificationModel);
+
         if (sentNow) {
           await sendNotification(notification, "System");
         }
@@ -81,6 +103,32 @@ class NotificationsRepository {
     } catch (e) {
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  static NotificationLogModel _makeNotificationModel({
+    required String notification,
+    required String userId,
+    required DateTime perfect_time_to_send,
+    required DateTime next_perfect_time,
+    required bool sent_now,
+  }) {
+    return NotificationLogModel(
+      id: -1,
+      notification: notification,
+      userId: userId,
+      perfect_time_to_send: perfect_time_to_send,
+      next_perfect_time: next_perfect_time,
+      sent_now: sent_now,
+    );
+  }
+
+  static Future<void> insertNotificationLog(NotificationLogModel notification) async {
+    try {
+      await _notificationLogs.insert(notification.toMap());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
     }
   }
 
@@ -112,13 +160,13 @@ class NotificationsRepository {
   }
 
   static Future<List<QuestModel>> _currentlyOngoingQuests(String user_id) async {
-    try {
-      final data = await _playerQuestsTable
-          .select('*')
-          .eq(KeyNames.status, 'in_progress')
-          .eq(KeyNames.user_id, user_id);
+    final data = await _playerQuestsTable
+        .select('*')
+        .eq(KeyNames.status, 'in_progress')
+        .eq(KeyNames.user_id, user_id);
 
-      List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
+    List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
+    try {
       return quests;
     } catch (e) {
       log(e.toString());

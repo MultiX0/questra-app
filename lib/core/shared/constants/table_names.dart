@@ -18,4 +18,5 @@ class TableNames {
   static const transactions = 'transactions';
   static const wallet = 'wallet';
   static const login_logs = "login_logs";
+  static const notification_logs = 'notification_logs';
 }

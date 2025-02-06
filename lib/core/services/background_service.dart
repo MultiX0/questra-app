@@ -63,7 +63,6 @@ Future<void> _sendSystemMessage() async {
     if (session == null) return;
 
     final userId = session.user.id;
-    await Supabase.instance.client.from("test").insert({KeyNames.user_id: userId});
 
     await NotificationsRepository.sendNotificationFunction(userId);
   } catch (e) {
