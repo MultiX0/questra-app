@@ -9,16 +9,27 @@ import 'package:questra_app/imports.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
+  Workmanager().executeTask((taskName, inputData) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
     try {
-      await _initializeSupabase();
-      await _checkExpiringQuests();
-      await _sendSystemMessage();
-      await sendNotification("test", "this is periodic test");
-      return true;
+      switch (taskName) {
+        case 'questCheck':
+          await _initializeSupabase();
+          await _checkExpiringQuests();
+          await _sendSystemMessage();
+
+          // Always send a test notification to verify background execution
+          await sendNotification(
+              "Background Task", "Background task executed at ${DateTime.now()}");
+          break;
+      }
+      return Future.value(true);
     } catch (e) {
       log('Background task failed: $e');
-      return false;
+      await sendNotification("Background task failed", e.toString());
+
+      return Future.value(false);
     }
   });
 }
