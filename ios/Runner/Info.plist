@@ -50,5 +50,7 @@
 	<string>fetch</string>
 	<string>processing</string>
 	</array>
+	<key>com.unity3d.services.core.gameId</key>
+	<string>5790259</string>
 </dict>
 </plist>

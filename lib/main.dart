@@ -23,7 +23,6 @@ Future<void> main() async {
   _firebaseInit();
   initWorkManager();
   await initNotifications();
-  await initUnityAds();
 
   editChromeSystem();
   runApp(ProviderScope(child: const App()));
@@ -38,15 +37,6 @@ Future<void> initNotifications() async {
   );
 }
 
-Future<void> initUnityAds() async {
-  final PROJECT_GAME_ID = dotenv.env["UNITY_PROJECT_ID"] ?? "";
-  await UnityAds.init(
-    gameId: PROJECT_GAME_ID,
-    onComplete: () => log('Initialization Complete'),
-    onFailed: (error, message) => log('Initialization Failed: $error $message'),
-  );
-}
-
 void initWorkManager() {
   Workmanager().initialize(
     callbackDispatcher,
@@ -57,7 +47,7 @@ void initWorkManager() {
     "questCheckTask",
     "questCheck",
     frequency: const Duration(minutes: 15),
-    initialDelay: const Duration(seconds: 10),
+    initialDelay: const Duration(minutes: 10),
     constraints: Constraints(
       networkType: NetworkType.connected,
       requiresBatteryNotLow: false,

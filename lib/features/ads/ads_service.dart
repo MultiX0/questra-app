@@ -14,21 +14,21 @@ class AdsService extends StateNotifier<bool> {
       state = true;
       await UnityAds.load(
         placementId: 'Rewarded_Android',
-        onComplete: (placementId) => log('Load Complete $placementId'),
+        onComplete: (placementId) async {
+          await UnityAds.showVideoAd(
+            placementId: 'Rewarded_Android',
+            onStart: (placementId) => log('Video Ad $placementId started'),
+            onClick: (placementId) => log('Video Ad $placementId click'),
+            onSkipped: (placementId) => log('Video Ad $placementId skipped'),
+            onComplete: (placementId) {},
+            onFailed: (placementId, error, message) => throw Exception("error: $error"),
+          );
+          state = false;
+        },
         onFailed: (placementId, error, message) {
           throw Exception("error: $error");
         },
       );
-
-      await UnityAds.showVideoAd(
-        placementId: 'Rewarded_Android',
-        onStart: (placementId) => log('Video Ad $placementId started'),
-        onClick: (placementId) => log('Video Ad $placementId click'),
-        onSkipped: (placementId) => log('Video Ad $placementId skipped'),
-        onComplete: (placementId) => log('Video Ad $placementId completed'),
-        onFailed: (placementId, error, message) => throw Exception("error: $error"),
-      );
-      state = false;
     } catch (e) {
       state = false;
       log(e.toString());
