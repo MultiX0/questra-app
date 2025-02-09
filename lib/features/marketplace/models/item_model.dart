@@ -53,7 +53,7 @@ class ItemModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      KeyNames.id: id,
+      // KeyNames.id: id,
       KeyNames.name: name,
       KeyNames.description: description,
       KeyNames.type: type,
@@ -68,7 +68,7 @@ class ItemModel {
 
   factory ItemModel.fromMap(Map<String, dynamic> map) {
     return ItemModel(
-      id: map[KeyNames.id] ?? "",
+      id: map[KeyNames.item_id] ?? "",
       name: map[KeyNames.name] ?? "",
       description: map[KeyNames.description] != null ? map[KeyNames.description] ?? "" : null,
       type: ((map[KeyNames.type] ?? "") as String).toLowerCase(),

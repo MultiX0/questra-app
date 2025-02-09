@@ -1,9 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/marketplace/controller/marketplace_controller.dart';
 import 'package:questra_app/features/marketplace/models/item_model.dart';
+import 'package:questra_app/features/marketplace/widgets/buy_item_widget.dart';
 import 'package:questra_app/features/marketplace/widgets/item_card_loading.dart';
 import 'package:questra_app/imports.dart';
 
@@ -16,30 +19,47 @@ class MarketplacePage extends ConsumerStatefulWidget {
 
 class _MarketplacePageState extends ConsumerState<MarketplacePage> {
   String? selected;
+  ItemModel? selectedItem;
 
   @override
   Widget build(BuildContext context) {
-    return BackgroundWidget(
-      child: Scaffold(
-        appBar: TheAppBar(
-          title: "Marketplace",
-          actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 5),
-              child: IconButton(
-                onPressed: () {},
-                icon: Icon(LucideIcons.shopping_cart),
+    return WillPopScope(
+      onWillPop: () async {
+        if (selectedItem != null) {
+          setState(() {
+            selectedItem = null;
+          });
+          return false;
+        }
+
+        return true;
+      },
+      child: BackgroundWidget(
+        child: Scaffold(
+          appBar: TheAppBar(
+            title: "Marketplace",
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: 5),
+                child: IconButton(
+                  onPressed: () {},
+                  icon: Icon(LucideIcons.shopping_cart),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+          body: SafeArea(child: buildBody()),
         ),
-        body: SafeArea(child: buildBody()),
       ),
     );
   }
 
   Widget buildBody() {
     final size = MediaQuery.sizeOf(context);
+
+    if (selectedItem != null) {
+      return BuyItemWidget(item: selectedItem!);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,6 +156,11 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
     return Stack(
       children: [
         SystemCard(
+          onTap: () {
+            setState(() {
+              selectedItem = item;
+            });
+          },
           duration: null,
           padding: EdgeInsets.all(20),
           child: Column(

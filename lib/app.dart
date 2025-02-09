@@ -16,9 +16,9 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> {
   @override
   void initState() {
-    initializeUnityAds();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await initializeUnityAds();
+
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
         await NotificationsRepository.insertLog(userId);
@@ -27,7 +27,7 @@ class _AppState extends ConsumerState<App> {
     super.initState();
   }
 
-  final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
+  // final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
 
   Future<void> initializeUnityAds() async {
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -37,7 +37,7 @@ class _AppState extends ConsumerState<App> {
     }
 
     UnityAds.init(
-      gameId: _gameId,
+      gameId: "5790259",
       testMode: kDebugMode,
       onComplete: () {
         log('Unity Ads initialization complete');

@@ -30,39 +30,39 @@ class NotificationsRepository {
       final prefs = await SharedPreferences.getInstance();
       final now = DateTime.now();
 
-      final perfectTimeToSent = prefs.getString("perfect_time_to_send");
-      final nextPerfectTimeToSent = prefs.getString("next_perfect_time");
+      final perfectTimeToSent = prefs.getInt("perfect_time_to_send");
+      final nextPerfectTimeToSent = prefs.getInt("next_perfect_time");
       final notificationText = prefs.getString("notification");
 
-      if (perfectTimeToSent != null && perfectTimeToSent.isNotEmpty) {
-        final date = DateTime.tryParse(perfectTimeToSent) ?? DateTime.now();
+      if (perfectTimeToSent != null && perfectTimeToSent != 0) {
+        final date = DateTime.fromMillisecondsSinceEpoch(perfectTimeToSent);
         if (now.isAfter(date) || now == date) {
           if (notificationText != null && notificationText.isNotEmpty) {
             await sendNotification(notificationText, "System");
-            await prefs.setString("perfect_time_to_send", "");
+            await prefs.setInt("perfect_time_to_send", 0);
           }
         }
         return;
       }
 
-      if (nextPerfectTimeToSent != null && nextPerfectTimeToSent.isNotEmpty) {
-        final date = DateTime.tryParse(nextPerfectTimeToSent) ?? DateTime.now();
+      if (nextPerfectTimeToSent != null && nextPerfectTimeToSent != 0) {
+        final date = DateTime.fromMillisecondsSinceEpoch(nextPerfectTimeToSent);
         if (now.isAfter(date) || now == date) {
           final data = await _generatePrompt(userId);
           Map<String, dynamic> jsonData = jsonDecode(data);
-          final PTTS = jsonData["perfect_time_to_send"];
-          final NPTTS = jsonData["next_perfect_time"];
+          final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
+          final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
           final notification = jsonData["notification"];
           bool sentNow = jsonData["sent_now"];
 
-          await prefs.setString("perfect_time_to_send", PTTS ?? "");
-          await prefs.setString("next_perfect_time", NPTTS ?? "");
+          await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
+          await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
           await prefs.setString("notification", notification ?? "");
 
           final notificationModel = _makeNotificationModel(
-            next_perfect_time: DateTime.parse(NPTTS.toString()),
-            notification: notification,
-            perfect_time_to_send: DateTime.parse(PTTS.toString()),
+            next_perfect_time: jsonData["perfect_time_to_send"],
+            notification: jsonData["next_perfect_time"],
+            perfect_time_to_send: jsonData["perfect_time_to_send"],
             sent_now: sentNow,
             userId: userId,
           );
@@ -77,19 +77,19 @@ class NotificationsRepository {
       } else {
         final data = await _generatePrompt(userId);
         Map<String, dynamic> jsonData = jsonDecode(data);
-        final PTTS = jsonData["perfect_time_to_send"];
-        final NPTTS = jsonData["next_perfect_time"];
+        final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
+        final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
         final notification = jsonData["notification"];
         bool sentNow = jsonData["sent_now"];
 
-        await prefs.setString("perfect_time_to_send", PTTS ?? "");
-        await prefs.setString("next_perfect_time", NPTTS ?? "");
+        await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
+        await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
         await prefs.setString("notification", notification ?? "");
 
         final notificationModel = _makeNotificationModel(
-          next_perfect_time: DateTime.parse(NPTTS.toString()),
-          notification: notification,
-          perfect_time_to_send: DateTime.parse(PTTS.toString()),
+          next_perfect_time: jsonData["perfect_time_to_send"],
+          notification: jsonData["next_perfect_time"],
+          perfect_time_to_send: jsonData["perfect_time_to_send"],
           sent_now: sentNow,
           userId: userId,
         );

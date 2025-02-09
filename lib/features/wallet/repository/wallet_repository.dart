@@ -51,4 +51,17 @@ class WalletRepository {
       throw Exception(e);
     }
   }
+
+  Future<void> reduceCoins({required String userId, required int amount}) async {
+    final userWallet = await getUserWallet(userId);
+    int newBalance = userWallet.balance - amount;
+    if (newBalance < 0) {
+      newBalance = 0;
+    }
+
+    await _walletTable.update({KeyNames.balance: newBalance}).eq(
+      KeyNames.user_id,
+      userId,
+    );
+  }
 }

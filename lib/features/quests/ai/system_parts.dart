@@ -22,13 +22,17 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'completion_time_date' must represent the latest possible date and time by which the quest can be completed. It should provide flexibility for the user, allowing them to complete the task within the day or over multiple days, depending on the estimated_completion_time. For example, if the estimated_completion_time is '30 minutes', the completion_time_date could be set to the end of the same day (e.g., 23:59:59Z). If the quest is more complex, such as 'two days', the completion_time_date could extend to two days from the current date. Always ensure the completion_time_date is in ISO 8601 string format (e.g., 2025-01-08T23:59:59Z)."
+        "The 'completion_time_date' must represent the latest possible date and time by which the quest can be completed. It should provide flexibility for the user, allowing them to complete the task within the day or over multiple days, depending on the estimated_completion_time. For example, if the estimated_completion_time is '30 minutes', the completion_time_date could be set to the end of the same day or the next day (e.g., 23:59:59Z). If the quest is more complex, such as 'two days', the completion_time_date could extend to two days from the current date. Always ensure the completion_time_date is in ISO 8601 string format (e.g., 2025-01-08T23:59:59Z)."
   },
   {
     "role": "system",
     "content":
         "When generating the 'completion_time_date', take into account the 'estimated_completion_time' and the 'created_at' time of any already in-progress quests. Ensure that new quests do not overlap with the completion windows of existing quests unless the user has sufficient time availability. For example, if a user has an ongoing quest with a 'completion_time_date' of 2025-01-08T14:00:00Z, the new quest's 'completion_time_date' should be scheduled after this time or allow sufficient buffer to avoid overwhelming the user."
   },
+  // {
+  //   "role":"system",
+  //   "content":"completion_time_date"
+  // },
   {
     "role": "system",
     "content":
