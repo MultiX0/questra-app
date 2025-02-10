@@ -60,8 +60,8 @@ class NotificationsRepository {
           await prefs.setString("notification", notification ?? "");
 
           final notificationModel = _makeNotificationModel(
-            next_perfect_time: jsonData["perfect_time_to_send"],
-            notification: jsonData["next_perfect_time"],
+            next_perfect_time: jsonData["next_perfect_time"],
+            notification: jsonData["notification"],
             perfect_time_to_send: jsonData["perfect_time_to_send"],
             sent_now: sentNow,
             userId: userId,
@@ -87,8 +87,8 @@ class NotificationsRepository {
         await prefs.setString("notification", notification ?? "");
 
         final notificationModel = _makeNotificationModel(
-          next_perfect_time: jsonData["perfect_time_to_send"],
-          notification: jsonData["next_perfect_time"],
+          next_perfect_time: jsonData["next_perfect_time"],
+          notification: jsonData["notification"],
           perfect_time_to_send: jsonData["perfect_time_to_send"],
           sent_now: sentNow,
           userId: userId,
