@@ -12,7 +12,7 @@ class RankingFunctions {
 
   Future<void> refreshRanking(String userId) async {
     final currentRanking = await _ref.read(rankingProvider).getPlayerGlobalRank(userId);
-    _ref.read(playerRankingProvider.notifier).state = currentRanking;
     _ref.invalidate(playerRankingProvider);
+    _ref.read(playerRankingProvider.notifier).state = currentRanking;
   }
 }

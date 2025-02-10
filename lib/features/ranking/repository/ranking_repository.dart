@@ -17,7 +17,9 @@ class RankingRepository {
       final data = await _client.rpc(FunctionNames.get_player_rank, params: {
         KeyNames.user_id: userId,
       });
-      int? rank = data["current_rank"];
+      log("ranking data: $data");
+      int? rank = data[0]["current_rank"];
+      log("user rank is: $rank");
       return rank;
     } catch (e) {
       log(e.toString());
