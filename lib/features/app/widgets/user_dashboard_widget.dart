@@ -1,6 +1,7 @@
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/imports.dart';
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 
@@ -16,6 +17,7 @@ class UserDashboardWidget extends ConsumerWidget {
       max: calculateXpForLevel(user.level?.level ?? 1).toDouble(),
       width: size.width,
     );
+    dynamic rank = ref.watch(playerRankingProvider) ?? "NA";
     return SystemCard(
       duration: const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
@@ -124,7 +126,7 @@ class UserDashboardWidget extends ConsumerWidget {
             children: [
               GlowText(
                 glowColor: Colors.white.withValues(alpha: .85),
-                text: "Rank: #1",
+                text: "Rank: #$rank",
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.white.withValues(alpha: .85),
@@ -132,16 +134,19 @@ class UserDashboardWidget extends ConsumerWidget {
                   fontFamily: AppFonts.primary,
                 ),
               ),
-              GlowText(
-                glowColor: Colors.white.withValues(alpha: .85),
-                text: "Streak: #5",
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white.withValues(alpha: .85),
-                  fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.primary,
-                ),
-              ),
+              const SizedBox(),
+
+              // TODO implement streak system
+              // GlowText(
+              //   glowColor: Colors.white.withValues(alpha: .85),
+              //   text: "Streak: #5",
+              //   style: TextStyle(
+              //     fontSize: 12,
+              //     color: Colors.white.withValues(alpha: .85),
+              //     fontWeight: FontWeight.bold,
+              //     fontFamily: AppFonts.primary,
+              //   ),
+              // ),
             ],
           ),
           SizedBox(

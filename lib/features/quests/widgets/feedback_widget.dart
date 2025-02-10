@@ -1,4 +1,4 @@
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
 
@@ -66,7 +66,7 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       return;
     }
 
-    if (_controller.text.trim().length < 4) {
+    if (_controller.text.trim().length < 4 && !kDebugMode) {
       CustomToast.systemToast(
         "please fill the feedback field",
         systemMessage: true,

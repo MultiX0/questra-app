@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
 
@@ -38,7 +37,7 @@ class _AppState extends ConsumerState<App> {
 
     UnityAds.init(
       gameId: "5790259",
-      testMode: kDebugMode,
+      testMode: false,
       onComplete: () {
         log('Unity Ads initialization complete');
       },

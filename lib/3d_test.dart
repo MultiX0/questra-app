@@ -29,6 +29,8 @@
 //   // to control the animation
 //   O3DController controller = O3DController();
 
+// ignore_for_file: file_names
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(

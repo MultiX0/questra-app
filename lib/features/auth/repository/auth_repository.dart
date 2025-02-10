@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
+import 'package:questra_app/features/ranking/functions/ranking_functions.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -153,6 +154,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         final levelModel = LevelsModel.fromMap(levelEvent);
         if (state?.level != levelModel) {
           state = state?.copyWith(level: levelModel);
+          await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
         }
       }
     } catch (e) {

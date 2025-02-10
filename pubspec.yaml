@@ -62,7 +62,7 @@ dependencies:
   workmanager: ^0.5.2
   flutter_secure_storage: ^9.2.4
   shared_preferences: ^2.5.1
-  unity_ads_plugin: 0.3.19
+  unity_ads_plugin: 0.3.20
   firebase_messaging: ^15.2.2
   firebase_remote_config: ^5.4.0
   connectivity_plus: ^6.1.2

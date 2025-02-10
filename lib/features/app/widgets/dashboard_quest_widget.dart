@@ -21,6 +21,7 @@ class DashboardQuestWidget extends ConsumerWidget {
 
     return SystemCard(
       duration: duration,
+      onTap: () => Navs(context, ref).viewQuest(firstQuest),
       padding: EdgeInsets.all(
         20,
       ),

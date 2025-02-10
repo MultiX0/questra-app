@@ -33,6 +33,7 @@ class MarketplaceController extends StateNotifier<bool> {
         "there's an error right now, please try again later",
         systemMessage: true,
       );
+
       throw Exception(e);
     }
   }
