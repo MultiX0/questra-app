@@ -1145,10 +1145,10 @@ packages:
     dependency: "direct main"
     description:
       name: unity_ads_plugin
-      sha256: fc012dc67884b0813f095907779d88c8c39ccee48900f3e6d6bed4d2e3e4aae4
+      sha256: "53edf3b1d644c0714e70258b022e322c01bdb426a2585afd5c55ca3e2ba73a01"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.20"
+    version: "0.3.21"
   url_launcher:
     dependency: transitive
     description:

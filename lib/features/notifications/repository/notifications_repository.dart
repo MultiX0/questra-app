@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:questra_app/core/models/login_logs_model.dart';
 import 'package:questra_app/core/services/background_service.dart';
-import 'package:questra_app/features/notifications/models/notification_log_model.dart';
 import 'package:questra_app/features/quests/ai/ai_notifications.dart';
 import 'package:questra_app/features/quests/ai/notifications_system_parts.dart';
 import 'package:questra_app/imports.dart';
@@ -74,31 +73,30 @@ class NotificationsRepository {
           }
         }
         return;
-      } else {
-        final data = await _generatePrompt(userId);
-        Map<String, dynamic> jsonData = jsonDecode(data);
-        final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
-        final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
-        final notification = jsonData["notification"];
-        bool sentNow = jsonData["sent_now"];
+      }
+      final data = await _generatePrompt(userId);
+      Map<String, dynamic> jsonData = jsonDecode(data);
+      final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
+      final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
+      final notification = jsonData["notification"];
+      bool sentNow = jsonData["sent_now"];
 
-        await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
-        await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
-        await prefs.setString("notification", notification ?? "");
+      await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
+      await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
+      await prefs.setString("notification", notification ?? "");
 
-        final notificationModel = _makeNotificationModel(
-          next_perfect_time: jsonData["next_perfect_time"],
-          notification: jsonData["notification"],
-          perfect_time_to_send: jsonData["perfect_time_to_send"],
-          sent_now: sentNow,
-          userId: userId,
-        );
+      final notificationModel = _makeNotificationModel(
+        next_perfect_time: jsonData["next_perfect_time"],
+        notification: jsonData["notification"],
+        perfect_time_to_send: jsonData["perfect_time_to_send"],
+        sent_now: sentNow,
+        userId: userId,
+      );
 
-        await insertNotificationLog(notificationModel);
+      await insertNotificationLog(notificationModel);
 
-        if (sentNow) {
-          await sendNotification(notification, "System");
-        }
+      if (sentNow) {
+        await sendNotification(notification, "System");
       }
     } catch (e) {
       log(e.toString());
@@ -106,26 +104,25 @@ class NotificationsRepository {
     }
   }
 
-  static NotificationLogModel _makeNotificationModel({
+  static Map<String, dynamic> _makeNotificationModel({
     required String notification,
     required String userId,
-    required DateTime perfect_time_to_send,
-    required DateTime next_perfect_time,
+    required DateTime? perfect_time_to_send,
+    required DateTime? next_perfect_time,
     required bool sent_now,
   }) {
-    return NotificationLogModel(
-      id: -1,
-      notification: notification,
-      userId: userId,
-      perfect_time_to_send: perfect_time_to_send,
-      next_perfect_time: next_perfect_time,
-      sent_now: sent_now,
-    );
+    return {
+      KeyNames.notification: notification,
+      KeyNames.user_id: userId,
+      KeyNames.perfect_time_to_send: perfect_time_to_send,
+      KeyNames.next_perfect_time: next_perfect_time,
+      KeyNames.sent_now: sent_now,
+    };
   }
 
-  static Future<void> insertNotificationLog(NotificationLogModel notification) async {
+  static Future<void> insertNotificationLog(Map<String, dynamic> notification) async {
     try {
-      await _notificationLogs.insert(notification.toMap());
+      await _notificationLogs.insert(notification);
     } catch (e) {
       log(e.toString());
       rethrow;

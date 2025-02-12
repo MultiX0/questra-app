@@ -4,15 +4,15 @@ class NotificationLogModel {
   final int id;
   final String notification;
   final String userId;
-  final DateTime perfect_time_to_send;
-  final DateTime next_perfect_time;
+  final DateTime? perfect_time_to_send;
+  final DateTime? next_perfect_time;
   final bool sent_now;
   NotificationLogModel({
     required this.id,
     required this.notification,
     required this.userId,
-    required this.perfect_time_to_send,
-    required this.next_perfect_time,
+    this.perfect_time_to_send,
+    this.next_perfect_time,
     required this.sent_now,
   });
 
@@ -38,8 +38,8 @@ class NotificationLogModel {
     return <String, dynamic>{
       KeyNames.notification: notification,
       KeyNames.user_id: userId,
-      KeyNames.perfect_time_to_send: perfect_time_to_send.toIso8601String(),
-      KeyNames.next_perfect_time: next_perfect_time.toIso8601String(),
+      KeyNames.perfect_time_to_send: perfect_time_to_send?.toIso8601String(),
+      KeyNames.next_perfect_time: next_perfect_time?.toIso8601String(),
       KeyNames.sent_now: sent_now,
     };
   }
