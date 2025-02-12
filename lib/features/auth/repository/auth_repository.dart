@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
@@ -115,7 +116,11 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       if (userEvent != null && userEvent.isNotEmpty) {
         var user = UserModel.fromMap(userEvent);
         final data = await _ref.read(profileRepositoryProvider).getUserBirthDate(user.id);
-        user = user.copyWith(birth_date: DateTime.tryParse(data));
+        final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
+        user = user.copyWith(
+          birth_date: DateTime.tryParse(data),
+          activeTitle: activeTitle,
+        );
 
         if (state != user && user.id.isNotEmpty) {
           if (state?.goals == null || state?.user_preferences == null) {
@@ -123,6 +128,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
                 .read(userPreferencesControllerProvider.notifier)
                 .getUserPreferences(user.id);
             final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(user.id);
+            _ref.read(playerGoalsProvider.notifier).state = goals;
             state = user.copyWith(
               goals: goals,
               user_preferences: prefs,

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'imports.dart';
 
@@ -12,14 +13,18 @@ class App extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _AppState();
 }
 
-class _AppState extends ConsumerState<App> {
+class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    _updateAppStatus(true);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await initializeUnityAds();
 
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString(KeyNames.user_id, userId);
         await NotificationsRepository.insertLog(userId);
       }
     });
@@ -47,6 +52,23 @@ class _AppState extends ConsumerState<App> {
         log('Message: $message');
       },
     );
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _updateAppStatus(false);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _updateAppStatus(state == AppLifecycleState.resumed);
+  }
+
+  Future<void> _updateAppStatus(bool isForeground) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isAppInForeground', isForeground);
   }
 
   @override

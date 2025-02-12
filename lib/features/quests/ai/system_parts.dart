@@ -29,10 +29,6 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
     "content":
         "When generating the 'completion_time_date', take into account the 'estimated_completion_time' and the 'created_at' time of any already in-progress quests. Ensure that new quests do not overlap with the completion windows of existing quests unless the user has sufficient time availability. For example, if a user has an ongoing quest with a 'completion_time_date' of 2025-01-08T14:00:00Z, the new quest's 'completion_time_date' should be scheduled after this time or allow sufficient buffer to avoid overwhelming the user."
   },
-  // {
-  //   "role":"system",
-  //   "content":"completion_time_date"
-  // },
   {
     "role": "system",
     "content":

@@ -4,6 +4,8 @@ import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 
+import '../../profiles/models/player_title_model.dart';
+
 class UserModel {
   final String id;
   final DateTime joined_at;
@@ -15,6 +17,7 @@ class UserModel {
   final String? avatar;
   final List<UserGoalModel>? goals;
   final UserPreferencesModel? user_preferences;
+  final PlayerTitleModel? activeTitle;
   final LevelsModel? level;
   final WalletModel? wallet;
 
@@ -26,6 +29,7 @@ class UserModel {
     required this.is_online,
     required this.avatar,
     this.goals,
+    this.activeTitle,
     required this.gender,
     this.user_preferences,
     this.birth_date,
@@ -46,6 +50,7 @@ class UserModel {
     UserPreferencesModel? user_preferences,
     LevelsModel? level,
     WalletModel? wallet,
+    PlayerTitleModel? activeTitle,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -60,6 +65,7 @@ class UserModel {
       user_preferences: user_preferences ?? this.user_preferences,
       level: level ?? this.level,
       wallet: wallet ?? this.wallet,
+      activeTitle: activeTitle ?? this.activeTitle,
     );
   }
 

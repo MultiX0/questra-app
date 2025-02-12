@@ -33,6 +33,8 @@ class NotificationsRepository {
       final nextPerfectTimeToSent = prefs.getInt("next_perfect_time");
       final notificationText = prefs.getString("notification");
 
+      final _userId = prefs.getString(KeyNames.user_id) ?? userId;
+
       if (perfectTimeToSent != null && perfectTimeToSent != 0) {
         final date = DateTime.fromMillisecondsSinceEpoch(perfectTimeToSent);
         if (now.isAfter(date) || now == date) {
@@ -47,7 +49,7 @@ class NotificationsRepository {
       if (nextPerfectTimeToSent != null && nextPerfectTimeToSent != 0) {
         final date = DateTime.fromMillisecondsSinceEpoch(nextPerfectTimeToSent);
         if (now.isAfter(date) || now == date) {
-          final data = await _generatePrompt(userId);
+          final data = await _generatePrompt(_userId);
           Map<String, dynamic> jsonData = jsonDecode(data);
           final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
           final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
@@ -63,7 +65,7 @@ class NotificationsRepository {
             notification: jsonData["notification"],
             perfect_time_to_send: jsonData["perfect_time_to_send"],
             sent_now: sentNow,
-            userId: userId,
+            userId: _userId,
           );
 
           await insertNotificationLog(notificationModel);
@@ -74,7 +76,7 @@ class NotificationsRepository {
         }
         return;
       }
-      final data = await _generatePrompt(userId);
+      final data = await _generatePrompt(_userId);
       Map<String, dynamic> jsonData = jsonDecode(data);
       final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
       final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
@@ -90,7 +92,7 @@ class NotificationsRepository {
         notification: jsonData["notification"],
         perfect_time_to_send: jsonData["perfect_time_to_send"],
         sent_now: sentNow,
-        userId: userId,
+        userId: _userId,
       );
 
       await insertNotificationLog(notificationModel);

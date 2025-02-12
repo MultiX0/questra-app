@@ -10,6 +10,7 @@ class SystemCard extends StatefulWidget {
     this.borderRadius,
     this.onTap,
     this.isButton,
+    this.margin,
     this.duration = const Duration(seconds: 1),
   });
 
@@ -17,6 +18,7 @@ class SystemCard extends StatefulWidget {
   final Border? border;
   final Widget child;
   final EdgeInsets? padding;
+  final EdgeInsets? margin;
   final double? borderRadius;
   final Function()? onTap;
   final bool? isButton;
@@ -78,6 +80,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
       return GestureDetector(
         onTap: widget.onTap,
         child: Container(
+          margin: widget.margin,
           constraints: (widget.isButton != null && widget.isButton!)
               ? null
               : BoxConstraints(
@@ -108,6 +111,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
           child: GestureDetector(
             onTap: widget.onTap,
             child: AnimatedContainer(
+              margin: widget.margin,
               duration: widget.duration!,
               constraints: (widget.isButton != null && widget.isButton!)
                   ? null

@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
+import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
@@ -9,9 +11,11 @@ class OnboardingFirstPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
+    final isLoading = ref.watch(authControllerProvider);
 
     void handleLogin() async {
-      await ref.read(authStateProvider.notifier).googleSignIn();
+      if (isLoading) return;
+      await ref.read(authControllerProvider.notifier).login();
     }
 
     return OnboardingBg(
@@ -68,7 +72,7 @@ class OnboardingFirstPage extends ConsumerWidget {
                   vertical: 15,
                   horizontal: size.width * .35,
                 ),
-                child: Text("Level up!"),
+                child: isLoading ? BeatLoader() : Text("Level up!"),
               ),
               const SizedBox(
                 height: 25,

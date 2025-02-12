@@ -110,7 +110,7 @@ class UserDashboardWidget extends ConsumerWidget {
           ),
           GlowText(
             glowColor: Colors.white.withValues(alpha: .85),
-            text: "Title: System Designer",
+            text: "Active Title: ${user.activeTitle ?? "NA"}",
             style: TextStyle(
               fontSize: 12,
               color: Colors.white.withValues(alpha: .85),

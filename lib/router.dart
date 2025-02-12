@@ -1,10 +1,12 @@
 // import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
+import 'package:questra_app/features/goals/pages/player_goals_page.dart';
 import 'package:questra_app/features/marketplace/pages/marketplace_page.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
+import 'package:questra_app/features/profiles/pages/player_profile.dart';
 import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/quests/pages/view_quest_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
@@ -59,7 +61,9 @@ final routerProvider = Provider<GoRouter>(
               routes: [
                 buildRoute(
                   path: Routes.profile,
-                  child: const SizedBox(),
+                  child: PlayerProfile(
+                    userId: ref.watch(authStateProvider)?.id ?? "",
+                  ),
                 ),
               ],
             ),
@@ -99,17 +103,47 @@ final routerProvider = Provider<GoRouter>(
           path: Routes.marketPlace,
           child: const MarketplacePage(),
         ),
+        GoRoute(
+          path: "${Routes.profile}/:${KeyNames.user_id}",
+          pageBuilder: (context, state) {
+            final userId = state.pathParameters[KeyNames.user_id] ?? "";
+            return MaterialPage(
+              child: PlayerProfile(userId: userId),
+            );
+          },
+        ),
+        buildRoute(
+          path: Routes.goalsPage,
+          fade: true,
+          child: const PlayerGoalsPage(),
+        ),
       ],
     );
   },
 );
 
-GoRoute buildRoute({required String path, required Widget child}) {
+GoRoute buildRoute({
+  required String path,
+  required Widget child,
+  bool fade = false,
+}) {
   return GoRoute(
     path: path,
     pageBuilder: (context, state) {
-      return MaterialPage(
+      if (!fade) {
+        return MaterialPage(
+          child: child,
+        );
+      }
+
+      return CustomTransitionPage(
         child: child,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
       );
     },
   );

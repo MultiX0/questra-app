@@ -7,7 +7,7 @@ List<Map<String, dynamic>> lifeImprovementSystemPrompts = [
   {
     "role": "system",
     "content":
-        "Always respond exclusively in the following JSON format: { \"sent_now\": \"true||false\", \"perfect_time_to_send\": \"ISO 8601 UTC string (e.g., 2025-01-08T14:00:00Z) or null\", \"notification\": \"string\", \"next_perfect_time\": \"ISO 8601 UTC string (e.g., 2025-01-09T08:00:00Z)\" }. The 'notification' must always be included in every response. Do not omit any fields, even if optional, and never add any other text or information outside this JSON format."
+        "Always respond exclusively in the following JSON format: { \"sent_now\": \"true or false\" (boolean not string), \"perfect_time_to_send\": \"ISO 8601 UTC string (e.g., 2025-01-08T14:00:00Z) or null\", \"notification\": \"string\", \"next_perfect_time\": \"ISO 8601 UTC string (e.g., 2025-01-09T08:00:00Z)\" }. The 'notification' must always be included in every response. Do not omit any fields, even if optional, and never add any other text or information outside this JSON format."
   },
   {
     "role": "system",

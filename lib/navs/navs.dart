@@ -12,4 +12,8 @@ class Navs {
     ref.read(viewQuestProvider.notifier).state = quest;
     context.push(Routes.viewQuest);
   }
+
+  void goToProfile(String userId) {
+    context.push("${Routes.profile}/$userId");
+  }
 }

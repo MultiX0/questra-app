@@ -4,13 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized(); // Required for plugins
+    final prefs = await SharedPreferences.getInstance();
+    final isAppInForeground = prefs.getBool('isAppInForeground') ?? false;
+
+    if (isAppInForeground) {
+      return false; // Skip task if app is in foreground
+    }
 
     try {
       switch (taskName) {

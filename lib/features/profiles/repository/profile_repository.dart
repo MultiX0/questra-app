@@ -90,4 +90,14 @@ class ProfileRepository {
       throw Exception(e);
     }
   }
+
+  Future<PlayerTitleModel?> getActiveTitle(String userId) async {
+    try {
+      final data = await _playerTitleTable.select("*").eq(KeyNames.user_id, userId).maybeSingle();
+      return data != null ? PlayerTitleModel.fromMap(data) : null;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

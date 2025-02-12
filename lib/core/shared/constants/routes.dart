@@ -12,4 +12,5 @@ class Routes {
   static const splash = '/splash';
   static const viewQuest = '/viewQuest';
   static const marketPlace = '/marketPlace';
+  static const goalsPage = '/goalsPage';
 }
