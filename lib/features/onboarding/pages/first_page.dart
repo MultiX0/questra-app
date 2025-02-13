@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:questra_app/core/services/sound_effects_service.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
@@ -14,6 +15,7 @@ class OnboardingFirstPage extends ConsumerWidget {
     final isLoading = ref.watch(authControllerProvider);
 
     void handleLogin() async {
+      ref.read(soundEffectsServiceProvider).playEffect('default_btn.aac');
       if (isLoading) return;
       await ref.read(authControllerProvider.notifier).login();
     }

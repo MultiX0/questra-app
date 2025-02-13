@@ -36,6 +36,8 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   }
 
   void finish() async {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
     if (widget.skip) {
       return skip();
     }

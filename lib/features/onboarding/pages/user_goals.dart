@@ -38,6 +38,8 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
   }
 
   void addGoal() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
@@ -54,6 +56,8 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
   }
 
   void handleNext() {
+    ref.read(soundEffectsServiceProvider).playMainButtonEffect();
+
     if (goals.length < 4) {
       CustomToast.systemToast(
         "add at least 4 clear goals with specific content, (you can edit or add new goals later)",
