@@ -195,6 +195,7 @@ class QuestsRepository {
 
       if (unix > expiryTimestamp) {
         await _updateQuestStatus(StatusEnum.failed, quest.id);
+        _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
         await _failedPunishment(_quest ?? quest);
         throw 'this quest is expired you will receive the penalties';
       }
@@ -203,6 +204,8 @@ class QuestsRepository {
         status: StatusEnum.completed.name,
         completed_at: DateTime.now(),
       );
+
+      _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.completed.name);
 
       await updateQuest(updatedQuest);
 
@@ -341,6 +344,10 @@ class QuestsRepository {
         if (skippedCount > 2) {
           throw ("you dont have any skip cards to do this action");
         } else {
+          _ref
+              .read(analyticsServiceProvider)
+              .logFinishQuest(quest.user_id, StatusEnum.skipped.name);
+
           await _updateQuestStatus(StatusEnum.skipped, quest.id);
           await insertFeedback(feedback);
         }
@@ -349,6 +356,8 @@ class QuestsRepository {
 
       if (skipCard.quantity >= 1) {
         await _updateQuestStatus(StatusEnum.skipped, quest.id);
+        _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
+
         await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
               itemId: skipCard.itemId,
               userId: userId,

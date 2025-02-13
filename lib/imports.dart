@@ -42,3 +42,4 @@ export 'package:uuid/uuid.dart';
 export 'package:unity_ads_plugin/unity_ads_plugin.dart';
 export 'package:loading_animation_widget/loading_animation_widget.dart';
 export 'package:questra_app/navs/navs.dart';
+export 'package:questra_app/features/analytics/providers/analytics_providers.dart';
