@@ -9,6 +9,8 @@ import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
+import 'package:questra_app/features/ranking/functions/ranking_functions.dart';
+import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -144,6 +146,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
     final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
+
+    await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
 
     // Handle level data
     if (levelEvent == null) {

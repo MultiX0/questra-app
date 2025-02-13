@@ -84,7 +84,9 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
       goals: goalsList,
     );
 
-    context.go(Routes.setupAccountPage);
+    widget.next();
+
+    // context.go(Routes.setupAccountPage);
   }
 
   @override

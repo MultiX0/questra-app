@@ -6,7 +6,12 @@ import 'package:questra_app/imports.dart';
 import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 
 class UserDashboardWidget extends ConsumerWidget {
-  const UserDashboardWidget({super.key});
+  const UserDashboardWidget({
+    super.key,
+    this.duration,
+  });
+
+  final Duration? duration;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,7 +24,7 @@ class UserDashboardWidget extends ConsumerWidget {
     );
     dynamic rank = ref.watch(playerRankingProvider) ?? "NA";
     return SystemCard(
-      duration: const Duration(seconds: 2),
+      duration: duration ?? const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

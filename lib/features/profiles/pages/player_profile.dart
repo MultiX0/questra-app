@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/profiles/widgets/dashboard_grid.dart';
@@ -31,10 +32,12 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         appBar: TheAppBar(
           title: "Profile",
           actions: [
-            IconButton(
-              onPressed: () => ref.read(authStateProvider.notifier).logout(),
-              icon: Icon(LucideIcons.log_out),
-            ),
+            if (kDebugMode) ...[
+              IconButton(
+                onPressed: () => ref.read(authStateProvider.notifier).logout(),
+                icon: Icon(LucideIcons.log_out),
+              ),
+            ],
           ],
         ),
         body: Padding(
@@ -56,7 +59,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return ListView(
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       children: [
-        UserDashboardWidget(),
+        UserDashboardWidget(duration: Duration(milliseconds: 800)),
         const SizedBox(
           height: 15,
         ),
@@ -71,6 +74,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
 
   SystemCard buildGuildCard() {
     return SystemCard(
+      duration: const Duration(milliseconds: 1200),
       onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -86,6 +90,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
 
   SystemCard buildFriendsCard() {
     return SystemCard(
+      duration: const Duration(milliseconds: 1500),
       onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/gestures.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
@@ -79,11 +80,71 @@ class OnboardingFirstPage extends ConsumerWidget {
                 ),
               ),
               const SizedBox(
+                height: 10,
+              ),
+              buildReachText(context),
+              const SizedBox(
                 height: 25,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  RichText buildReachText(BuildContext context) {
+    return RichText(
+      textDirection: TextDirection.rtl,
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        text: "By clicking the login button, you agree to ",
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: AppColors.descriptionColor,
+          fontFamily: AppFonts.primary,
+          fontSize: 12,
+        ),
+        children: [
+          TextSpan(
+            text: "Terms ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+              fontSize: 12,
+              fontFamily: AppFonts.primary,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                context.push(Routes.termsPage);
+              },
+          ),
+          TextSpan(
+            text: "and ",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppColors.whiteColor,
+              fontSize: 12,
+              fontFamily: AppFonts.primary,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          TextSpan(
+            text: "Privacy policy",
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppColors.whiteColor,
+              fontSize: 12,
+              fontFamily: AppFonts.primary,
+              decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                context.push(Routes.privacyPage);
+              },
+          ),
+        ],
       ),
     );
   }

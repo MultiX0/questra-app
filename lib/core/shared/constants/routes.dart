@@ -14,4 +14,6 @@ class Routes {
   static const marketPlace = '/marketPlace';
   static const goalsPage = '/goalsPage';
   static const inventoryPage = '/inventoryPage';
+  static const privacyPage = '/privacyPage';
+  static const termsPage = '/termsPage';
 }

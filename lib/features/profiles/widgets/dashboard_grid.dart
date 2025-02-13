@@ -45,7 +45,7 @@ class BuildDashboardGrid extends ConsumerWidget {
         return Expanded(
           child: SystemCard(
             onTap: btn["onTap"],
-            duration: const Duration(milliseconds: 2500),
+            duration: const Duration(milliseconds: 950),
             margin: i == 1 ? EdgeInsets.symmetric(horizontal: 15) : null,
             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
             isButton: true,

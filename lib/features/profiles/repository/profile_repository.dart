@@ -100,4 +100,24 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<bool> checkTheCode(String code, String uesrId, {bool inserted = false}) async {
+    try {
+      final data = await _client.from('sign_in_codes').select('*').eq('code', code).maybeSingle();
+      if (data == null) {
+        throw "the code is incorrect";
+      }
+
+      if (data['assigned_to'] != null) {
+        throw "there is another user toke this code beofre you";
+      }
+
+      await _client.from('sign_in_codes').update({'assigned_to': uesrId}).eq('code', code);
+
+      return true;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }
