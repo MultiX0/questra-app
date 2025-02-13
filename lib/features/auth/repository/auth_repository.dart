@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
@@ -35,6 +37,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
   Stream<UserModel?> get stateStream => _stateStreamController.stream;
 
   SupabaseClient get _supabase => _ref.watch(supabaseProvider);
+  SupabaseQueryBuilder get _devicesTable => _supabase.from(TableNames.player_devices);
 
   AuthNotifier({required Ref ref})
       : _ref = ref,
@@ -267,6 +270,14 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         return true;
       }
       final data = await _supabase.from(TableNames.players).insert(user.toMap()).select('*');
+      if (Platform.isAndroid) {
+        const _androidIdPlugin = AndroidId();
+        final String? androidId = await _androidIdPlugin.getId();
+        await _devicesTable.insert({
+          KeyNames.device_id: androidId,
+          KeyNames.user_id: user.id,
+        });
+      }
       if (data.isNotEmpty) {
         state = UserModel.fromMap(data.first);
         _ref.read(hasValidAccountProvider.notifier).state = true;

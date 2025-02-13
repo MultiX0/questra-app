@@ -68,4 +68,5 @@ class KeyNames {
   static const next_perfect_time = 'next_perfect_time';
   static const notification = 'notification';
   static const sent_now = 'sent_now';
+  static const device_id = 'device_id';
 }
