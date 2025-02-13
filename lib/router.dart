@@ -1,4 +1,5 @@
 // import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
 import 'package:questra_app/features/goals/pages/player_goals_page.dart';
@@ -26,18 +27,33 @@ final routerProvider = Provider<GoRouter>(
     final observer = ref.watch(routeObserverProvider);
     return GoRouter(
       initialLocation: Routes.splash,
-      debugLogDiagnostics: false,
+      debugLogDiagnostics: kDebugMode,
       navigatorKey: _key,
       observers: [observer],
       redirect: (context, state) {
         final isLoggedIn = ref.watch(isLoggedInProvider);
         final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;
-        if (!isLoggedIn) {
+        final inSplash = state.uri.toString() == Routes.splash;
+        final inSetUpPage = state.uri.toString() == Routes.setupAccountPage;
+        final haveValidAccount = ref.watch(validAccountProvider);
+
+        if (inSetUpPage) {
+          return null;
+        }
+
+        // Only redirect if we're not already in the correct place
+        if (inSplash) return null;
+
+        if (isLoggedIn && !haveValidAccount) {
+          return Routes.onboardingController;
+        }
+
+        if (!isLoggedIn && !haveValidAccount) {
           return Routes.onboardingPage;
         }
 
         if (inOnboardingPage && isLoggedIn) {
-          return Routes.splash;
+          return Routes.homePage;
         }
 
         return null;
@@ -66,7 +82,8 @@ final routerProvider = Provider<GoRouter>(
                 buildRoute(
                   path: Routes.profile,
                   child: PlayerProfile(
-                    userId: ref.watch(authStateProvider)?.id ?? "",
+                    userId: "",
+                    isMe: true,
                   ),
                 ),
               ],

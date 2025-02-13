@@ -193,6 +193,14 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     final size = MediaQuery.sizeOf(context);
     return OnboardingBg(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              onPressed: () => ref.read(authStateProvider.notifier).logout(),
+              icon: Icon(LucideIcons.log_out),
+            ),
+          ],
+        ),
         backgroundColor: Colors.transparent,
         body: SafeArea(
           child: Form(

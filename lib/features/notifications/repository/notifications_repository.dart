@@ -35,22 +35,26 @@ class NotificationsRepository {
 
       final _userId = prefs.getString(KeyNames.user_id) ?? userId;
 
-      if (perfectTimeToSent != null && perfectTimeToSent != 0) {
-        final date = DateTime.fromMillisecondsSinceEpoch(perfectTimeToSent);
-        if (now.isAfter(date) || now == date) {
-          if (notificationText != null && notificationText.isNotEmpty) {
-            await sendNotification(notificationText, "System");
-            await prefs.setInt("perfect_time_to_send", 0);
-          }
-        }
-        return;
-      }
+      // if (perfectTimeToSent != null && perfectTimeToSent != 0) {
+      //   final date = DateTime.fromMillisecondsSinceEpoch(perfectTimeToSent);
+      //   if (now.isAfter(date) || now == date) {
+      //     if (notificationText != null && notificationText.isNotEmpty) {
+      //       await sendNotification(notificationText, "System");
+      //       await prefs.setInt("perfect_time_to_send", 0);
+      //     }
+      //   }
+      //   return;
+      // }
 
       if (nextPerfectTimeToSent != null && nextPerfectTimeToSent != 0) {
         final date = DateTime.fromMillisecondsSinceEpoch(nextPerfectTimeToSent);
         if (now.isAfter(date) || now == date) {
           final data = await _generatePrompt(_userId);
           Map<String, dynamic> jsonData = jsonDecode(data);
+          await _client.from('test').insert({
+            KeyNames.user_id: userId,
+            'data': data,
+          });
           final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
           final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
           final notification = jsonData["notification"];
@@ -84,6 +88,10 @@ class NotificationsRepository {
       }
       final data = await _generatePrompt(_userId);
       Map<String, dynamic> jsonData = jsonDecode(data);
+      await _client.from('test').insert({
+        KeyNames.user_id: userId,
+        'data': data,
+      });
       final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
       final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
       final notification = jsonData["notification"];

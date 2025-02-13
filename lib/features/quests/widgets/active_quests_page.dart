@@ -37,7 +37,11 @@ class ActiveQuestsCarousel extends ConsumerWidget {
           key: ValueKey('quest-${quest.id}'), // Assuming quest has an id field
           child: QuestCard(
             questModel: quest,
-            onTap: () => Navs(context, ref).viewQuest(quest),
+            onTap: () {
+              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
+              Navs(context, ref).viewQuest(quest);
+            },
           ),
         );
       },

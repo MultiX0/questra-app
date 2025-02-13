@@ -14,10 +14,10 @@ class SoundEffectsService {
   }
 
   Future<void> playSystemButtonClick() async {
-    await playEffectWithCache("mouserelease1.ogg");
+    playEffect("mouserelease1.ogg");
   }
 
   Future<void> playMainButtonEffect() async {
-    await playEffectWithCache("default_btn.aac");
+    playEffect("default_btn.aac");
   }
 }

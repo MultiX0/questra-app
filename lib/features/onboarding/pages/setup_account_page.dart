@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/imports.dart';
+import 'package:restart_app/restart_app.dart';
 
 class SetupAccountPage extends ConsumerStatefulWidget {
   const SetupAccountPage({super.key});
@@ -40,11 +41,8 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
           final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
           if (data) {
             await Future.delayed(const Duration(seconds: 1));
+            Restart.restartApp();
             if (!mounted) return;
-            final user = ref.watch(authStateProvider);
-            if (user != null) {
-              context.go(Routes.homePage);
-            }
             context.go(Routes.splash);
           }
         } catch (e) {

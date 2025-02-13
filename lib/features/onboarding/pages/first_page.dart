@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:questra_app/core/services/sound_effects_service.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';

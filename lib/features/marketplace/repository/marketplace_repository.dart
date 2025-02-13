@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/services/sound_effects_service.dart';
-import 'package:questra_app/features/analytics/providers/analytics_providers.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/marketplace/models/item_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
@@ -109,7 +107,7 @@ class MarketplaceRepository {
               );
         }
 
-        _ref.read(soundEffectsServiceProvider).playEffectWithCache("marketplace_buy.aac");
+        _ref.read(soundEffectsServiceProvider).playEffect("marketplace_buy.aac");
 
         _ref
             .read(analyticsServiceProvider)

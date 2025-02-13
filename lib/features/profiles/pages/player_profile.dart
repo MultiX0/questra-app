@@ -5,9 +5,11 @@ import 'package:questra_app/imports.dart';
 
 class PlayerProfile extends ConsumerStatefulWidget {
   final String userId;
+  final bool isMe;
   const PlayerProfile({
     super.key,
     required this.userId,
+    this.isMe = false,
   });
 
   @override
@@ -17,11 +19,24 @@ class PlayerProfile extends ConsumerStatefulWidget {
 class _PlayerProfileState extends ConsumerState<PlayerProfile> {
   @override
   Widget build(BuildContext context) {
-    final _myData = ref.watch(authStateProvider);
-    bool isMe = _myData?.id == widget.userId;
+    bool isMe;
+    if (widget.isMe) {
+      isMe = true;
+    } else {
+      isMe = false;
+    }
+
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "Profile"),
+        appBar: TheAppBar(
+          title: "Profile",
+          actions: [
+            IconButton(
+              onPressed: () => ref.read(authStateProvider.notifier).logout(),
+              icon: Icon(LucideIcons.log_out),
+            ),
+          ],
+        ),
         body: Padding(
           padding: const EdgeInsets.only(top: 5),
           child: buildUserBody(isMe),

@@ -41,7 +41,6 @@ class InventoryItem {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      KeyNames.ownership_id: id,
       KeyNames.user_id: user_id,
       KeyNames.item_id: itemId,
       KeyNames.quantity: quantity,

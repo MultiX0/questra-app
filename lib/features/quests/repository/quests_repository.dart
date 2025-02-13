@@ -219,7 +219,6 @@ class QuestsRepository {
       await _updateUserLevel(user!.id, level);
       await _updateUserCoins(user: user, quest: updatedQuest);
 
-      _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
       return updatedQuest;
     } catch (e) {
       log(e.toString());

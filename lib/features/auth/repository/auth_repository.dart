@@ -5,12 +5,10 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:questra_app/features/analytics/providers/analytics_providers.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
-import 'package:questra_app/features/ranking/functions/ranking_functions.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -24,18 +22,23 @@ final authStateProvider = StateNotifierProvider<AuthNotifier, UserModel?>((ref) 
 });
 
 final isLoggedInProvider = StateProvider<bool>((ref) {
-  return true;
+  return false;
+});
+
+final validAccountProvider = StateProvider<bool>((ref) {
+  return false;
 });
 
 class AuthNotifier extends StateNotifier<UserModel?> {
   final Ref _ref;
+  bool _isInitialized = false;
+  Timer? _debounceTimer;
 
   late final StreamSubscription<AuthState> _authStateSubscription;
-  late StreamSubscription<List<dynamic>> _userSubscription;
+  StreamSubscription<List<dynamic>>? _userSubscription;
 
-  final StreamController<UserModel?> _stateStreamController =
-      StreamController<UserModel?>.broadcast();
-  Stream<UserModel?> get stateStream => _stateStreamController.stream;
+  final _stateStreamController = BehaviorSubject<UserModel?>();
+  Stream<UserModel?> get stateStream => _stateStreamController.stream.distinct();
 
   SupabaseClient get _supabase => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _devicesTable => _supabase.from(TableNames.player_devices);
@@ -43,28 +46,36 @@ class AuthNotifier extends StateNotifier<UserModel?> {
   AuthNotifier({required Ref ref})
       : _ref = ref,
         super(null) {
-    _initListener();
+    _initializeAuth();
   }
 
-  void _initListener() {
+  void _initializeAuth() {
+    if (_isInitialized) return;
+    _isInitialized = true;
+
     _authStateSubscription =
-        _supabase.auth.onAuthStateChange.debounceTime(const Duration(seconds: 1)).listen(
-      (session) {
-        final userId = session.session?.user.id;
-        if (userId != null) {
-          _listenToUserData(userId);
-        } else {
-          state = null;
-          _stateStreamController.add(state);
-        }
-      },
+        _supabase.auth.onAuthStateChange.debounceTime(const Duration(milliseconds: 500)).listen(
+      _handleAuthStateChange,
       onError: (error) {
         log('AuthState error: $error');
+        _ref.read(isLoggedInProvider.notifier).state = false;
       },
     );
   }
 
-  void _listenToUserData(String userId) {
+  void _handleAuthStateChange(AuthState authState) {
+    final userId = authState.session?.user.id;
+    if (userId != null) {
+      _ref.read(isLoggedInProvider.notifier).state = true;
+      _initializeUserDataStream(userId);
+    } else {
+      _cleanup();
+    }
+  }
+
+  void _initializeUserDataStream(String userId) {
+    _userSubscription?.cancel();
+
     _userSubscription = CombineLatestStream.list([
       _supabase
           .from(TableNames.players)
@@ -75,119 +86,122 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(
-            const Duration(milliseconds: 600),
-          ),
+          .debounceTime(const Duration(milliseconds: 600)),
       _supabase
           .from(TableNames.wallet)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(
-            const Duration(seconds: 2),
-          ),
-    ]).listen((events) async {
-      final userEvent = events[0].isNotEmpty ? events[0].first : null;
-      final levelEvent = events[1].isNotEmpty ? events[1].first : null;
-      final walletEvent = events[2].isNotEmpty ? events[2].first : null;
+          .debounceTime(const Duration(seconds: 1)),
+    ]).listen(
+      (events) => _handleUserDataUpdate(events, userId),
+      onError: (error) {
+        log('User data stream error: $error');
+        _retryUserDataStream(userId);
+      },
+    );
+  }
 
-      log("the user event is $userEvent");
+  Future<void> _handleUserDataUpdate(List<List<dynamic>> events, String userId) async {
+    if (_debounceTimer?.isActive ?? false) return;
 
-      if (userEvent == null) {
-        state = UserModel(
-          id: _supabase.auth.currentUser?.id ?? '',
-          name: '',
-          username: '',
-          gender: '',
-          joined_at: DateTime.now(),
-          avatar: '',
-          is_online: false,
-        );
-        _stateStreamController.add(state);
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      try {
+        final userEvent = events[0].isNotEmpty ? events[0].first : null;
+        final levelEvent = events[1].isNotEmpty ? events[1].first : null;
+        final walletEvent = events[2].isNotEmpty ? events[2].first : null;
+
+        final newState = await _buildUpdatedState(userEvent, levelEvent, walletEvent, userId);
+        if (!_isEquivalentState(state, newState)) {
+          state = newState;
+          _stateStreamController.add(newState);
+        }
+      } catch (e) {
+        log('Error handling user data update: $e');
       }
-
-      await _handleUserEvent(userEvent, userId);
-      await _handleLevelEvent(levelEvent, userId);
-      await _handleWalletEvent(walletEvent, userId);
-    }, onError: (error) async {
-      log('User data stream error: $error');
-      await Future.delayed(const Duration(seconds: 8));
-      _listenToUserData(userId);
     });
   }
 
-  Future<void> _handleUserEvent(Map<String, dynamic>? userEvent, String userId) async {
-    try {
-      if (userEvent != null && userEvent.isNotEmpty) {
-        var user = UserModel.fromMap(userEvent);
-        final data = await _ref.read(profileRepositoryProvider).getUserBirthDate(user.id);
-        final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
-        user = user.copyWith(
-          birth_date: DateTime.tryParse(data),
-          activeTitle: activeTitle,
-        );
-
-        if (state != user && user.id.isNotEmpty) {
-          if (state?.goals == null || state?.user_preferences == null) {
-            final prefs = await _ref
-                .read(userPreferencesControllerProvider.notifier)
-                .getUserPreferences(user.id);
-            final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(user.id);
-            _ref.read(playerGoalsProvider.notifier).state = goals;
-            state = user.copyWith(
-              goals: goals,
-              user_preferences: prefs,
-            );
-          } else {
-            state = user;
-          }
-          log("the user data is updated");
-        }
-        _stateStreamController.add(state);
-      }
-    } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+  Future<UserModel?> _buildUpdatedState(
+    Map<String, dynamic>? userEvent,
+    Map<String, dynamic>? levelEvent,
+    Map<String, dynamic>? walletEvent,
+    String userId,
+  ) async {
+    if (userEvent == null) {
+      return UserModel(
+        id: userId,
+        name: '',
+        username: '',
+        gender: '',
+        joined_at: DateTime.now(),
+        avatar: '',
+        is_online: false,
+      );
     }
+
+    var user = UserModel.fromMap(userEvent);
+
+    // Fetch additional user data
+    final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
+    final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
+
+    // Handle level data
+    if (levelEvent == null) {
+      final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+      user = user.copyWith(level: level);
+    } else {
+      user = user.copyWith(level: LevelsModel.fromMap(levelEvent));
+    }
+
+    // Handle wallet data
+    if (walletEvent != null) {
+      user = user.copyWith(wallet: WalletModel.fromMap(walletEvent));
+    } else {
+      final wallet = await _ref.read(walletRepositoryProvider).getUserWallet(userId);
+      user = user.copyWith(wallet: wallet);
+    }
+
+    // Only fetch preferences and goals if they're not already present
+    if (state?.goals == null || state?.user_preferences == null) {
+      final prefs =
+          await _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId);
+      final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(userId);
+      _ref.read(playerGoalsProvider.notifier).state = goals;
+
+      user = user.copyWith(
+        birth_date: DateTime.tryParse(birthDate),
+        activeTitle: activeTitle,
+        goals: goals,
+        user_preferences: prefs,
+      );
+    } else {
+      user = user.copyWith(
+        birth_date: DateTime.tryParse(birthDate),
+        activeTitle: activeTitle,
+      );
+    }
+
+    return user;
   }
 
-  Future<void> _handleLevelEvent(Map<String, dynamic>? levelEvent, String userId) async {
-    try {
-      final validAccount = _ref.watch(hasValidAccountProvider);
+  bool _isEquivalentState(UserModel? current, UserModel? next) {
+    if (current == null || next == null) return current == next;
 
-      if (levelEvent == null && validAccount) {
-        final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
-        state = state?.copyWith(level: level);
-        return;
-      }
-
-      if (levelEvent != null && levelEvent.isNotEmpty) {
-        final levelModel = LevelsModel.fromMap(levelEvent);
-        if (state?.level != levelModel) {
-          state = state?.copyWith(level: levelModel);
-          await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
-        }
-      }
-    } catch (e) {
-      log(e.toString());
-      throw Exception(e);
-    }
+    // Compare only essential fields that should trigger a state update
+    return current.id == next.id &&
+        current.name == next.name &&
+        current.username == next.username &&
+        current.activeTitle == next.activeTitle &&
+        current.level == next.level &&
+        current.wallet == next.wallet;
   }
 
-  Future<void> _handleWalletEvent(Map<String, dynamic>? walletEvent, String userId) async {
-    try {
-      if (walletEvent != null) {
-        final _wallet = WalletModel.fromMap(walletEvent);
-        if (state?.wallet != _wallet) {
-          state = state?.copyWith(wallet: _wallet);
-        }
-      } else {
-        final _wallet = await _ref.read(walletRepositoryProvider).getUserWallet(userId);
-        state = state?.copyWith(wallet: _wallet);
+  void _retryUserDataStream(String userId) {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        _initializeUserDataStream(userId);
       }
-    } catch (e) {
-      log(e.toString());
-      throw Exception(e);
-    }
+    });
   }
 
   Future<bool> googleSignIn() async {
@@ -198,127 +212,124 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         scopes: ["profile", "email"],
       );
 
-      // First check if already signed in
-      final isSignedIn = await googleSignIn.isSignedIn();
-      if (isSignedIn) {
+      // Ensure clean state
+      if (await googleSignIn.isSignedIn()) {
         await googleSignIn.signOut();
       }
 
       final googleUser = await googleSignIn.signIn();
-      if (googleUser == null) {
-        throw 'Sign in canceled by user';
-      }
+      if (googleUser == null) return false;
 
       final googleAuth = await googleUser.authentication;
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
 
       if (accessToken == null || idToken == null) {
-        throw 'Failed to get tokens';
+        throw Exception('Failed to get Google auth tokens');
       }
 
-      final user = await _supabase.auth.signInWithIdToken(
+      final authResponse = await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
         accessToken: accessToken,
       );
 
-      _ref.read(analyticsServiceProvider).logEvent('user_login', {
-        'user_id': user.user!.id,
-        'login_method': 'google',
-      });
-      // Set user ID for analytics
-      _ref.read(firebaseAnalyticsProvider).setUserId(id: user.user!.id);
+      if (authResponse.user != null) {
+        _ref.read(analyticsServiceProvider).logEvent('user_login', {
+          'user_id': authResponse.user!.id,
+          'login_method': 'google',
+        });
+        _ref.read(firebaseAnalyticsProvider).setUserId(id: authResponse.user!.id);
+        return true;
+      }
 
-      final session = _supabase.auth.currentSession;
-      log('Current session: ${session?.toJson()}');
-
-      _ref.read(isLoggedInProvider.notifier).state = true;
-
-      return user.user != null;
+      return false;
     } catch (e) {
-      log('Google sign in error: ${e.toString()}');
+      log('Google sign in error: $e');
       return false;
     }
   }
 
   Future<void> logout() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        scopes: ["profile", "email"],
-      );
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ["profile", "email"]);
       await googleSignIn.signOut();
-
       await _supabase.auth.signOut();
-      state = null;
-      _stateStreamController.add(state);
+      _cleanup();
     } catch (e) {
-      log('Logout error: ${e.toString()}');
+      log('Logout error: $e');
     }
+  }
+
+  void _cleanup() {
+    _userSubscription?.cancel();
+    _userSubscription = null;
+    _debounceTimer?.cancel();
+    state = null;
+    _stateStreamController.add(null);
+    _ref.read(isLoggedInProvider.notifier).state = false;
+    _ref.read(hasValidAccountProvider.notifier).state = false;
   }
 
   Future<bool> hasValidAccount() async {
     try {
-      final id = _supabase.auth.currentUser?.id ?? '';
-      final data =
-          await _supabase.from(TableNames.players).select('*').eq(KeyNames.id, id).maybeSingle();
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) return false;
 
-      return (data != null);
+      final data =
+          await _supabase.from(TableNames.players).select().eq(KeyNames.id, userId).maybeSingle();
+
+      return data != null;
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      log('hasValidAccount error: $e');
+      return false;
     }
   }
 
   Future<bool> insertNewUser(UserModel user) async {
     try {
-      final hasAccount = await hasValidAccount();
-      if (hasAccount) {
+      if (await hasValidAccount()) {
         _ref.read(hasValidAccountProvider.notifier).state = true;
         return true;
       }
-      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select('*');
+
+      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
+
       if (Platform.isAndroid) {
-        const _androidIdPlugin = AndroidId();
-        final String? androidId = await _androidIdPlugin.getId();
-        await _devicesTable.insert({
-          KeyNames.device_id: androidId,
-          KeyNames.user_id: user.id,
-        });
+        const androidIdPlugin = AndroidId();
+        final androidId = await androidIdPlugin.getId();
+        if (androidId != null) {
+          await _devicesTable.insert({
+            KeyNames.device_id: androidId,
+            KeyNames.user_id: user.id,
+          });
+        }
       }
-      if (data.isNotEmpty) {
-        state = UserModel.fromMap(data.first);
-        _ref.read(hasValidAccountProvider.notifier).state = true;
-        return true;
-      }
-      return false;
+
+      state = UserModel.fromMap(data);
+      _ref.read(hasValidAccountProvider.notifier).state = true;
+      return true;
     } catch (e) {
-      log(e.toString());
+      log('insertNewUser error: $e');
       return false;
     }
   }
 
   Future<bool> availableUsername(String username) async {
     try {
-      final data = await _supabase
-          .from(TableNames.players)
-          .select('*')
-          .eq(KeyNames.username, username.trim());
+      final data =
+          await _supabase.from(TableNames.players).select().eq(KeyNames.username, username.trim());
       return data.isEmpty;
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      log('availableUsername error: $e');
+      return false;
     }
-  }
-
-  void updateState(UserModel user) {
-    state = user;
   }
 
   @override
   void dispose() {
+    _cleanup();
     _authStateSubscription.cancel();
-    _userSubscription.cancel();
     _stateStreamController.close();
     super.dispose();
   }
