@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/services/sound_effects_service.dart';
+import 'package:questra_app/features/analytics/providers/analytics_providers.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/marketplace/models/item_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
@@ -107,6 +109,11 @@ class MarketplaceRepository {
               );
         }
 
+        _ref.read(soundEffectsServiceProvider).playEffectWithCache("marketplace_buy.aac");
+
+        _ref
+            .read(analyticsServiceProvider)
+            .logPurchase(totalPrice.toDouble(), _user.id, item.itemId);
         await _ref.read(walletRepositoryProvider).reduceCoins(userId: _user.id, amount: totalPrice);
       } else {
         throw "You dont have enough coins to by ${item.quantity} ${item.item?.name}";

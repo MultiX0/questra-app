@@ -51,6 +51,7 @@ class NoneActiveQuestsWidget extends ConsumerWidget {
               textStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
             onPressed: () {
+              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
               ref.read(navigationShellProvider).goBranch(1);
             },
             child: Text("Details"),

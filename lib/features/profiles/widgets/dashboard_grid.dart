@@ -1,27 +1,40 @@
 import 'package:questra_app/imports.dart';
 
-class BuildDashboardGrid extends StatelessWidget {
+class BuildDashboardGrid extends ConsumerWidget {
   const BuildDashboardGrid({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    void play() {
+      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    }
+
     List<Map<String, dynamic>> buttons = [
       {
         'name': "Goals",
         "icon": LucideIcons.sparkles,
-        "onTap": () => context.push(Routes.goalsPage),
+        "onTap": () {
+          play();
+          context.push(Routes.goalsPage);
+        },
       },
       {
         'name': "Titels",
         "icon": LucideIcons.crown,
-        "onTap": () => CustomToast.systemToast("soon"),
+        "onTap": () {
+          play();
+          CustomToast.soon();
+        },
       },
       {
         'name': "Achivment",
         "icon": LucideIcons.archive,
-        "onTap": () => CustomToast.systemToast("soon"),
+        "onTap": () {
+          play();
+          CustomToast.soon();
+        },
       },
     ];
     return Row(

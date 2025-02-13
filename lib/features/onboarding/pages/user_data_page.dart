@@ -145,6 +145,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   }
 
   void handleNext() async {
+    ref.read(soundEffectsServiceProvider).playMainButtonEffect();
     if (_key.currentState!.validate()) {
       final username = _usernameController.text.trim();
       final availableUsername =

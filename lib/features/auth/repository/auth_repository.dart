@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:questra_app/features/analytics/providers/analytics_providers.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
@@ -221,6 +222,13 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         idToken: idToken,
         accessToken: accessToken,
       );
+
+      _ref.read(analyticsServiceProvider).logEvent('user_login', {
+        'user_id': user.user!.id,
+        'login_method': 'google',
+      });
+      // Set user ID for analytics
+      _ref.read(firebaseAnalyticsProvider).setUserId(id: user.user!.id);
 
       final session = _supabase.auth.currentSession;
       log('Current session: ${session?.toJson()}');

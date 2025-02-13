@@ -12,6 +12,7 @@ import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/quests/pages/view_quest_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
 
+import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
 
 final _key = GlobalKey<NavigatorState>();
@@ -22,10 +23,12 @@ final navigationShellProvider = Provider<StatefulNavigationShell>((ref) {
 
 final routerProvider = Provider<GoRouter>(
   (ref) {
+    final observer = ref.watch(routeObserverProvider);
     return GoRouter(
       initialLocation: Routes.splash,
       debugLogDiagnostics: false,
       navigatorKey: _key,
+      observers: [observer],
       redirect: (context, state) {
         final isLoggedIn = ref.watch(isLoggedInProvider);
         final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;

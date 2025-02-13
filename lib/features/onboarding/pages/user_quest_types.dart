@@ -21,6 +21,8 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
   List<int> typeIds = [];
 
   void handleNext() {
+    ref.read(soundEffectsServiceProvider).playMainButtonEffect();
+
     if (typeIds.length > 8 || typeIds.length < 5) {
       CustomToast.systemToast(
         "you need to select 5 to 8 quest types",

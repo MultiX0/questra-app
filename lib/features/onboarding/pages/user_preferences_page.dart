@@ -135,6 +135,8 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
   }
 
   void handleNext() async {
+    ref.read(soundEffectsServiceProvider).playMainButtonEffect();
+
     if (_key.currentState!.validate()) {
       final localUser = ref.read(localUserProvider);
       widget.next();

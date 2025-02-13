@@ -15,7 +15,12 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
   bool _finish = false;
   bool _skip = false;
 
+  void play() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+  }
+
   void finish() {
+    play();
     if (_skip) {
       setState(() {
         _skip = false;
@@ -27,6 +32,8 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
   }
 
   void skip() {
+    play();
+
     if (_finish) {
       setState(() {
         _finish = false;

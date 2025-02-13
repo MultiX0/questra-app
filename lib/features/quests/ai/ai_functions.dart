@@ -149,6 +149,7 @@ class AiFunctions {
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
         List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
+        _ref.read(analyticsServiceProvider).logGenerateQuest(user.id);
 
         currentQuests = [...currentQuests, quest.copyWith(id: questId)];
 

@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:questra_app/core/services/sound_effects_service.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/marketplace/controller/marketplace_controller.dart';
@@ -153,89 +154,94 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
   }
 
   Widget buildCard(ItemModel item) {
-    return Stack(
-      children: [
-        SystemCard(
-          onTap: () {
-            setState(() {
-              selectedItem = item;
-            });
-          },
-          duration: null,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  buildImage(item),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            item.name,
-                            style: TextStyle(
-                              fontFamily: AppFonts.header,
-                              fontSize: 18,
+    return GestureDetector(
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playEffectWithCache('click1.ogg');
+      },
+      child: Stack(
+        children: [
+          SystemCard(
+            onTap: () {
+              setState(() {
+                selectedItem = item;
+              });
+            },
+            duration: null,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    buildImage(item),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              item.name,
+                              style: TextStyle(
+                                fontFamily: AppFonts.header,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          Text(
-                            item.description ?? "comming soon...",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w200,
-                              color: AppColors.descriptionColor,
-                              fontSize: 13,
-                            ),
-                          )
-                        ],
+                            Text(
+                              item.description ?? "comming soon...",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w200,
+                                color: AppColors.descriptionColor,
+                                fontSize: 13,
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "${item.price}\$",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                  ],
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "${item.price}\$",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        if (item.locked) ...[
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () => CustomToast.systemToast("this item is locked for now"),
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.black.withValues(
-                      alpha: 0.8,
-                    )),
-                child: Center(
-                  child: Text(
-                    "Locked",
-                    style: TextStyle(
-                      fontFamily: AppFonts.header,
-                      fontSize: 20,
+          if (item.locked) ...[
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () => CustomToast.systemToast("this item is locked for now"),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.black.withValues(
+                        alpha: 0.8,
+                      )),
+                  child: Center(
+                    child: Text(
+                      "Locked",
+                      style: TextStyle(
+                        fontFamily: AppFonts.header,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 

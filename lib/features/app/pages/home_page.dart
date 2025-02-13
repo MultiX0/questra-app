@@ -32,6 +32,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               SystemCard(
                 duration: duration,
                 onTap: () {
+                  ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
                   // CustomToast.systemToast("the shop is comming soon!");
                   context.push(Routes.marketPlace);
                 },
