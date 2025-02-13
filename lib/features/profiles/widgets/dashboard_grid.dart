@@ -14,13 +14,13 @@ class BuildDashboardGrid extends StatelessWidget {
         "onTap": () => context.push(Routes.goalsPage),
       },
       {
-        'name': "Achivment",
-        "icon": LucideIcons.archive,
+        'name': "Titels",
+        "icon": LucideIcons.crown,
         "onTap": () => CustomToast.systemToast("soon"),
       },
       {
-        'name': "Titels",
-        "icon": LucideIcons.crown,
+        'name': "Achivment",
+        "icon": LucideIcons.archive,
         "onTap": () => CustomToast.systemToast("soon"),
       },
     ];
@@ -33,7 +33,7 @@ class BuildDashboardGrid extends StatelessWidget {
           child: SystemCard(
             onTap: btn["onTap"],
             duration: const Duration(milliseconds: 2500),
-            margin: i == 1 ? EdgeInsets.symmetric(horizontal: 10) : null,
+            margin: i == 1 ? EdgeInsets.symmetric(horizontal: 15) : null,
             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
             isButton: true,
             child: Column(

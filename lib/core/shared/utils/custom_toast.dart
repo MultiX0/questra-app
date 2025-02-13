@@ -21,4 +21,8 @@ class CustomToast {
       icon: Icon(LucideIcons.hexagon),
     );
   }
+
+  static void soon() {
+    systemToast("soon...");
+  }
 }

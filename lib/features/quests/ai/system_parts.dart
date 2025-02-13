@@ -27,7 +27,12 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "When generating the 'completion_time_date', take into account the 'estimated_completion_time' and the 'created_at' time of any already in-progress quests. Ensure that new quests do not overlap with the completion windows of existing quests unless the user has sufficient time availability. For example, if a user has an ongoing quest with a 'completion_time_date' of 2025-01-08T14:00:00Z, the new quest's 'completion_time_date' should be scheduled after this time or allow sufficient buffer to avoid overwhelming the user."
+        "When generating the 'completion_time_date', calculate it dynamically based on the user's current time (provided as 'current_time' in ISO 8601 format). Add the 'estimated_completion_time' to the current time, ensuring the result is always in the future. If the calculated time falls within the same day, extend it to the end of the day (e.g., 23:59:59Z). If the estimated_completion_time spans multiple days, extend the completion_time_date accordingly."
+  },
+  {
+    "role": "system",
+    "content":
+        "Ensure the 'completion_time_date' is never earlier than the current time. If the calculated completion time overlaps with existing quests or conflicts with the user's schedule, adjust it to avoid overlap or conflict. Provide sufficient buffer time between quests to prevent overwhelming the user."
   },
   {
     "role": "system",
@@ -47,7 +52,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "Use the following user data to create quests: current_level, difficulty_preferred, activity_level, preferred_times, motivation_level, time_availability, social_interactions, preferred_quest_types, goals, age, last_quests, feedback, and previous_titles with timestamps. Every quest and title must be tailored to this data."
+        "Use the following user data to create quests: current_level, difficulty_preferred, activity_level, preferred_times, motivation_level, time_availability, social_interactions, preferred_quest_types, goals, age, last_quests, feedback, previous_titles with timestamps, and current_time (in ISO 8601 format). Every quest and title must be tailored to this data."
   },
   {
     "role": "system",

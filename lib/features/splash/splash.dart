@@ -12,48 +12,55 @@ class SplashPage extends ConsumerStatefulWidget {
 }
 
 class _SplashPageState extends ConsumerState<SplashPage> {
-  late final StreamSubscription<UserModel?> _userSubscription;
+  StreamSubscription<UserModel?>? _userSubscription;
+  bool _isNavigationDone = false;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startListening();
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) => _startListening());
   }
 
   void _startListening() {
-    log("here  is  test");
-    _userSubscription = ref.read(authStateProvider.notifier).stateStream.listen((user) async {
-      log("the user data is $user");
-      if (mounted) {
+    _userSubscription = ref.read(authStateProvider.notifier).stateStream.listen(
+      (user) async {
+        if (_isNavigationDone || !mounted) return;
+
+        log("User data: $user");
+
         if (user != null && user.id.isNotEmpty) {
           final valid = await ref.read(authStateProvider.notifier).hasValidAccount();
+          if (!mounted) return;
 
           if (!valid) {
-            if (mounted) {
-              context.go(Routes.onboardingController);
-              return;
-            }
+            _isNavigationDone = true;
+            if (mounted) context.go(Routes.onboardingController);
+            return;
           }
 
           final quests = await ref.read(questsRepositoryProvider).currentlyOngoingQuests(user.id);
-          ref.read(currentOngointQuestsProvider.notifier).state = quests;
+          if (!mounted) return;
 
-          if (mounted) {
-            context.go(Routes.homePage);
-          }
+          ref.read(currentOngointQuestsProvider.notifier).state = quests;
+          _isNavigationDone = true;
+          if (mounted) context.go(Routes.homePage);
         } else {
           ref.read(isLoggedInProvider.notifier).state = false;
-          // context.go(Routes.onboardingPage);
+          _isNavigationDone = true;
+          if (mounted) context.go(Routes.onboardingPage);
         }
-      }
-    });
+      },
+      onError: (error) {
+        log("Auth state error: $error");
+        _isNavigationDone = true;
+        if (mounted) context.go(Routes.onboardingPage);
+      },
+    );
   }
 
   @override
   void dispose() {
-    _userSubscription.cancel();
+    _userSubscription?.cancel();
     super.dispose();
   }
 

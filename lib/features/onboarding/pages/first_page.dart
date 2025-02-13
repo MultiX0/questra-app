@@ -62,17 +62,20 @@ class OnboardingFirstPage extends ConsumerWidget {
               const SizedBox(
                 height: 35,
               ),
-              GlowButton(
-                spreadRadius: 1.5,
-                blurRadius: 20,
-                glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
-                color: Color.fromARGB(151, 99, 206, 255),
-                onPressed: handleLogin,
-                padding: EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: size.width * .35,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GlowButton(
+                  spreadRadius: 1.5,
+                  blurRadius: 20,
+                  glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
+                  color: Color.fromARGB(151, 99, 206, 255),
+                  onPressed: handleLogin,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: size.width * .35,
+                  ),
+                  child: isLoading ? BeatLoader() : Text("Level up!"),
                 ),
-                child: isLoading ? BeatLoader() : Text("Level up!"),
               ),
               const SizedBox(
                 height: 25,

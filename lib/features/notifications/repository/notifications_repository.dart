@@ -54,7 +54,13 @@ class NotificationsRepository {
           final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
           final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
           final notification = jsonData["notification"];
-          bool sentNow = jsonData["sent_now"];
+          bool sentNow;
+
+          if (jsonData["sent_now"] == true || jsonData["sent_now"].toString().contains('true')) {
+            sentNow = true;
+          } else {
+            sentNow = false;
+          }
 
           await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
           await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
@@ -81,7 +87,13 @@ class NotificationsRepository {
       final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
       final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
       final notification = jsonData["notification"];
-      bool sentNow = jsonData["sent_now"];
+      bool sentNow;
+
+      if (jsonData["sent_now"] == true || jsonData["sent_now"].toString().contains('true')) {
+        sentNow = true;
+      } else {
+        sentNow = false;
+      }
 
       await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
       await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);

@@ -65,7 +65,10 @@ class LevelingRepository {
       await _levelingTable.update({
         KeyNames.xp: levelModel.xp,
         KeyNames.level: levelModel.level,
-      }).eq(KeyNames.user_id, user!.id);
+      }).eq(
+        KeyNames.user_id,
+        user!.id,
+      );
     } catch (e) {
       log(e.toString());
       throw Exception(e);

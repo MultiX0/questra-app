@@ -80,47 +80,47 @@ Future<void> _sendSystemMessage() async {
 
 Future<void> _checkExpiringQuests() async {
   try {
-    final session = Supabase.instance.client.auth.currentSession;
-    if (session == null) return;
+    // final session = Supabase.instance.client.auth.currentSession;
+    // if (session == null) return;
 
-    final userId = session.user.id;
-    final now = DateTime.now().toUtc();
+    // final userId = session.user.id;
+    // final now = DateTime.now().toUtc();
 
-    final response = await Supabase.instance.client
-        .from('user_quests')
-        .select()
-        .eq('user_id', userId)
-        .eq('status', 'in_progress')
-        .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
-        .gt('expected_completion_time_date', now)
-        .or('notified_two_hours.is.false,notified_one_hour.is.false');
+    // final response = await Supabase.instance.client
+    //     .from('user_quests')
+    //     .select()
+    //     .eq('user_id', userId)
+    //     .eq('status', 'in_progress')
+    //     .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
+    //     .gt('expected_completion_time_date', now)
+    //     .or('notified_two_hours.is.false,notified_one_hour.is.false');
 
-    for (final quest in response) {
-      final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
-      final timeLeft = expectedTime.difference(now);
+    // for (final quest in response) {
+    //   final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
+    //   final timeLeft = expectedTime.difference(now);
 
-      if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
-        sendNotification(
-            '2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
-        await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
-      }
+    //   if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
+    //     sendNotification(
+    //         '2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
+    //     await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
+    //   }
 
-      if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
-        sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
-        await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
-      }
-    }
+    //   if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
+    //     sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
+    //     await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
+    //   }
+    // }
   } catch (e) {
     log(e.toString());
     rethrow;
   }
 }
 
-Future<void> _updateNotificationStatus(String questId, String column) async {
-  await Supabase.instance.client
-      .from('user_quests')
-      .update({column: true}).eq('user_quest_id', questId);
-}
+// Future<void> _updateNotificationStatus(String questId, String column) async {
+//   await Supabase.instance.client
+//       .from('user_quests')
+//       .update({column: true}).eq('user_quest_id', questId);
+// }
 
 Future<void> sendNotification(String body, String title) async {
   try {

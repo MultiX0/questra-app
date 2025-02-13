@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
+import 'package:questra_app/features/notifications/functions/notifications_functions.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/quests/ai/ai_model.dart';
 import 'package:questra_app/features/quests/ai/system_parts.dart';
@@ -152,6 +153,12 @@ class AiFunctions {
         currentQuests = [...currentQuests, quest.copyWith(id: questId)];
 
         _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
+        await NotificationsFunctions.scheduleNotification(
+          title: "Quest Reminder",
+          body:
+              "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+          scheduledTime: quest.expected_completion_time_date.subtract(const Duration(hours: 2)),
+        );
 
         return;
       }

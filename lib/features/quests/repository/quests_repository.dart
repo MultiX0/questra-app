@@ -195,6 +195,7 @@ class QuestsRepository {
 
       if (unix > expiryTimestamp) {
         await _updateQuestStatus(StatusEnum.failed, quest.id);
+        await _failedPunishment(_quest ?? quest);
         throw 'this quest is expired you will receive the penalties';
       }
 
@@ -217,6 +218,25 @@ class QuestsRepository {
 
       _ref.read(authStateProvider.notifier).updateState(user.copyWith(level: level));
       return updatedQuest;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> _failedPunishment(QuestModel quest) async {
+    try {
+      // reduce the user's xp
+      // reduce the user's coins by half the quest reward coins amount
+
+      final user = _ref.read(authStateProvider)!;
+      final currentLevelModel = user.level ?? LevelsModel(user_id: user.id, level: 1, xp: 0);
+      final newLevelModel = currentLevelModel.copyWith(xp: -quest.xp_reward);
+      await _ref.read(levelingRepositoryProvider).updateUserLevelData(newLevelModel);
+      await _ref.read(walletRepositoryProvider).reduceCoins(
+            userId: user.id,
+            amount: (quest.coin_reward / 2).toInt(),
+          );
     } catch (e) {
       log(e.toString());
       rethrow;
