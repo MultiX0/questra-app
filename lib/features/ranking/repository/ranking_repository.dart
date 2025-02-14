@@ -33,7 +33,7 @@ class RankingRepository {
       final data = await _levelsTable.select('''
     *,
     players (*)
-  ''').order('level', ascending: false).order('xp', ascending: false);
+  ''').order('level', ascending: false).order('xp', ascending: false).limit(500);
 
       final users = data
           .map(
