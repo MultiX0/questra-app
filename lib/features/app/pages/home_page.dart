@@ -1,3 +1,4 @@
+import 'package:questra_app/core/services/device_service.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/imports.dart';
@@ -12,6 +13,17 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _checkDevice());
+    super.initState();
+  }
+
+  void _checkDevice() {
+    final user = ref.read(authStateProvider);
+    DeviceService.checkDevice(user!.id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(seconds: 2);

@@ -34,7 +34,8 @@ void callbackDispatcher() {
       return Future.value(true);
     } catch (e) {
       log('Background task failed: $e');
-      await sendNotification("Background task failed", e.toString());
+
+      // await sendNotification("Background task failed", e.toString());
 
       return Future.value(false);
     }

@@ -10,14 +10,14 @@ import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/ranking/functions/ranking_functions.dart';
-import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
 
 final serverClientId = dotenv.env['SERVERCLIENTID'] ?? '';
-final clientId = dotenv.env[kDebugMode ? 'CLIENTID' : 'CLIENTID_RELEASE'] ?? '';
+final clientId = kDebugMode ? dotenv.env['CLIENTID'] ?? '' : releaseId;
+final releaseId = '39700937787-d7prd0sk55q10bi2jffttm5e4c1rggnk.apps.googleusercontent.com';
 
 final authStateProvider = StateNotifierProvider<AuthNotifier, UserModel?>((ref) {
   return AuthNotifier(ref: ref);

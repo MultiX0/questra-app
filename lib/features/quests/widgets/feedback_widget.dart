@@ -203,7 +203,30 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
         cursorColor: AppColors.primary,
         decoration: InputDecoration(
           filled: false,
-          border: InputBorder.none,
+          border: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
+          errorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
+          disabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
+          focusedErrorBorder: UnderlineInputBorder(
+              borderSide: BorderSide(
+            color: AppColors.primary,
+          )),
           hintStyle: TextStyle(
             fontWeight: FontWeight.w200,
             fontSize: 14,

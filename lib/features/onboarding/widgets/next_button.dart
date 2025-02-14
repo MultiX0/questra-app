@@ -14,8 +14,8 @@ class AccountSetupNextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        left: 35,
-        right: 35,
+        left: 15,
+        right: 15,
         bottom: 35,
         top: 15,
       ),

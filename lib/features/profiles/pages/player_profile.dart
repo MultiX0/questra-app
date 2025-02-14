@@ -104,5 +104,8 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     );
   }
 
-  void soon() => CustomToast.soon();
+  void soon() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    CustomToast.soon();
+  }
 }

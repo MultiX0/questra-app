@@ -19,6 +19,12 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
   }
 
+  void cancel() {
+    setState(() {
+      _finish = false;
+    });
+  }
+
   void finish() {
     play();
     if (_skip) {
@@ -67,7 +73,7 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
 
   Widget buildFinish() => Center(
         child: FinishQuestWidget(
-          cancel: finish,
+          cancel: cancel,
         ),
       );
 

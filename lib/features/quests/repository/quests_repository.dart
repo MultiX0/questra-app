@@ -189,9 +189,9 @@ class QuestsRepository {
         await insertFeedback(feedback);
       }
 
-      if (now.isBefore(quest.expected_completion_time_date)) {
-        throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
-      }
+      // if (now.isBefore(quest.expected_completion_time_date)) {
+      //   throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
+      // }
 
       if (unix > expiryTimestamp) {
         await _updateQuestStatus(StatusEnum.failed, quest.id);

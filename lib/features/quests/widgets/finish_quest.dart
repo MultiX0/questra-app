@@ -23,18 +23,18 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
     void finish() {
       ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
-      final now = DateTime.timestamp();
+      // final now = DateTime.timestamp();
       final quest = ref.read(viewQuestProvider)!;
 
       log(quest.toMap().toString());
 
-      if (now.isBefore(quest.expected_completion_time_date)) {
-        CustomToast.systemToast(
-            "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}",
-            systemMessage: true);
-        widget.cancel;
-        return;
-      }
+      // if (now.isBefore(quest.expected_completion_time_date)) {
+      //   CustomToast.systemToast(
+      //       "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}",
+      //       systemMessage: true);
+      //   widget.cancel;
+      //   return;
+      // }
 
       setState(() {
         done = true;
@@ -103,8 +103,9 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
           ),
           SystemCardButton(
             onTap: () {
-              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
               widget.cancel();
+
+              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
             },
             text: "No, I’ll Keep Working",
             doneButton: false,
