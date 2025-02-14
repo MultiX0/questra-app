@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/utils/parse_duration.dart';
 import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
 
@@ -23,10 +24,18 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
     void finish() {
       ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
-      // final now = DateTime.timestamp();
+      final now = DateTime.timestamp();
       final quest = ref.read(viewQuestProvider)!;
 
       log(quest.toMap().toString());
+      final duration = parseDuration(quest.estimated_completion_time);
+      if (duration != null) {
+        if (now.add(duration).isBefore(quest.created_at)) {
+          CustomToast.systemToast("you need to wait until ${appDateFormat(now.add(duration))}",
+              systemMessage: true);
+          return;
+        }
+      }
 
       // if (now.isBefore(quest.expected_completion_time_date)) {
       //   CustomToast.systemToast(

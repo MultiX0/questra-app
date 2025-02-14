@@ -88,7 +88,8 @@ class UserModel {
       name: map[KeyNames.name] ?? "",
       username: map[KeyNames.username] ?? "",
       is_online: map[KeyNames.is_online] ?? false,
-      avatar: map[KeyNames.avatar],
+      avatar: map[KeyNames.avatar] ??
+          "https://ijetdkekpdlnbyrnirfe.supabase.co/storage/v1/object/public/public_stotage//Logo.png",
       gender: map[KeyNames.gender] ?? "male",
     );
   }
