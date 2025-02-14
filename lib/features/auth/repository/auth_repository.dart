@@ -145,7 +145,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
-    final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
+
+    final activeTitle = userEvent["active_title"] != null
+        ? await _ref.read(profileRepositoryProvider).getActiveTitle(userId)
+        : null;
 
     await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
 
