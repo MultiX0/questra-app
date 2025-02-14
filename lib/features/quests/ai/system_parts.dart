@@ -37,6 +37,21 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
+        "Calculate completion_time_date using this formula: current_time + (estimated_completion_time × 1.5). If remaining time in current day (user's local timezone) is less than (estimated_completion_time × 2), automatically set deadline to next day's 23:59:59. Always provide minimum 24-hour window for completion regardless of duration."
+  },
+  {
+    "role": "system",
+    "content":
+        "Triple-check that completion_time_date is always after current_time. Implement 3-step validation: 1) Compare timestamps, 2) Add 1-hour buffer, 3) If conflict exists, default to current_time + 24 hours (next day 23:59:59). Never allow past deadlines."
+  },
+  {
+    "role": "system",
+    "content":
+        "When current_time is between 22:00-06:00 in user's local timezone (calculated from timezone offset), automatically set all deadlines to next day's 23:59:59. Add '[Next Day]' prefix to quest_title for nighttime generated quests."
+  },
+  {
+    "role": "system",
+    "content":
         "The 'player_title' must be included if the user has achieved a significant milestone in a specific field (e.g., fitness, learning, creativity, etc.) by completing multiple related quests. The title must be short, exciting, and relevant to the field (e.g., 'Fitness Guru', 'Puzzle Master'). If no new title is warranted, set 'player_title' to null."
   },
   {
@@ -108,6 +123,26 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
     "role": "system",
     "content":
         "Analyze 'last_quests' and the user's feedback on them to improve customization. If a user enjoyed a specific quest type, include similar elements but ensure enough variation to keep the experience fresh. If they disliked something, avoid it entirely."
+  },
+  {
+    "role": "system",
+    "content":
+        "Pattern-match feedback keywords: 'stress' → reduce difficulty but keep time same, 'bored' → increase difficulty by one level, 'repeat' → change quest type completely, 'time' → extend deadline while keeping task same"
+  },
+  {
+    "role": "system",
+    "content":
+        "If user feedback contains specific time mentions ('needed more hours', 'not enough days'), apply exact multiplier: e.g., 'more 2 hours' → add 2 hours to both estimated_completion_time and deadline"
+  },
+  {
+    "role": "system",
+    "content":
+        "For users who complete >70% of quests within final 3 hours of expiration: 1) Add 6-hour buffer to all deadlines 2) Keep original estimated_completion_time unchanged 3) Add 'flexible' tag to quest_description"
+  },
+  {
+    "role": "system",
+    "content":
+        "Implement progressive time scaling: For every 3 consecutive days of quest completion, add +2 hours to default deadline buffer. Reset counter if user misses a deadline."
   },
   {
     "role": "system",

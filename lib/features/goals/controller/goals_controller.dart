@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
@@ -31,6 +33,27 @@ class GoalsController extends StateNotifier<bool> {
       log(e.toString());
       state = false;
       throw Exception(e);
+    }
+  }
+
+  Future<void> deleteGoal(int id, VoidCallback callback) async {
+    try {
+      state = true;
+      UserGoalModel goal = _ref.read(playerGoalsProvider).firstWhere((g) => g.id == id);
+      await _repo.deleteGoal(goal);
+      final goals = _ref.read(playerGoalsProvider);
+      _ref.invalidate(playerGoalsProvider);
+      _ref.read(playerGoalsProvider.notifier).state = goals.where((g) => g.id != goal.id).toList();
+      CustomToast.systemToast(systemMessage: true, "goal deleted succesfully");
+      callback();
+
+      state = false;
+    } catch (e) {
+      CustomToast.systemToast(appError);
+      state = false;
+
+      log(e.toString());
+      rethrow;
     }
   }
 }

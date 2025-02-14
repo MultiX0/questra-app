@@ -50,15 +50,18 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
 
   Widget buildUserBody(bool isMe) {
     if (isMe) {
-      return buildMe();
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 3),
+        child: buildMe(),
+      );
     }
     return const SizedBox();
   }
 
   ListView buildMe() {
     return ListView(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       children: [
+        const SizedBox(height: 10),
         UserDashboardWidget(duration: Duration(milliseconds: 800)),
         const SizedBox(
           height: 15,
@@ -68,6 +71,9 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         buildGuildCard(),
         const SizedBox(height: 15),
         buildFriendsCard(),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }

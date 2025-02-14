@@ -69,6 +69,9 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
                   icon: Icon(LucideIcons.diamond),
                 ),
                 BottomNavigationBarItem(
+                  icon: Icon(LucideIcons.crown),
+                ),
+                BottomNavigationBarItem(
                   icon: Icon(
                     LucideIcons.user,
                   ),

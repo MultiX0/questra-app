@@ -11,6 +11,7 @@ class GoalsRepository {
 
   SupabaseClient get _client => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _goalsTable => _client.from(TableNames.user_goals);
+  SupabaseQueryBuilder get _deletedGoalsTable => _client.from(TableNames.deleted_goals);
 
   Future<void> insertGoals({required List<UserGoalModel> goals}) async {
     try {
@@ -31,6 +32,17 @@ class GoalsRepository {
     } catch (e) {
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  Future<void> deleteGoal(UserGoalModel goal) async {
+    try {
+      await _deletedGoalsTable
+          .insert({KeyNames.description: goal.description, KeyNames.user_id: goal.user_id});
+      await _goalsTable.delete().eq(KeyNames.user_goal_id, goal.id);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
     }
   }
 }

@@ -67,7 +67,7 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id);
+    ''').eq('user_id', user_id).limit(10).order(KeyNames.created_at, ascending: false);
 
       final feedbacks = data
           .map(
@@ -175,7 +175,7 @@ class QuestsRepository {
   Future<QuestModel> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
     try {
       final unix = DateTime.now().millisecondsSinceEpoch;
-      final now = DateTime.now();
+      // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
       final expectedTimestamp = quest.expected_completion_time_date.millisecondsSinceEpoch;
       final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);

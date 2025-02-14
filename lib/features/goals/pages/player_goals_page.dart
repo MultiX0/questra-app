@@ -30,6 +30,16 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
   }
 
   bool add = false;
+  int? deleteId;
+
+  void delete(int id) {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
+    setState(() {
+      add = false;
+      deleteId = id;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,31 +71,47 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                 ),
           appBar: TheAppBar(title: "Goals"),
           body: (!add)
-              ? GridView.builder(
-                  padding: EdgeInsets.all(16),
-                  itemCount: goals.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 15,
-                  ),
-                  itemBuilder: (context, index) {
-                    final goal = goals[index];
-                    return Container(
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: HexColor('7AD5FF').withValues(alpha: .15),
-                        border: Border.all(color: HexColor('7AD5FF')),
+              ? (deleteId != null)
+                  ? buildDeleteDialog()
+                  : GridView.builder(
+                      padding: EdgeInsets.all(16),
+                      itemCount: goals.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
                       ),
-                      child: Text(
-                        goal.description,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    );
-                  },
-                )
+                      itemBuilder: (context, index) {
+                        final goal = goals[index];
+                        return Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: HexColor('7AD5FF').withValues(alpha: .15),
+                            border: Border.all(color: HexColor('7AD5FF')),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                goal.description,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const Spacer(),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => delete(goal.id),
+                                  icon: Icon(Icons.delete),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    )
               : buildAddForm(),
         ),
       ),
@@ -162,6 +188,75 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                 ] else ...[
                   SystemCardButton(
                     onTap: finish,
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildDeleteDialog() {
+    final isLoading = ref.watch(goalsControllerProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: SizedBox(
+        child: Center(
+          child: SystemCard(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Delete Goal",
+                      style: TextStyle(
+                        fontFamily: AppFonts.header,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "readme: Your goals help the system to understand more about your needs to make better quests for you.\ndo you want to delete this goal?",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white60,
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                if (isLoading) ...[
+                  BeatLoader(),
+                ] else ...[
+                  SystemCardButton(
+                    onTap: () {
+                      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                      ref.read(goalsControllerProvider.notifier).deleteGoal(deleteId!, () {
+                        setState(() {
+                          deleteId = null;
+                        });
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                  SystemCardButton(
+                    doneButton: false,
+                    onTap: () {
+                      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                      setState(() {
+                        deleteId = null;
+                      });
+                    },
+                    text: "cancel",
                   ),
                 ],
               ],

@@ -13,6 +13,7 @@ import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/features/profiles/pages/player_profile.dart';
 import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/quests/pages/view_quest_page.dart';
+import 'package:questra_app/features/ranking/pages/leaderboard_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
 
 import 'features/analytics/providers/route_observer.dart';
@@ -82,6 +83,14 @@ final routerProvider = Provider<GoRouter>(
                 buildRoute(
                   path: Routes.quests,
                   child: const QuestsPage(),
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                buildRoute(
+                  path: Routes.leaderboardPage,
+                  child: LeaderboardPage(),
                 ),
               ],
             ),
