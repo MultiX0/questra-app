@@ -104,7 +104,10 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                                 child: IconButton(
                                   padding: EdgeInsets.zero,
                                   onPressed: () => delete(goal.id),
-                                  icon: Icon(Icons.delete),
+                                  icon: Icon(
+                                    LucideIcons.minus,
+                                    color: Colors.red,
+                                  ),
                                 ),
                               ),
                             ],
