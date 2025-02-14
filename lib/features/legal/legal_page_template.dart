@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:questra_app/imports.dart';
 
 class LegalPageTemplate extends StatelessWidget {
   final String title;
@@ -17,7 +18,7 @@ class LegalPageTemplate extends StatelessWidget {
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF4CAF50)),
+          icon: Icon(Icons.arrow_back, color: AppColors.primary),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -61,7 +62,7 @@ class LegalPageTemplate extends StatelessWidget {
       children: [
         Text(title,
             style: TextStyle(
-              color: Color(0xFF4CAF50),
+              color: AppColors.primary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
               height: 1.5,

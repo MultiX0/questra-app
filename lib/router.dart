@@ -38,6 +38,12 @@ final routerProvider = Provider<GoRouter>(
         final inSplash = state.uri.toString() == Routes.splash;
         final inSetUpPage = state.uri.toString() == Routes.setupAccountPage;
         final haveValidAccount = ref.watch(validAccountProvider);
+        final isGoingToLegal =
+            state.uri.toString() == Routes.termsPage || state.uri.toString() == Routes.privacyPage;
+
+        if (isGoingToLegal) {
+          return null;
+        }
 
         if (inSetUpPage) {
           return null;

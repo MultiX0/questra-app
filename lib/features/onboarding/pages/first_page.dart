@@ -93,58 +93,61 @@ class OnboardingFirstPage extends ConsumerWidget {
     );
   }
 
-  RichText buildReachText(BuildContext context) {
-    return RichText(
-      textDirection: TextDirection.rtl,
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        text: "By clicking the login button, you agree to ",
-        style: TextStyle(
-          fontWeight: FontWeight.w700,
-          color: AppColors.descriptionColor,
-          fontFamily: AppFonts.primary,
-          fontSize: 12,
+  Padding buildReachText(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: RichText(
+        textDirection: TextDirection.rtl,
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          text: "By clicking the login button, you agree to ",
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: AppColors.descriptionColor,
+            fontFamily: AppFonts.primary,
+            fontSize: 12,
+          ),
+          children: [
+            TextSpan(
+              text: "Terms ",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+                fontSize: 12,
+                fontFamily: AppFonts.primary,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  context.push(Routes.termsPage);
+                },
+            ),
+            TextSpan(
+              text: "and ",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: AppColors.whiteColor,
+                fontSize: 12,
+                fontFamily: AppFonts.primary,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+            TextSpan(
+              text: "Privacy policy",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: AppColors.primary,
+                fontSize: 12,
+                fontFamily: AppFonts.primary,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  context.push(Routes.privacyPage);
+                },
+            ),
+          ],
         ),
-        children: [
-          TextSpan(
-            text: "Terms ",
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary,
-              fontSize: 12,
-              fontFamily: AppFonts.primary,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                context.push(Routes.termsPage);
-              },
-          ),
-          TextSpan(
-            text: "and ",
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: AppColors.whiteColor,
-              fontSize: 12,
-              fontFamily: AppFonts.primary,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-          TextSpan(
-            text: "Privacy policy",
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: AppColors.whiteColor,
-              fontSize: 12,
-              fontFamily: AppFonts.primary,
-              decoration: TextDecoration.underline,
-            ),
-            recognizer: TapGestureRecognizer()
-              ..onTap = () {
-                context.push(Routes.privacyPage);
-              },
-          ),
-        ],
       ),
     );
   }
