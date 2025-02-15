@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
+import 'package:questra_app/features/app/widgets/upload_avatar_widget.dart';
 import 'package:questra_app/features/goals/pages/player_goals_page.dart';
 import 'package:questra_app/features/inventory/pages/inventory_page.dart';
 import 'package:questra_app/features/legal/privacy_policy.dart';
@@ -169,6 +170,10 @@ final routerProvider = Provider<GoRouter>(
           path: Routes.termsPage,
           fade: true,
           child: TermsOfUse(),
+        ),
+        buildRoute(
+          path: Routes.updateAvatarPage,
+          child: UploadAvatarWidget(),
         ),
       ],
     );

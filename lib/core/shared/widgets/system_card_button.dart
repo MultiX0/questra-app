@@ -1,33 +1,41 @@
 import 'package:questra_app/imports.dart';
 
-class SystemCardButton extends StatelessWidget {
+class SystemCardButton extends ConsumerWidget {
   const SystemCardButton({
     super.key,
     this.isCenter = true,
     this.doneButton = true,
     required this.onTap,
     this.text = "done",
+    this.defaultSound = true,
   });
 
   final String? text;
   final bool? doneButton;
   final Function() onTap;
   final bool? isCenter;
+  final bool defaultSound;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (isCenter != null && isCenter == false) {
-      return buildText();
+      return buildText(ref);
     }
 
     return Center(
-      child: buildText(),
+      child: buildText(ref),
     );
   }
 
-  GestureDetector buildText() {
+  GestureDetector buildText(WidgetRef ref) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        if (defaultSound) {
+          ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        }
+
+        onTap();
+      },
       child: Text(
         "[ $text ]",
         style: TextStyle(

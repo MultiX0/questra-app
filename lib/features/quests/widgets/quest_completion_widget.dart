@@ -63,7 +63,6 @@ class QuestCompletionWidget extends ConsumerWidget {
           ),
           SystemCardButton(
             onTap: () {
-              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
               context.pop();
             },
           ),

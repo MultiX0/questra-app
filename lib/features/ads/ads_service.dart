@@ -13,10 +13,10 @@ class AdsService extends StateNotifier<bool> {
     try {
       state = true;
       await UnityAds.load(
-        placementId: 'Interstitial_Android',
+        placementId: 'Rewarded_Android',
         onComplete: (placementId) async {
           await UnityAds.showVideoAd(
-            placementId: 'Interstitial_Android',
+            placementId: 'Rewarded_Android',
             onStart: (placementId) => log('Video Ad $placementId started'),
             onClick: (placementId) => log('Video Ad $placementId click'),
             onSkipped: (placementId) => log('Video Ad $placementId skipped'),

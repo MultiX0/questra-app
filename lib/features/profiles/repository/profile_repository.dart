@@ -120,4 +120,13 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<void> updateAvatar({required String avatar, required String userId}) async {
+    try {
+      await _profilesTable.update({KeyNames.avatar: avatar}).eq(KeyNames.id, userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

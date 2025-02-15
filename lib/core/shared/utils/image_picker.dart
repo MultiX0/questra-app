@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:hl_image_picker/hl_image_picker.dart';
 
-Future<List<File>> imagePicker() async {
+Future<List<File>> imagePicker(bool single) async {
   try {
     final _picker = HLImagePicker();
     List<File> _selectedImages = [];
@@ -11,7 +11,7 @@ Future<List<File>> imagePicker() async {
     final images = await _picker.openPicker(
       pickerOptions: HLPickerOptions(
         mediaType: MediaType.image,
-        maxSelectedAssets: 3,
+        maxSelectedAssets: single ? 1 : 3,
       ),
       cropping: true,
     );

@@ -22,15 +22,13 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
       });
     }
 
-    final images = await imagePicker();
+    final images = await imagePicker(false);
     setState(() {
       _images = List<File>.from(images);
     });
   }
 
   void finish() {
-    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-
     ref.read(questImagesProvider.notifier).state = _images;
     setState(() {
       done = true;

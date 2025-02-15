@@ -122,22 +122,27 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
   }
 
   Future<void> finish() async {
-    if (_controller.text.trim().length < 8) {
-      CustomToast.systemToast("Goal should be contains at lease 8 characters");
-      return;
+    try {
+      if (_controller.text.trim().length < 8) {
+        CustomToast.systemToast("Goal should be contains at lease 8 characters");
+        return;
+      }
+      final user = ref.read(authStateProvider);
+      final goal = UserGoalModel(
+        id: -1,
+        created_at: DateTime.now(),
+        user_id: user?.id ?? "",
+        description: _controller.text.trim(),
+        status: 'in_progress',
+      );
+      await ref.read(goalsControllerProvider.notifier).insertGoals(goal: goal);
+      setState(() {
+        _controller.clear();
+        add = false;
+      });
+    } catch (e) {
+      rethrow;
     }
-    final user = ref.read(authStateProvider);
-    final goal = UserGoalModel(
-      id: -1,
-      created_at: DateTime.now(),
-      user_id: user?.id ?? "",
-      description: _controller.text.trim(),
-      status: 'in_progress',
-    );
-    await ref.read(goalsControllerProvider.notifier).insertGoals(goal: goal);
-    setState(() {
-      add = false;
-    });
   }
 
   Widget buildAddForm() {

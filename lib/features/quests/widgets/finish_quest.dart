@@ -22,8 +22,6 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
   @override
   Widget build(BuildContext context) {
     void finish() {
-      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-
       final now = DateTime.timestamp();
       final quest = ref.read(viewQuestProvider)!;
 
@@ -113,8 +111,6 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
           SystemCardButton(
             onTap: () {
               widget.cancel();
-
-              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
             },
             text: "No, I’ll Keep Working",
             doneButton: false,

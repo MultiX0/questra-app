@@ -179,7 +179,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       final prefs =
           await _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId);
       final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(userId);
-      _ref.read(playerGoalsProvider.notifier).state = goals;
+      _ref.read(playerGoalsProvider).clear();
+      _ref.read(playerGoalsProvider).addAll(goals);
 
       user = user.copyWith(
         birth_date: DateTime.tryParse(birthDate),
@@ -206,7 +207,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.username == next.username &&
         current.activeTitle == next.activeTitle &&
         current.level == next.level &&
-        current.wallet == next.wallet;
+        current.wallet == next.wallet &&
+        current.avatar == next.avatar;
   }
 
   void _retryUserDataStream(String userId) {
