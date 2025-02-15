@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:questra_app/core/services/exception_service.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
@@ -119,6 +120,11 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       } catch (e) {
         log('Error handling user data update: $e');
+        ExceptionService.insertException(
+          path: "/auth_repository",
+          error: e.toString(),
+          userId: userId,
+        );
       }
     });
   }
