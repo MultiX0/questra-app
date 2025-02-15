@@ -23,7 +23,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     });
   }
 
-  void _startListening() {
+  void _startListening() async {
     try {
       _userSubscription = ref.read(authStateProvider.notifier).stateStream.listen((user) async {
         log("the user data is $user");
@@ -54,7 +54,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       });
     } catch (e) {
       log(e.toString());
-      ExceptionService.insertException(
+      await ExceptionService.insertException(
         path: "/splash",
         error: e.toString(),
         userId: Supabase.instance.client.auth.currentUser?.id ?? "",

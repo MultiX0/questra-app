@@ -120,7 +120,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       } catch (e) {
         log('Error handling user data update: $e');
-        ExceptionService.insertException(
+        await ExceptionService.insertException(
           path: "/auth_repository",
           error: e.toString(),
           userId: userId,
