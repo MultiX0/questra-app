@@ -152,8 +152,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
 
-    final activeTitle = userEvent["active_title"] != null
-        ? await _ref.read(profileRepositoryProvider).getActiveTitle(userId)
+    final activeTitle = userEvent[KeyNames.active_title] != null
+        ? await _ref.read(profileRepositoryProvider).getActiveTitle(user.activeTitleId!)
         : null;
 
     await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
@@ -306,7 +306,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         return true;
       }
 
-      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
+      await _supabase.from(TableNames.players).insert(user.toMap());
 
       if (Platform.isAndroid) {
         const androidIdPlugin = AndroidId();
@@ -319,7 +319,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       }
 
-      state = UserModel.fromMap(data);
+      state = user;
       _ref.read(hasValidAccountProvider.notifier).state = true;
       return true;
     } catch (e) {

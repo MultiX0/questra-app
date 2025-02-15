@@ -6,6 +6,9 @@ import 'package:questra_app/features/wallet/models/wallet_model.dart';
 
 import '../../profiles/models/player_title_model.dart';
 
+final _defaultAvatar =
+    "https://ijetdkekpdlnbyrnirfe.supabase.co/storage/v1/object/public/public_stotage//Logo.png";
+
 class UserModel {
   final String id;
   final DateTime joined_at;
@@ -18,6 +21,7 @@ class UserModel {
   final List<UserGoalModel>? goals;
   final UserPreferencesModel? user_preferences;
   final PlayerTitleModel? activeTitle;
+  final String? activeTitleId;
   final LevelsModel? level;
   final WalletModel? wallet;
 
@@ -33,6 +37,7 @@ class UserModel {
     required this.gender,
     this.user_preferences,
     this.birth_date,
+    this.activeTitleId,
     this.level,
     this.wallet,
   });
@@ -50,6 +55,7 @@ class UserModel {
     UserPreferencesModel? user_preferences,
     LevelsModel? level,
     WalletModel? wallet,
+    String? activeTitleId,
     PlayerTitleModel? activeTitle,
   }) {
     return UserModel(
@@ -76,7 +82,7 @@ class UserModel {
       KeyNames.name: name,
       KeyNames.username: username,
       KeyNames.is_online: is_online,
-      KeyNames.avatar: avatar,
+      KeyNames.avatar: (avatar ?? "").isNotEmpty ? avatar : _defaultAvatar,
       KeyNames.gender: gender.toLowerCase(),
     };
   }
@@ -88,9 +94,9 @@ class UserModel {
       name: map[KeyNames.name] ?? "",
       username: map[KeyNames.username] ?? "",
       is_online: map[KeyNames.is_online] ?? false,
-      avatar: map[KeyNames.avatar] ??
-          "https://ijetdkekpdlnbyrnirfe.supabase.co/storage/v1/object/public/public_stotage//Logo.png",
+      avatar: map[KeyNames.avatar] ?? _defaultAvatar,
       gender: map[KeyNames.gender] ?? "male",
+      activeTitleId: map[KeyNames.active_title],
     );
   }
 

@@ -91,9 +91,9 @@ class ProfileRepository {
     }
   }
 
-  Future<PlayerTitleModel?> getActiveTitle(String userId) async {
+  Future<PlayerTitleModel?> getActiveTitle(String titleId) async {
     try {
-      final data = await _playerTitleTable.select("*").eq(KeyNames.user_id, userId).maybeSingle();
+      final data = await _playerTitleTable.select("*").eq(KeyNames.id, titleId).maybeSingle();
       return data != null ? PlayerTitleModel.fromMap(data) : null;
     } catch (e) {
       log(e.toString());
