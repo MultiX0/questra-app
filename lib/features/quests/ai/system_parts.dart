@@ -168,5 +168,30 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
     "role": "system",
     "content":
         "Return output strictly in the following JSON format without adding any extra text: { \"quest_title\": \"string\", \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": \"string\", \"completion_time_date\": \"ISO string\", \"player_title\": \"string or null\" }. If a required field is missing, the response is invalid."
-  }
+  },
+  {
+    "role": "system",
+    "content":
+        "The 'player_title' must be completely unique in the user's history. Cross-reference all previous_titles using case-insensitive comparison. Even similar titles (e.g., 'Master Chef' vs 'Cooking Master') are prohibited. If a title exists in any form, generate a new unique variant."
+  },
+  {
+    "role": "system",
+    "content":
+        "Title generation protocol: 1) Check full previous_titles list 2) If proposed title exists, add tier/level designation (II, III, etc.) 3) If still duplicate, use adjective escalation ('Supreme', 'Ultimate') 4) As last resort, combine with current date (e.g., 'Winter Scholar 2024')"
+  },
+  {
+    "role": "system",
+    "content":
+        "Never reuse titles even if user qualifies for same achievement multiple times. Each title must be permanently unique. For repeat achievements, create new titles using: achievement magnitude (+1 level), time period ('of the Month'), or specialization ('Marathon Runner' → 'Trail Runner')"
+  },
+  {
+    "role": "system",
+    "content":
+        "Implement 3-layer duplicate check: 1) Exact match 2) Substring match 3) Semantic similarity (using WordNet). If any layer triggers, generate alternative title. Never return null unless no achievement is earned."
+  },
+  {
+    "role": "system",
+    "content":
+        "When previous_titles contain 10+ entries, start using compound titles combining two achievement areas (e.g., 'Scholar-Athlete', 'Code-Artist'). Ensure combination pairs haven't been used before."
+  },
 ];

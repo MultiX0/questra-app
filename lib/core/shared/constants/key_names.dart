@@ -69,4 +69,5 @@ class KeyNames {
   static const notification = 'notification';
   static const sent_now = 'sent_now';
   static const device_id = 'device_id';
+  static const active_title = 'active_title';
 }

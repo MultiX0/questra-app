@@ -110,11 +110,14 @@ class _BuyItemWidgetState extends ConsumerState<BuyItemWidget> {
                 )
               ] else ...[
                 SystemCard(
-                  onTap: () => ref.read(marketPlaceControllerProvider.notifier).buyItem(
-                        widget.item,
-                        amount,
-                        context,
-                      ),
+                  onTap: () {
+                    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                    ref.read(marketPlaceControllerProvider.notifier).buyItem(
+                          widget.item,
+                          amount,
+                          context,
+                        );
+                  },
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                   isButton: true,
                   child: Text("Buy"),

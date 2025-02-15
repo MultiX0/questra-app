@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:questra_app/core/services/exception_service.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
@@ -119,6 +120,11 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       } catch (e) {
         log('Error handling user data update: $e');
+        await ExceptionService.insertException(
+          path: "/auth_repository",
+          error: e.toString(),
+          userId: userId,
+        );
       }
     });
   }
@@ -145,7 +151,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
-    final activeTitle = await _ref.read(profileRepositoryProvider).getActiveTitle(userId);
+
+    final activeTitle = userEvent[KeyNames.active_title] != null
+        ? await _ref.read(profileRepositoryProvider).getActiveTitle(user.activeTitleId!)
+        : null;
 
     await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
 
@@ -170,7 +179,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       final prefs =
           await _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId);
       final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(userId);
-      _ref.read(playerGoalsProvider.notifier).state = goals;
+      _ref.read(playerGoalsProvider).clear();
+      _ref.read(playerGoalsProvider).addAll(goals);
 
       user = user.copyWith(
         birth_date: DateTime.tryParse(birthDate),
@@ -197,7 +207,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.username == next.username &&
         current.activeTitle == next.activeTitle &&
         current.level == next.level &&
-        current.wallet == next.wallet;
+        current.wallet == next.wallet &&
+        current.avatar == next.avatar;
   }
 
   void _retryUserDataStream(String userId) {
@@ -297,7 +308,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         return true;
       }
 
-      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
+      await _supabase.from(TableNames.players).insert(user.toMap());
 
       if (Platform.isAndroid) {
         const androidIdPlugin = AndroidId();
@@ -310,7 +321,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       }
 
-      state = UserModel.fromMap(data);
+      state = user;
       _ref.read(hasValidAccountProvider.notifier).state = true;
       return true;
     } catch (e) {

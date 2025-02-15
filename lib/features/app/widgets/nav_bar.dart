@@ -16,6 +16,7 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
   int page = 0;
 
   void onTap(BuildContext context, int index) {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
     setState(() {
       page = index;
     });

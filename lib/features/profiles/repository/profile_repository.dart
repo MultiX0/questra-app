@@ -91,9 +91,9 @@ class ProfileRepository {
     }
   }
 
-  Future<PlayerTitleModel?> getActiveTitle(String userId) async {
+  Future<PlayerTitleModel?> getActiveTitle(String titleId) async {
     try {
-      final data = await _playerTitleTable.select("*").eq(KeyNames.user_id, userId).maybeSingle();
+      final data = await _playerTitleTable.select("*").eq(KeyNames.id, titleId).maybeSingle();
       return data != null ? PlayerTitleModel.fromMap(data) : null;
     } catch (e) {
       log(e.toString());
@@ -115,6 +115,15 @@ class ProfileRepository {
       await _client.from('sign_in_codes').update({'assigned_to': uesrId}).eq('code', code);
 
       return true;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> updateAvatar({required String avatar, required String userId}) async {
+    try {
+      await _profilesTable.update({KeyNames.avatar: avatar}).eq(KeyNames.id, userId);
     } catch (e) {
       log(e.toString());
       rethrow;

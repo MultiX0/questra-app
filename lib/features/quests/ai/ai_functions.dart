@@ -58,7 +58,7 @@ class AiFunctions {
                     "time_availability": "${_user?.user_preferences?.time_availability ?? '1 hour'}",
                     "social_interactions": "${_user?.user_preferences?.social_interactions ?? 'solo'}",
                     "feedbacks": "${feedbacks.map((feedback) => feedback.toJson()).toList()}",
-                    "user_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
+                    "previous_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
                     "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                     "current_time": ${DateTime.now().toIso8601String()},
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [

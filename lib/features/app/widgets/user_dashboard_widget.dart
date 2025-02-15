@@ -1,17 +1,21 @@
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/imports.dart';
-import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 
 class UserDashboardWidget extends ConsumerWidget {
   const UserDashboardWidget({
     super.key,
     this.duration,
+    this.profilePage = false,
   });
 
   final Duration? duration;
+  final bool profilePage;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,6 +27,9 @@ class UserDashboardWidget extends ConsumerWidget {
       width: size.width,
     );
     dynamic rank = ref.watch(playerRankingProvider) ?? "NA";
+
+    double aspects = profilePage ? 60 : 52;
+
     return SystemCard(
       duration: duration ?? const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
@@ -32,14 +39,18 @@ class UserDashboardWidget extends ConsumerWidget {
           Row(
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: aspects,
+                height: aspects,
                 decoration: BoxDecoration(
                   color: HexColor('224F63'),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: HexColor('43A7D5'),
                     width: 0.75,
+                  ),
+                  image: DecorationImage(
+                    image: CachedNetworkImageProvider(user.avatar!),
+                    fit: BoxFit.cover,
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -48,13 +59,7 @@ class UserDashboardWidget extends ConsumerWidget {
                     ),
                   ],
                 ),
-                child: Center(
-                  child: GlowIcon(
-                    LucideIcons.user,
-                    color: HexColor('43A7D5'),
-                    glowColor: HexColor('43A7D5'),
-                  ),
-                ),
+                child: !profilePage ? null : buildEditAvatar(ref, context),
               ),
               const SizedBox(
                 width: 10,
@@ -115,7 +120,7 @@ class UserDashboardWidget extends ConsumerWidget {
           ),
           GlowText(
             glowColor: Colors.white.withValues(alpha: .85),
-            text: "Active Title: ${user.activeTitle ?? "NA"}",
+            text: "Active Title: ${user.activeTitle?.title ?? "NA"}",
             style: TextStyle(
               fontSize: 12,
               color: Colors.white.withValues(alpha: .85),
@@ -216,6 +221,37 @@ class UserDashboardWidget extends ConsumerWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildEditAvatar(WidgetRef ref, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        log("click");
+        context.push(Routes.updateAvatarPage);
+      },
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: .65),
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+          Center(
+            child: Text(
+              "Edit",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.primary.withValues(alpha: .9),
               ),
             ),
           ),

@@ -27,7 +27,8 @@ class GoalsController extends StateNotifier<bool> {
 
       final goals = _ref.read(playerGoalsProvider);
       _ref.invalidate(playerGoalsProvider);
-      _ref.read(playerGoalsProvider.notifier).state = [...goals, goal];
+      _ref.read(playerGoalsProvider).clear();
+      _ref.read(playerGoalsProvider).addAll([...goals, goal]);
       state = false;
     } catch (e) {
       log(e.toString());
@@ -42,8 +43,9 @@ class GoalsController extends StateNotifier<bool> {
       UserGoalModel goal = _ref.read(playerGoalsProvider).firstWhere((g) => g.id == id);
       await _repo.deleteGoal(goal);
       final goals = _ref.read(playerGoalsProvider);
-      _ref.invalidate(playerGoalsProvider);
-      _ref.read(playerGoalsProvider.notifier).state = goals.where((g) => g.id != goal.id).toList();
+      final index = goals.indexWhere((g) => g.id == id);
+      _ref.read(playerGoalsProvider).removeAt(index);
+
       CustomToast.systemToast(systemMessage: true, "goal deleted succesfully");
       callback();
 

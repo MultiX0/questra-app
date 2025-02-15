@@ -62,7 +62,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return ListView(
       children: [
         const SizedBox(height: 10),
-        UserDashboardWidget(duration: Duration(milliseconds: 800)),
+        UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true),
         const SizedBox(
           height: 15,
         ),
