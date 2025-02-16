@@ -36,40 +36,45 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
               ref.read(currentOngointQuestsProvider.notifier).state = quests;
             });
           },
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 2),
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              if (activeQuests.isEmpty) ...[
-                NewQuestsSystemCard(),
-              ] else ...[
-                ActiveQuestsCarousel(),
-              ],
-              SizedBox(
-                height: size.height * 0.075,
-              ),
-              Center(
-                child: GlowText(
-                  text: "Quests Archive",
-                  spreadRadius: 0.5,
-                  blurRadius: 20,
-                  glowColor: AppColors.whiteColor,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.whiteColor,
-                    fontFamily: AppFonts.primary,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: ListView(
+              children: [
+                const SizedBox(
+                  height: 15,
+                ),
+                if (activeQuests.isEmpty) ...[
+                  NewQuestsSystemCard(),
+                ] else ...[
+                  ActiveQuestsCarousel(),
+                ],
+                SizedBox(
+                  height: size.height * 0.075,
+                ),
+                Center(
+                  child: GlowText(
+                    text: "Quests Archive",
+                    spreadRadius: 0.5,
+                    blurRadius: 20,
+                    glowColor: AppColors.whiteColor,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.whiteColor,
+                      fontFamily: AppFonts.primary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: size.height * 0.02,
-              ),
-              QuestsArchiveWidget(),
-            ],
+                SizedBox(
+                  height: size.height * 0.02,
+                ),
+                QuestsArchiveWidget(),
+                SizedBox(
+                  height: size.height * 0.025,
+                ),
+              ],
+            ),
           ),
         ),
       ),

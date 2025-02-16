@@ -62,12 +62,18 @@ class QuestsArchiveWidget extends ConsumerWidget {
             ),
           ],
           if (archiveData.length > 7) ...[
-            Text(
-              "view more...",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: AppColors.descriptionColor,
+            GestureDetector(
+              onTap: () {
+                ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                CustomToast.soon();
+              },
+              child: Text(
+                "view more...",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                  color: AppColors.descriptionColor,
+                ),
               ),
             )
           ],

@@ -23,10 +23,8 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
-        final _user = ref.read(authStateProvider);
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
-        if (_user == null) return;
         await NotificationsRepository.insertLog(userId);
       }
     });
