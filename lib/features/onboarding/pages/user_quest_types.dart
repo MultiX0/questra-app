@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
@@ -138,9 +139,7 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
                     error: (error, _) => Center(
                       child: Text("Error"),
                     ),
-                    loading: () => Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    loading: () => BeatLoader(),
                   ),
                 ),
               ),

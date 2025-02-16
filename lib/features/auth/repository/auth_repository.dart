@@ -308,7 +308,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         return true;
       }
 
-      await _supabase.from(TableNames.players).insert(user.toMap());
+      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
 
       if (Platform.isAndroid) {
         const androidIdPlugin = AndroidId();
@@ -321,7 +321,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       }
 
-      state = user;
+      state = UserModel.fromMap(data);
       _ref.read(hasValidAccountProvider.notifier).state = true;
       return true;
     } catch (e) {
