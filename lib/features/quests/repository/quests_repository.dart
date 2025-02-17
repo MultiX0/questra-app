@@ -206,7 +206,7 @@ class QuestsRepository {
         completed_at: DateTime.now(),
       );
 
-      if (quest.owned_title != null) {
+      if (quest.owned_title != null && quest.owned_title!.isNotEmpty) {
         await _ref.read(profileRepositoryProvider).insertTitle(
               user_id: quest.user_id,
               title: quest.owned_title!,

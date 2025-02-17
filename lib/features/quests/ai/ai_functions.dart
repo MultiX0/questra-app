@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:questra_app/core/services/exception_service.dart';
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/notifications/functions/notifications_functions.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
@@ -92,9 +93,13 @@ class AiFunctions {
       await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
       log(e.toString());
-      CustomToast.systemToast(
-        "there is an error, please try again later",
-      );
+      await ExceptionService.insertException(
+          path: "/ai_functions/generation",
+          error: e.toString(),
+          userId: Supabase.instance.client.auth.currentUser?.id ?? "null");
+      // CustomToast.systemToast(
+      //   "there is an error, please try again later",
+      // );
       throw Exception(e);
     }
   }
@@ -104,10 +109,7 @@ class AiFunctions {
       final user = _user!;
       final data = isJson(res);
       if (data != null) {
-        String? title;
-        if (data['player_title'] != null) {
-          title = data['player_title'];
-        }
+        String? owned_title = data['player_title'];
 
         final difficulty = data['difficulty'];
         final questTitle = data['quest_title'];
@@ -144,7 +146,7 @@ class AiFunctions {
           title: questTitle,
           expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
               DateTime.now().add(const Duration(hours: 2)),
-          owned_title: title,
+          owned_title: owned_title,
           assigned_at: DateTime.now(),
           images: [],
         );
