@@ -4,6 +4,7 @@ import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
+import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -67,7 +68,7 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id).limit(10).order(KeyNames.created_at, ascending: false);
+    ''').eq('user_id', user_id).limit(15).order(KeyNames.created_at, ascending: false);
 
       final feedbacks = data
           .map(
@@ -204,6 +205,14 @@ class QuestsRepository {
         status: StatusEnum.completed.name,
         completed_at: DateTime.now(),
       );
+
+      if (quest.owned_title != null) {
+        await _ref.read(profileRepositoryProvider).insertTitle(
+              user_id: quest.user_id,
+              title: quest.owned_title!,
+              questId: quest.id,
+            );
+      }
 
       _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.completed.name);
 
@@ -384,6 +393,21 @@ class QuestsRepository {
           .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
 
       return data.map((q) => QuestModel.fromMap(q)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getLastQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .order(KeyNames.created_at, ascending: false)
+          .limit(8);
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
       log(e.toString());
       rethrow;

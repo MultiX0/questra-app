@@ -5,11 +5,13 @@ class PlayerTitleModel {
   final String title;
   final String user_id;
   final DateTime owned_at;
+  final String? quest_id;
   PlayerTitleModel({
     required this.id,
     required this.title,
     required this.user_id,
     required this.owned_at,
+    this.quest_id,
   });
 
   PlayerTitleModel copyWith({
@@ -17,12 +19,14 @@ class PlayerTitleModel {
     String? title,
     String? user_id,
     DateTime? owned_at,
+    String? quest_id,
   }) {
     return PlayerTitleModel(
       id: id ?? this.id,
       title: title ?? this.title,
       user_id: user_id ?? this.user_id,
       owned_at: owned_at ?? this.owned_at,
+      quest_id: quest_id ?? this.quest_id,
     );
   }
 
@@ -32,6 +36,7 @@ class PlayerTitleModel {
       KeyNames.title: title,
       KeyNames.user_id: user_id,
       KeyNames.created_at: owned_at.toIso8601String(),
+      KeyNames.quest_id: quest_id,
     };
   }
 
@@ -41,6 +46,7 @@ class PlayerTitleModel {
       title: map[KeyNames.title] ?? "",
       user_id: map[KeyNames.user_id] ?? "",
       owned_at: DateTime.parse(map[KeyNames.created_at]),
+      quest_id: map[KeyNames.quest_id],
     );
   }
 

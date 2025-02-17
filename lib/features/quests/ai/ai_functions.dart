@@ -44,6 +44,8 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
+      final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+
       String _userPrompt = '''
                 {
                   "user_data": {
@@ -61,6 +63,7 @@ class AiFunctions {
                     "previous_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
                     "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                     "current_time": ${DateTime.now().toIso8601String()},
+                    "last_quests": ${lastQuests.map((quest) => quest.toString())},
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
@@ -101,10 +104,9 @@ class AiFunctions {
       final user = _user!;
       final data = isJson(res);
       if (data != null) {
-        String? titleId;
+        String? title;
         if (data['player_title'] != null) {
-          titleId =
-              await _ref.read(profileRepositoryProvider).insertTitle(user.id, data['player_title']);
+          title = data['player_title'];
         }
 
         final difficulty = data['difficulty'];
@@ -142,7 +144,7 @@ class AiFunctions {
           title: questTitle,
           expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
               DateTime.now().add(const Duration(hours: 2)),
-          owned_title: titleId,
+          owned_title: title,
           assigned_at: DateTime.now(),
           images: [],
         );
