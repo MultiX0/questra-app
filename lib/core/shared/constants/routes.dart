@@ -18,4 +18,5 @@ class Routes {
   static const termsPage = '/termsPage';
   static const leaderboardPage = '/leaderboardPage';
   static const updateAvatarPage = '/updateAvatarPage';
+  static const titlesPage = '/titlesPage';
 }

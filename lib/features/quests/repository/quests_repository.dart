@@ -194,9 +194,9 @@ class QuestsRepository {
       // }
 
       if (unix > expiryTimestamp) {
-        await _updateQuestStatus(StatusEnum.failed, quest.id);
+        await updateQuestStatus(StatusEnum.failed, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
-        await _failedPunishment(_quest ?? quest);
+        await failedPunishment(_quest ?? quest);
         throw 'this quest is expired you will receive the penalties';
       }
 
@@ -226,14 +226,15 @@ class QuestsRepository {
     }
   }
 
-  Future<void> _failedPunishment(QuestModel quest) async {
+  Future<void> failedPunishment(QuestModel quest) async {
     try {
       // reduce the user's xp
       // reduce the user's coins by half the quest reward coins amount
 
       final user = _ref.read(authStateProvider)!;
       final currentLevelModel = user.level ?? LevelsModel(user_id: user.id, level: 1, xp: 0);
-      final newLevelModel = currentLevelModel.copyWith(xp: -quest.xp_reward);
+      final newLevelModel =
+          currentLevelModel.copyWith(xp: (currentLevelModel.xp - (quest.xp_reward / 2).toInt()));
       await _ref.read(levelingRepositoryProvider).updateUserLevelData(newLevelModel);
       await _ref.read(walletRepositoryProvider).reduceCoins(
             userId: user.id,
@@ -270,7 +271,7 @@ class QuestsRepository {
     }
   }
 
-  Future<void> _updateQuestStatus(StatusEnum status, String questId) async {
+  Future<void> updateQuestStatus(StatusEnum status, String questId) async {
     try {
       await _playerQuestsTable
           .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId}).eq(
@@ -347,14 +348,14 @@ class QuestsRepository {
               .read(analyticsServiceProvider)
               .logFinishQuest(quest.user_id, StatusEnum.skipped.name);
 
-          await _updateQuestStatus(StatusEnum.skipped, quest.id);
+          await updateQuestStatus(StatusEnum.skipped, quest.id);
           await insertFeedback(feedback);
         }
         return;
       }
 
       if (skipCard.quantity >= 1) {
-        await _updateQuestStatus(StatusEnum.skipped, quest.id);
+        await updateQuestStatus(StatusEnum.skipped, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
 
         await _ref.read(inventoryRepositoryProvider).updateInventoryItem(

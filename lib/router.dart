@@ -16,6 +16,7 @@ import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/quests/pages/view_quest_page.dart';
 import 'package:questra_app/features/ranking/pages/leaderboard_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
+import 'package:questra_app/features/titles/pages/titles_page.dart';
 
 import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
@@ -174,6 +175,10 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.updateAvatarPage,
           child: UploadAvatarWidget(),
+        ),
+        buildRoute(
+          path: Routes.titlesPage,
+          child: TitlesPage(),
         ),
       ],
     );

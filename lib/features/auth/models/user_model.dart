@@ -4,7 +4,7 @@ import 'package:questra_app/features/leveling/models/levels_model.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 
-import '../../profiles/models/player_title_model.dart';
+import '../../titles/models/player_title_model.dart';
 
 final _defaultAvatar =
     "https://ijetdkekpdlnbyrnirfe.supabase.co/storage/v1/object/public/public_stotage//Logo.png";
@@ -72,6 +72,7 @@ class UserModel {
       level: level ?? this.level,
       wallet: wallet ?? this.wallet,
       activeTitle: activeTitle ?? this.activeTitle,
+      activeTitleId: activeTitleId ?? this.activeTitleId,
     );
   }
 
@@ -96,7 +97,7 @@ class UserModel {
       is_online: map[KeyNames.is_online] ?? false,
       avatar: map[KeyNames.avatar] ?? _defaultAvatar,
       gender: map[KeyNames.gender] ?? "male",
-      activeTitleId: map[KeyNames.active_title],
+      activeTitleId: map['active_title'],
     );
   }
 

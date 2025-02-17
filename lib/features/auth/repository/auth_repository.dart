@@ -84,7 +84,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.players)
           .stream(primaryKey: [KeyNames.id])
           .eq(KeyNames.id, userId)
-          .debounceTime(const Duration(seconds: 1)),
+          .debounceTime(const Duration(milliseconds: 800)),
       _supabase
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
@@ -149,6 +149,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     var user = UserModel.fromMap(userEvent);
 
+    log("active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}");
+
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
 
@@ -208,7 +210,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.activeTitle == next.activeTitle &&
         current.level == next.level &&
         current.wallet == next.wallet &&
-        current.avatar == next.avatar;
+        current.avatar == next.avatar &&
+        current.activeTitleId == next.activeTitleId;
   }
 
   void _retryUserDataStream(String userId) {

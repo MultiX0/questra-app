@@ -25,7 +25,8 @@ class BuildDashboardGrid extends ConsumerWidget {
         "icon": LucideIcons.crown,
         "onTap": () {
           play();
-          CustomToast.soon();
+          // CustomToast.soon();
+          context.push(Routes.titlesPage);
         },
       },
       {

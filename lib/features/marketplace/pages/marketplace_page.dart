@@ -273,6 +273,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
           final i = e.key;
           return GestureDetector(
             onTap: () {
+              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
               setState(() {
                 if (selected == c) {
                   selected = null;

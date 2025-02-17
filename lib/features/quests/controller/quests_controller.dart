@@ -128,4 +128,28 @@ class QuestsController extends StateNotifier<bool> {
       rethrow;
     }
   }
+
+  Future<void> failedPunishment({
+    required QuestModel quest,
+    required FeedbackModel feedback,
+    required BuildContext context,
+  }) async {
+    try {
+      state = true;
+      await _repository.updateQuestStatus(StatusEnum.failed, quest.id);
+      await _repository.failedPunishment(quest);
+      CustomToast.systemToast("penalty is received", systemMessage: true);
+      await _repository.insertFeedback(feedback);
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      _ref.invalidate(questArchiveProvider);
+      state = false;
+      context.pop();
+    } catch (e) {
+      state = false;
+
+      CustomToast.systemToast(appError);
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

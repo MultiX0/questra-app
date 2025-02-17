@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
-import 'package:questra_app/features/profiles/models/player_title_model.dart';
+import 'package:questra_app/features/titles/models/player_title_model.dart';
 import 'package:questra_app/imports.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {

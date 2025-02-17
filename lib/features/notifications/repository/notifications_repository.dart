@@ -171,7 +171,7 @@ class NotificationsRepository {
         last_user_open_app: ${logsList.map((l) => l.loggedAt).toList()},
         in_progress_quests: ${onGoingQuests.map((quest) => quest.toString())},
         failed_quests: ${failedQuests.map((quest) => quest.toString())},
-        current_user_time: ${now.toIso8601String()}
+        current_user_time: ${now.toUtc().toIso8601String()}
         ''';
 
       final res = await AiNotifications.makeAiResponse(
