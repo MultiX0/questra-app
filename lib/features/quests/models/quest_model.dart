@@ -84,6 +84,7 @@ class QuestModel {
       assigned_at: assigned_at ?? this.assigned_at,
       completed_at: completed_at ?? this.completed_at,
       title: title ?? this.title,
+      owned_title: owned_title ?? this.owned_title,
       expected_completion_time_date:
           expected_completion_time_date ?? this.expected_completion_time_date,
       images: images ?? this.images,
@@ -120,6 +121,7 @@ class QuestModel {
       coin_reward: map[KeyNames.coin_reward] ?? 0,
       difficulty: map[KeyNames.difficulty] ?? '',
       estimated_completion_time: map[KeyNames.estimated_completion_time] ?? "",
+      owned_title: map[KeyNames.owned_title],
       expected_completion_time_date:
           DateTime.tryParse(map[KeyNames.expected_completion_time_date]) ??
               DateTime.now().add(const Duration(hours: 2)),
