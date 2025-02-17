@@ -340,7 +340,7 @@ class QuestsRepository {
       log(skipCard.toString());
 
       if (skipCard == null || skipCard.quantity == 0) {
-        if (skippedCount > 2) {
+        if (skippedCount > 3) {
           throw ("you dont have any skip cards to do this action");
         } else {
           _ref
@@ -367,6 +367,22 @@ class QuestsRepository {
       }
 
       throw Exception(appError);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getFailedQuests(String userId) async {
+    try {
+      final now = DateTime.now();
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.status, StatusEnum.in_progress.name)
+          .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
+
+      return data.map((q) => QuestModel.fromMap(q)).toList();
     } catch (e) {
       log(e.toString());
       rethrow;
