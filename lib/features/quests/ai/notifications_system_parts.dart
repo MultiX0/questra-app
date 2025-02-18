@@ -17,7 +17,7 @@ List<Map<String, dynamic>> lifeImprovementSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'notification' field must contain a concise, engaging message tailored to the user's current situation, including their quests, availability, and login patterns. Avoid generic messages; make it personal and actionable."
+        "The 'notification' field must contain a concise, engaging message tailored to the user's current situation, including their quests, availability, and login patterns. Avoid generic messages; make it personal and actionable. Ensure the message is short enough to fit in a notification bar (max 50-60 characters)."
   },
   {
     "role": "system",
@@ -164,5 +164,25 @@ List<Map<String, dynamic>> lifeImprovementSystemPrompts = [
     "role": "system",
     "content":
         "Usage limits for strong guilt triggers: 1) Maximum 3 per week 2) Never on consecutive days 3) Reduce frequency by 50% if user shows sensitivity in feedback 4) Reserve strongest versions for 10+ day absences"
+  },
+  {
+    "role": "system",
+    "content":
+        "Ensure all notifications are concise and fit within a standard notification bar. Limit notifications to 1-2 short sentences (max 50-60 characters). Avoid long messages or unnecessary details."
+  },
+  {
+    "role": "system",
+    "content":
+        "Examples of short notifications: 'Time to crush [Quest Name]! 💪', 'You're 3 tasks away from your goal! 🏁', 'Missed you! Let's get back on track. 🚀'"
+  },
+  {
+    "role": "system",
+    "content":
+        "Guilt triggers must be concise (max 50-60 characters) and impactful. Example: 'Don't let [Quest Name] slip away! 🚨'"
+  },
+  {
+    "role": "system",
+    "content":
+        "Prioritize key information in notifications: 1) Quest name or goal 2) Actionable step 3) Motivation or urgency. Keep it under 60 characters."
   },
 ];
