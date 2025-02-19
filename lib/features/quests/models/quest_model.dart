@@ -99,6 +99,7 @@ class QuestModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       KeyNames.user_quest_id: id,
+      KeyNames.created_at: created_at.toUtc().toIso8601String(),
       KeyNames.user_id: user_id,
       KeyNames.quest_title: title,
       KeyNames.quest_description: description,
