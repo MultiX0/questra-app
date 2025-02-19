@@ -23,14 +23,16 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
   @override
   Widget build(BuildContext context) {
     void finish() {
-      final now = DateTime.timestamp();
+      final now = DateTime.now();
       final quest = ref.read(viewQuestProvider)!;
+      log(now.toString());
 
-      log(quest.toMap().toString());
+      // log(quest.toMap().toString());
       final duration = Duration(seconds: quest.estimated_completion_time);
-
-      if (quest.created_at.add(duration).isBefore(now)) {
-        CustomToast.systemToast("you need to wait until ${appDateFormat(now.add(duration))}",
+      // log(duration.inHours.toString());
+      if (quest.created_at.toUtc().add(duration).isAfter(now.toUtc())) {
+        CustomToast.systemToast(
+            "you need to wait until ${appDateFormat(quest.created_at.add(duration))}",
             systemMessage: true);
         return;
       }
