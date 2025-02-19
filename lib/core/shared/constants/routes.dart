@@ -19,4 +19,6 @@ class Routes {
   static const leaderboardPage = '/leaderboardPage';
   static const updateAvatarPage = '/updateAvatarPage';
   static const titlesPage = '/titlesPage';
+  static const customQuestsPage = '/customQuestsPage';
+  static const addCustomQuestPage = '/addCustomQuestPage';
 }

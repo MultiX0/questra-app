@@ -32,7 +32,7 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
             height: 15,
           ),
           Text(
-            "You don’t have any active quests right now. Would you like to embark on a new quest?",
+            "You don’t have any active quests right now. Would you like to embark on a new quest?\n\n(using ai)",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,

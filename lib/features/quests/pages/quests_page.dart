@@ -1,6 +1,8 @@
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/quests/widgets/active_quests_page.dart';
+import 'package:questra_app/features/quests/widgets/custom_quest_empty_widget.dart';
 import 'package:questra_app/features/quests/widgets/new_quests_system_card.dart';
 import 'package:questra_app/features/quests/widgets/quests_archive.dart';
 import 'package:questra_app/imports.dart';
@@ -46,8 +48,10 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
                 if (activeQuests.isEmpty) ...[
                   NewQuestsSystemCard(),
                 ] else ...[
-                  ActiveQuestsCarousel(),
+                  ActiveQuestsCarousel(quests: activeQuests),
                 ],
+                const SizedBox(height: 20),
+                buildCustomQuests(user),
                 SizedBox(
                   height: size.height * 0.075,
                 ),
@@ -78,6 +82,32 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Column buildCustomQuests(UserModel? user) {
+    final customQuests = ref.watch(customQuestsProvider);
+
+    return Column(
+      children: [
+        ref.watch(getCustomQuestsProvider(user!.id)).when(
+              data: (quests) {
+                if (customQuests.isNotEmpty) {
+                  return ActiveQuestsCarousel(
+                    quests: customQuests,
+                    special: true,
+                  );
+                }
+                return CustomQuestEmptyWidget();
+              },
+              error: (error, _) => Center(
+                child: ErrorWidget(error),
+              ),
+              loading: () => SystemCard(
+                child: BeatLoader(),
+              ),
+            ),
+      ],
     );
   }
 }

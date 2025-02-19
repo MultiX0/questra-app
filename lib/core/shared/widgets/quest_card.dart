@@ -7,11 +7,13 @@ class QuestCard extends ConsumerWidget {
     super.key,
     required this.questModel,
     this.viewPage,
+    this.special = false,
     this.onTap,
   });
 
   final QuestModel questModel;
   final bool? viewPage;
+  final bool special;
   final Function()? onTap;
 
   @override
@@ -46,7 +48,7 @@ class QuestCard extends ConsumerWidget {
                 child: Center(
                   child: GlowText(
                     glowColor: AppColors.whiteColor,
-                    text: "Quest",
+                    text: special ? "Custom Quest" : "Quest",
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w200,
@@ -143,13 +145,14 @@ class QuestCard extends ConsumerWidget {
             const SizedBox(
               height: 14,
             ),
-            Text(
-              "Expected finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date)}",
-              style: TextStyle(
-                fontWeight: FontWeight.w200,
-                fontSize: 11,
+            if (questModel.expected_completion_time_date != null)
+              Text(
+                "Expected finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date!)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.w200,
+                  fontSize: 11,
+                ),
               ),
-            ),
           ],
         ],
       ),

@@ -7,6 +7,7 @@ import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/notifications/functions/notifications_functions.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/quests/ai/ai_model.dart';
+import 'package:questra_app/features/quests/ai/custom_quests_system_parts.dart';
 import 'package:questra_app/features/quests/ai/system_parts.dart';
 import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -147,8 +148,8 @@ class AiFunctions {
           expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
               DateTime.now().add(const Duration(hours: 2)),
           owned_title: owned_title,
-          assigned_at: DateTime.now(),
           images: [],
+          isCustom: false,
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
@@ -162,7 +163,7 @@ class AiFunctions {
           title: "Quest Reminder",
           body:
               "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
-          scheduledTime: quest.expected_completion_time_date.subtract(const Duration(hours: 2)),
+          scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
         );
 
         return;
@@ -180,6 +181,81 @@ class AiFunctions {
       generateQuests(errors: errors + 1);
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  Future<void> customQuestAnalizer(String questDescription, int errors) async {
+    try {
+      if (errors >= 2) {
+        throw appError;
+      }
+
+      final data = await _ref.read(aiModelObjectProvider).makeAiResponse(
+        content: [
+          {
+            "role": "user",
+            "content": "quest description: $questDescription",
+          },
+          ...userQuestProcessingSystemPrompts,
+        ],
+      );
+      final jsonData = isJson(data);
+      if (jsonData != null) {
+        String title = jsonData['quest_title'] ?? "";
+        String description = jsonData['quest_description'] ?? "";
+        String difficulty = jsonData['difficulty'] ?? "";
+        String estimated_completion_time = jsonData["estimated_completion_time"] ?? "";
+        final exception = jsonData["exception"];
+
+        if (exception != null) {
+          throw exception;
+        }
+
+        if (title.isEmpty ||
+            description.isEmpty ||
+            estimated_completion_time.isEmpty ||
+            difficulty.isEmpty) {
+          return customQuestAnalizer(
+              "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
+              errors++);
+        }
+
+        final user = _ref.read(authStateProvider)!;
+        final currentLevel = user.level?.level ?? 1;
+
+        final xp_reward = questXp(currentLevel, difficulty);
+        final coin_reward = calculateQuestCoins(currentLevel, difficulty);
+        QuestModel questModel = QuestModel(
+          id: "",
+          created_at: DateTime.now(),
+          user_id: user.id,
+          description: description,
+          xp_reward: xp_reward,
+          coin_reward: coin_reward,
+          difficulty: difficulty,
+          status: StatusEnum.in_progress.name,
+          estimated_completion_time: estimated_completion_time,
+          images: [],
+          title: title,
+          isCustom: true,
+          isActive: true,
+        );
+
+        final id = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
+        questModel = questModel.copyWith(id: id);
+
+        final currentQuests = _ref.read(customQuestsProvider);
+        _ref.invalidate(customQuestsProvider);
+        _ref.read(customQuestsProvider.notifier).state = [...currentQuests, questModel];
+        CustomToast.systemToast("The quest has been added successfully.", systemMessage: true);
+        return;
+      }
+
+      throw appError;
+    } catch (e) {
+      log(e.toString());
+      // CustomToast.systemToast(e.toString(), systemMessage: true);
+      rethrow;
     }
   }
 

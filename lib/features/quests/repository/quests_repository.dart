@@ -60,7 +60,6 @@ class QuestsRepository {
         coin_reward,
         difficulty,
         status,
-        assigned_at,
         completed_at,
         estimated_completion_time,
         quest_title,
@@ -121,7 +120,8 @@ class QuestsRepository {
       final data = await _playerQuestsTable
           .select('*')
           .eq(KeyNames.status, 'in_progress')
-          .eq(KeyNames.user_id, user_id);
+          .eq(KeyNames.user_id, user_id)
+          .neq(KeyNames.is_custom, true);
 
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
       return quests;
@@ -178,7 +178,7 @@ class QuestsRepository {
       final unix = DateTime.now().millisecondsSinceEpoch;
       // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
-      final expectedTimestamp = quest.expected_completion_time_date.millisecondsSinceEpoch;
+      final expectedTimestamp = quest.expected_completion_time_date!.millisecondsSinceEpoch;
       final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
 
       final _quest = await getQuestById(quest.id);
@@ -408,6 +408,52 @@ class QuestsRepository {
           .limit(8);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getCustomQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable.select("*").eq(KeyNames.user_id, userId).eq(
+            KeyNames.is_custom,
+            true,
+          );
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getActiveCustomQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.is_active, true)
+          .eq(
+            KeyNames.is_custom,
+            true,
+          );
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> deActiveCustomQuest(String userId, String questId) async {
+    try {
+      await _playerQuestsTable
+          .update({
+            KeyNames.is_active: false,
+          })
+          .eq(KeyNames.user_quest_id, questId)
+          .eq(KeyNames.user_id, userId);
     } catch (e) {
       log(e.toString());
       rethrow;

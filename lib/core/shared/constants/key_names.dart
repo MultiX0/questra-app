@@ -71,4 +71,5 @@ class KeyNames {
   static const device_id = 'device_id';
   static const active_title = 'active_title';
   static const quest_id = 'quest_id';
+  static const is_custom = 'is_custom';
 }
