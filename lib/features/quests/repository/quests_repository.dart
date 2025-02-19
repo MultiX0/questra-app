@@ -5,6 +5,7 @@ import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
 import 'package:questra_app/features/profiles/repository/profile_repository.dart';
+import 'package:questra_app/features/titles/repository/titles_repository.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -178,7 +179,7 @@ class QuestsRepository {
       final unix = DateTime.now().millisecondsSinceEpoch;
       // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
-      final expectedTimestamp = quest.expected_completion_time_date!.millisecondsSinceEpoch;
+      final expectedTimestamp = quest.expected_completion_time_date?.millisecondsSinceEpoch ?? unix;
       final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
 
       final _quest = await getQuestById(quest.id);
@@ -207,11 +208,17 @@ class QuestsRepository {
       );
 
       if (quest.owned_title != null && quest.owned_title!.isNotEmpty) {
-        await _ref.read(profileRepositoryProvider).insertTitle(
-              user_id: quest.user_id,
-              title: quest.owned_title!,
-              questId: quest.id,
-            );
+        final haveTitle = await _ref
+            .read(titlesRepositoryProvider)
+            .haveTitle(userId: user!.id, title: quest.owned_title!);
+
+        if (!haveTitle) {
+          await _ref.read(profileRepositoryProvider).insertTitle(
+                user_id: quest.user_id,
+                title: quest.owned_title!,
+                questId: quest.id,
+              );
+        }
       }
 
       _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.completed.name);

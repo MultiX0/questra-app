@@ -31,4 +31,18 @@ class TitlesRepository {
       rethrow;
     }
   }
+
+  Future<bool> haveTitle({required String userId, required String title}) async {
+    try {
+      final data = await _titlesTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.title, title.trim());
+
+      return data.isNotEmpty;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

@@ -62,6 +62,7 @@ class QuestsController extends StateNotifier<bool> {
   Future<bool> finishQuest({
     required BuildContext context,
     required QuestModel quest,
+    required bool special,
     FeedbackModel? feedback,
   }) async {
     try {
@@ -76,8 +77,17 @@ class QuestsController extends StateNotifier<bool> {
       updatedQuest = updatedQuest.copyWith(images: images);
       await _repository.updateQuest(updatedQuest);
 
-      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
-      _ref.read(questImagesProvider.notifier).state = null;
+      if (quest.expected_completion_time_date == null) {
+        final currentQuests = _ref.read(customQuestsProvider);
+        final newQuests = List<QuestModel>.from(currentQuests);
+        newQuests.removeWhere((q) => q.id == quest.id);
+        QuestModel newQuest = QuestModel.newQuest(quest: quest);
+        newQuest = newQuest.copyWith(completed_at: DateTime.now());
+        _ref.read(customQuestsProvider.notifier).state = [...newQuests, newQuest];
+      } else {
+        _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+        _ref.read(questImagesProvider.notifier).state = null;
+      }
 
       state = false;
 

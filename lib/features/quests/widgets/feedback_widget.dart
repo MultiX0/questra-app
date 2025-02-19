@@ -7,10 +7,12 @@ class QuestFeedbackWidget extends ConsumerStatefulWidget {
     super.key,
     this.skip = false,
     this.failed = false,
+    this.special = false,
   });
 
   final bool skip;
   final bool failed;
+  final bool special;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestFeedbackWidgetState();
@@ -55,6 +57,7 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
 
     final result = await ref.read(questsControllerProvider.notifier).finishQuest(
           context: context,
+          special: widget.special,
           quest: quest,
           feedback: feedbackModel,
         );
