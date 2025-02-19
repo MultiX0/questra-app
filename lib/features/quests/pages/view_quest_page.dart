@@ -33,6 +33,19 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
 
   void finish() {
     play();
+
+    if (widget.special) {
+      final quest = ref.read(viewQuestProvider);
+      if (quest!.completed_at != null) {
+        final now = DateTime.now();
+        if (now.isBefore(quest.completed_at!.add(const Duration(hours: 24)))) {
+          CustomToast.systemToast(
+              "you need to wait until ${appDateFormat(quest.completed_at!.add(const Duration(hours: 24)))}");
+          return;
+        }
+      }
+    }
+
     if (_skip) {
       setState(() {
         _skip = false;
