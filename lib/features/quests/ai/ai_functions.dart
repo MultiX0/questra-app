@@ -223,8 +223,17 @@ class AiFunctions {
         final user = _ref.read(authStateProvider)!;
         final currentLevel = user.level?.level ?? 1;
 
-        final xp_reward = questXp(currentLevel, difficulty);
-        final coin_reward = calculateQuestCoins(currentLevel, difficulty);
+        int xp_reward = questXp(currentLevel, difficulty);
+        int coin_reward = calculateQuestCoins(currentLevel, difficulty);
+
+        if (xp_reward > 800) {
+          xp_reward = (xp_reward / 2).toInt();
+        }
+
+        if (coin_reward > 300) {
+          coin_reward = (coin_reward / 2).toInt();
+        }
+
         QuestModel questModel = QuestModel(
           id: "",
           created_at: DateTime.now(),
