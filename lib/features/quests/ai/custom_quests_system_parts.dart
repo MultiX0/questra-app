@@ -16,9 +16,9 @@ List<Map<String, dynamic>> userQuestProcessingSystemPrompts = [
         "\"quest_title\": \"string\", "
         "\"quest_description\": \"string\", "
         "\"difficulty\": \"Easy|Medium|Hard\", "
-        "\"estimated_completion_time\": \"string\", "
+        "\"estimated_completion_time\": int, "
         "\"exception\": \"string|null\""
-        "}. Never deviate from this structure."
+        "}. 'estimated_completion_time' must be an integer representing seconds. Never deviate from this structure."
   },
   {
     "role": "system",
@@ -72,8 +72,9 @@ List<Map<String, dynamic>> userQuestProcessingSystemPrompts = [
     "content": "Completion Time Estimation:\n"
         "1. Analyze task complexity\n"
         "2. Add 25% buffer time\n"
-        "3. Round to nearest 15min increment\n"
-        "4. Consider previous similar quests"
+        "3. Calculate total seconds required\n"
+        "4. Consider previous similar quests\n"
+        "5. Return as integer value (seconds)"
   },
   {
     "role": "system",
@@ -100,6 +101,7 @@ List<Map<String, dynamic>> userQuestProcessingSystemPrompts = [
         "3. Escape special characters\n"
         "4. No markdown formatting\n"
         "5. Empty fields use null\n"
-        "6. Timezone-aware ISO dates"
+        "6. Timezone-aware ISO dates\n"
+        "7. 'estimated_completion_time' must be integer seconds (not string)"
   }
 ];

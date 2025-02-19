@@ -1,15 +1,26 @@
-Duration? parseDuration(String input) {
-  input = input.toLowerCase();
-  List<String> parts = input.split(' ');
+Duration parseDuration(String input) {
+  // Normalize input
+  input = input.toLowerCase().trim();
+
+  // Check for fractional component ("and a half")
+  bool hasHalf = input.contains('and a half');
+  if (hasHalf) {
+    // Remove the fractional text so we can easily extract the number and unit.
+    input = input.replaceAll('and a half', '');
+  }
+
+  // Split by whitespace.
+  List<String> parts = input.split(RegExp(r'\s+'));
   if (parts.length < 2) {
     throw FormatException('Invalid duration format: $input');
   }
 
-  String numberPart = parts[0];
-  String unitPart = parts[1];
+  // The first part should be the number and the last part the unit.
+  String numberPart = parts.first;
+  String unitPart = parts.last;
 
-  // Map to convert words to numbers
-  Map<String, int> numberWords = {
+  // Map to convert word numbers to their numeric values.
+  Map<String, double> numberWords = {
     'one': 1,
     'two': 2,
     'three': 3,
@@ -20,28 +31,31 @@ Duration? parseDuration(String input) {
     'eight': 8,
     'nine': 9,
     'ten': 10,
-    // Extend this map for more words
+    // Extend this map as needed.
   };
 
-  int? value;
+  double baseValue;
   if (numberWords.containsKey(numberPart)) {
-    value = numberWords[numberPart];
+    baseValue = numberWords[numberPart]!;
   } else {
-    value = int.tryParse(numberPart);
+    baseValue = double.tryParse(numberPart) ??
+        (throw FormatException('Invalid number format: $numberPart'));
   }
 
-  if (value == null) {
-    return null;
-    // throw FormatException('Invalid number format: $numberPart');
+  // Add 0.5 if the fraction "and a half" was present.
+  if (hasHalf) {
+    baseValue += 0.5;
   }
 
+  // Convert the duration to seconds.
+  int totalSeconds;
   if (unitPart.startsWith('hour')) {
-    return Duration(hours: value);
+    totalSeconds = (baseValue * 3600).round();
   } else if (unitPart.startsWith('minute')) {
-    return Duration(minutes: value);
+    totalSeconds = (baseValue * 60).round();
   } else {
-    return null;
-
-    // throw FormatException('Unknown time unit: $unitPart');
+    throw FormatException('Unknown time unit: $unitPart');
   }
+
+  return Duration(seconds: totalSeconds);
 }

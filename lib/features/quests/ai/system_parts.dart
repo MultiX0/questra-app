@@ -7,7 +7,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "Always respond exclusively in the following JSON format: { \"quest_title\": \"string\", \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": \"string\", \"completion_time_date\": \"ISO string\", \"player_title\": \"string or null\" }. The 'quest_title' must always be included in every response. Do not omit any fields, even if optional, and never add any other text or information outside this JSON format."
+        "Always respond exclusively in the following JSON format: { \"quest_title\": \"string\", \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": int, \"completion_time_date\": \"ISO string\", \"player_title\": \"string or null\" }. The 'quest_title' must always be included in every response. Note that 'estimated_completion_time' must be an integer representing seconds. Do not omit any fields, even if optional, and never add any other text or information outside this JSON format."
   },
   {
     "role": "system",
@@ -62,7 +62,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "The 'estimated_completion_time' must consider the user's recent completion patterns - add 25% more time if last 3 similar quests were completed late, subtract 15% if consistently completed early."
+        "The 'estimated_completion_time' must be provided as an integer representing seconds. Consider the user's recent completion patterns - add 25% more time if last 3 similar quests were completed late, subtract 15% if consistently completed early."
   },
   {
     "role": "system",
@@ -92,7 +92,7 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
   {
     "role": "system",
     "content":
-        "Return output strictly in the following JSON format without adding any extra text: { \"quest_title\": \"string\", \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": \"string\", \"completion_time_date\": \"ISO string\", \"player_title\": \"string or null\" }. If a required field is missing, the response is invalid."
+        "Return output strictly in the following JSON format without adding any extra text: { \"quest_title\": \"string\", \"quest_description\": \"string\", \"difficulty\": \"string\", \"estimated_completion_time\": int, \"completion_time_date\": \"ISO string\", \"player_title\": \"string or null\" }. Note that 'estimated_completion_time' must be an integer value representing seconds. If a required field is missing, the response is invalid."
   },
   {
     "role": "system",

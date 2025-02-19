@@ -10,7 +10,7 @@ class QuestModel {
   final int coin_reward;
   final String difficulty;
   final String status;
-  final String estimated_completion_time;
+  final int estimated_completion_time;
   final String? owned_title;
   final DateTime? completed_at;
   final DateTime? expected_completion_time_date;
@@ -66,7 +66,7 @@ class QuestModel {
     int? coin_reward,
     String? difficulty,
     String? status,
-    String? estimated_completion_time,
+    int? estimated_completion_time,
     DateTime? completed_at,
     String? owned_title,
     String? title,
@@ -107,7 +107,7 @@ class QuestModel {
       KeyNames.difficulty: difficulty.toLowerCase(),
       KeyNames.status: status.toLowerCase(),
       KeyNames.completed_at: completed_at?.toIso8601String(),
-      KeyNames.estimated_completion_time: estimated_completion_time,
+      KeyNames.estimated_completion_time: estimated_completion_time.toString(),
       KeyNames.owned_title: owned_title,
       KeyNames.expected_completion_time_date: expected_completion_time_date?.toIso8601String(),
       KeyNames.images: images,
@@ -126,7 +126,7 @@ class QuestModel {
       xp_reward: map[KeyNames.xp_reward] ?? 0,
       coin_reward: map[KeyNames.coin_reward] ?? 0,
       difficulty: map[KeyNames.difficulty] ?? '',
-      estimated_completion_time: map[KeyNames.estimated_completion_time] ?? "",
+      estimated_completion_time: int.tryParse(map[KeyNames.estimated_completion_time]) ?? 0,
       owned_title: map[KeyNames.owned_title],
       expected_completion_time_date: map[KeyNames.expected_completion_time_date] == null
           ? null

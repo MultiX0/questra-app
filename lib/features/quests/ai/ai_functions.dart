@@ -143,7 +143,7 @@ class AiFunctions {
           coin_reward: coin_reward,
           difficulty: difficulty,
           status: 'in_progress',
-          estimated_completion_time: estimated_completion_time,
+          estimated_completion_time: int.tryParse(estimated_completion_time.toString()) ?? 0,
           title: questTitle,
           expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
               DateTime.now().add(const Duration(hours: 2)),
@@ -204,7 +204,9 @@ class AiFunctions {
         String title = jsonData['quest_title'] ?? "";
         String description = jsonData['quest_description'] ?? "";
         String difficulty = jsonData['difficulty'] ?? "";
-        String estimated_completion_time = jsonData["estimated_completion_time"] ?? "";
+        int estimated_completion_time = jsonData["estimated_completion_time"] == null
+            ? 0
+            : int.tryParse(jsonData["estimated_completion_time"].toString()) ?? 0;
         final exception = jsonData["exception"];
 
         if (exception != null) {
@@ -213,7 +215,7 @@ class AiFunctions {
 
         if (title.isEmpty ||
             description.isEmpty ||
-            estimated_completion_time.isEmpty ||
+            estimated_completion_time == 0 ||
             difficulty.isEmpty) {
           return customQuestAnalizer(
               "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
