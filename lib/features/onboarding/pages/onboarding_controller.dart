@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/features/onboarding/pages/enter_code.dart';
 import 'package:questra_app/features/onboarding/pages/user_data_page.dart';
 import 'package:questra_app/features/onboarding/pages/user_goals.dart';
 import 'package:questra_app/features/onboarding/pages/user_preferences_page.dart';
@@ -65,10 +64,6 @@ class _OnboardingControllerState extends ConsumerState<OnboardingController> {
           prev: prevs,
         ),
         UserGoalsSetup(
-          next: next,
-          prev: prevs,
-        ),
-        EnterCode(
           next: next,
           prev: prevs,
         ),

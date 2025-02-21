@@ -7,7 +7,6 @@ import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
-import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final questsControllerProvider = StateNotifierProvider<QuestsController, bool>((ref) {

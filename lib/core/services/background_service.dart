@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:questra_app/core/services/exception_service.dart';
 import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:workmanager/workmanager.dart';

@@ -31,6 +31,28 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     super.initState();
   }
 
+  void handleFCMInsert(String userId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      final prevDate = prefs.getInt("fcm_check");
+      if (prevDate != null &&
+          DateTime.fromMillisecondsSinceEpoch(prevDate)
+              .add(const Duration(hours: 2))
+              .isAfter(DateTime.now())) {
+        return;
+      }
+
+      await prefs.setInt("fcm_check", now);
+
+      await NotificationsRepository.insertFCMToken(userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
   // final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
 
   Future<void> initializeUnityAds() async {

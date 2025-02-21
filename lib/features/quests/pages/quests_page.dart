@@ -7,8 +7,6 @@ import 'package:questra_app/features/quests/widgets/new_quests_system_card.dart'
 import 'package:questra_app/features/quests/widgets/quests_archive.dart';
 import 'package:questra_app/imports.dart';
 
-import '../repository/quests_repository.dart';
-
 class QuestsPage extends ConsumerStatefulWidget {
   const QuestsPage({super.key});
 

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:questra_app/core/models/login_logs_model.dart';
 import 'package:questra_app/core/services/background_service.dart';
+import 'package:questra_app/core/services/notifications_service.dart';
 import 'package:questra_app/features/quests/ai/ai_notifications.dart';
 import 'package:questra_app/features/quests/ai/notifications_system_parts.dart';
 import 'package:questra_app/imports.dart';
@@ -13,6 +14,35 @@ class NotificationsRepository {
   static SupabaseQueryBuilder get _logsTable => _client.from(TableNames.login_logs);
   static SupabaseQueryBuilder get _playerQuestsTable => _client.from(TableNames.user_quests);
   static SupabaseQueryBuilder get _notificationLogs => _client.from(TableNames.notification_logs);
+  static SupabaseQueryBuilder get _tokensTable => _client.from(TableNames.notification_tokens);
+
+  static Future<bool> insertedToken(String userId, String token) async {
+    try {
+      final data = await _tokensTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.token, token)
+          .limit(1);
+
+      return data.isNotEmpty;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<void> insertFCMToken(String userId) async {
+    try {
+      final fcmToken = await NotificationsService.getFCMToken();
+      final inserted = await insertedToken(userId, fcmToken ?? "");
+      if (inserted) return;
+
+      await _tokensTable.insert({KeyNames.user_id: userId, KeyNames.token: fcmToken});
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 
   static Future<void> insertLog(final String userId) async {
     try {

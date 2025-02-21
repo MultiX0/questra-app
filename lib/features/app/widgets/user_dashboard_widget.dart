@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/ranking/providers/ranking_providers.dart';

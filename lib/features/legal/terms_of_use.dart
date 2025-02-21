@@ -80,6 +80,8 @@ class TermsOfUse extends StatelessWidget {
     },
   ];
 
+  TermsOfUse({super.key});
+
   @override
   Widget build(BuildContext context) {
     return LegalPageTemplate(

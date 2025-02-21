@@ -22,4 +22,5 @@ class TableNames {
   static const player_devices = 'player_devices';
   static const deleted_goals = 'deleted_goals';
   static const app_exception = 'app_exception';
+  static const notification_tokens = 'notification_tokens';
 }

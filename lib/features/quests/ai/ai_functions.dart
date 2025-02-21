@@ -2,14 +2,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:questra_app/core/services/exception_service.dart';
-import 'package:questra_app/core/shared/utils/levels_calc.dart';
-import 'package:questra_app/features/notifications/functions/notifications_functions.dart';
-import 'package:questra_app/features/profiles/repository/profile_repository.dart';
-import 'package:questra_app/features/quests/ai/ai_model.dart';
-import 'package:questra_app/features/quests/ai/custom_quests_system_parts.dart';
-import 'package:questra_app/features/quests/ai/system_parts.dart';
-import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final aiFunctionsProvider = Provider<AiFunctions>((ref) => AiFunctions(ref: ref));
