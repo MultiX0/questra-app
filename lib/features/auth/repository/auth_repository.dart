@@ -5,11 +5,9 @@ import 'dart:io';
 import 'package:android_id/android_id.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:questra_app/core/services/exception_service.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/controller/user_preferences_controller.dart';
-import 'package:questra_app/features/profiles/repository/profile_repository.dart';
 import 'package:questra_app/features/ranking/functions/ranking_functions.dart';
 import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
@@ -84,7 +82,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.players)
           .stream(primaryKey: [KeyNames.id])
           .eq(KeyNames.id, userId)
-          .debounceTime(const Duration(seconds: 1)),
+          .debounceTime(const Duration(milliseconds: 800)),
       _supabase
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
@@ -149,6 +147,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     var user = UserModel.fromMap(userEvent);
 
+    log("active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}");
+
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
 
@@ -208,7 +208,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.activeTitle == next.activeTitle &&
         current.level == next.level &&
         current.wallet == next.wallet &&
-        current.avatar == next.avatar;
+        current.avatar == next.avatar &&
+        current.activeTitleId == next.activeTitleId;
   }
 
   void _retryUserDataStream(String userId) {
@@ -308,7 +309,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         return true;
       }
 
-      await _supabase.from(TableNames.players).insert(user.toMap());
+      final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
 
       if (Platform.isAndroid) {
         const androidIdPlugin = AndroidId();
@@ -321,7 +322,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         }
       }
 
-      state = user;
+      state = UserModel.fromMap(data);
       _ref.read(hasValidAccountProvider.notifier).state = true;
       return true;
     } catch (e) {

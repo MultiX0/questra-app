@@ -3,13 +3,28 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
+import 'package:questra_app/features/ads/ads_service.dart';
+import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
-import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final questsControllerProvider = StateNotifierProvider<QuestsController, bool>((ref) {
   return QuestsController(ref: ref);
+});
+
+final getCustomQuestsProvider =
+    FutureProvider.family<List<QuestModel>, String>((ref, userId) async {
+  final _controller = ref.watch(questsControllerProvider.notifier);
+  final quests = await _controller.getCustomQuests(userId);
+
+  return quests;
+});
+
+final getActiveCustomQuestsProvider =
+    FutureProvider.family<List<QuestModel>, String>((ref, userId) async {
+  final _controller = ref.watch(questsControllerProvider.notifier);
+  return await _controller.getActiveCustomQuests(userId);
 });
 
 final getAllQuestTypesProvider = FutureProvider<List<QuestTypeModel>>((ref) async {
@@ -46,6 +61,7 @@ class QuestsController extends StateNotifier<bool> {
   Future<bool> finishQuest({
     required BuildContext context,
     required QuestModel quest,
+    required bool special,
     FeedbackModel? feedback,
   }) async {
     try {
@@ -60,8 +76,17 @@ class QuestsController extends StateNotifier<bool> {
       updatedQuest = updatedQuest.copyWith(images: images);
       await _repository.updateQuest(updatedQuest);
 
-      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
-      _ref.read(questImagesProvider.notifier).state = null;
+      if (quest.expected_completion_time_date == null) {
+        final currentQuests = _ref.read(customQuestsProvider);
+        final newQuests = List<QuestModel>.from(currentQuests);
+        newQuests.removeWhere((q) => q.id == quest.id);
+        QuestModel newQuest = QuestModel.newQuest(quest: quest);
+        newQuest = newQuest.copyWith(completed_at: DateTime.now());
+        _ref.read(customQuestsProvider.notifier).state = [...newQuests, newQuest];
+      } else {
+        _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+        _ref.read(questImagesProvider.notifier).state = null;
+      }
 
       state = false;
 
@@ -125,6 +150,87 @@ class QuestsController extends StateNotifier<bool> {
       context.pop();
       log(e.toString());
       CustomToast.systemToast(e.toString(), systemMessage: true);
+      rethrow;
+    }
+  }
+
+  Future<void> failedPunishment({
+    required QuestModel quest,
+    required FeedbackModel feedback,
+    required BuildContext context,
+  }) async {
+    try {
+      state = true;
+      await _repository.updateQuestStatus(StatusEnum.failed, quest.id);
+      await _repository.failedPunishment(quest);
+      CustomToast.systemToast("penalty is received", systemMessage: true);
+      await _repository.insertFeedback(feedback);
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
+      _ref.invalidate(questArchiveProvider);
+      state = false;
+      context.pop();
+    } catch (e) {
+      state = false;
+
+      CustomToast.systemToast(appError);
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getCustomQuests(String userId) async {
+    try {
+      final data = await _repository.getCustomQuests(userId);
+      _ref.read(customQuestsProvider.notifier).state =
+          data.where((quest) => quest.isActive == true).toList();
+      return data;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getActiveCustomQuests(String userId) async {
+    try {
+      return await _repository.getActiveCustomQuests(userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> addCustomQuest({required String description, required BuildContext context}) async {
+    try {
+      state = true;
+      await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0);
+      await _ref.read(adsServiceProvider.notifier).showAd();
+      state = false;
+      context.pop();
+    } catch (e) {
+      state = false;
+
+      log(e.toString());
+      CustomToast.systemToast(e.toString());
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deActiveCustomQuest(
+      {required String userId, required String questId, required BuildContext context}) async {
+    try {
+      state = true;
+      await _repository.deActiveCustomQuest(userId, questId);
+      final currentQuests = _ref.read(customQuestsProvider);
+      final newQuests = List<QuestModel>.from(currentQuests);
+      newQuests.removeWhere((quest) => quest.id == questId);
+      _ref.read(customQuestsProvider.notifier).state = newQuests;
+      state = false;
+      CustomToast.systemToast("The quest has been successfully deleted.", systemMessage: true);
+      context.pop();
+    } catch (e) {
+      state = false;
+
+      log(e.toString());
       rethrow;
     }
   }

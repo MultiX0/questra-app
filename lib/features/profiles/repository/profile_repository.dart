@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
-import 'package:questra_app/features/profiles/models/player_title_model.dart';
+import 'package:questra_app/features/titles/models/player_title_model.dart';
 import 'package:questra_app/imports.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
@@ -61,7 +61,8 @@ class ProfileRepository {
     }
   }
 
-  Future<String> insertTitle(String user_id, String title) async {
+  Future<String> insertTitle(
+      {required String user_id, required String title, required String questId}) async {
     try {
       final id = uuid.v4();
       final PlayerTitleModel titleModel = PlayerTitleModel(
@@ -69,6 +70,7 @@ class ProfileRepository {
         title: title,
         user_id: user_id,
         owned_at: DateTime.now(),
+        quest_id: questId,
       );
 
       await _playerTitleTable.insert(titleModel.toMap());

@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:questra_app/core/services/exception_service.dart';
-import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {

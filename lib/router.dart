@@ -12,10 +12,13 @@ import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/features/profiles/pages/player_profile.dart';
+import 'package:questra_app/features/quests/pages/add_cusome_quest_page.dart';
+import 'package:questra_app/features/quests/pages/custom_quests_page.dart';
 import 'package:questra_app/features/quests/pages/quests_page.dart';
 import 'package:questra_app/features/quests/pages/view_quest_page.dart';
 import 'package:questra_app/features/ranking/pages/leaderboard_page.dart';
 import 'package:questra_app/features/splash/splash.dart';
+import 'package:questra_app/features/titles/pages/titles_page.dart';
 
 import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
@@ -134,9 +137,16 @@ final routerProvider = Provider<GoRouter>(
           path: Routes.splash,
           child: const SplashPage(),
         ),
-        buildRoute(
+        GoRoute(
           path: Routes.viewQuest,
-          child: const ViewQuestPage(),
+          name: Routes.viewQuest,
+          pageBuilder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            final special = extra[KeyNames.is_custom];
+            return MaterialPage(
+              child: ViewQuestPage(special: special),
+            );
+          },
         ),
         buildRoute(
           path: Routes.marketPlace,
@@ -174,6 +184,19 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.updateAvatarPage,
           child: UploadAvatarWidget(),
+        ),
+        buildRoute(
+          path: Routes.titlesPage,
+          child: TitlesPage(),
+        ),
+        buildRoute(
+          fade: true,
+          path: Routes.customQuestsPage,
+          child: CustomQuestsPage(),
+        ),
+        buildRoute(
+          path: Routes.addCustomQuestPage,
+          child: AddCusomeQuestPage(),
         ),
       ],
     );

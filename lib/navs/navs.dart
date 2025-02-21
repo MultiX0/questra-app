@@ -8,9 +8,9 @@ class Navs {
     this.ref,
   );
 
-  void viewQuest(QuestModel quest) {
+  void viewQuest(QuestModel quest, bool special) {
     ref.read(viewQuestProvider.notifier).state = quest;
-    context.push(Routes.viewQuest);
+    context.pushNamed(Routes.viewQuest, extra: {KeyNames.is_custom: special});
   }
 
   void goToProfile(String userId) {

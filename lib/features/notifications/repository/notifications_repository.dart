@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:questra_app/core/models/login_logs_model.dart';
 import 'package:questra_app/core/services/background_service.dart';
+import 'package:questra_app/core/services/notifications_service.dart';
 import 'package:questra_app/features/quests/ai/ai_notifications.dart';
 import 'package:questra_app/features/quests/ai/notifications_system_parts.dart';
 import 'package:questra_app/imports.dart';
@@ -13,6 +14,36 @@ class NotificationsRepository {
   static SupabaseQueryBuilder get _logsTable => _client.from(TableNames.login_logs);
   static SupabaseQueryBuilder get _playerQuestsTable => _client.from(TableNames.user_quests);
   static SupabaseQueryBuilder get _notificationLogs => _client.from(TableNames.notification_logs);
+  static SupabaseQueryBuilder get _tokensTable => _client.from(TableNames.notification_tokens);
+
+  static Future<bool> insertedToken(String userId, String token) async {
+    try {
+      final data = await _tokensTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.token, token)
+          .limit(1);
+
+      return data.isNotEmpty;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<void> insertFCMToken(String userId) async {
+    try {
+      final fcmToken = await NotificationsService.getFCMToken();
+      log("FCM TOKEN: $fcmToken");
+      final inserted = await insertedToken(userId, fcmToken ?? "");
+      if (inserted) return;
+
+      await _tokensTable.insert({KeyNames.user_id: userId, KeyNames.token: fcmToken});
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 
   static Future<void> insertLog(final String userId) async {
     try {
@@ -27,118 +58,115 @@ class NotificationsRepository {
   static Future<void> sendNotificationFunction(String userId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now();
-
-      final perfectTimeToSent = prefs.getInt("perfect_time_to_send");
-      final nextPerfectTimeToSent = prefs.getInt("next_perfect_time");
-      final notificationText = prefs.getString("notification");
-
+      final now = DateTime.now().toUtc();
       final _userId = prefs.getString(KeyNames.user_id) ?? userId;
 
-      // if (perfectTimeToSent != null && perfectTimeToSent != 0) {
-      //   final date = DateTime.fromMillisecondsSinceEpoch(perfectTimeToSent);
-      //   if (now.isAfter(date) || now == date) {
-      //     if (notificationText != null && notificationText.isNotEmpty) {
-      //       await sendNotification(notificationText, "System");
-      //       await prefs.setInt("perfect_time_to_send", 0);
-      //     }
-      //   }
-      //   return;
-      // }
-
-      if (nextPerfectTimeToSent != null && nextPerfectTimeToSent != 0) {
-        final date = DateTime.fromMillisecondsSinceEpoch(nextPerfectTimeToSent);
-        if (now.isAfter(date) || now == date) {
-          final data = await _generatePrompt(_userId);
-          Map<String, dynamic> jsonData = jsonDecode(data);
-          await _client.from('test').insert({
-            KeyNames.user_id: userId,
-            'data': data,
-          });
-          final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
-          final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
-          final notification = jsonData["notification"];
-          bool sentNow;
-
-          if (jsonData["sent_now"] == true || jsonData["sent_now"].toString().contains('true')) {
-            sentNow = true;
-          } else {
-            sentNow = false;
+      // 1. Check for scheduled notifications ready to send
+      final scheduledTimeMillis = prefs.getInt("perfect_time_to_send");
+      if (scheduledTimeMillis != null && scheduledTimeMillis != 0) {
+        final scheduledTime = DateTime.fromMillisecondsSinceEpoch(scheduledTimeMillis).toUtc();
+        if (now.isAfter(scheduledTime) || now.isAtSameMomentAs(scheduledTime)) {
+          final notification = prefs.getString("notification");
+          if (notification?.isNotEmpty == true) {
+            await sendNotification(notification!, "System");
+            await prefs.setInt("perfect_time_to_send", 0); // Clear after sending
+            final n = _createNotificationModel(
+              userId: userId,
+              notification: notification,
+              sentNow: true,
+              perfectTime: null,
+              nextTime: scheduledTime,
+            );
+            await insertNotificationLog(n);
           }
-
-          await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
-          await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
-          await prefs.setString("notification", notification ?? "");
-
-          final notificationModel = _makeNotificationModel(
-            next_perfect_time: jsonData["next_perfect_time"],
-            notification: jsonData["notification"],
-            perfect_time_to_send: jsonData["perfect_time_to_send"],
-            sent_now: sentNow,
-            userId: _userId,
-          );
-
-          await insertNotificationLog(notificationModel);
-
-          if (sentNow) {
-            await sendNotification(notification, "System");
-          }
+          return;
         }
-        return;
-      }
-      final data = await _generatePrompt(_userId);
-      Map<String, dynamic> jsonData = jsonDecode(data);
-      await _client.from('test').insert({
-        KeyNames.user_id: userId,
-        'data': data,
-      });
-      final PTTS = DateTime.tryParse(jsonData["perfect_time_to_send"]);
-      final NPTTS = DateTime.tryParse(jsonData["next_perfect_time"]);
-      final notification = jsonData["notification"];
-      bool sentNow;
-
-      if (jsonData["sent_now"] == true || jsonData["sent_now"].toString().contains('true')) {
-        sentNow = true;
-      } else {
-        sentNow = false;
       }
 
-      await prefs.setInt("perfect_time_to_send", PTTS?.millisecondsSinceEpoch ?? 0);
-      await prefs.setInt("next_perfect_time", NPTTS?.millisecondsSinceEpoch ?? 0);
-      await prefs.setString("notification", notification ?? "");
+      // 2. Check if we need to generate new notification
+      final nextCheckMillis = prefs.getInt("next_perfect_time");
+      DateTime? nextCheckTime;
+      if (nextCheckMillis != null && nextCheckMillis != 0) {
+        nextCheckTime = DateTime.fromMillisecondsSinceEpoch(nextCheckMillis).toUtc();
+      }
 
-      final notificationModel = _makeNotificationModel(
-        next_perfect_time: jsonData["next_perfect_time"],
-        notification: jsonData["notification"],
-        perfect_time_to_send: jsonData["perfect_time_to_send"],
-        sent_now: sentNow,
-        userId: _userId,
-      );
+      final shouldGenerate = nextCheckTime == null ||
+          nextCheckMillis == 0 ||
+          now.isAfter(nextCheckTime) ||
+          now.isAtSameMomentAs(nextCheckTime);
 
-      await insertNotificationLog(notificationModel);
+      if (shouldGenerate) {
+        // 3. Generate new notification data
+        final response = await _generatePrompt(_userId);
+        final jsonData = jsonDecode(response) as Map<String, dynamic>;
 
-      if (sentNow) {
-        await sendNotification(notification, "System");
+        // 4. Parse and validate response
+        final notification = jsonData["notification"] as String;
+        final sentNow = _parseSentNow(jsonData["sent_now"]);
+        final ptts = _parseDateTime(jsonData["perfect_time_to_send"]);
+        final nptt = _parseDateTime(jsonData["next_perfect_time"], required: true)!;
+
+        // 5. Store new timing information
+        await prefs.setInt("perfect_time_to_send", ptts?.millisecondsSinceEpoch ?? 0);
+        await prefs.setInt("next_perfect_time", nptt.millisecondsSinceEpoch);
+        await prefs.setString("notification", notification);
+
+        // 6. Log and send if immediate
+        final model = _createNotificationModel(
+          userId: _userId,
+          notification: notification,
+          sentNow: sentNow,
+          perfectTime: ptts,
+          nextTime: nptt,
+        );
+
+        await insertNotificationLog(model);
+        if (sentNow) await sendNotification(notification, "System");
       }
     } catch (e) {
-      log(e.toString());
-      throw Exception(e);
+      log('Notification Error: $e');
+      final prefs = await SharedPreferences.getInstance();
+      await _storeFallbackNotification(prefs);
     }
   }
 
-  static Map<String, dynamic> _makeNotificationModel({
-    required String notification,
+  static Future<void> _storeFallbackNotification(SharedPreferences prefs) async {
+    await prefs.setString(
+        "notification", "🚀 Ready for your next adventure? Tap to continue your journey!");
+    await prefs.setInt(
+        "next_perfect_time", DateTime.now().toUtc().add(Duration(hours: 2)).millisecondsSinceEpoch);
+  }
+
+  static bool _parseSentNow(dynamic value) {
+    if (value is bool) return value;
+    if (value is String) return value.toLowerCase() == 'true';
+    return false;
+  }
+
+  static DateTime? _parseDateTime(dynamic value, {bool required = false}) {
+    if (value == null || value == 'null') return null;
+    try {
+      return DateTime.parse(value as String).toUtc();
+    } catch (e) {
+      if (required) throw FormatException('Invalid datetime: $value');
+      return null;
+    }
+  }
+
+  static Map<String, dynamic> _createNotificationModel({
     required String userId,
-    required DateTime? perfect_time_to_send,
-    required DateTime? next_perfect_time,
-    required bool sent_now,
+    required String notification,
+    required bool sentNow,
+    required DateTime? perfectTime,
+    required DateTime nextTime,
   }) {
     return {
-      KeyNames.notification: notification,
       KeyNames.user_id: userId,
-      KeyNames.perfect_time_to_send: perfect_time_to_send,
-      KeyNames.next_perfect_time: next_perfect_time,
-      KeyNames.sent_now: sent_now,
+      KeyNames.notification: notification,
+      KeyNames.sent_now: sentNow,
+      KeyNames.perfect_time_to_send: perfectTime?.toIso8601String(),
+      KeyNames.next_perfect_time: nextTime.toIso8601String(),
+      'generated_at': DateTime.now().toUtc().toIso8601String(),
     };
   }
 
@@ -151,16 +179,30 @@ class NotificationsRepository {
     }
   }
 
+  static Future<List<QuestModel>> _getFailedQuests(String userId) async {
+    final now = DateTime.now();
+    final data = await _playerQuestsTable
+        .select("*")
+        .eq(KeyNames.user_id, userId)
+        .eq(KeyNames.status, StatusEnum.in_progress.name)
+        .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
+
+    return data.map((q) => QuestModel.fromMap(q)).toList();
+  }
+
   static Future<String> _generatePrompt(String userId) async {
     try {
       final now = DateTime.now();
       final logsList = await _getUserLogs(userId);
       final onGoingQuests = await _currentlyOngoingQuests(userId);
+      final failedQuests = await _getFailedQuests(userId);
 
       String prompt = '''
         current_time: ${now.toIso8601String()},
         last_user_open_app: ${logsList.map((l) => l.loggedAt).toList()},
         in_progress_quests: ${onGoingQuests.map((quest) => quest.toString())},
+        failed_quests: ${failedQuests.map((quest) => quest.toString())},
+        current_user_time: ${now.toUtc().toIso8601String()}
         ''';
 
       final res = await AiNotifications.makeAiResponse(

@@ -18,12 +18,16 @@ class _BuyItemWidgetState extends ConsumerState<BuyItemWidget> {
   int amount = 1;
 
   void increase() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
     setState(() {
       amount++;
     });
   }
 
   void decrease() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
     if (amount > 1) {
       setState(() {
         amount--;

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:questra_app/imports.dart';
 
 class LegalPageTemplate extends StatelessWidget {
@@ -6,6 +5,7 @@ class LegalPageTemplate extends StatelessWidget {
   final List<Map<String, dynamic>> sections;
 
   const LegalPageTemplate({
+    super.key,
     required this.title,
     required this.sections,
   });
@@ -33,15 +33,13 @@ class LegalPageTemplate extends StatelessWidget {
                   fontSize: 12,
                 )),
             SizedBox(height: 20),
-            ...sections
-                .expand((section) => [
-                      _buildSection(
-                        title: section['title'],
-                        content: section['content'],
-                      ),
-                      Divider(color: Colors.grey[800], height: 40),
-                    ])
-                .toList(),
+            ...sections.expand((section) => [
+                  _buildSection(
+                    title: section['title'],
+                    content: section['content'],
+                  ),
+                  Divider(color: Colors.grey[800], height: 40),
+                ]),
             Padding(
               padding: EdgeInsets.only(top: 20),
               child: Text('© 2023 Questra. All rights reserved.',
@@ -68,17 +66,15 @@ class LegalPageTemplate extends StatelessWidget {
               height: 1.5,
             )),
         SizedBox(height: 8),
-        ...content
-            .map((text) => Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: Text(text,
-                      style: TextStyle(
-                        color: Colors.grey[300],
-                        fontSize: 14,
-                        height: 1.4,
-                      )),
-                ))
-            .toList(),
+        ...content.map((text) => Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: Text(text,
+                  style: TextStyle(
+                    color: Colors.grey[300],
+                    fontSize: 14,
+                    height: 1.4,
+                  )),
+            )),
       ],
     );
   }

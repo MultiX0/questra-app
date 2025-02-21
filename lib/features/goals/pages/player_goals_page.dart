@@ -64,6 +64,8 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                   elevation: 3,
                   child: Icon(LucideIcons.plus),
                   onPressed: () {
+                    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
                     setState(() {
                       add = true;
                     });

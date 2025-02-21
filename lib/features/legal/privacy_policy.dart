@@ -77,6 +77,8 @@ class PrivacyPolicy extends StatelessWidget {
     },
   ];
 
+  PrivacyPolicy({super.key});
+
   @override
   Widget build(BuildContext context) {
     return LegalPageTemplate(

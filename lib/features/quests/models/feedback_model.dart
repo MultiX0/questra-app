@@ -75,7 +75,7 @@ class FeedbackModel {
 
   @override
   String toString() {
-    return 'FeedbackModel(user_feedback_id: $user_feedback_id, created_at: $created_at, user_id: $user_id, user_quest_id: $user_quest_id, feedback_type: $feedback_type, description: $description)';
+    return 'FeedbackModel(user_feedback_id: $user_feedback_id, created_at: $created_at, user_id: $user_id, user_quest_id: $user_quest_id, feedback_type: $feedback_type, description: $description, quest: ${quest.toString()})';
   }
 
   @override

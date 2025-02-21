@@ -3,15 +3,19 @@ import 'dart:developer';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/navs/navs.dart';
 
 class ActiveQuestsCarousel extends ConsumerWidget {
-  const ActiveQuestsCarousel({super.key});
+  const ActiveQuestsCarousel({
+    super.key,
+    required this.quests,
+    this.special = false,
+  });
+
+  final List<QuestModel> quests;
+  final bool special;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quests = ref.watch(currentOngointQuestsProvider) ?? [];
-
     log(quests.length.toString());
 
     if (quests.isEmpty) {
@@ -36,11 +40,12 @@ class ActiveQuestsCarousel extends ConsumerWidget {
         return KeyedSubtree(
           key: ValueKey('quest-${quest.id}'), // Assuming quest has an id field
           child: QuestCard(
+            special: special,
             questModel: quest,
             onTap: () {
               ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
-              Navs(context, ref).viewQuest(quest);
+              Navs(context, ref).viewQuest(quest, special);
             },
           ),
         );

@@ -1,11 +1,17 @@
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/quest_card.dart';
 import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
 import 'package:questra_app/features/quests/widgets/finish_quest.dart';
 import 'package:questra_app/imports.dart';
 
 class ViewQuestPage extends ConsumerStatefulWidget {
-  const ViewQuestPage({super.key});
+  const ViewQuestPage({
+    super.key,
+    required this.special,
+  });
+
+  final bool special;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ViewQuestPageState();
@@ -27,6 +33,19 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
 
   void finish() {
     play();
+
+    if (widget.special) {
+      final quest = ref.read(viewQuestProvider);
+      if (quest!.completed_at != null) {
+        final now = DateTime.now();
+        if (now.isBefore(quest.completed_at!.add(const Duration(hours: 24)))) {
+          CustomToast.systemToast(
+              "you need to wait until ${appDateFormat(quest.completed_at!.add(const Duration(hours: 24)))}");
+          return;
+        }
+      }
+    }
+
     if (_skip) {
       setState(() {
         _skip = false;
@@ -40,6 +59,11 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
   void skip() {
     play();
 
+    if (widget.special) {
+      CustomToast.systemToast("You cannot skip a custom quest");
+      return;
+    }
+
     if (_finish) {
       setState(() {
         _finish = false;
@@ -49,6 +73,15 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
     setState(() {
       _skip = true;
     });
+  }
+
+  void delete() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final quest = ref.read(viewQuestProvider);
+    final user = ref.read(authStateProvider);
+    ref
+        .read(questsControllerProvider.notifier)
+        .deActiveCustomQuest(userId: user!.id, questId: quest!.id, context: context);
   }
 
   @override
@@ -84,6 +117,8 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
       );
 
   Column buildBody(QuestModel quest) {
+    final isLoading = ref.watch(questsControllerProvider);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -108,17 +143,32 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
                 ),
               ),
             ),
-            SystemCard(
-              onTap: skip,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
-              isButton: true,
-              child: Text(
-                "skip",
-                style: TextStyle(
-                  fontFamily: AppFonts.header,
+            if (widget.special) ...[
+              SystemCard(
+                onTap: delete,
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                isButton: true,
+                child: isLoading
+                    ? BeatLoader(size: 15)
+                    : Text(
+                        "delete",
+                        style: TextStyle(
+                          fontFamily: AppFonts.header,
+                        ),
+                      ),
+              ),
+            ] else
+              SystemCard(
+                onTap: skip,
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                isButton: true,
+                child: Text(
+                  "skip",
+                  style: TextStyle(
+                    fontFamily: AppFonts.header,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ],

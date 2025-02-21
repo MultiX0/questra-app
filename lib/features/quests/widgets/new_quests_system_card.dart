@@ -3,13 +3,19 @@ import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/imports.dart';
 
-class NewQuestsSystemCard extends ConsumerWidget {
+class NewQuestsSystemCard extends ConsumerStatefulWidget {
   const NewQuestsSystemCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _NewQuestsSystemCardState();
+}
+
+class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
-    final isLoading = ref.watch(adsServiceProvider);
 
     return SystemCard(
       padding: EdgeInsets.symmetric(vertical: 20, horizontal: size.width * .15),
@@ -26,7 +32,7 @@ class NewQuestsSystemCard extends ConsumerWidget {
             height: 15,
           ),
           Text(
-            "You don’t have any active quests right now. Would you like to embark on a new quest?",
+            "You don’t have any active quests right now. Would you like to embark on a new quest?\n\n(using ai)",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -58,11 +64,16 @@ class NewQuestsSystemCard extends ConsumerWidget {
               ),
               onPressed: () async {
                 ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-
+                setState(() {
+                  isLoading = true;
+                });
                 await ref.read(adsServiceProvider.notifier).showAd();
                 CustomToast.systemToast("making new quest for you...", systemMessage: true);
                 await ref.read(aiFunctionsProvider).generateQuests();
                 await ref.read(aiFunctionsProvider).generateQuests();
+                setState(() {
+                  isLoading = false;
+                });
               },
               child: Text("new quests"),
             ),

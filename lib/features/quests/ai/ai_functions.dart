@@ -2,12 +2,6 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/utils/levels_calc.dart';
-import 'package:questra_app/features/notifications/functions/notifications_functions.dart';
-import 'package:questra_app/features/profiles/repository/profile_repository.dart';
-import 'package:questra_app/features/quests/ai/ai_model.dart';
-import 'package:questra_app/features/quests/ai/system_parts.dart';
-import 'package:questra_app/features/quests/repository/quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final aiFunctionsProvider = Provider<AiFunctions>((ref) => AiFunctions(ref: ref));
@@ -44,6 +38,8 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
+      final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+
       String _userPrompt = '''
                 {
                   "user_data": {
@@ -61,6 +57,7 @@ class AiFunctions {
                     "previous_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
                     "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                     "current_time": ${DateTime.now().toIso8601String()},
+                    "last_quests": ${lastQuests.map((quest) => quest.toString())},
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
@@ -89,9 +86,13 @@ class AiFunctions {
       await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
       log(e.toString());
-      CustomToast.systemToast(
-        "there is an error, please try again later",
-      );
+      await ExceptionService.insertException(
+          path: "/ai_functions/generation",
+          error: e.toString(),
+          userId: Supabase.instance.client.auth.currentUser?.id ?? "null");
+      // CustomToast.systemToast(
+      //   "there is an error, please try again later",
+      // );
       throw Exception(e);
     }
   }
@@ -101,11 +102,7 @@ class AiFunctions {
       final user = _user!;
       final data = isJson(res);
       if (data != null) {
-        String? titleId;
-        if (data['player_title'] != null) {
-          titleId =
-              await _ref.read(profileRepositoryProvider).insertTitle(user.id, data['player_title']);
-        }
+        String? owned_title = data['player_title'];
 
         final difficulty = data['difficulty'];
         final questTitle = data['quest_title'];
@@ -131,20 +128,20 @@ class AiFunctions {
 
         final QuestModel quest = QuestModel(
           id: "",
-          created_at: DateTime.now(),
+          created_at: DateTime.now().toUtc(),
           user_id: user.id,
           description: questDescription,
           xp_reward: xp_reward,
           coin_reward: coin_reward,
           difficulty: difficulty,
           status: 'in_progress',
-          estimated_completion_time: estimated_completion_time,
+          estimated_completion_time: int.tryParse(estimated_completion_time.toString()) ?? 0,
           title: questTitle,
           expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
               DateTime.now().add(const Duration(hours: 2)),
-          owned_title: titleId,
-          assigned_at: DateTime.now(),
+          owned_title: owned_title,
           images: [],
+          isCustom: false,
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
@@ -158,7 +155,7 @@ class AiFunctions {
           title: "Quest Reminder",
           body:
               "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
-          scheduledTime: quest.expected_completion_time_date.subtract(const Duration(hours: 2)),
+          scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
         );
 
         return;
@@ -176,6 +173,92 @@ class AiFunctions {
       generateQuests(errors: errors + 1);
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  Future<void> customQuestAnalizer(String questDescription, int errors) async {
+    try {
+      if (errors >= 2) {
+        throw appError;
+      }
+
+      final data = await _ref.read(aiModelObjectProvider).makeAiResponse(
+        content: [
+          {
+            "role": "user",
+            "content": "quest description: $questDescription",
+          },
+          ...userQuestProcessingSystemPrompts,
+        ],
+      );
+      final jsonData = isJson(data);
+      if (jsonData != null) {
+        String title = jsonData['quest_title'] ?? "";
+        String description = jsonData['quest_description'] ?? "";
+        String difficulty = jsonData['difficulty'] ?? "";
+        int estimated_completion_time = jsonData["estimated_completion_time"] == null
+            ? 0
+            : int.tryParse(jsonData["estimated_completion_time"].toString()) ?? 0;
+        final exception = jsonData["exception"];
+
+        if (exception != null) {
+          throw exception;
+        }
+
+        if (title.isEmpty ||
+            description.isEmpty ||
+            estimated_completion_time == 0 ||
+            difficulty.isEmpty) {
+          return customQuestAnalizer(
+              "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
+              errors++);
+        }
+
+        final user = _ref.read(authStateProvider)!;
+        final currentLevel = user.level?.level ?? 1;
+
+        int xp_reward = questXp(currentLevel, difficulty);
+        int coin_reward = calculateQuestCoins(currentLevel, difficulty);
+
+        if (xp_reward > 800) {
+          xp_reward = (xp_reward / 2).toInt();
+        }
+
+        if (coin_reward > 300) {
+          coin_reward = (coin_reward / 2).toInt();
+        }
+
+        QuestModel questModel = QuestModel(
+          id: "",
+          created_at: DateTime.now(),
+          user_id: user.id,
+          description: description,
+          xp_reward: xp_reward,
+          coin_reward: coin_reward,
+          difficulty: difficulty,
+          status: StatusEnum.in_progress.name,
+          estimated_completion_time: estimated_completion_time,
+          images: [],
+          title: title,
+          isCustom: true,
+          isActive: true,
+        );
+
+        final id = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
+        questModel = questModel.copyWith(id: id);
+
+        final currentQuests = _ref.read(customQuestsProvider);
+        _ref.invalidate(customQuestsProvider);
+        _ref.read(customQuestsProvider.notifier).state = [...currentQuests, questModel];
+        CustomToast.systemToast("The quest has been added successfully.", systemMessage: true);
+        return;
+      }
+
+      throw appError;
+    } catch (e) {
+      log(e.toString());
+      // CustomToast.systemToast(e.toString(), systemMessage: true);
+      rethrow;
     }
   }
 

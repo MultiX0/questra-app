@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/constants/function_names.dart';
-import 'package:questra_app/core/shared/utils/levels_calc.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
+import 'package:questra_app/features/titles/repository/titles_repository.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -59,7 +59,6 @@ class QuestsRepository {
         coin_reward,
         difficulty,
         status,
-        assigned_at,
         completed_at,
         estimated_completion_time,
         quest_title,
@@ -67,7 +66,7 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id).limit(10).order(KeyNames.created_at, ascending: false);
+    ''').eq('user_id', user_id).limit(15).order(KeyNames.created_at, ascending: false);
 
       final feedbacks = data
           .map(
@@ -120,7 +119,8 @@ class QuestsRepository {
       final data = await _playerQuestsTable
           .select('*')
           .eq(KeyNames.status, 'in_progress')
-          .eq(KeyNames.user_id, user_id);
+          .eq(KeyNames.user_id, user_id)
+          .neq(KeyNames.is_custom, true);
 
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
       return quests;
@@ -174,11 +174,11 @@ class QuestsRepository {
 
   Future<QuestModel> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
     try {
-      final unix = DateTime.now().millisecondsSinceEpoch;
+      final unix = DateTime.now().toUtc().millisecondsSinceEpoch;
       // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
-      final expectedTimestamp = quest.expected_completion_time_date.millisecondsSinceEpoch;
-      final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
+      final expectedTimestamp = quest.expected_completion_time_date?.millisecondsSinceEpoch ?? unix;
+      // final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
 
       final _quest = await getQuestById(quest.id);
       if (_quest?.status.trim() == StatusEnum.completed.name) {
@@ -193,10 +193,10 @@ class QuestsRepository {
       //   throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
       // }
 
-      if (unix > expiryTimestamp) {
-        await _updateQuestStatus(StatusEnum.failed, quest.id);
+      if (unix > expectedTimestamp) {
+        await updateQuestStatus(StatusEnum.failed, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
-        await _failedPunishment(_quest ?? quest);
+        await failedPunishment(_quest ?? quest);
         throw 'this quest is expired you will receive the penalties';
       }
 
@@ -204,6 +204,20 @@ class QuestsRepository {
         status: StatusEnum.completed.name,
         completed_at: DateTime.now(),
       );
+
+      if (quest.owned_title != null && quest.owned_title!.isNotEmpty) {
+        final haveTitle = await _ref
+            .read(titlesRepositoryProvider)
+            .haveTitle(userId: user!.id, title: quest.owned_title!);
+
+        if (!haveTitle) {
+          await _ref.read(profileRepositoryProvider).insertTitle(
+                user_id: quest.user_id,
+                title: quest.owned_title!,
+                questId: quest.id,
+              );
+        }
+      }
 
       _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.completed.name);
 
@@ -226,14 +240,15 @@ class QuestsRepository {
     }
   }
 
-  Future<void> _failedPunishment(QuestModel quest) async {
+  Future<void> failedPunishment(QuestModel quest) async {
     try {
       // reduce the user's xp
       // reduce the user's coins by half the quest reward coins amount
 
       final user = _ref.read(authStateProvider)!;
       final currentLevelModel = user.level ?? LevelsModel(user_id: user.id, level: 1, xp: 0);
-      final newLevelModel = currentLevelModel.copyWith(xp: -quest.xp_reward);
+      final newLevelModel =
+          currentLevelModel.copyWith(xp: (currentLevelModel.xp - (quest.xp_reward / 2).toInt()));
       await _ref.read(levelingRepositoryProvider).updateUserLevelData(newLevelModel);
       await _ref.read(walletRepositoryProvider).reduceCoins(
             userId: user.id,
@@ -270,7 +285,7 @@ class QuestsRepository {
     }
   }
 
-  Future<void> _updateQuestStatus(StatusEnum status, String questId) async {
+  Future<void> updateQuestStatus(StatusEnum status, String questId) async {
     try {
       await _playerQuestsTable
           .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId}).eq(
@@ -340,21 +355,21 @@ class QuestsRepository {
       log(skipCard.toString());
 
       if (skipCard == null || skipCard.quantity == 0) {
-        if (skippedCount > 2) {
+        if (skippedCount > 3) {
           throw ("you dont have any skip cards to do this action");
         } else {
           _ref
               .read(analyticsServiceProvider)
               .logFinishQuest(quest.user_id, StatusEnum.skipped.name);
 
-          await _updateQuestStatus(StatusEnum.skipped, quest.id);
+          await updateQuestStatus(StatusEnum.skipped, quest.id);
           await insertFeedback(feedback);
         }
         return;
       }
 
       if (skipCard.quantity >= 1) {
-        await _updateQuestStatus(StatusEnum.skipped, quest.id);
+        await updateQuestStatus(StatusEnum.skipped, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
 
         await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
@@ -367,6 +382,83 @@ class QuestsRepository {
       }
 
       throw Exception(appError);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getFailedQuests(String userId) async {
+    try {
+      final now = DateTime.now();
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.status, StatusEnum.in_progress.name)
+          .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
+
+      return data.map((q) => QuestModel.fromMap(q)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getLastQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .order(KeyNames.created_at, ascending: false)
+          .limit(8);
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getCustomQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable.select("*").eq(KeyNames.user_id, userId).eq(
+            KeyNames.is_custom,
+            true,
+          );
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<QuestModel>> getActiveCustomQuests(String userId) async {
+    try {
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.is_active, true)
+          .eq(
+            KeyNames.is_custom,
+            true,
+          );
+
+      return data.map((quest) => QuestModel.fromMap(quest)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> deActiveCustomQuest(String userId, String questId) async {
+    try {
+      await _playerQuestsTable
+          .update({
+            KeyNames.is_active: false,
+          })
+          .eq(KeyNames.user_quest_id, questId)
+          .eq(KeyNames.user_id, userId);
     } catch (e) {
       log(e.toString());
       rethrow;

@@ -68,6 +68,8 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         ),
         BuildDashboardGrid(),
         const SizedBox(height: 15),
+        buildSpecialQuestsCard(),
+        const SizedBox(height: 15),
         buildGuildCard(),
         const SizedBox(height: 15),
         buildFriendsCard(),
@@ -78,9 +80,35 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     );
   }
 
-  SystemCard buildGuildCard() {
+  SystemCard buildSpecialQuestsCard() {
+    final user = ref.watch(authStateProvider);
     return SystemCard(
       duration: const Duration(milliseconds: 1200),
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        if (user!.level!.level < 5) {
+          CustomToast.systemToast(
+              "You need to reach level 5 to be able to create your own quests.");
+          return;
+        }
+
+        context.push(Routes.customQuestsPage);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(LucideIcons.diamond),
+          const SizedBox(height: 10),
+          Text("Custom Quests"),
+        ],
+      ),
+    );
+  }
+
+  SystemCard buildGuildCard() {
+    return SystemCard(
+      duration: const Duration(milliseconds: 1500),
       onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +124,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
 
   SystemCard buildFriendsCard() {
     return SystemCard(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1700),
       onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

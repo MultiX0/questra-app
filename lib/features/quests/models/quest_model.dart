@@ -10,11 +10,12 @@ class QuestModel {
   final int coin_reward;
   final String difficulty;
   final String status;
-  final String estimated_completion_time;
+  final int estimated_completion_time;
   final String? owned_title;
-  final DateTime? assigned_at;
   final DateTime? completed_at;
-  final DateTime expected_completion_time_date;
+  final DateTime? expected_completion_time_date;
+  final bool? isActive;
+  final bool isCustom;
   final List images;
   QuestModel({
     required this.id,
@@ -28,10 +29,11 @@ class QuestModel {
     required this.estimated_completion_time,
     required this.images,
     required this.title,
+    required this.isCustom,
+    this.isActive,
     this.owned_title,
-    this.assigned_at,
     this.completed_at,
-    required this.expected_completion_time_date,
+    this.expected_completion_time_date,
   });
 
   factory QuestModel.newQuest({required QuestModel quest}) {
@@ -47,10 +49,11 @@ class QuestModel {
       estimated_completion_time: quest.estimated_completion_time,
       images: quest.images,
       title: quest.title,
-      assigned_at: quest.assigned_at,
       completed_at: quest.completed_at,
       owned_title: quest.owned_title,
       expected_completion_time_date: quest.expected_completion_time_date,
+      isCustom: quest.isCustom,
+      isActive: quest.isActive,
     );
   }
 
@@ -63,13 +66,14 @@ class QuestModel {
     int? coin_reward,
     String? difficulty,
     String? status,
-    String? estimated_completion_time,
-    DateTime? assigned_at,
+    int? estimated_completion_time,
     DateTime? completed_at,
     String? owned_title,
     String? title,
     DateTime? expected_completion_time_date,
     List? images,
+    bool? isActive,
+    bool? isCustom,
   }) {
     return QuestModel(
       id: id ?? this.id,
@@ -81,18 +85,21 @@ class QuestModel {
       difficulty: difficulty ?? this.difficulty,
       status: status ?? this.status,
       estimated_completion_time: estimated_completion_time ?? this.estimated_completion_time,
-      assigned_at: assigned_at ?? this.assigned_at,
       completed_at: completed_at ?? this.completed_at,
       title: title ?? this.title,
+      owned_title: owned_title ?? this.owned_title,
       expected_completion_time_date:
           expected_completion_time_date ?? this.expected_completion_time_date,
       images: images ?? this.images,
+      isActive: isActive ?? this.isActive,
+      isCustom: isCustom ?? this.isCustom,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       KeyNames.user_quest_id: id,
+      KeyNames.created_at: created_at.toUtc().toIso8601String(),
       KeyNames.user_id: user_id,
       KeyNames.quest_title: title,
       KeyNames.quest_description: description,
@@ -100,12 +107,13 @@ class QuestModel {
       KeyNames.coin_reward: coin_reward,
       KeyNames.difficulty: difficulty.toLowerCase(),
       KeyNames.status: status.toLowerCase(),
-      KeyNames.assigned_at: assigned_at?.toIso8601String(),
       KeyNames.completed_at: completed_at?.toIso8601String(),
-      KeyNames.estimated_completion_time: estimated_completion_time,
+      KeyNames.estimated_completion_time: estimated_completion_time.toString(),
       KeyNames.owned_title: owned_title,
-      KeyNames.expected_completion_time_date: expected_completion_time_date.toIso8601String(),
+      KeyNames.expected_completion_time_date: expected_completion_time_date?.toIso8601String(),
       KeyNames.images: images,
+      KeyNames.is_active: isActive,
+      KeyNames.is_custom: isCustom,
     };
   }
 
@@ -119,22 +127,23 @@ class QuestModel {
       xp_reward: map[KeyNames.xp_reward] ?? 0,
       coin_reward: map[KeyNames.coin_reward] ?? 0,
       difficulty: map[KeyNames.difficulty] ?? '',
-      estimated_completion_time: map[KeyNames.estimated_completion_time] ?? "",
-      expected_completion_time_date:
-          DateTime.tryParse(map[KeyNames.expected_completion_time_date]) ??
-              DateTime.now().add(const Duration(hours: 2)),
+      estimated_completion_time: int.tryParse(map[KeyNames.estimated_completion_time]) ?? 0,
+      owned_title: map[KeyNames.owned_title],
+      expected_completion_time_date: map[KeyNames.expected_completion_time_date] == null
+          ? null
+          : DateTime.tryParse(map[KeyNames.expected_completion_time_date]),
       status: map[KeyNames.status] ?? "",
-      assigned_at:
-          map[KeyNames.assigned_at] != null ? DateTime.tryParse(map[KeyNames.assigned_at]) : null,
       completed_at:
           map[KeyNames.completed_at] != null ? DateTime.tryParse(map[KeyNames.completed_at]) : null,
       images: List.from(map[KeyNames.images] ?? []),
+      isCustom: map[KeyNames.is_custom] ?? false,
+      isActive: map[KeyNames.is_active],
     );
   }
 
   @override
   String toString() {
-    return 'QuestModel(id: $id, created_at: $created_at, user_id: $user_id, description: $description, xp_reward: $xp_reward, coin_reward: $coin_reward, difficulty: $difficulty, status: $status, assigned_at: $assigned_at, completed_at: $completed_at)';
+    return 'QuestModel(id: $id, created_at: $created_at, user_id: $user_id, description: $description, xp_reward: $xp_reward, coin_reward: $coin_reward, difficulty: $difficulty, status: $status, completed_at: $completed_at)';
   }
 
   @override
@@ -149,7 +158,6 @@ class QuestModel {
         other.coin_reward == coin_reward &&
         other.difficulty == difficulty &&
         other.status == status &&
-        other.assigned_at == assigned_at &&
         other.completed_at == completed_at;
   }
 
@@ -163,7 +171,6 @@ class QuestModel {
         coin_reward.hashCode ^
         difficulty.hashCode ^
         status.hashCode ^
-        assigned_at.hashCode ^
         completed_at.hashCode;
   }
 }

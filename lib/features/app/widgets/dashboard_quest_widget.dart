@@ -23,7 +23,7 @@ class DashboardQuestWidget extends ConsumerWidget {
       duration: duration,
       onTap: () {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-        Navs(context, ref).viewQuest(firstQuest);
+        Navs(context, ref).viewQuest(firstQuest, false);
       },
       padding: EdgeInsets.all(
         20,
