@@ -174,11 +174,11 @@ class QuestsRepository {
 
   Future<QuestModel> finishQuest({required QuestModel quest, FeedbackModel? feedback}) async {
     try {
-      final unix = DateTime.now().millisecondsSinceEpoch;
+      final unix = DateTime.now().toUtc().millisecondsSinceEpoch;
       // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
       final expectedTimestamp = quest.expected_completion_time_date?.millisecondsSinceEpoch ?? unix;
-      final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
+      // final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
 
       final _quest = await getQuestById(quest.id);
       if (_quest?.status.trim() == StatusEnum.completed.name) {
@@ -193,7 +193,7 @@ class QuestsRepository {
       //   throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
       // }
 
-      if (unix > expiryTimestamp) {
+      if (unix > expectedTimestamp) {
         await updateQuestStatus(StatusEnum.failed, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
         await failedPunishment(_quest ?? quest);

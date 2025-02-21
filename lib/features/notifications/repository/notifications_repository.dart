@@ -34,6 +34,7 @@ class NotificationsRepository {
   static Future<void> insertFCMToken(String userId) async {
     try {
       final fcmToken = await NotificationsService.getFCMToken();
+      log("FCM TOKEN: $fcmToken");
       final inserted = await insertedToken(userId, fcmToken ?? "");
       if (inserted) return;
 

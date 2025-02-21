@@ -128,7 +128,7 @@ class AiFunctions {
 
         final QuestModel quest = QuestModel(
           id: "",
-          created_at: DateTime.now(),
+          created_at: DateTime.now().toUtc(),
           user_id: user.id,
           description: questDescription,
           xp_reward: xp_reward,

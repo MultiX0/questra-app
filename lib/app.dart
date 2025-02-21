@@ -25,6 +25,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       if (userId != null) {
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
+        handleFCMInsert(userId);
         await NotificationsRepository.insertLog(userId);
       }
     });
@@ -34,25 +35,35 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void handleFCMInsert(String userId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now().millisecondsSinceEpoch;
+      final now = DateTime.now();
+      final prevTimestamp = prefs.getInt("fcm_check");
 
-      final prevDate = prefs.getInt("fcm_check");
-      if (prevDate != null &&
-          DateTime.fromMillisecondsSinceEpoch(prevDate)
-              .add(const Duration(hours: 2))
-              .isAfter(DateTime.now())) {
-        return;
+      if (prevTimestamp != null) {
+        final prevDate = DateTime.fromMillisecondsSinceEpoch(prevTimestamp);
+        final nextAllowedTime = prevDate.add(const Duration(hours: 2));
+
+        log("Previous check time: $prevDate");
+        log("Next allowed check time: $nextAllowedTime");
+        log("Current time: $now");
+
+        if (now.isBefore(nextAllowedTime)) {
+          log("Skipping FCM check as it's within the 2-hour window.");
+          return;
+        }
       }
 
-      await prefs.setInt("fcm_check", now);
+      // Update timestamp
+      await prefs.setInt("fcm_check", now.millisecondsSinceEpoch);
+      log("FCM check timestamp updated to: $now");
 
+      // Insert FCM token
       await NotificationsRepository.insertFCMToken(userId);
+      log("FCM token inserted for user: $userId");
     } catch (e) {
-      log(e.toString());
+      log("Error in handleFCMInsert: ${e.toString()}");
       rethrow;
     }
   }
-
   // final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
 
   Future<void> initializeUnityAds() async {
