@@ -16,4 +16,8 @@ class Navs {
   void goToProfile(String userId) {
     context.push("${Routes.profile}/$userId");
   }
+
+  void goToAboutUs() {
+    context.push(Routes.aboutUsPage);
+  }
 }

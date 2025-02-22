@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:questra_app/core/services/secure_storage.dart';
+import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
@@ -65,10 +66,26 @@ Future<void> _initializeSupabase() async {
 
 Future<void> _sendSystemMessage() async {
   try {
-    final session = Supabase.instance.client.auth.currentSession;
+    final _client = Supabase.instance.client;
+    final session = _client.auth.currentSession;
     if (session == null) return;
 
     final userId = session.user.id;
+
+    final data = await _client
+        .rpc(FunctionNames.get_today_notifications_count, params: {'p_user_id': userId});
+
+    if (data is int) {
+      if (data > 3) {
+        return;
+      }
+    }
+
+    if (data is String) {
+      if ((int.tryParse(data) ?? 0) > 3) {
+        return;
+      }
+    }
 
     await NotificationsRepository.sendNotificationFunction(userId);
   } catch (e) {

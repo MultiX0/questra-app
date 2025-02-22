@@ -1,5 +1,6 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/foundation.dart';
+import 'package:questra_app/features/app/pages/about_page.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
 import 'package:questra_app/features/app/widgets/upload_avatar_widget.dart';
@@ -197,6 +198,11 @@ final routerProvider = Provider<GoRouter>(
         buildRoute(
           path: Routes.addCustomQuestPage,
           child: AddCusomeQuestPage(),
+        ),
+        buildRoute(
+          fade: true,
+          path: Routes.aboutUsPage,
+          child: AboutPage(),
         ),
       ],
     );

@@ -179,7 +179,7 @@ class NotificationsRepository {
     }
   }
 
-  static Future<List<QuestModel>> _getFailedQuests(String userId) async {
+  static Future<List<Map<String, dynamic>>> _getFailedQuests(String userId) async {
     final now = DateTime.now();
     final data = await _playerQuestsTable
         .select("*")
@@ -187,7 +187,16 @@ class NotificationsRepository {
         .eq(KeyNames.status, StatusEnum.in_progress.name)
         .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
 
-    return data.map((q) => QuestModel.fromMap(q)).toList();
+    final quests = data.map((q) => QuestModel.fromMap(q)).toList();
+    final cleanedData = quests.map((quest) {
+      return {
+        KeyNames.title: quest.title,
+        KeyNames.description: quest.description,
+        KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+      };
+    }).toList();
+
+    return cleanedData;
   }
 
   static Future<String> _generatePrompt(String userId) async {
@@ -196,13 +205,15 @@ class NotificationsRepository {
       final logsList = await _getUserLogs(userId);
       final onGoingQuests = await _currentlyOngoingQuests(userId);
       final failedQuests = await _getFailedQuests(userId);
+      final lastNotifications = await _getLastNotificatons(userId);
 
       String prompt = '''
         current_time: ${now.toIso8601String()},
         last_user_open_app: ${logsList.map((l) => l.loggedAt).toList()},
         in_progress_quests: ${onGoingQuests.map((quest) => quest.toString())},
         failed_quests: ${failedQuests.map((quest) => quest.toString())},
-        current_user_time: ${now.toUtc().toIso8601String()}
+        current_user_time: ${now.toUtc().toIso8601String()},
+        last_notifications: ${lastNotifications.toSet()},
         ''';
 
       final res = await AiNotifications.makeAiResponse(
@@ -220,15 +231,23 @@ class NotificationsRepository {
     }
   }
 
-  static Future<List<QuestModel>> _currentlyOngoingQuests(String user_id) async {
-    final data = await _playerQuestsTable
-        .select('*')
-        .eq(KeyNames.status, 'in_progress')
-        .eq(KeyNames.user_id, user_id);
-
-    List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
+  static Future<List<Map<String, dynamic>>> _currentlyOngoingQuests(String user_id) async {
     try {
-      return quests;
+      final data = await _playerQuestsTable
+          .select('*')
+          .eq(KeyNames.status, 'in_progress')
+          .eq(KeyNames.user_id, user_id);
+
+      List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
+      final cleanedData = quests.map((quest) {
+        return {
+          KeyNames.title: quest.title,
+          KeyNames.description: quest.description,
+          KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+        };
+      }).toList();
+
+      return cleanedData;
     } catch (e) {
       log(e.toString());
       throw Exception(e);
@@ -243,6 +262,22 @@ class NotificationsRepository {
     } catch (e) {
       log(e.toString());
       throw Exception(e);
+    }
+  }
+
+  static Future<List<String>> _getLastNotificatons(String userId) async {
+    try {
+      final data = await _notificationLogs
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .order(KeyNames.created_at, ascending: false);
+
+      return data.map((n) => n['notification'].toString()).toList();
+    } catch (e) {
+      log(e.toString());
+      await ExceptionService.insertException(
+          path: "/notifications_repository", error: e.toString(), userId: userId);
+      rethrow;
     }
   }
 }

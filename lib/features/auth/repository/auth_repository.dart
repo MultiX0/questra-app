@@ -55,7 +55,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     _isInitialized = true;
 
     _authStateSubscription =
-        _supabase.auth.onAuthStateChange.debounceTime(const Duration(milliseconds: 500)).listen(
+        _supabase.auth.onAuthStateChange.debounceTime(const Duration(milliseconds: 400)).listen(
       _handleAuthStateChange,
       onError: (error) {
         log('AuthState error: $error');

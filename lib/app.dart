@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:questra_app/core/providers/package_into_provider.dart';
+import 'package:questra_app/core/services/package_info_service.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,10 +28,16 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
         handleFCMInsert(userId);
+        handleAppPackage();
         await NotificationsRepository.insertLog(userId);
       }
     });
     super.initState();
+  }
+
+  void handleAppPackage() async {
+    ref.read(appVersionProvider.notifier).state = await PackageInfoService.getAppVersion();
+    ref.read(appBuildNumberProvider.notifier).state = await PackageInfoService.getAppBuildNumber();
   }
 
   void handleFCMInsert(String userId) async {

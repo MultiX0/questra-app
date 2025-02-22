@@ -32,6 +32,10 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         appBar: TheAppBar(
           title: "Profile",
           actions: [
+            IconButton(
+              onPressed: () => Navs(context, ref).goToAboutUs(),
+              icon: Icon(LucideIcons.badge_info),
+            ),
             if (kDebugMode) ...[
               IconButton(
                 onPressed: () => ref.read(authStateProvider.notifier).logout(),

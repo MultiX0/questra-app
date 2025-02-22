@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +28,26 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "appVersionChannel")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "getAppInfo") {
+                    try {
+                        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+                        val version = packageInfo.versionName
+                        val buildNumber = packageInfo.longVersionCode.toString()
+                        val appInfo = mapOf("version" to version, "buildNumber" to buildNumber)
+                        result.success(appInfo)
+                    } catch (e: Exception) {
+                        result.error("UNAVAILABLE", "Package info not available", null)
+                    }
+                } else {
+                    result.notImplemented()
+                }
+            }
+    }
+
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channels = listOf(
@@ -38,7 +60,6 @@ class MainActivity : FlutterActivity() {
                     enableVibration(true)
                     setShowBadge(true)
                 },
-                // Add more channels if needed
                 NotificationChannel(
                     "system_channel",
                     "System Notifications",

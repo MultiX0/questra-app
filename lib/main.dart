@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'package:questra_app/app.dart';
+import 'package:questra_app/core/services/pre_load_icons.dart';
 import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/firebase_options.dart';
 import 'package:workmanager/workmanager.dart';
@@ -24,6 +25,7 @@ Future<void> main() async {
   await initNotifications();
 
   editChromeSystem();
+  PreLoadIcons.loadIcons();
   runApp(ProviderScope(child: const App()));
 }
 
