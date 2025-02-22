@@ -1,10 +1,8 @@
 import 'dart:developer';
-import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:questra_app/app.dart';
 import 'package:questra_app/core/services/secure_storage.dart';

@@ -1,28 +1,18 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:hl_image_picker/hl_image_picker.dart';
 import 'package:image_cropper/image_cropper.dart' as c;
 import 'package:image_picker/image_picker.dart';
 import 'package:questra_app/imports.dart';
 
 Future<List<File>> imagePicker(bool single) async {
   try {
-    final _picker = HLImagePicker();
-    List<File> _selectedImages = [];
-
-    final images = await _picker.openPicker(
-      pickerOptions: HLPickerOptions(
-        mediaType: MediaType.image,
-        maxSelectedAssets: single ? 1 : 3,
-      ),
-      cropping: single ? true : false,
-      cropOptions: HLCropOptions(
-        compressFormat: CompressFormat.png,
-        aspectRatio: CropAspectRatio(ratioX: 400, ratioY: 400),
-        compressQuality: 0.8,
-      ),
+    final ImagePicker picker = ImagePicker();
+    final List<XFile> images = await picker.pickMultiImage(
+      limit: 4,
+      imageQuality: 70,
     );
+    List<File> _selectedImages = [];
 
     for (final image in images) {
       _selectedImages = [..._selectedImages, File(image.path)];
