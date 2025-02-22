@@ -151,11 +151,13 @@ class AiFunctions {
         currentQuests = [...currentQuests, quest.copyWith(id: questId)];
 
         _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
-        await NotificationsFunctions.scheduleNotification(
-          title: "Quest Reminder",
-          body:
-              "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
-          scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
+        await NotificationService().scheduleDailyNotification(
+          quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
+          "Quest Reminder",
+
+          "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+          // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
+          // scheduledTime:
         );
 
         return;

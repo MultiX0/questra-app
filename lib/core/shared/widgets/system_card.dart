@@ -57,7 +57,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
       end: 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.5, 1.0, curve: Curves.easeIn),
+      curve: Interval(0.8, 1.0, curve: Curves.linear),
     ));
 
     _controller.forward();

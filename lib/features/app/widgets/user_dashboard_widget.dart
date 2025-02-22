@@ -111,6 +111,7 @@ class UserDashboardWidget extends ConsumerWidget {
           height: 15,
         ),
         GlowText(
+          textAlign: TextAlign.start,
           glowColor: Colors.white.withValues(alpha: .85),
           text: "Full Name: ${user.name}",
           style: TextStyle(

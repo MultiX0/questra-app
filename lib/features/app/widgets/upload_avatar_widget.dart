@@ -25,7 +25,14 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
       });
     }
 
-    final images = await imagePicker(true);
+    final avatar = await avatarPicker();
+    if (avatar == null) {
+      setState(() {
+        _images.clear();
+      });
+      return;
+    }
+    final images = [avatar];
     setState(() {
       _images = List<File>.from(images);
     });
@@ -39,7 +46,7 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.read(profileControllerProvider);
+    final isLoading = ref.watch(profileControllerProvider);
     return BackgroundWidget(
       child: Scaffold(
         appBar: AppBar(),

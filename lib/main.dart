@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -29,12 +30,7 @@ Future<void> main() async {
 }
 
 Future<void> initNotifications() async {
-  final FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
-  await notifications.initialize(
-    const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-    ),
-  );
+  await NotificationService().init();
 }
 
 void initWorkManager() {

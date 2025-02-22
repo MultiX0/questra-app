@@ -47,10 +47,11 @@ class ProfileController extends StateNotifier<bool> {
   Future<void> updateUserAvatar(File image, String userId, BuildContext context) async {
     try {
       state = true;
-      await _ref.read(adsServiceProvider.notifier).showAd();
       final avatarLink = await _uploadImages(image);
       await _repo.updateAvatar(avatar: avatarLink[0], userId: userId);
       CustomToast.systemToast("your avatar updated successfully");
+      await _ref.read(adsServiceProvider.notifier).showAd();
+
       state = false;
       context.pop();
     } catch (e) {
