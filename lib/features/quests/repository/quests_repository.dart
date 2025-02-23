@@ -197,7 +197,8 @@ class QuestsRepository {
       // }
 
       if (now.isAfter(quest.expected_completion_time_date ??
-          DateTime.now().subtract(const Duration(seconds: 3)))) {
+              DateTime.now().subtract(const Duration(seconds: 3))) &&
+          !quest.isCustom) {
         await updateQuestStatus(StatusEnum.failed, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
         await failedPunishment(_quest ?? quest);
