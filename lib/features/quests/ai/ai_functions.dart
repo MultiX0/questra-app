@@ -67,8 +67,8 @@ class AiFunctions {
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
-            ] : preferredQuestTypes},
-                    "goals": ${_user?.goals?.map((goal) => goal.toMap()).toList() ?? []},
+            ] : preferredQuestTypes.map((type) => type.name).toList()},
+                    "goals": ${_user?.goals?.map((goal) => goal.description).toList() ?? []},
                     "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
                     "currently_ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()},
                   }
