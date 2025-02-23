@@ -205,6 +205,8 @@ class QuestsController extends StateNotifier<bool> {
       state = true;
 
       final user = _ref.read(authStateProvider)!;
+      await _ref.read(adsServiceProvider.notifier).showAd();
+
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
       if (lastExceptionsCount.count >= 3) {
         throw "Sorry but you can't try again until ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
@@ -215,7 +217,6 @@ class QuestsController extends StateNotifier<bool> {
             0,
             user.id,
           );
-      await _ref.read(adsServiceProvider.notifier).showAd();
       state = false;
       context.pop();
     } catch (e) {

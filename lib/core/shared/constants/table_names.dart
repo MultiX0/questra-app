@@ -24,4 +24,5 @@ class TableNames {
   static const app_exception = 'app_exception';
   static const notification_tokens = 'notification_tokens';
   static const custom_quest_exceptions = 'custom_quest_exceptions';
+  static const app_versions = 'app_versions';
 }

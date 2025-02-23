@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
+// import '../pages/new_version_page.dart';
+
 class MyNavBar extends ConsumerStatefulWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -29,6 +31,8 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
 
   @override
   Widget build(BuildContext context) {
+    // return NewVersionPage();
+
     return Scaffold(
         extendBody: true,
         body: BackgroundWidget(
