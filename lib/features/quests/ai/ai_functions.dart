@@ -28,6 +28,12 @@ class AiFunctions {
 
       final ongoingQuests =
           await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(userId);
+      List<Map<String, dynamic>> ongoingQuestsData = ongoingQuests.map((quest) {
+        return {
+          KeyNames.description: quest.description,
+          KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+        };
+      }).toList();
 
       log("currentlly there is ${ongoingQuests.length} quests");
       log("here 4");
@@ -54,7 +60,7 @@ class AiFunctions {
                     "time_availability": "${_user?.user_preferences?.time_availability ?? '1 hour'}",
                     "social_interactions": "${_user?.user_preferences?.social_interactions ?? 'solo'}",
                     "feedbacks": "${feedbacks.map((feedback) => feedback.toJson()).toList()}",
-                    "previous_titles": "${playerTitles.map((title) => title.toMap()).toList()}",
+                    "previous_titles": "${playerTitles.map((title) => title.title).toList()}",
                     "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                     "current_time": ${DateTime.now().toIso8601String()},
                     "last_quests": ${lastQuests.map((quest) => quest.toString())},
@@ -64,7 +70,7 @@ class AiFunctions {
             ] : preferredQuestTypes},
                     "goals": ${_user?.goals?.map((goal) => goal.toMap()).toList() ?? []},
                     "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
-                    "currently_ongoing_quests": ${ongoingQuests.map((quest) => quest.toMap()).toList()},
+                    "currently_ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()},
                   }
                 }
                 ''';
@@ -178,7 +184,7 @@ class AiFunctions {
     }
   }
 
-  Future<void> customQuestAnalizer(String questDescription, int errors) async {
+  Future<void> customQuestAnalizer(String questDescription, int errors, String userId) async {
     try {
       if (errors >= 2) {
         throw appError;
@@ -204,6 +210,10 @@ class AiFunctions {
         final exception = jsonData["exception"];
 
         if (exception != null) {
+          await _ref.read(questsRepositoryProvider).insertCustomQuestException(
+                userId: userId,
+                exceptionText: exception.toString(),
+              );
           throw exception;
         }
 
@@ -213,7 +223,8 @@ class AiFunctions {
             difficulty.isEmpty) {
           return customQuestAnalizer(
               "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
-              errors++);
+              errors++,
+              userId);
         }
 
         final user = _ref.read(authStateProvider)!;

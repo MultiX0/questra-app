@@ -73,4 +73,5 @@ class KeyNames {
   static const quest_id = 'quest_id';
   static const is_custom = 'is_custom';
   static const token = 'token';
+  static const exception_ = 'exception_';
 }

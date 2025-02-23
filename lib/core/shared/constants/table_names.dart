@@ -23,4 +23,5 @@ class TableNames {
   static const deleted_goals = 'deleted_goals';
   static const app_exception = 'app_exception';
   static const notification_tokens = 'notification_tokens';
+  static const custom_quest_exceptions = 'custom_quest_exceptions';
 }

@@ -201,8 +201,20 @@ class QuestsController extends StateNotifier<bool> {
 
   Future<void> addCustomQuest({required String description, required BuildContext context}) async {
     try {
+      // final now = DateTime.now().toUtc();
       state = true;
-      await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0);
+
+      final user = _ref.read(authStateProvider)!;
+      final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
+      if (lastExceptionsCount.count >= 3) {
+        throw "Sorry but you can't try again until ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
+      }
+
+      await _ref.read(aiFunctionsProvider).customQuestAnalizer(
+            description,
+            0,
+            user.id,
+          );
       await _ref.read(adsServiceProvider.notifier).showAd();
       state = false;
       context.pop();

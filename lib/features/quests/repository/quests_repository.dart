@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
+import 'package:questra_app/features/quests/models/custom_quest_exception_model.dart';
 import 'package:questra_app/features/titles/repository/titles_repository.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -19,6 +20,8 @@ class QuestsRepository {
   SupabaseQueryBuilder get _questTypesTable => _client.from(TableNames.quest_types);
   SupabaseQueryBuilder get _playerQuestsTable => _client.from(TableNames.user_quests);
   SupabaseQueryBuilder get _questsFeedbackTable => _client.from(TableNames.user_feedback);
+  SupabaseQueryBuilder get _customQuestsExceptions =>
+      _client.from(TableNames.custom_quest_exceptions);
 
   final uuid = Uuid();
 
@@ -66,7 +69,7 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id).limit(15).order(KeyNames.created_at, ascending: false);
+    ''').eq('user_id', user_id).limit(5).order(KeyNames.created_at, ascending: false);
 
       final feedbacks = data
           .map(
@@ -410,7 +413,7 @@ class QuestsRepository {
           .select("*")
           .eq(KeyNames.user_id, userId)
           .order(KeyNames.created_at, ascending: false)
-          .limit(8);
+          .limit(4);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
@@ -461,6 +464,33 @@ class QuestsRepository {
           .eq(KeyNames.user_id, userId);
     } catch (e) {
       log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<CustomQuestExceptionModel> getCustomQuestExceptions(String userId) async {
+    try {
+      final data = await _client.rpc(FunctionNames.get_recent_exceptions_stats, params: {
+        KeyNames.user_id: userId,
+      });
+
+      return CustomQuestExceptionModel.fromMap(data as Map<String, dynamic>);
+    } catch (e) {
+      log("getCustomQuestExceptions Exception ${e.toString()}");
+      rethrow;
+    }
+  }
+
+  Future<void> insertCustomQuestException(
+      {required String userId, required String exceptionText}) async {
+    try {
+      await _customQuestsExceptions.insert({
+        KeyNames.user_id: userId,
+        KeyNames.exception_: exceptionText,
+        KeyNames.created_at: DateTime.now().toUtc(),
+      });
+    } catch (e) {
+      log("insertCustomQuestException Exception ${e.toString()}");
       rethrow;
     }
   }

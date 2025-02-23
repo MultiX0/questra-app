@@ -53,12 +53,14 @@ class FeedbackModel {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       // 'user_feedback_id': user_feedback_id,
-      KeyNames.created_at: created_at.toIso8601String(),
-      KeyNames.user_id: user_id,
-      KeyNames.user_quest_id: user_quest_id,
+      // KeyNames.created_at: created_at.toIso8601String(),
       KeyNames.feedback_type: feedback_type.toLowerCase(),
       KeyNames.description: description,
-      "quest": quest?.toMap(),
+      "quest": {
+        KeyNames.description: quest?.description,
+        KeyNames.expected_completion_time_date: quest?.expected_completion_time_date?.toUtc(),
+        KeyNames.created_at: quest?.created_at,
+      },
     };
   }
 
