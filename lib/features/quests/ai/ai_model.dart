@@ -28,7 +28,7 @@ class AiModel {
         _deepinfra_api,
         options: _options,
         data: jsonEncode({
-          "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+          "model": "meta-llama/Llama-3.2-11B-Vision-Instruct",
           "messages": content,
           "temperature": 0.0,
           "top_p": 0.7,

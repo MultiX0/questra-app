@@ -32,7 +32,7 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
       // log(duration.inHours.toString());
       if (quest.created_at.toUtc().add(duration).isAfter(now.toUtc())) {
         CustomToast.systemToast(
-            "you need to wait until ${appDateFormat(quest.created_at.add(duration))}",
+            "you need to wait until ${appDateFormat(quest.created_at.toLocal().add(duration))}",
             systemMessage: true);
         return;
       }

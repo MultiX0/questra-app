@@ -143,21 +143,16 @@ class AiFunctions {
           status: 'in_progress',
           estimated_completion_time: int.tryParse(estimated_completion_time.toString()) ?? 0,
           title: questTitle,
-          expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
-              DateTime.now().add(const Duration(hours: 2)),
+          expected_completion_time_date:
+              DateTime.tryParse(completion_time_date)?.add(const Duration(hours: 12)) ??
+                  DateTime.now().add(const Duration(hours: 2)),
           owned_title: owned_title,
           images: [],
           isCustom: false,
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
-        List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
-        _ref.read(analyticsServiceProvider).logGenerateQuest(user.id);
-
-        currentQuests = [...currentQuests, quest.copyWith(id: questId)];
-
-        _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
-        await NotificationService().scheduleDailyNotification(
+        NotificationService().scheduleDailyNotification(
           quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
           "Quest Reminder",
 
@@ -165,6 +160,12 @@ class AiFunctions {
           // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
           // scheduledTime:
         );
+        List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
+        _ref.read(analyticsServiceProvider).logGenerateQuest(user.id);
+
+        currentQuests = [...currentQuests, quest.copyWith(id: questId)];
+
+        _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
 
         return;
       }

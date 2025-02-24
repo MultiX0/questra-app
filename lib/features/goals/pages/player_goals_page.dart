@@ -249,7 +249,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                 ] else ...[
                   SystemCardButton(
                     onTap: () {
-                      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                      // ref.read(soundEffectsServiceProvider).playSystemButtonClick();
                       ref.read(goalsControllerProvider.notifier).deleteGoal(deleteId!, () {
                         setState(() {
                           deleteId = null;
