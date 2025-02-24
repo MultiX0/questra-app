@@ -25,8 +25,10 @@ class CustomQuestExceptionModel {
 
   factory CustomQuestExceptionModel.fromMap(Map<String, dynamic> map) {
     return CustomQuestExceptionModel(
-      count: map['count'] as int,
-      latest_date: DateTime.fromMillisecondsSinceEpoch(map['latest_date'] as int),
+      count: map['count'] ?? 0,
+      latest_date: map['latest_date'] != null
+          ? DateTime.parse(map['latest_date'])
+          : DateTime.now().subtract(const Duration(hours: 1)),
     );
   }
 

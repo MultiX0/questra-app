@@ -70,15 +70,16 @@ class AiFunctions {
               'exploration',
               'puzzle'
             ] : preferredQuestTypes.map((type) => type.name).toList()},
-                      "goals": ${_user?.goals?.map((goal) => goal.description).toList() ?? []},
                       "ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()}
                     }
                   }
 
-                NOTE:
-                MAKE QUEST DIFFERENT ON THIS : (${lastUserQuests.map((quest) => quest.description).toList()})
-                
+                NOTES (IMPORTANT):
+                - MAKE QUEST DIFFERENT ON THIS : (${lastUserQuests.map((quest) => quest.description).toList()}) (VERY DIFFERENT CONTEXT)
+                - TAKE IN MIND MY FEEDBACKS BECAUSE THEIR ARE IMPORTANT THINGS TO ME
+                - TAKE IN MIND THAT I WANT QUESTS THAT MAKE ME ACHIEVE MY GOALS WICHI IS THOSE GOALS : ${_user?.goals?.map((goal) => goal.description).toList() ?? []}
                 ''';
+
       final questResponse = await _ref.read(aiModelObjectProvider).makeAiResponse(
         content: [
           {

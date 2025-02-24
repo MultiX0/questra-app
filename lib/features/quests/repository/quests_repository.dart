@@ -69,7 +69,7 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id).limit(5).order(KeyNames.created_at, ascending: false);
+    ''').eq('user_id', user_id).limit(10).order(KeyNames.created_at, ascending: false);
 
       final feedbacks = data
           .map(
@@ -473,7 +473,7 @@ class QuestsRepository {
   Future<CustomQuestExceptionModel> getCustomQuestExceptions(String userId) async {
     try {
       final data = await _client.rpc(FunctionNames.get_recent_exceptions_stats, params: {
-        KeyNames.user_id: userId,
+        'p_user_id': userId,
       });
 
       return CustomQuestExceptionModel.fromMap(data as Map<String, dynamic>);

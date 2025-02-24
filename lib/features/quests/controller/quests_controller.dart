@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
@@ -205,7 +206,9 @@ class QuestsController extends StateNotifier<bool> {
       state = true;
 
       final user = _ref.read(authStateProvider)!;
-      await _ref.read(adsServiceProvider.notifier).showAd();
+      if (!kDebugMode) {
+        await _ref.read(adsServiceProvider.notifier).showAd();
+      }
 
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
       if (lastExceptionsCount.count >= 3) {

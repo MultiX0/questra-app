@@ -12,9 +12,18 @@ class CustomQuestsPage extends ConsumerStatefulWidget {
 
 class _CustomQuestsPageState extends ConsumerState<CustomQuestsPage> {
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userId = ref.read(authStateProvider)?.id ?? "";
+      ref.invalidate(getCustomQuestsProvider(userId));
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final user = ref.watch(authStateProvider);
-    final _quests = ref.watch(customQuestsProvider);
+    final customQuests = ref.watch(customQuestsProvider);
     return BackgroundWidget(
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -34,9 +43,9 @@ class _CustomQuestsPageState extends ConsumerState<CustomQuestsPage> {
                 }
 
                 return ListView.builder(
-                  itemCount: _quests.length,
+                  itemCount: customQuests.length,
                   itemBuilder: (context, i) {
-                    final _quest = _quests[i];
+                    final _quest = customQuests[i];
                     return Padding(
                       padding: EdgeInsets.all(8),
                       child: QuestCard(

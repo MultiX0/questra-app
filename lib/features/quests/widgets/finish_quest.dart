@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
 import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
@@ -30,11 +31,13 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
       // log(quest.toMap().toString());
       final duration = Duration(seconds: quest.estimated_completion_time);
       // log(duration.inHours.toString());
-      if (quest.created_at.toUtc().add(duration).isAfter(now.toUtc())) {
-        CustomToast.systemToast(
-            "you need to wait until ${appDateFormat(quest.created_at.toLocal().add(duration))}",
-            systemMessage: true);
-        return;
+      if (!kDebugMode) {
+        if (quest.created_at.toUtc().add(duration).isAfter(now.toUtc())) {
+          CustomToast.systemToast(
+              "you need to wait until ${appDateFormat(quest.created_at.toLocal().add(duration))}",
+              systemMessage: true);
+          return;
+        }
       }
 
       // if (now.isBefore(quest.expected_completion_time_date)) {

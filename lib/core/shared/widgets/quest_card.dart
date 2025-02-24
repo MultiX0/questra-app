@@ -135,6 +135,7 @@ class QuestCard extends ConsumerWidget {
               ),
               GlowText(
                 glowColor: Colors.white54,
+                textAlign: TextAlign.start,
                 text:
                     "Reward: +${questModel.xp_reward} XP, +${questModel.coin_reward} Coins${questModel.owned_title != null ? ", “${questModel.owned_title}” Title" : ''}",
                 style: TextStyle(
