@@ -32,6 +32,8 @@ class AiFunctions {
         return {
           KeyNames.description: quest.description,
           KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+          KeyNames.created_at: quest.created_at,
+          KeyNames.quest_title: quest.title,
         };
       }).toList();
 
@@ -44,10 +46,20 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
+      final userGoals = await _ref.read(profileRepositoryProvider).getAllUserGoals(userId);
+
       final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      List<Map<String, dynamic>> lastQuestsData = lastQuests.map((quest) {
+        return {
+          KeyNames.created_at: quest.created_at.toUtc(),
+          KeyNames.description: quest.description,
+          KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+        };
+      }).toList();
 
       String _userPrompt = '''
                 {
+                  "current_time": ${DateTime.now().toIso8601String()},
                   "user_data": {
                     "id": "${_user?.id}",
                     "name": "${_user?.name}",
@@ -62,17 +74,21 @@ class AiFunctions {
                     "feedbacks": "${feedbacks.map((feedback) => feedback.toJson()).toList()}",
                     "previous_titles": "${playerTitles.map((title) => title.title).toList()}",
                     "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
-                    "current_time": ${DateTime.now().toIso8601String()},
-                    "last_quests": ${lastQuests.map((quest) => quest.toString())},
+                  
+                    "last_quests": ${lastQuestsData.map((quest) => quest.toString())},
                     "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
             ] : preferredQuestTypes.map((type) => type.name).toList()},
-                    "goals": ${_user?.goals?.map((goal) => goal.description).toList() ?? []},
+                    "goals": ${userGoals.map((goal) => goal.description).toList()},
                     "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
                     "currently_ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()},
                   }
                 }
+                
+                
+                NOTE:
+                Give a quest that is radically different from these quests :  ${ongoingQuestsData.map((quest) => quest.toString()).toList()}.
                 ''';
       final questResponse = await _ref.read(aiModelObjectProvider).makeAiResponse(
         content: [
@@ -91,7 +107,7 @@ class AiFunctions {
       log(questResponse);
       await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
-      log(e.toString());
+      log("generateQuests: ${e.toString()}");
       await ExceptionService.insertException(
           path: "/ai_functions/generation",
           error: e.toString(),
@@ -109,6 +125,9 @@ class AiFunctions {
       final data = isJson(res);
       if (data != null) {
         String? owned_title = data['player_title'];
+        if (owned_title?.trim() == 'null') {
+          owned_title = null;
+        }
 
         final difficulty = data['difficulty'];
         final questTitle = data['quest_title'];
@@ -143,34 +162,34 @@ class AiFunctions {
           status: 'in_progress',
           estimated_completion_time: int.tryParse(estimated_completion_time.toString()) ?? 0,
           title: questTitle,
-          expected_completion_time_date: DateTime.tryParse(completion_time_date) ??
-              DateTime.now().add(const Duration(hours: 2)),
+          expected_completion_time_date:
+              DateTime.tryParse(completion_time_date)?.add(const Duration(hours: 12)) ??
+                  DateTime.now().add(const Duration(hours: 2)),
           owned_title: owned_title,
           images: [],
           isCustom: false,
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
+        NotificationService().scheduleDailyNotification(
+          quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
+          "Quest Reminder",
+          "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+        );
         List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
         _ref.read(analyticsServiceProvider).logGenerateQuest(user.id);
 
         currentQuests = [...currentQuests, quest.copyWith(id: questId)];
 
         _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
-        await NotificationService().scheduleDailyNotification(
-          quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
-          "Quest Reminder",
-
-          "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
-          // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
-          // scheduledTime:
-        );
 
         return;
       }
 
       throw Exception("the data is not json type");
     } catch (e) {
+      log("handleQuestResponse: ${e.toString()}");
+
       if (errors >= 1) {
         CustomToast.systemToast(
           "we faceing an error while we making your quests, please try again later!",
@@ -179,7 +198,7 @@ class AiFunctions {
         return;
       }
       generateQuests(errors: errors + 1);
-      log(e.toString());
+
       throw Exception(e);
     }
   }
@@ -269,7 +288,7 @@ class AiFunctions {
 
       throw appError;
     } catch (e) {
-      log(e.toString());
+      log("customQuestAnalizer: ${e.toString()}");
       // CustomToast.systemToast(e.toString(), systemMessage: true);
       rethrow;
     }

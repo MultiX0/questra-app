@@ -32,7 +32,7 @@ class QuestsRepository {
       final types = data.map((type) => QuestTypeModel.fromMap(type)).toList();
       return types;
     } catch (e) {
-      log(e.toString());
+      log("getAllQuestTypes: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -44,7 +44,7 @@ class QuestsRepository {
       final quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
       return quests;
     } catch (e) {
-      log(e.toString());
+      log("getQuestsArchive: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -83,7 +83,7 @@ class QuestsRepository {
 
       return feedbacks;
     } catch (e) {
-      log(e.toString());
+      log("Feedback function: ${e.toString()}");
       throw Exception("Feedback function error: $e");
     }
   }
@@ -93,7 +93,7 @@ class QuestsRepository {
       final data = await _questTypesTable.select('*').inFilter(KeyNames.id, ids ?? []);
       return data.map((q) => QuestTypeModel.fromMap(q)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getQuestTypesByIds: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -112,7 +112,7 @@ class QuestsRepository {
 
       return data.length;
     } catch (e) {
-      log(e.toString());
+      log("questsDoneTodayCount: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -128,7 +128,7 @@ class QuestsRepository {
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
       return quests;
     } catch (e) {
-      log(e.toString());
+      log("currentlyOngoingQuests: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -143,7 +143,7 @@ class QuestsRepository {
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getLastUserQuests: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -155,7 +155,7 @@ class QuestsRepository {
       await _playerQuestsTable.insert(_quest.toMap());
       return id;
     } catch (e) {
-      log(e.toString());
+      log("insertQuest: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -170,7 +170,7 @@ class QuestsRepository {
       final questData = QuestModel.fromMap(data);
       return questData;
     } catch (e) {
-      log(e.toString());
+      log("getQuestById: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -240,7 +240,7 @@ class QuestsRepository {
 
       return updatedQuest;
     } catch (e) {
-      log(e.toString());
+      log("finishQuest: ${e.toString()}");
       rethrow;
     }
   }
@@ -260,7 +260,7 @@ class QuestsRepository {
             amount: (quest.coin_reward / 2).toInt(),
           );
     } catch (e) {
-      log(e.toString());
+      log("failedPunishment: ${e.toString()}");
       rethrow;
     }
   }
@@ -277,7 +277,7 @@ class QuestsRepository {
             amount: coins,
           );
     } catch (e) {
-      log(e.toString());
+      log("_updateUserCoins: ${e.toString()}");
     }
   }
 
@@ -285,7 +285,7 @@ class QuestsRepository {
     try {
       await _ref.read(levelingRepositoryProvider).updateUserLevelData(levelModel);
     } catch (e) {
-      log(e.toString());
+      log("_updateUserLevel: ${e.toString()}");
       rethrow;
     }
   }
@@ -296,7 +296,7 @@ class QuestsRepository {
           .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId}).eq(
               KeyNames.user_quest_id, questId);
     } catch (e) {
-      log(e.toString());
+      log("updateQuestStatus: ${e.toString()}");
     }
   }
 
@@ -307,7 +307,7 @@ class QuestsRepository {
 
       await _playerQuestsTable.update(questMap).eq(KeyNames.user_quest_id, quest.id);
     } catch (e) {
-      log(e.toString());
+      log("updateQuest: ${e.toString()}");
       throw Exception(appError);
     }
   }
@@ -318,7 +318,7 @@ class QuestsRepository {
         feedback.toMap(),
       );
     } catch (e) {
-      log(e.toString());
+      log("insertFeedback: ${e.toString()}");
       throw Exception(appError);
     }
   }
@@ -336,7 +336,7 @@ class QuestsRepository {
       log("the skipped quests count Is: $count");
       return count ?? 0;
     } catch (e) {
-      log(e.toString());
+      log("getSkippedQuestsCount: ${e.toString()}");
       throw Exception('Exception in getSkippedQuestsCount: $e');
     }
   }
@@ -388,7 +388,7 @@ class QuestsRepository {
 
       throw Exception(appError);
     } catch (e) {
-      log(e.toString());
+      log("handleSkip: ${e.toString()}");
       rethrow;
     }
   }
@@ -404,7 +404,7 @@ class QuestsRepository {
 
       return data.map((q) => QuestModel.fromMap(q)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getFailedQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -415,11 +415,11 @@ class QuestsRepository {
           .select("*")
           .eq(KeyNames.user_id, userId)
           .order(KeyNames.created_at, ascending: false)
-          .limit(4);
+          .limit(8);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getLastQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -433,7 +433,7 @@ class QuestsRepository {
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getCustomQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -451,7 +451,7 @@ class QuestsRepository {
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
-      log(e.toString());
+      log("getActiveCustomQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -465,7 +465,7 @@ class QuestsRepository {
           .eq(KeyNames.user_quest_id, questId)
           .eq(KeyNames.user_id, userId);
     } catch (e) {
-      log(e.toString());
+      log("deActiveCustomQuest: ${e.toString()}");
       rethrow;
     }
   }

@@ -71,6 +71,7 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
                 CustomToast.systemToast("making new quest for you...", systemMessage: true);
                 await ref.read(aiFunctionsProvider).generateQuests();
                 await ref.read(aiFunctionsProvider).generateQuests();
+                if (!mounted) return;
                 setState(() {
                   isLoading = false;
                 });

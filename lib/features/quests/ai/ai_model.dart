@@ -24,14 +24,18 @@ class AiModel {
     required List<Map<String, dynamic>> content,
   }) async {
     try {
+      log("using llama 3.2-11b...");
       final res = await dio.post(
         _deepinfra_api,
         options: _options,
         data: jsonEncode({
-          "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+          // "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+          // "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+          "model": "meta-llama/Llama-3.2-11B-Vision-Instruct",
+
           "messages": content,
           "temperature": 0.0,
-          "top_p": 0.7,
+          "top_p": 0.8,
           "top_k": 30,
           "max_tokens": maxTokens ?? 700,
           "frequency_penalty": 0.0,

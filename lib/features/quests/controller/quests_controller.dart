@@ -44,6 +44,8 @@ class QuestsController extends StateNotifier<bool> {
     try {
       return await _repository.getAllQuestTypes();
     } catch (e) {
+      log("getAllQuestTypes: ${e.toString()}");
+
       state = false;
       rethrow;
     }
@@ -53,7 +55,7 @@ class QuestsController extends StateNotifier<bool> {
     try {
       return await _repository.getQuestsArchive(user_id);
     } catch (e) {
-      log(e.toString());
+      log("getQuestsArchive: ${e.toString()}");
       throw Exception(e);
     }
   }
@@ -92,6 +94,8 @@ class QuestsController extends StateNotifier<bool> {
 
       return true;
     } catch (e) {
+      log("finishQuest: ${e.toString()}");
+
       if (e.toString().contains('expired')) {
         _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       }
@@ -119,7 +123,8 @@ class QuestsController extends StateNotifier<bool> {
 
       return links;
     } catch (e) {
-      log(e.toString());
+      log("_uploadImages: ${e.toString()}");
+
       throw Exception(e);
     }
   }
@@ -148,7 +153,7 @@ class QuestsController extends StateNotifier<bool> {
     } catch (e) {
       state = false;
       context.pop();
-      log(e.toString());
+      log("handleSkip: ${e.toString()}");
       CustomToast.systemToast(e.toString(), systemMessage: true);
       rethrow;
     }
@@ -173,7 +178,7 @@ class QuestsController extends StateNotifier<bool> {
       state = false;
 
       CustomToast.systemToast(appError);
-      log(e.toString());
+      log("failedPunishment: ${e.toString()}");
       rethrow;
     }
   }
@@ -185,7 +190,7 @@ class QuestsController extends StateNotifier<bool> {
           data.where((quest) => quest.isActive == true).toList();
       return data;
     } catch (e) {
-      log(e.toString());
+      log("getCustomQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -194,7 +199,7 @@ class QuestsController extends StateNotifier<bool> {
     try {
       return await _repository.getActiveCustomQuests(userId);
     } catch (e) {
-      log(e.toString());
+      log("getActiveCustomQuests: ${e.toString()}");
       rethrow;
     }
   }
@@ -222,7 +227,7 @@ class QuestsController extends StateNotifier<bool> {
     } catch (e) {
       state = false;
 
-      log(e.toString());
+      log("addCustomQuest: ${e.toString()}");
       CustomToast.systemToast(e.toString());
       throw Exception(e);
     }
@@ -243,7 +248,7 @@ class QuestsController extends StateNotifier<bool> {
     } catch (e) {
       state = false;
 
-      log(e.toString());
+      log("deActiveCustomQuest: ${e.toString()}");
       rethrow;
     }
   }

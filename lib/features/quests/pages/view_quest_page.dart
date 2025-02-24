@@ -116,62 +116,65 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
         ),
       );
 
-  Column buildBody(QuestModel quest) {
+  Center buildBody(QuestModel quest) {
     final isLoading = ref.watch(questsControllerProvider);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        QuestCard(
-          questModel: quest,
-          viewPage: true,
-        ),
-        const SizedBox(
-          height: 30,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SystemCard(
-              onTap: finish,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
-              isButton: true,
-              child: Text(
-                "finish",
-                style: TextStyle(
-                  fontFamily: AppFonts.header,
-                ),
-              ),
-            ),
-            if (widget.special) ...[
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          QuestCard(
+            questModel: quest,
+            viewPage: true,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               SystemCard(
-                onTap: delete,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
-                isButton: true,
-                child: isLoading
-                    ? BeatLoader(size: 15)
-                    : Text(
-                        "delete",
-                        style: TextStyle(
-                          fontFamily: AppFonts.header,
-                        ),
-                      ),
-              ),
-            ] else
-              SystemCard(
-                onTap: skip,
+                onTap: finish,
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
                 isButton: true,
                 child: Text(
-                  "skip",
+                  "finish",
                   style: TextStyle(
                     fontFamily: AppFonts.header,
                   ),
                 ),
               ),
-          ],
-        ),
-      ],
+              if (widget.special) ...[
+                SystemCard(
+                  onTap: delete,
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                  isButton: true,
+                  child: isLoading
+                      ? BeatLoader(size: 15)
+                      : Text(
+                          "delete",
+                          style: TextStyle(
+                            fontFamily: AppFonts.header,
+                          ),
+                        ),
+                ),
+              ] else
+                SystemCard(
+                  onTap: skip,
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                  isButton: true,
+                  child: Text(
+                    "skip",
+                    style: TextStyle(
+                      fontFamily: AppFonts.header,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 15),
+        ],
+      ),
     );
   }
 }

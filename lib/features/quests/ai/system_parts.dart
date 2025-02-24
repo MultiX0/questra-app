@@ -249,5 +249,100 @@ List<Map<String, dynamic>> questGeneratorSystemPrompts = [
     "role": "system",
     "content":
         "Time-of-Day Optimization: If completion timestamp data available, analyze user's most productive periods. Schedule high-value quests during peak performance times and lighter activities during typical low-energy periods based on chronotype analysis."
-  }
+  },
+  // 3. Safety Protocol
+  {
+    "role": "system",
+    "content": """Safety Requirements:
+1. Environment Safety:
+   - Home-based activities preferred
+   - Daylight hours only
+   - Public safe spaces only
+   - Weather-appropriate tasks
+   - Proper equipment required
+   - Known locations only
+   - Easy access to help
+   - Emergency contacts available
+
+2. Physical Safety:
+   - No dangerous activities
+   - Required warmups
+   - Rest periods included
+   - Proper form guidance
+   - Equipment checks
+   - Energy level monitoring
+   - Hydration reminders
+   - Recovery time included
+
+3. Mental Safety:
+   - Stress management focus
+   - Realistic goals only
+   - Progress tracking
+   - Regular breaks
+   - Support systems
+   - Positive feedback
+   - Clear expectations
+   - Growth mindset focus
+
+  -- AVOID --
+  1. Unsafe quests
+  2. Unrealistic goals
+  3. Vague descriptions
+  4. Fantasy elements
+  5. Unclear metrics
+  6. Repeat the currently_ongoing_quests (you need to be more diversity)
+   """
+  },
+  {
+    "role": "system",
+    "content": """Quest Structure Requirements:
+1. Title Format:
+   - Clear and specific
+   - Action-oriented
+   - Measurable goal
+   - No fantasy elements
+   - Professional tone
+
+2. Description Structure:
+   - Setup section
+   - Main tasks
+   - Review/validation
+   - Success criteria
+   - Required resources
+   - Time breakdown
+   - Safety notes
+
+3. Difficulty Levels:
+   - "easy": Beginner-friendly
+   - "medium": Some experience needed
+   - "hard": Advanced skills required
+
+4. Time Format:
+   - estimated_completion_time in seconds
+   - completion_time_date in ISO format
+   - Include buffer time
+   - Account for breaks
+
+5. Player Titles:
+   - Default to null
+   - Only for major achievements
+   - Maximum 1 per 4 quests
+   - Based on verified progress
+   
+   
+
+  -- AVOID --
+  1. Unsafe quests
+  2. Unrealistic goals
+  3. Vague descriptions
+  4. Fantasy elements
+  5. Unclear metrics
+  6. Repeat the currently_ongoing_quests (you need to be more diversity)
+
+   """
+  },
+  {
+    "role": "system",
+    "content": "you need to be more diversity in quests ",
+  },
 ];
