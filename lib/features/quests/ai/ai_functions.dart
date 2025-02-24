@@ -32,6 +32,8 @@ class AiFunctions {
         return {
           KeyNames.description: quest.description,
           KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+          KeyNames.quest_title: quest.title,
+          KeyNames.created_at: quest.created_at.toUtc(),
         };
       }).toList();
 
@@ -44,35 +46,38 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
-      final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      // final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
 
       String _userPrompt = '''
                 {
-                  "user_data": {
-                    "id": "${_user?.id}",
-                    "name": "${_user?.name}",
-                    "username": "${_user?.username}",
-                    "level": ${_user?.level?.level ?? 1},
-                    "difficulty_preferred": "${_user?.user_preferences?.difficulty ?? 'medium'}",
-                    "activity_level": "${_user?.user_preferences?.activity_level ?? 'moderate'}",
-                    "preferred_times": "${_user?.user_preferences?.preferred_times ?? 'evening'}",
-                    "motivation_level": "${_user?.user_preferences?.motivation_level ?? 'high'}",
-                    "time_availability": "${_user?.user_preferences?.time_availability ?? '1 hour'}",
-                    "social_interactions": "${_user?.user_preferences?.social_interactions ?? 'solo'}",
-                    "feedbacks": "${feedbacks.map((feedback) => feedback.toJson()).toList()}",
-                    "previous_titles": "${playerTitles.map((title) => title.title).toList()}",
-                    "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
-                    "current_time": ${DateTime.now().toIso8601String()},
-                    "last_quests": ${lastQuests.map((quest) => quest.toString())},
-                    "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
+                    "user_data": {
+                      "id": "${_user?.id}",
+                      "name": "${_user?.name}",
+                      "username": "${_user?.username}",
+                      "level": ${_user?.level?.level ?? 1},
+                      "difficulty_preferred": "${_user?.user_preferences?.difficulty ?? 'medium'}",
+                      "activity_level": "${_user?.user_preferences?.activity_level ?? 'moderate'}",
+                      "preferred_times": "${_user?.user_preferences?.preferred_times ?? 'evening'}",
+                      "motivation_level": "${_user?.user_preferences?.motivation_level ?? 'high'}",
+                      "time_availability": "${_user?.user_preferences?.time_availability ?? '1 hour'}",
+                      "social_interactions": "${_user?.user_preferences?.social_interactions ?? 'solo'}",
+                      "feedbacks": ${feedbacks.map((feedback) => feedback.toJson()).toList()},
+                      "previous_titles": ${playerTitles.map((title) => title.title).toList()},
+                      "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
+                      "current_time": "${DateTime.now().toIso8601String()}",
+                      "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
+                      "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
               'exploration',
               'puzzle'
             ] : preferredQuestTypes.map((type) => type.name).toList()},
-                    "goals": ${_user?.goals?.map((goal) => goal.description).toList() ?? []},
-                    "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
-                    "currently_ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()},
+                      "goals": ${_user?.goals?.map((goal) => goal.description).toList() ?? []},
+                      "ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()}
+                    }
                   }
-                }
+
+                NOTE:
+                MAKE QUEST DIFFERENT ON THIS : (${lastUserQuests.map((quest) => quest.description).toList()})
+                
                 ''';
       final questResponse = await _ref.read(aiModelObjectProvider).makeAiResponse(
         content: [

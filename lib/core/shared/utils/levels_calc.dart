@@ -11,29 +11,25 @@ int calculateXpForLevel(int level) {
 
 int questXp(int level, String difficulty) {
   int xpForLevel = calculateXpForLevel(level);
-  switch (difficulty.toLowerCase()) {
-    case 'easy':
-      return (xpForLevel * 0.1).toInt();
-    case 'medium':
-      return (xpForLevel * 0.3).toInt();
-    case 'hard':
-      return (xpForLevel * 0.6).toInt();
-    default:
-      return 0;
+  final diff = difficulty.toLowerCase();
+  if (diff.contains('easy')) {
+    return (xpForLevel * 0.1).toInt();
+  } else if (diff.contains('medium')) {
+    return (xpForLevel * 0.2).toInt();
+  } else {
+    return (xpForLevel * 0.4).toInt();
   }
 }
 
 int calculateQuestCoins(int level, String difficulty) {
   int baseCoins = 50; // A base value for coins that can be adjusted as needed
-  switch (difficulty.toLowerCase()) {
-    case 'easy':
-      return (baseCoins * level * 0.5).toInt(); // Easy quests give 50% of base
-    case 'medium':
-      return (baseCoins * level * 1.0).toInt(); // Medium quests give full base
-    case 'hard':
-      return (baseCoins * level * 1.5).toInt(); // Hard quests give 150% of base
-    default:
-      return 0; // Default for invalid difficulty
+  final diff = difficulty.toLowerCase();
+  if (diff.contains('easy')) {
+    return (baseCoins * level * 0.3).toInt(); // Easy quests give 50% of base
+  } else if (diff.contains('medium')) {
+    return (baseCoins * level * 0.8).toInt(); // Medium quests give full base
+  } else {
+    return (baseCoins * level * 1).toInt(); // Hard quests give 150% of base
   }
 }
 
