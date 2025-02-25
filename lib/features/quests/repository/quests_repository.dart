@@ -171,7 +171,7 @@ class QuestsRepository {
       return questData;
     } catch (e) {
       log(e.toString());
-      throw Exception(e);
+      return null;
     }
   }
 
@@ -180,6 +180,12 @@ class QuestsRepository {
       final now = DateTime.now().toUtc();
       // final now = DateTime.now();
       final user = _ref.read(authStateProvider);
+      try {
+        await NotificationService().cancelNotification(quest.notification_id ?? -1);
+      } catch (e) {
+        log(e.toString());
+      }
+
       // final expectedTimestamp = quest.expected_completion_time_date?.millisecondsSinceEpoch ?? unix;
       // final expiryTimestamp = expectedTimestamp + (3 * 60 * 60 * 1000);
 
@@ -376,6 +382,7 @@ class QuestsRepository {
       if (skipCard.quantity >= 1) {
         await updateQuestStatus(StatusEnum.skipped, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
+        await NotificationService().cancelNotification(quest.notification_id ?? -1);
 
         await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
               itemId: skipCard.itemId,

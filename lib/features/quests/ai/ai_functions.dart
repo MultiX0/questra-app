@@ -158,11 +158,14 @@ class AiFunctions {
         );
 
         final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
+        final questData = await _ref.read(questsRepositoryProvider).getQuestById(questId);
         NotificationService().scheduleDailyNotification(
-          quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
-          "Quest Reminder",
+          selectedTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
+          title: "Quest Reminder",
 
-          "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+          body:
+              "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+          notificationId: questData?.notification_id,
           // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
           // scheduledTime:
         );

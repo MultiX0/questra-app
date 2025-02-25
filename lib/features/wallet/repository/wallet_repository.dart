@@ -11,6 +11,7 @@ class WalletRepository {
 
   SupabaseClient get _client => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _walletTable => _client.from(TableNames.wallet);
+  SupabaseQueryBuilder get _rewardLogsTable => _client.from(TableNames.coins_reward_logs);
 
   Future<WalletModel> _insertWallet(String userId) async {
     try {
@@ -63,5 +64,16 @@ class WalletRepository {
       KeyNames.user_id,
       userId,
     );
+  }
+
+  Future<void> insertRewardLog(String userId) async {
+    try {
+      await _rewardLogsTable.insert({
+        KeyNames.user_id: userId,
+      });
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }

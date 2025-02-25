@@ -17,6 +17,7 @@ class QuestModel {
   final bool? isActive;
   final bool isCustom;
   final List images;
+  final int? notification_id;
   QuestModel({
     required this.id,
     required this.created_at,
@@ -30,6 +31,7 @@ class QuestModel {
     required this.images,
     required this.title,
     required this.isCustom,
+    this.notification_id,
     this.isActive,
     this.owned_title,
     this.completed_at,
@@ -54,6 +56,7 @@ class QuestModel {
       expected_completion_time_date: quest.expected_completion_time_date,
       isCustom: quest.isCustom,
       isActive: quest.isActive,
+      notification_id: quest.notification_id,
     );
   }
 
@@ -74,6 +77,7 @@ class QuestModel {
     List? images,
     bool? isActive,
     bool? isCustom,
+    int? notification_id,
   }) {
     return QuestModel(
       id: id ?? this.id,
@@ -93,6 +97,7 @@ class QuestModel {
       images: images ?? this.images,
       isActive: isActive ?? this.isActive,
       isCustom: isCustom ?? this.isCustom,
+      notification_id: notification_id ?? this.notification_id,
     );
   }
 
@@ -138,6 +143,7 @@ class QuestModel {
       images: List.from(map[KeyNames.images] ?? []),
       isCustom: map[KeyNames.is_custom] ?? false,
       isActive: map[KeyNames.is_active],
+      notification_id: map[KeyNames.notification_id] ?? -1,
     );
   }
 

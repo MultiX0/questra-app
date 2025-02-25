@@ -28,10 +28,10 @@ class AiModel {
         _deepinfra_api,
         options: _options,
         data: jsonEncode({
-          "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+          "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
           "messages": content,
           "temperature": 0.0,
-          "top_p": 0.9,
+          "top_p": 0.1,
           "top_k": 30,
           "max_tokens": maxTokens ?? 700,
           "frequency_penalty": 0.0,

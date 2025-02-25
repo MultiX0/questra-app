@@ -17,7 +17,7 @@ class DashboardQuestWidget extends ConsumerWidget {
     }
 
     final firstQuest = quests.first;
-    final duration = const Duration(seconds: 2);
+    final duration = const Duration(milliseconds: 1800);
 
     return SystemCard(
       duration: duration,
@@ -49,6 +49,8 @@ class DashboardQuestWidget extends ConsumerWidget {
                 ),
                 child: Center(
                   child: GlowText(
+                    blurRadius: 10,
+                    spreadRadius: 0.2,
                     glowColor: AppColors.whiteColor,
                     text: "Quest",
                     style: TextStyle(
@@ -69,6 +71,8 @@ class DashboardQuestWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GlowText(
+                blurRadius: 10,
+                spreadRadius: 0.2,
                 glowColor: AppColors.whiteColor,
                 text: "Quest Title:",
                 style: TextStyle(
@@ -100,6 +104,9 @@ class DashboardQuestWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GlowText(
+                blurRadius: 10,
+                spreadRadius: 0.2,
+                textAlign: TextAlign.start,
                 glowColor: AppColors.whiteColor,
                 text: "Description:",
                 style: TextStyle(
@@ -128,6 +135,9 @@ class DashboardQuestWidget extends ConsumerWidget {
             height: 14,
           ),
           GlowText(
+            textAlign: TextAlign.start,
+            blurRadius: 10,
+            spreadRadius: 0.2,
             glowColor: Colors.white54,
             text:
                 "Reward: +${firstQuest.xp_reward} XP, +${firstQuest.coin_reward} Coins${firstQuest.owned_title != null ? ", “${firstQuest.owned_title}” Title" : ''}",

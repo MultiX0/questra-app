@@ -5,11 +5,13 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/marketplace/controller/marketplace_controller.dart';
 import 'package:questra_app/features/marketplace/models/item_model.dart';
 import 'package:questra_app/features/marketplace/widgets/buy_item_widget.dart';
 import 'package:questra_app/features/marketplace/widgets/item_card_loading.dart';
+import 'package:questra_app/features/wallet/controller/wallet_controller.dart';
 import 'package:questra_app/imports.dart';
 
 class MarketplacePage extends ConsumerStatefulWidget {
@@ -57,6 +59,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
   }
 
   Widget buildBody() {
+    final isLoading = ref.watch(walletControllerProvider);
     final size = MediaQuery.sizeOf(context);
 
     if (selectedItem != null) {
@@ -66,6 +69,44 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(
+          height: size.width * .08,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: SystemCard(
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            child: Column(
+              children: [
+                Text(
+                  "Free Coins ?",
+                  style: TextStyle(
+                    fontFamily: AppFonts.header,
+                    fontSize: 18,
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "200 coins per AD",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.descriptionColor,
+                  ),
+                ),
+                const SizedBox(height: 15),
+                if (isLoading) ...[
+                  BeatLoader(),
+                ] else
+                  SystemCardButton(
+                      onTap: () {
+                        ref.read(walletControllerProvider.notifier).rewardCoins();
+                      },
+                      text: "Yes"),
+              ],
+            ),
+          ),
+        ),
         SizedBox(
           height: size.width * .08,
         ),

@@ -104,6 +104,7 @@ class _AboutPageState extends ConsumerState<AboutPage> {
 
   SystemCard buildCard(IconData icon, String text, String url) => SystemCard(
         onTap: () async {
+          ref.read(soundEffectsServiceProvider).playSystemButtonClick();
           await launchUrl(Uri.parse(url));
         },
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

@@ -26,7 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final duration = const Duration(seconds: 2);
+    final duration = const Duration(milliseconds: 800);
 
     return BackgroundWidget(
       child: Scaffold(
@@ -86,7 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(
                 height: 15,
               ),
-              UserDashboardWidget(),
+              UserDashboardWidget(duration: const Duration(milliseconds: 1400)),
               const SizedBox(
                 height: 15,
               ),

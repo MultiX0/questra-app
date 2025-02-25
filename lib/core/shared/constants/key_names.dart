@@ -74,4 +74,5 @@ class KeyNames {
   static const is_custom = 'is_custom';
   static const token = 'token';
   static const exception_ = 'exception_';
+  static const notification_id = 'notification_id';
 }

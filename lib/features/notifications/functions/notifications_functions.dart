@@ -33,12 +33,17 @@ class NotificationService {
     );
   }
 
-  Future<void> scheduleDailyNotification(DateTime selectedTime, String title, String body) async {
+  Future<void> scheduleDailyNotification({
+    required DateTime selectedTime,
+    required String title,
+    required String body,
+    int? notificationId,
+  }) async {
     final tz.TZDateTime scheduledTime = tz.TZDateTime.from(selectedTime, tz.local);
 
     try {
       await _notificationsPlugin.zonedSchedule(
-        Random.secure().nextInt(10000),
+        notificationId ?? Random.secure().nextInt(10000),
         title,
         body,
         scheduledTime,
@@ -64,5 +69,14 @@ class NotificationService {
         showWhen: false,
       ),
     );
+  }
+
+  Future<void> cancelNotification(int id) async {
+    try {
+      await _notificationsPlugin.cancel(id);
+      print("notification with id $id has been canceld");
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }

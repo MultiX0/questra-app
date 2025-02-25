@@ -33,7 +33,10 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
           title: "Profile",
           actions: [
             IconButton(
-              onPressed: () => Navs(context, ref).goToAboutUs(),
+              onPressed: () {
+                ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                Navs(context, ref).goToAboutUs();
+              },
               icon: Icon(LucideIcons.badge_info),
             ),
             if (kDebugMode) ...[

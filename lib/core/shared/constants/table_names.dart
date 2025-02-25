@@ -25,4 +25,5 @@ class TableNames {
   static const notification_tokens = 'notification_tokens';
   static const custom_quest_exceptions = 'custom_quest_exceptions';
   static const app_versions = 'app_versions';
+  static const coins_reward_logs = 'coins_reward_logs';
 }
