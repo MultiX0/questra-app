@@ -74,7 +74,7 @@ class NotificationService {
   Future<void> cancelNotification(int id) async {
     try {
       await _notificationsPlugin.cancel(id);
-      print("notification with id $id has been canceld");
+      // print("notification with id $id has been canceld");
     } catch (e) {
       throw Exception(e);
     }
