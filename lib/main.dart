@@ -26,6 +26,7 @@ Future<void> main() async {
 
   editChromeSystem();
   PreLoadIcons.loadIcons();
+
   runApp(ProviderScope(child: const App()));
 }
 

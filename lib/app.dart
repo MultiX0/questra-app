@@ -6,6 +6,7 @@ import 'package:questra_app/features/notifications/repository/notifications_repo
 import 'package:questra_app/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'features/lootbox/lootbox_manager.dart';
 import 'imports.dart';
 
 class App extends ConsumerStatefulWidget {
@@ -18,6 +19,8 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   @override
   void initState() {
+    startSessionTimer();
+
     WidgetsBinding.instance.addObserver(this);
     _updateAppStatus(true);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -99,6 +102,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _updateAppStatus(false);
+    stopSessionTimer();
     super.dispose();
   }
 
