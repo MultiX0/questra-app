@@ -1,11 +1,44 @@
+import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/imports.dart';
 
-class QuestCompletionWidget extends ConsumerWidget {
+class QuestCompletionWidget extends ConsumerStatefulWidget {
   const QuestCompletionWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _QuestCompletionWidgetState();
+}
+
+class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(soundEffectsServiceProvider).playCongrats();
+    });
+  }
+
+  void finish() {
+    final cachedLevel = ref.read(cachedUserLevelProvider);
     final quest = ref.read(viewQuestProvider)!;
+
+    if (cachedLevel == null) {
+      context.pop();
+      return;
+    }
+
+    final result = addXp(quest.xp_reward, {'xp': cachedLevel.xp, 'level': cachedLevel.level});
+    if ((result['level'] ?? 1) > cachedLevel.level) {
+      context.pushReplacement(Routes.leveledUpPage);
+      return;
+    }
+
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final quest = ref.read(viewQuestProvider)!;
+
     return SystemCard(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -62,9 +95,7 @@ class QuestCompletionWidget extends ConsumerWidget {
             height: 20,
           ),
           SystemCardButton(
-            onTap: () {
-              context.pop();
-            },
+            onTap: finish,
           ),
         ],
       ),

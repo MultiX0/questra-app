@@ -4,6 +4,8 @@ final soundEffectsServiceProvider = Provider<SoundEffectsService>((ref) {
   return SoundEffectsService();
 });
 
+bool activeLoop = false;
+
 class SoundEffectsService {
   void playEffect(String soundName) {
     FlameAudio.play(soundName);
@@ -19,5 +21,36 @@ class SoundEffectsService {
 
   Future<void> playMainButtonEffect() async {
     playEffect("default_btn.aac");
+  }
+
+  void playFirstTada() {
+    playEffect("tada_1.ogg");
+  }
+
+  void playCongrats() {
+    playEffect("congrats.ogg");
+  }
+
+  Future<AudioPlayer?> playBackgroundMusic() async {
+    // If already playing, don't start again
+    if (activeLoop) return null;
+
+    // Set flag before starting playback to prevent race conditions
+    activeLoop = true;
+
+    // Use loopLongAudio for background music that needs to loop continuously
+    final audioPlayer = await FlameAudio.loopLongAudio('game-music-loop-6-144641.ogg');
+
+    // Add error handling
+    audioPlayer.onPlayerComplete.listen((_) {
+      activeLoop = false;
+    });
+
+    return audioPlayer;
+  }
+
+  void stopBackgroundMusic(AudioPlayer audioPlayer) {
+    audioPlayer.stop();
+    activeLoop = false;
   }
 }

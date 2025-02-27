@@ -116,7 +116,7 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
         ),
       );
 
-  Column buildBody(QuestModel quest) {
+  Widget buildBody(QuestModel quest) {
     final isLoading = ref.watch(questsControllerProvider);
 
     return Column(

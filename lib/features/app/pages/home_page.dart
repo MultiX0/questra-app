@@ -15,7 +15,10 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkDevice());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkDevice();
+      // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
+    });
     super.initState();
   }
 
