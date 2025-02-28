@@ -1,0 +1,1 @@
+/home/multix/questra-app/build/app/intermediates/cxx/Debug/204t426f/obj/x86_64

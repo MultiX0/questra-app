@@ -46,7 +46,7 @@ class LootboxModel {
     return <String, dynamic>{
       // 'id': id,
       KeyNames.user_id: userId,
-      'lastLootBoxTime': lastLootBoxTime.toIso8601String(),
+      KeyNames.last_lootbox_time: lastLootBoxTime.toIso8601String(),
       KeyNames.streak: streak,
       KeyNames.total_actions: totalActions,
       KeyNames.session_time: sessionTime,

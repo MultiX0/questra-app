@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
+import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
@@ -32,10 +33,21 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         prefs.setString(KeyNames.user_id, userId);
         handleFCMInsert(userId);
         handleAppPackage();
+        handleLootBoxes(userId);
+
         await NotificationsRepository.insertLog(userId);
       }
     });
     super.initState();
+  }
+
+  void handleLootBoxes(String userId) async {
+    final lootBoxManager = LootBoxManager();
+    bool hasUntakenLootBox = await lootBoxManager.unTakenLootBox(userId);
+    if (hasUntakenLootBox) {
+      ref.read(hasLootBoxProvider.notifier).state = true;
+      return;
+    }
   }
 
   void handleAppPackage() async {
@@ -109,6 +121,48 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _updateAppStatus(state == AppLifecycleState.resumed);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App is visible and running
+        startSessionTimer();
+        updateUserOnlineStatus(true);
+
+        log("App resumed");
+        break;
+      case AppLifecycleState.inactive:
+        updateUserOnlineStatus(false);
+
+        // App is in an inactive state (e.g., in process of transitioning to foreground/background)
+        // May want to start preparing to pause operations
+        log("App inactive");
+        break;
+      case AppLifecycleState.paused:
+        updateUserOnlineStatus(false);
+        stopSessionTimer();
+        // Save session time to Supabase
+        _saveSessionTime();
+        log("App paused");
+        break;
+      case AppLifecycleState.detached:
+        // App is detached from view hierarchy (typically being killed)
+        updateUserOnlineStatus(false);
+
+        stopSessionTimer();
+        _saveSessionTime();
+        log("App detached");
+        break;
+      default:
+        break;
+    }
+  }
+
+  void _saveSessionTime() async {
+    final lootBoxManager = LootBoxManager();
+    await lootBoxManager.saveSessionTime();
+  }
+
+  void updateUserOnlineStatus(bool online) {
+    ref.read(profileRepositoryProvider).updateOnlineStatus(online);
   }
 
   Future<void> _updateAppStatus(bool isForeground) async {

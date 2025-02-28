@@ -53,4 +53,8 @@ class SoundEffectsService {
     audioPlayer.stop();
     activeLoop = false;
   }
+
+  void playCoinsRecived() {
+    playEffect("coins_recived.ogg");
+  }
 }

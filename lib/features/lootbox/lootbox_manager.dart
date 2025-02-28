@@ -36,6 +36,22 @@ class LootBoxManager {
     }
   }
 
+  Future<void> saveSessionTime() async {
+    try {
+      final user = _client.auth.currentUser;
+      if (user == null) {
+        throw 'the user is null';
+      }
+
+      await _lootBoxTable
+          .update({KeyNames.session_time: sessionTimeInSeconds})
+          .eq(KeyNames.user_id, user.id);
+    } catch (e) {
+      dev.log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<LootboxModel> fetchUserLootBoxData() async {
     try {
       final user = _client.auth.currentUser;
@@ -117,10 +133,10 @@ class LootBoxManager {
 
     if (lootBoxDrops) {
       // Update loot box time in Supabase
-      await supabase.from('loot_boxes').update({
-        KeyNames.last_lootbox_time: now.toIso8601String(),
-        KeyNames.hasTaken: false,
-      }).eq('user_id', user.id);
+      await supabase
+          .from('loot_boxes')
+          .update({KeyNames.last_lootbox_time: now.toIso8601String(), KeyNames.hasTaken: false})
+          .eq('user_id', user.id);
 
       sendNotification("System", "🎉 NEW Loot Box Dropped!");
 

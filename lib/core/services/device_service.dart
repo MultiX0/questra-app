@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:android_id/android_id.dart';
+import 'package:questra_app/core/services/android_id_service.dart';
 import 'package:questra_app/imports.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

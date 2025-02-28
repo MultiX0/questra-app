@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/device_service.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
+import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -13,11 +17,20 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  late Timer _timer;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkDevice();
       // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
+      _timer = Timer.periodic(const Duration(minutes: 10), (_) async {
+        final lootBoxManager = LootBoxManager();
+
+        bool lootBoxDropped = await lootBoxManager.checkLootBoxDrop();
+        if (lootBoxDropped) {
+          ref.read(hasLootBoxProvider.notifier).state = true;
+        }
+      });
     });
     super.initState();
   }
@@ -28,22 +41,25 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   @override
+  void dispose() {
+    _timer.cancel();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final duration = const Duration(milliseconds: 800);
 
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TheAppBar(
-          title: 'Questra',
-        ),
+        appBar: TheAppBar(title: 'Questra'),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
             children: [
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               SystemCard(
                 duration: duration,
                 onTap: () {
@@ -68,9 +84,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ),
                       // glowColor: AppColors.whiteColor,
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                     GlowText(
                       blurRadius: 20,
                       spreadRadius: 0.5,
@@ -86,13 +100,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               UserDashboardWidget(duration: const Duration(milliseconds: 1400)),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               DashboardQuestWidget(),
             ],
           ),
