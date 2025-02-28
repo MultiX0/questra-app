@@ -36,6 +36,15 @@ class LootBoxManager {
     }
   }
 
+  Future<void> takeLootBox(String userId) async {
+    try {
+      await _lootBoxTable.update({KeyNames.hasTaken: true}).eq(KeyNames.user_id, userId);
+    } catch (e) {
+      dev.log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<void> saveSessionTime() async {
     try {
       final user = _client.auth.currentUser;
