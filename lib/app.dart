@@ -42,6 +42,9 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   }
 
   void handleLootBoxes(String userId) async {
+    final user = ref.read(authStateProvider);
+    if (user == null) return;
+    if (user.username.isEmpty) return;
     final lootBoxManager = LootBoxManager();
     bool hasUntakenLootBox = await lootBoxManager.unTakenLootBox(userId);
     if (hasUntakenLootBox) {
