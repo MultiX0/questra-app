@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/lootbox/controller/lootbox_controller.dart';
 import 'package:questra_app/features/lootbox/utils/random_reward.dart';
@@ -87,7 +88,10 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
 
                   width: 200,
                   height: 200,
-                  child: GestureDetector(onTap: tapped, child: Rive(artboard: _riveArtboard!)),
+                  child: GestureDetector(
+                    onTap: tapped,
+                    child: Rive(artboard: _riveArtboard!).bounceInDown(from: 0),
+                  ),
                 ),
               )
             else ...[
@@ -114,7 +118,7 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                         fontSize: 16,
                         color: AppColors.primary,
                       ),
-                    ),
+                    ).tada(duration: const Duration(milliseconds: 1200)),
                   ),
                   const SizedBox(height: 10),
                   AnimatedOpacity(

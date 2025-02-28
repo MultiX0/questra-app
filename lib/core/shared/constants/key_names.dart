@@ -80,4 +80,5 @@ class KeyNames {
   static const total_actions = 'total_actions';
   static const session_time = 'session_time';
   static const hasTaken = 'has_taken';
+  static const religion = 'religion';
 }

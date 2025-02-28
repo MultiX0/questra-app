@@ -44,9 +44,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
   SupabaseClient get _supabase => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _devicesTable => _supabase.from(TableNames.player_devices);
 
-  AuthNotifier({required Ref ref})
-      : _ref = ref,
-        super(null) {
+  AuthNotifier({required Ref ref}) : _ref = ref, super(null) {
     _initializeAuth();
   }
 
@@ -54,14 +52,15 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     if (_isInitialized) return;
     _isInitialized = true;
 
-    _authStateSubscription =
-        _supabase.auth.onAuthStateChange.debounceTime(const Duration(milliseconds: 400)).listen(
-      _handleAuthStateChange,
-      onError: (error) {
-        log('AuthState error: $error');
-        _ref.read(isLoggedInProvider.notifier).state = false;
-      },
-    );
+    _authStateSubscription = _supabase.auth.onAuthStateChange
+        .debounceTime(const Duration(milliseconds: 400))
+        .listen(
+          _handleAuthStateChange,
+          onError: (error) {
+            log('AuthState error: $error');
+            _ref.read(isLoggedInProvider.notifier).state = false;
+          },
+        );
   }
 
   void _handleAuthStateChange(AuthState authState) {
@@ -82,7 +81,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.players)
           .stream(primaryKey: [KeyNames.id])
           .eq(KeyNames.id, userId)
-          .debounceTime(const Duration(milliseconds: 800)),
+          .debounceTime(const Duration(milliseconds: 500)),
       _supabase
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
@@ -92,7 +91,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.wallet)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(const Duration(seconds: 1)),
+          .debounceTime(const Duration(milliseconds: 800)),
     ]).listen(
       (events) => _handleUserDataUpdate(events, userId),
       onError: (error) {
@@ -147,14 +146,17 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     var user = UserModel.fromMap(userEvent);
 
-    log("active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}");
+    log(
+      "active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}",
+    );
 
     // Fetch additional user data
     final birthDate = await _ref.read(profileRepositoryProvider).getUserBirthDate(userId);
 
-    final activeTitle = userEvent[KeyNames.active_title] != null
-        ? await _ref.read(profileRepositoryProvider).getActiveTitle(user.activeTitleId!)
-        : null;
+    final activeTitle =
+        userEvent[KeyNames.active_title] != null
+            ? await _ref.read(profileRepositoryProvider).getActiveTitle(user.activeTitleId!)
+            : null;
 
     await _ref.read(rankingFunctionsProvider).refreshRanking(userId);
 
@@ -176,8 +178,9 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     // Only fetch preferences and goals if they're not already present
     if (state?.goals == null || state?.user_preferences == null) {
-      final prefs =
-          await _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId);
+      final prefs = await _ref
+          .read(userPreferencesControllerProvider.notifier)
+          .getUserPreferences(userId);
       final goals = await _ref.read(goalsRepositoryProvider).getUserGoals(userId);
       _ref.read(playerGoalsProvider).clear();
       _ref.read(playerGoalsProvider).addAll(goals);
@@ -189,10 +192,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         user_preferences: prefs,
       );
     } else {
-      user = user.copyWith(
-        birth_date: DateTime.tryParse(birthDate),
-        activeTitle: activeTitle,
-      );
+      user = user.copyWith(birth_date: DateTime.tryParse(birthDate), activeTitle: activeTitle);
     }
 
     return user;
@@ -209,7 +209,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.level == next.level &&
         current.wallet == next.wallet &&
         current.avatar == next.avatar &&
-        current.activeTitleId == next.activeTitleId;
+        current.activeTitleId == next.activeTitleId &&
+        current.religion == next.religion;
   }
 
   void _retryUserDataStream(String userId) {
@@ -315,10 +316,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         const androidIdPlugin = AndroidId();
         final androidId = await androidIdPlugin.getId();
         if (androidId != null) {
-          await _devicesTable.insert({
-            KeyNames.device_id: androidId,
-            KeyNames.user_id: user.id,
-          });
+          await _devicesTable.insert({KeyNames.device_id: androidId, KeyNames.user_id: user.id});
         }
       }
 
@@ -333,8 +331,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
   Future<bool> availableUsername(String username) async {
     try {
-      final data =
-          await _supabase.from(TableNames.players).select().eq(KeyNames.username, username.trim());
+      final data = await _supabase
+          .from(TableNames.players)
+          .select()
+          .eq(KeyNames.username, username.trim());
       return data.isEmpty;
     } catch (e) {
       log('availableUsername error: $e');

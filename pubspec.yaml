@@ -79,6 +79,7 @@ dependencies:
       url: https://github.com/fluttercommunity/flutter_workmanager.git
       path: workmanager
       ref: main
+  animate_do: ^4.2.0
 
 dev_dependencies:
   flutter_test:

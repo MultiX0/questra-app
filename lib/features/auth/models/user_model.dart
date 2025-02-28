@@ -1,3 +1,4 @@
+import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/core/shared/constants/key_names.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/leveling/models/levels_model.dart';
@@ -23,6 +24,7 @@ class UserModel {
   final PlayerTitleModel? activeTitle;
   final String? activeTitleId;
   final LevelsModel? level;
+  final String? religion;
   final WalletModel? wallet;
 
   UserModel({
@@ -40,6 +42,7 @@ class UserModel {
     this.activeTitleId,
     this.level,
     this.wallet,
+    this.religion,
   });
 
   UserModel copyWith({
@@ -57,6 +60,7 @@ class UserModel {
     WalletModel? wallet,
     String? activeTitleId,
     PlayerTitleModel? activeTitle,
+    String? religion,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -73,6 +77,7 @@ class UserModel {
       wallet: wallet ?? this.wallet,
       activeTitle: activeTitle ?? this.activeTitle,
       activeTitleId: activeTitleId ?? this.activeTitleId,
+      religion: religion ?? this.religion,
     );
   }
 
@@ -85,6 +90,7 @@ class UserModel {
       KeyNames.is_online: is_online,
       KeyNames.avatar: (avatar ?? "").isNotEmpty ? avatar : _defaultAvatar,
       KeyNames.gender: gender.toLowerCase(),
+      KeyNames.religion: religion?.toLowerCase(),
     };
   }
 
@@ -97,7 +103,9 @@ class UserModel {
       is_online: map[KeyNames.is_online] ?? false,
       avatar: map[KeyNames.avatar] ?? _defaultAvatar,
       gender: map[KeyNames.gender] ?? "male",
-      activeTitleId: map['active_title'],
+      activeTitleId: map[KeyNames.active_title],
+      religion:
+          map[KeyNames.religion] != null ? stringToReligion(map[KeyNames.religion])?.name : null,
     );
   }
 
