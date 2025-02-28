@@ -1,0 +1,2 @@
+/home/multix/questra-app/android/app/.cxx/Debug/204t426f/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/multix/questra-app/android/app/.cxx/Debug/204t426f/armeabi-v7a/CMakeFiles/rebuild_cache.dir

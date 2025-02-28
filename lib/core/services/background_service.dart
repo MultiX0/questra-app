@@ -30,9 +30,10 @@ void callbackDispatcher() {
       final failed = "Background task failed: $e";
       log(failed);
       await ExceptionService.insertException(
-          path: '/background_service',
-          error: failed,
-          userId: Supabase.instance.client.auth.currentUser?.id ?? "null");
+        path: '/background_service',
+        error: failed,
+        userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+      );
 
       // await sendNotification("Background task failed", e.toString());
 
@@ -56,7 +57,10 @@ Future<void> _initializeSupabase() async {
       anonKey: _key,
       debug: kDebugMode,
       authOptions: FlutterAuthClientOptions(
-          localStorage: secureStorage, detectSessionInUri: true, autoRefreshToken: true),
+        localStorage: secureStorage,
+        detectSessionInUri: true,
+        autoRefreshToken: true,
+      ),
     );
   } catch (e) {
     log('Failed to initialize Supabase: $e');
@@ -72,8 +76,10 @@ Future<void> _sendSystemMessage() async {
 
     final userId = session.user.id;
 
-    final data = await _client
-        .rpc(FunctionNames.get_today_notifications_count, params: {'p_user_id': userId});
+    final data = await _client.rpc(
+      FunctionNames.get_today_notifications_count,
+      params: {'p_user_id': userId},
+    );
 
     if (data is int) {
       if (data > 3) {
@@ -154,9 +160,7 @@ Future<void> sendNotification(String body, String title) async {
     final FlutterLocalNotificationsPlugin notifications = FlutterLocalNotificationsPlugin();
 
     await notifications.initialize(
-      const InitializationSettings(
-        android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      ),
+      const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')),
     );
 
     await notifications.show(

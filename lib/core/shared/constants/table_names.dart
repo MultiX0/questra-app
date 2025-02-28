@@ -26,4 +26,5 @@ class TableNames {
   static const custom_quest_exceptions = 'custom_quest_exceptions';
   static const app_versions = 'app_versions';
   static const coins_reward_logs = 'coins_reward_logs';
+  static const loot_boxes = 'loot_boxes';
 }

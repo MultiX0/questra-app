@@ -26,6 +26,7 @@ Future<void> main() async {
 
   editChromeSystem();
   PreLoadIcons.loadIcons();
+
   runApp(ProviderScope(child: const App()));
 }
 
@@ -34,10 +35,7 @@ Future<void> initNotifications() async {
 }
 
 void initWorkManager() {
-  Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: false,
-  );
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
   Workmanager().registerPeriodicTask(
     "questCheckTask",
@@ -82,14 +80,18 @@ Future<void> _supabaseInit() async {
 }
 
 void editChromeSystem() {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: Colors.transparent,
-    systemNavigationBarIconBrightness: Brightness.light,
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-  ));
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-      overlays: [SystemUiOverlay.top, SystemUiOverlay.top]);
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.light,
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.manual,
+    overlays: [SystemUiOverlay.top, SystemUiOverlay.top],
+  );
 }
 
 Future<void> _firebaseInit() async {

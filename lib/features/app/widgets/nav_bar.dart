@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:questra_app/core/providers/rewards_providers.dart';
+import 'package:questra_app/features/lootbox/pages/lootbox_page.dart' show LootboxPage;
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
@@ -32,58 +34,55 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
   @override
   Widget build(BuildContext context) {
     // return NewVersionPage();
+    final hasLootBox = ref.watch(hasLootBoxProvider);
 
-    return Scaffold(
-        extendBody: true,
-        body: BackgroundWidget(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: widget.navigationShell,
+    return Stack(
+      children: [
+        Scaffold(
+          extendBody: true,
+          body: BackgroundWidget(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: widget.navigationShell,
+            ),
+          ),
+          bottomNavigationBar: LayoutBuilder(
+            builder: (context, constraints) {
+              final screenWidth = constraints.maxWidth;
+              double navBarHeight;
+
+              if (screenWidth < 600) {
+                // Mobile
+                navBarHeight = 60;
+              } else if (screenWidth < 1024) {
+                // Tablet
+                navBarHeight = 90;
+              } else if (screenWidth < 1440) {
+                // Laptop
+                navBarHeight = 100;
+              } else {
+                // Desktop
+                navBarHeight = 120;
+              }
+              return CupertinoTabBar(
+                height: navBarHeight,
+                backgroundColor: navigationBarColor.withValues(alpha: .15),
+                currentIndex: widget.navigationShell.currentIndex,
+                onTap: (int index) => onTap(context, index),
+                activeColor: HexColor('7AD5FF'),
+                inactiveColor: navigationBarColor.withValues(alpha: .25),
+                items: [
+                  BottomNavigationBarItem(icon: Icon(LucideIcons.book_text)),
+                  BottomNavigationBarItem(icon: Icon(LucideIcons.diamond)),
+                  BottomNavigationBarItem(icon: Icon(LucideIcons.crown)),
+                  BottomNavigationBarItem(icon: Icon(LucideIcons.user)),
+                ],
+              );
+            },
           ),
         ),
-        bottomNavigationBar: LayoutBuilder(
-          builder: (context, constraints) {
-            final screenWidth = constraints.maxWidth;
-            double navBarHeight;
-
-            if (screenWidth < 600) {
-              // Mobile
-              navBarHeight = 60;
-            } else if (screenWidth < 1024) {
-              // Tablet
-              navBarHeight = 90;
-            } else if (screenWidth < 1440) {
-              // Laptop
-              navBarHeight = 100;
-            } else {
-              // Desktop
-              navBarHeight = 120;
-            }
-            return CupertinoTabBar(
-              height: navBarHeight,
-              backgroundColor: navigationBarColor.withValues(alpha: .15),
-              currentIndex: widget.navigationShell.currentIndex,
-              onTap: (int index) => onTap(context, index),
-              activeColor: HexColor('7AD5FF'),
-              inactiveColor: navigationBarColor.withValues(alpha: .25),
-              items: [
-                BottomNavigationBarItem(
-                  icon: Icon(LucideIcons.book_text),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(LucideIcons.diamond),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(LucideIcons.crown),
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(
-                    LucideIcons.user,
-                  ),
-                ),
-              ],
-            );
-          },
-        ));
+        if (hasLootBox) LootboxPage(),
+      ],
+    );
   }
 }

@@ -30,6 +30,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        flutterEngine.plugins.add(AndroidIdPlugin())
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "appVersionChannel")
             .setMethodCallHandler { call, result ->
                 if (call.method == "getAppInfo") {

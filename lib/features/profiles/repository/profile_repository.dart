@@ -28,8 +28,10 @@ class ProfileRepository {
       await Future.wait([
         _ref.read(userPreferencesRepositoryProvider).insertPreferences(user.user_preferences!),
         _ref.read(goalsRepositoryProvider).insertGoals(goals: user.goals!),
-        _datesTable.insert(
-            {KeyNames.birth_date: user.birth_date?.toIso8601String(), KeyNames.id: user.id}),
+        _datesTable.insert({
+          KeyNames.birth_date: user.birth_date?.toIso8601String(),
+          KeyNames.id: user.id,
+        }),
       ]);
       return true;
     } catch (e) {
@@ -61,8 +63,11 @@ class ProfileRepository {
     }
   }
 
-  Future<String> insertTitle(
-      {required String user_id, required String title, required String questId}) async {
+  Future<String> insertTitle({
+    required String user_id,
+    required String title,
+    required String questId,
+  }) async {
     try {
       final id = uuid.v4();
       final PlayerTitleModel titleModel = PlayerTitleModel(
@@ -126,6 +131,17 @@ class ProfileRepository {
   Future<void> updateAvatar({required String avatar, required String userId}) async {
     try {
       await _profilesTable.update({KeyNames.avatar: avatar}).eq(KeyNames.id, userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> updateOnlineStatus(bool isOnline) async {
+    try {
+      final _user = _ref.read(authStateProvider);
+      if (_user == null) return;
+      await _profilesTable.update({KeyNames.is_online: isOnline}).eq(KeyNames.id, _user.id);
     } catch (e) {
       log(e.toString());
       rethrow;

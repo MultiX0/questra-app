@@ -75,4 +75,9 @@ class KeyNames {
   static const token = 'token';
   static const exception_ = 'exception_';
   static const notification_id = 'notification_id';
+  static const last_lootbox_time = 'last_lootbox_time';
+  static const streak = 'streak';
+  static const total_actions = 'total_actions';
+  static const session_time = 'session_time';
+  static const hasTaken = 'has_taken';
 }

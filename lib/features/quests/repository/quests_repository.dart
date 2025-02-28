@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
@@ -239,6 +240,8 @@ class QuestsRepository {
         "xp": level.xp,
         "level": level.level,
       });
+
+      _ref.read(cachedUserLevelProvider.notifier).state = user?.level;
 
       level = level.copyWith(xp: levelData['xp'], level: levelData['level']);
       await _updateUserLevel(user!.id, level);

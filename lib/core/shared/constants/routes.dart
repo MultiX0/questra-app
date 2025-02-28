@@ -23,4 +23,5 @@ class Routes {
   static const addCustomQuestPage = '/addCustomQuestPage';
   static const settingsPage = '/settingsPage';
   static const aboutUsPage = '/aboutUsPage';
+  static const leveledUpPage = '/leveledUpPage';
 }

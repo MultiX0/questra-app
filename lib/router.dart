@@ -8,6 +8,7 @@ import 'package:questra_app/features/goals/pages/player_goals_page.dart';
 import 'package:questra_app/features/inventory/pages/inventory_page.dart';
 import 'package:questra_app/features/legal/privacy_policy.dart';
 import 'package:questra_app/features/legal/terms_of_use.dart';
+import 'package:questra_app/features/leveling/pages/leveled_up_page.dart';
 import 'package:questra_app/features/marketplace/pages/marketplace_page.dart';
 import 'package:questra_app/features/onboarding/pages/first_page.dart';
 import 'package:questra_app/features/onboarding/pages/onboarding_controller.dart';
@@ -203,6 +204,11 @@ final routerProvider = Provider<GoRouter>(
           fade: true,
           path: Routes.aboutUsPage,
           child: AboutPage(),
+        ),
+        buildRoute(
+          fade: true,
+          path: Routes.leveledUpPage,
+          child: LeveledUpPage(),
         ),
       ],
     );
