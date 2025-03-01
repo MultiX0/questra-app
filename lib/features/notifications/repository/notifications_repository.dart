@@ -90,7 +90,8 @@ class NotificationsRepository {
         nextCheckTime = DateTime.fromMillisecondsSinceEpoch(nextCheckMillis).toUtc();
       }
 
-      final shouldGenerate = nextCheckTime == null ||
+      final shouldGenerate =
+          nextCheckTime == null ||
           nextCheckMillis == 0 ||
           now.isAfter(nextCheckTime) ||
           now.isAtSameMomentAs(nextCheckTime);
@@ -132,9 +133,13 @@ class NotificationsRepository {
 
   static Future<void> _storeFallbackNotification(SharedPreferences prefs) async {
     await prefs.setString(
-        "notification", "🚀 Ready for your next adventure? Tap to continue your journey!");
+      "notification",
+      "🚀 Ready for your next adventure? Tap to continue your journey!",
+    );
     await prefs.setInt(
-        "next_perfect_time", DateTime.now().toUtc().add(Duration(hours: 2)).millisecondsSinceEpoch);
+      "next_perfect_time",
+      DateTime.now().toUtc().add(Duration(hours: 2)).millisecondsSinceEpoch,
+    );
   }
 
   static bool _parseSentNow(dynamic value) {
@@ -188,13 +193,14 @@ class NotificationsRepository {
         .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
 
     final quests = data.map((q) => QuestModel.fromMap(q)).toList();
-    final cleanedData = quests.map((quest) {
-      return {
-        KeyNames.title: quest.title,
-        KeyNames.description: quest.description,
-        KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
-      };
-    }).toList();
+    final cleanedData =
+        quests.map((quest) {
+          return {
+            KeyNames.title: quest.title,
+            KeyNames.description: quest.description,
+            KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+          };
+        }).toList();
 
     return cleanedData;
   }
@@ -207,20 +213,26 @@ class NotificationsRepository {
       final failedQuests = await _getFailedQuests(userId);
       final lastNotifications = await _getLastNotificatons(userId);
 
-      String prompt = '''
-        current_time: ${now.toIso8601String()},
-        last_user_open_app: ${logsList.map((l) => l.loggedAt).toList()},
-        in_progress_quests: ${onGoingQuests.map((quest) => quest.toString())},
-        failed_quests: ${failedQuests.map((quest) => quest.toString())},
-        current_user_time: ${now.toUtc().toIso8601String()},
-        last_notifications: ${lastNotifications.toSet()},
-        ''';
+      String prompt = jsonEncode({
+        "current_time": now.toIso8601String(),
+        "last_user_open_app": logsList.map((l) => l.loggedAt.toIso8601String()).toList(),
+        "in_progress_quests": onGoingQuests.map((quest) => quest.toString()).toList(),
+        "failed_quests": failedQuests.map((quest) => quest.toString()).toList(),
+        "current_user_time": now.toUtc().toIso8601String(),
+        "last_notifications": lastNotifications.toList(),
+      });
+
+      final String systemInstructions = lifeImprovementSystemPrompts
+          .map((prompt) => prompt["content"])
+          .join("\n\n");
 
       final res = await AiNotifications.makeAiResponse(
+        temp: 0.7,
+        topP: 0.9,
         maxTokens: 500,
         content: [
+          {"role": "system", "content": systemInstructions},
           {"role": "user", "content": prompt},
-          ...lifeImprovementSystemPrompts,
         ],
       );
 
@@ -239,13 +251,14 @@ class NotificationsRepository {
           .eq(KeyNames.user_id, user_id);
 
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
-      final cleanedData = quests.map((quest) {
-        return {
-          KeyNames.title: quest.title,
-          KeyNames.description: quest.description,
-          KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
-        };
-      }).toList();
+      final cleanedData =
+          quests.map((quest) {
+            return {
+              KeyNames.title: quest.title,
+              KeyNames.description: quest.description,
+              KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+            };
+          }).toList();
 
       return cleanedData;
     } catch (e) {
@@ -276,7 +289,10 @@ class NotificationsRepository {
     } catch (e) {
       log(e.toString());
       await ExceptionService.insertException(
-          path: "/notifications_repository", error: e.toString(), userId: userId);
+        path: "/notifications_repository",
+        error: e.toString(),
+        userId: userId,
+      );
       rethrow;
     }
   }

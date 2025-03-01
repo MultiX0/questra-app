@@ -89,4 +89,7 @@ class KeyNames {
   static const event_id = 'event_id';
   static const min_upload_image_count = 'min_upload_image_count';
   static const break_duration = 'break_duration';
+  static const is_banned = 'is_banned';
+  static const reporter_id = 'reporter_id';
+  static const reason = 'reason';
 }

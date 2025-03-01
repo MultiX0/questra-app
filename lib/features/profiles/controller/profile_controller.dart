@@ -74,7 +74,7 @@ class ProfileController extends StateNotifier<bool> {
       for (final image in _images) {
         final link = await UploadStorage.uploadImages(
           image: image,
-          path: "$userId/avatar/$userId",
+          path: "users/$userId/avatar/$userId",
           quiality: 40,
         );
         links.add(link);

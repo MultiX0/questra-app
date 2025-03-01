@@ -10,14 +10,13 @@ final _deepinfra_api = dotenv.env['DEEPINFRA_API'] ?? "";
 class AiNotifications {
   static final dio = Dio();
   static final _options = Options(
-    headers: {
-      'Authorization': 'Bearer $_apiKey',
-      'Content-Type': 'application/json',
-    },
+    headers: {'Authorization': 'Bearer $_apiKey', 'Content-Type': 'application/json'},
   );
 
   static Future<String> makeAiResponse({
     int? maxTokens,
+    double? temp,
+    double? topP,
     required List<Map<String, dynamic>> content,
   }) async {
     try {
@@ -27,8 +26,8 @@ class AiNotifications {
         data: jsonEncode({
           "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
           "messages": content,
-          "temperature": 0.0,
-          "top_p": 0.7,
+          "temperature": temp ?? 0.0,
+          "top_p": topP ?? 0.7,
           "top_k": 30,
           "max_tokens": maxTokens ?? 700,
           "frequency_penalty": 0.0,

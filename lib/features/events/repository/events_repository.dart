@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/features/events/models/event_model.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
+import 'package:questra_app/features/events/models/view_quest_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -16,6 +17,7 @@ class EventsRepository {
   SupabaseQueryBuilder get _eventPlayersTable => _client.from(TableNames.event_players);
   SupabaseQueryBuilder get _eventQuestsTable => _client.from(TableNames.event_quests);
   SupabaseQueryBuilder get _eventQuestImagesTable => _client.from(TableNames.event_quest_images);
+  SupabaseQueryBuilder get _eventQuestReportsTable => _client.from(TableNames.event_player_reports);
 
   SupabaseQueryBuilder get _eventFinishQuestsLogs =>
       _client.from(TableNames.event_quest_finish_logs);
@@ -67,6 +69,10 @@ class EventsRepository {
               .eq(KeyNames.event_id, eventId)
               .maybeSingle();
 
+      if (data != null && data[KeyNames.is_banned] as bool) {
+        throw "You have been banned from participating in this event.";
+      }
+
       return data != null;
     } catch (e) {
       log(e.toString());
@@ -74,30 +80,47 @@ class EventsRepository {
     }
   }
 
-  Future<void> uploadEventPlayerQuestImages({
+  Future<List<int>> uploadEventPlayerQuestImages({
     required List<String> images,
     required String userId,
     required int eventId,
     required String questId,
   }) async {
     try {
+      List<int> _ids = [];
       for (final image in images) {
-        await _eventQuestImagesTable.insert({
-          KeyNames.quest_id: questId,
-          KeyNames.user_id: userId,
-          KeyNames.event_id: eventId,
-          KeyNames.image_url: image,
-        });
+        final data = await _eventQuestImagesTable
+            .insert({
+              KeyNames.quest_id: questId,
+              KeyNames.user_id: userId,
+              KeyNames.event_id: eventId,
+              KeyNames.image_url: image,
+            })
+            .select("*");
+
+        if (data.isNotEmpty) {
+          _ids.add(data.first[KeyNames.id]);
+        }
       }
+
+      return _ids;
     } catch (e) {
       log(e.toString());
       rethrow;
     }
   }
 
-  Future<void> finishQuest({required EventQuestModel quest, required UserModel user}) async {
+  Future<void> finishQuest({
+    required EventQuestModel quest,
+    required UserModel user,
+    required List<int> imageIds,
+  }) async {
     try {
-      await _eventFinishQuestsLogs.insert({KeyNames.user_id: user.id, KeyNames.quest_id: quest.id});
+      await _eventFinishQuestsLogs.insert({
+        KeyNames.user_id: user.id,
+        KeyNames.quest_id: quest.id,
+        KeyNames.images: imageIds,
+      });
       _ref.read(cachedUserLevelProvider.notifier).state = user.level;
       await _ref
           .read(walletRepositoryProvider)
@@ -152,5 +175,59 @@ class EventsRepository {
       log(e.toString());
       rethrow;
     }
+  }
+
+  Future<void> insertQuestReport({
+    required String reporterId,
+    required String userId,
+    required String questId,
+    required String reason,
+  }) async {
+    try {
+      await _eventQuestReportsTable.insert({
+        KeyNames.user_id: userId,
+        KeyNames.reporter_id: reporterId,
+        KeyNames.quest_id: questId,
+        KeyNames.reason: reason,
+      });
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<String>> getQuestCompletionImages({
+    required String userId,
+    required String questId,
+  }) async {
+    try {
+      final data = await _eventQuestImagesTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.quest_id, questId);
+
+      final images = data.map((d) => d[KeyNames.image_url].toString()).toList();
+      return images;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<ViewEventQuestModel>> getPlayerSubmissions({
+    required String userId,
+    required String questId,
+  }) async {
+    final data = await _eventFinishQuestsLogs.select('*,${TableNames.event_quests}(*)');
+    final viewList =
+        data.map((d) {
+          return ViewEventQuestModel(
+            userId: userId,
+            questId: questId,
+            questDescription: d[TableNames.event_quests][KeyNames.description],
+            questTitle: d[TableNames.event_quests][KeyNames.title],
+          );
+        }).toList();
+    return viewList;
   }
 }

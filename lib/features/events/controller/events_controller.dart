@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
+import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/events/models/event_model.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
 import 'package:questra_app/features/events/repository/events_repository.dart';
@@ -64,6 +65,7 @@ class EventsController extends StateNotifier<bool> {
   }) async {
     try {
       state = true;
+      await _ref.read(adsServiceProvider.notifier).showAd();
       await _repo.registerToEvent(userId: userId, eventId: eventId);
       CustomToast.systemToast("✅ Registration Successful!", systemMessage: true);
 
@@ -94,13 +96,14 @@ class EventsController extends StateNotifier<bool> {
       }
 
       final imageLinks = await _uploadImages(eventId: eventId, questId: quest.id);
-      await _repo.uploadEventPlayerQuestImages(
+      final ids = await _repo.uploadEventPlayerQuestImages(
         images: imageLinks,
         userId: user.id,
         eventId: eventId,
         questId: quest.id,
       );
-      await _repo.finishQuest(quest: quest, user: user);
+      await _repo.finishQuest(quest: quest, user: user, imageIds: ids);
+      await _ref.read(adsServiceProvider.notifier).showAd();
       state = false;
     } catch (e) {
       log(e.toString());
@@ -115,11 +118,12 @@ class EventsController extends StateNotifier<bool> {
       final userId = _ref.read(authStateProvider)?.id;
       final _images = _ref.read(questImagesProvider) ?? [];
       List<String> links = [];
+      final uuid = Uuid().v4();
 
       for (final image in _images) {
         final link = await UploadStorage.uploadImages(
           image: image,
-          path: "/events/$eventId/$questId/$userId/",
+          path: "/events/$eventId/$questId/$userId/$uuid/",
         );
         links.add(link);
       }
@@ -129,5 +133,26 @@ class EventsController extends StateNotifier<bool> {
       log(e.toString());
       throw Exception(e);
     }
+  }
+
+  Future<void> insertQuestReport({
+    required String reporterId,
+    required String userId,
+    required String questId,
+    required String reason,
+  }) async {
+    try {
+      state = true;
+      await _repo.insertQuestReport(
+        reporterId: reporterId,
+        userId: userId,
+        questId: questId,
+        reason: reason,
+      );
+    } catch (e) {
+      log(e.toString());
+      CustomToast.systemToast(e.toString());
+    }
+    state = false;
   }
 }
