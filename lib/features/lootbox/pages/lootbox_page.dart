@@ -90,7 +90,7 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                   height: 200,
                   child: GestureDetector(
                     onTap: tapped,
-                    child: Rive(artboard: _riveArtboard!).bounceInDown(from: 0),
+                    child: Rive(artboard: _riveArtboard!).bounceInDown(from: 75),
                   ),
                 ),
               )

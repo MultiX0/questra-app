@@ -81,4 +81,10 @@ class KeyNames {
   static const session_time = 'session_time';
   static const hasTaken = 'has_taken';
   static const religion = 'religion';
+  static const start_at = 'start_at';
+  static const end_at = 'end_at';
+  static const religion_based = 'religion_based';
+  static const event_type = 'event_type';
+  static const thumbnail = 'thumbnail';
+  static const event_id = 'event_id';
 }

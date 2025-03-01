@@ -27,4 +27,7 @@ class TableNames {
   static const app_versions = 'app_versions';
   static const coins_reward_logs = 'coins_reward_logs';
   static const loot_boxes = 'loot_boxes';
+  static const event_players = 'event_players';
+  static const event_quests = 'event_quests';
+  static const events = 'events';
 }

@@ -80,6 +80,9 @@ dependencies:
       path: workmanager
       ref: main
   animate_do: ^4.2.0
+  easy_image_viewer: ^1.5.1
+  scroll_loop_auto_scroll: ^0.0.5
+  badges: ^3.1.2
 
 dev_dependencies:
   flutter_test:
