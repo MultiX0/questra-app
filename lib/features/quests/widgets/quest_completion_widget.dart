@@ -2,7 +2,9 @@ import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class QuestCompletionWidget extends ConsumerStatefulWidget {
-  const QuestCompletionWidget({super.key});
+  const QuestCompletionWidget({super.key, this.isEvent = false});
+
+  final bool isEvent;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestCompletionWidgetState();
@@ -19,7 +21,12 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
 
   void finish() {
     final cachedLevel = ref.read(cachedUserLevelProvider);
-    final quest = ref.read(viewQuestProvider)!;
+    dynamic quest;
+    if (widget.isEvent) {
+      quest = ref.read(viewEventQuestProvider)!;
+    } else {
+      quest = ref.read(viewQuestProvider)!;
+    }
 
     if (cachedLevel == null) {
       context.pop();
@@ -37,7 +44,12 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final quest = ref.read(viewQuestProvider)!;
+    dynamic quest;
+    if (widget.isEvent) {
+      quest = ref.read(viewEventQuestProvider)!;
+    } else {
+      quest = ref.read(viewQuestProvider)!;
+    }
 
     return SystemCard(
       padding: EdgeInsets.all(20),
@@ -50,20 +62,12 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
             children: [
               Text(
                 "Victory Achieved, Hero!",
-                style: TextStyle(
-                  fontFamily: AppFonts.header,
-                  fontSize: 18,
-                ),
+                style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
               ),
-              Icon(
-                LucideIcons.trophy,
-                color: AppColors.primary,
-              ),
+              Icon(LucideIcons.trophy, color: AppColors.primary),
             ],
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Text(
             "Your dedication and skills have led you to triumph. The realm celebrates your success great rewards await you!",
             style: TextStyle(
@@ -72,31 +76,21 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
               fontSize: 13,
             ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Text(
             '- Your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
           ),
-          if (quest.owned_title != null && quest.owned_title!.isNotEmpty) ...[
-            Text(
-              '- Earned title: ${quest.owned_title}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
+          if (!widget.isEvent) ...[
+            if (quest.owned_title != null && quest.owned_title!.isNotEmpty) ...[
+              Text(
+                '- Earned title: ${quest.owned_title}',
+                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
               ),
-            ),
+            ],
           ],
-          const SizedBox(
-            height: 20,
-          ),
-          SystemCardButton(
-            onTap: finish,
-          ),
+          const SizedBox(height: 20),
+          SystemCardButton(onTap: finish),
         ],
       ),
     );

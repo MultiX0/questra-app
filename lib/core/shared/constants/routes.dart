@@ -24,4 +24,7 @@ class Routes {
   static const settingsPage = '/settingsPage';
   static const aboutUsPage = '/aboutUsPage';
   static const leveledUpPage = '/leveledUpPage';
+  static const eventQuestsPage = '/eventQuestsPage';
+  static const registerToEventPage = '/registerToEventPage';
+  static const viewEventQuestPage = '/viewEventQuestPage';
 }

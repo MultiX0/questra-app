@@ -5,11 +5,7 @@ import 'package:questra_app/core/shared/widgets/quest_card.dart';
 import 'package:questra_app/imports.dart';
 
 class ActiveQuestsCarousel extends ConsumerWidget {
-  const ActiveQuestsCarousel({
-    super.key,
-    required this.quests,
-    this.special = false,
-  });
+  const ActiveQuestsCarousel({super.key, required this.quests, this.special = false});
 
   final List<QuestModel> quests;
   final bool special;
@@ -26,7 +22,7 @@ class ActiveQuestsCarousel extends ConsumerWidget {
       key: ValueKey('quest-carousel-${quests.length}'),
       options: ExpandableCarouselOptions(
         autoPlay: quests.length > 1,
-        autoPlayAnimationDuration: const Duration(milliseconds: 800),
+        autoPlayAnimationDuration: Duration(milliseconds: (quests.length * 400)),
         viewportFraction: 1,
         autoPlayCurve: Curves.ease,
         enableInfiniteScroll: quests.length > 1,

@@ -83,6 +83,8 @@ dependencies:
   easy_image_viewer: ^1.5.1
   scroll_loop_auto_scroll: ^0.0.5
   badges: ^3.1.2
+  zo_animated_border: ^0.0.6
+  retry: ^3.1.2
 
 dev_dependencies:
   flutter_test:

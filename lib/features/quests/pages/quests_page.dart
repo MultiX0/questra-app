@@ -1,10 +1,11 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:questra_app/features/events/controller/events_controller.dart';
 import 'package:questra_app/features/quests/widgets/active_quests_page.dart';
 import 'package:questra_app/features/quests/widgets/custom_quest_empty_widget.dart';
+import 'package:questra_app/features/quests/widgets/events_caruosel.dart';
+import 'package:questra_app/features/quests/widgets/loading_events_card.dart';
 import 'package:questra_app/features/quests/widgets/new_quests_system_card.dart';
 import 'package:questra_app/features/quests/widgets/quests_archive.dart';
 import 'package:questra_app/imports.dart';
@@ -35,13 +36,14 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
                   .read(questsRepositoryProvider)
                   .currentlyOngoingQuests(user!.id);
               ref.read(currentOngointQuestsProvider.notifier).state = quests;
+              ref.invalidate(getQuestEventsProvider);
             });
           },
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: ListView(
               children: [
-                if (user?.religion == religionToString(Religions.islam)) buildRamadanEventSection(),
+                if (user?.religion == religionToString(Religions.islam)) buildEventsCarousel(),
                 const SizedBox(height: 20),
                 if (activeQuests.isEmpty) ...[
                   NewQuestsSystemCard(),
@@ -77,41 +79,17 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
     );
   }
 
-  Widget buildRamadanEventSection() {
-    return AspectRatio(
-      aspectRatio: 16 / 8,
-      child: GestureDetector(
-        onTap: () {
-          ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-        },
-        child:
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-
-                image: DecorationImage(
-                  image: AssetImage("assets/images/ramadan.webp"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.black.withValues(alpha: .75),
-                ),
-                child: Center(
-                  child:
-                      GlowText(
-                        text: "Ramadan event",
-                        glowColor: AppColors.primary,
-                        style: TextStyle(fontFamily: AppFonts.header, fontSize: 24),
-                      ).tada(),
-                ),
-              ),
-            ).elasticInDown(),
-      ),
-    );
+  Widget buildEventsCarousel() {
+    return ref
+        .watch(getQuestEventsProvider)
+        .when(
+          data: (events) {
+            return EventsCaruosel(events: events);
+            // return LoadingQuestsCard();
+          },
+          error: (error, _) => const SizedBox(),
+          loading: () => LoadingQuestsCard(),
+        );
   }
 
   Column buildCustomQuests(UserModel? user) {
@@ -129,7 +107,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
                 return CustomQuestEmptyWidget();
               },
               error: (error, _) => Center(child: ErrorWidget(error)),
-              loading: () => SystemCard(child: BeatLoader()),
+              loading: () => LoadingQuestsCard(),
             ),
       ],
     );

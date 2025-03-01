@@ -30,4 +30,6 @@ class TableNames {
   static const event_players = 'event_players';
   static const event_quests = 'event_quests';
   static const events = 'events';
+  static const event_quest_images = 'event_quest_images';
+  static const event_quest_finish_logs = 'event_quest_finish_logs';
 }

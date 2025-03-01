@@ -1,11 +1,18 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:questra_app/core/shared/utils/image_picker.dart';
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
+import 'package:questra_app/features/events/controller/events_controller.dart';
 import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
+import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';
 import 'package:questra_app/imports.dart';
 
 class QuestImageUpload extends ConsumerStatefulWidget {
-  const QuestImageUpload({super.key});
+  const QuestImageUpload({super.key, this.minImagesCount, this.isEvent = false});
+
+  final int? minImagesCount;
+  final bool isEvent;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestImageUploadState();
@@ -26,22 +33,47 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
     setState(() {
       _images = List<File>.from(images);
     });
+    if (widget.minImagesCount != null) {
+      if (_images.length < widget.minImagesCount!) {
+        CustomToast.systemToast("You need to add at least ${widget.minImagesCount} photos.");
+        return;
+      }
+    }
   }
 
-  void finish() {
-    ref.read(questImagesProvider.notifier).state = _images;
-    setState(() {
-      done = true;
-    });
+  void finish() async {
+    try {
+      if (widget.minImagesCount != null) {
+        if (_images.length < widget.minImagesCount!) {
+          CustomToast.systemToast("You need to add at least ${widget.minImagesCount} photos.");
+          return;
+        }
+      }
+      ref.read(questImagesProvider.notifier).state = _images;
+      if (widget.isEvent) {
+        await ref.read(eventsControllerProvider.notifier).finishEventQuest();
+      }
+
+      setState(() {
+        done = true;
+      });
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (done) {
-      return QuestFeedbackWidget(
-        skip: false,
-      );
+      if (widget.isEvent) {
+        return QuestCompletionWidget(isEvent: widget.isEvent);
+      }
+      return QuestFeedbackWidget(skip: false);
     }
+
+    final eventsLoading = ref.watch(eventsControllerProvider);
+    final isEventAndLoading = widget.isEvent && eventsLoading;
 
     return SystemCard(
       color: Colors.transparent,
@@ -52,14 +84,9 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
         children: [
           Text(
             "Provide some pictures from your results please.",
-            style: TextStyle(
-              fontFamily: AppFonts.header,
-              fontSize: 18,
-            ),
+            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Text(
             "Note: for more safety for your account from false reports we suggest at least to select one image for the quest that you've done.",
             style: TextStyle(
@@ -83,9 +110,7 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
               ),
             ),
           ),
-          SystemCardButton(
-            onTap: finish,
-          ),
+          if (isEventAndLoading) BeatLoader() else SystemCardButton(onTap: finish),
         ],
       ),
     );

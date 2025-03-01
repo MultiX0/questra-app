@@ -11,6 +11,7 @@ class EventModel {
   final String? religion;
   final String event_type;
   final String? thumbnail;
+  final int minImageUploadCount;
   EventModel({
     required this.id,
     required this.title,
@@ -19,6 +20,7 @@ class EventModel {
     required this.start_at,
     this.end_at,
     required this.religion_based,
+    required this.minImageUploadCount,
     this.religion,
     this.thumbnail,
     required this.event_type,
@@ -35,6 +37,7 @@ class EventModel {
     String? religion,
     String? event_type,
     String? thumbnail,
+    int? minImageUploadCount,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -47,6 +50,7 @@ class EventModel {
       religion: religion ?? this.religion,
       event_type: event_type ?? this.event_type,
       thumbnail: thumbnail ?? this.thumbnail,
+      minImageUploadCount: minImageUploadCount ?? this.minImageUploadCount,
     );
   }
 
@@ -76,6 +80,7 @@ class EventModel {
       religion: map[KeyNames.religion] != null ? map[KeyNames.religion] as String : null,
       event_type: map[KeyNames.event_type] ?? 'quests',
       thumbnail: map[KeyNames.thumbnail],
+      minImageUploadCount: map[KeyNames.min_upload_image_count] ?? 1,
     );
   }
 

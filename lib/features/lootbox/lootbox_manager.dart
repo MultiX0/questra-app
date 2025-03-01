@@ -147,7 +147,7 @@ class LootBoxManager {
           .update({KeyNames.last_lootbox_time: now.toIso8601String(), KeyNames.hasTaken: false})
           .eq('user_id', user.id);
 
-      sendNotification("System", "🎉 NEW Loot Box Dropped!");
+      sendNotification("🎉 NEW Loot Box Dropped!", "System");
 
       dev.log("🎉 Loot Box Dropped!");
       return true;

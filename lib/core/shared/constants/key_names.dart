@@ -87,4 +87,6 @@ class KeyNames {
   static const event_type = 'event_type';
   static const thumbnail = 'thumbnail';
   static const event_id = 'event_id';
+  static const min_upload_image_count = 'min_upload_image_count';
+  static const break_duration = 'break_duration';
 }
