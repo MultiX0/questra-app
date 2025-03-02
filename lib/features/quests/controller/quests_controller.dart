@@ -14,16 +14,20 @@ final questsControllerProvider = StateNotifierProvider<QuestsController, bool>((
   return QuestsController(ref: ref);
 });
 
-final getCustomQuestsProvider =
-    FutureProvider.family<List<QuestModel>, String>((ref, userId) async {
+final getCustomQuestsProvider = FutureProvider.family<List<QuestModel>, String>((
+  ref,
+  userId,
+) async {
   final _controller = ref.watch(questsControllerProvider.notifier);
   final quests = await _controller.getCustomQuests(userId);
 
   return quests;
 });
 
-final getActiveCustomQuestsProvider =
-    FutureProvider.family<List<QuestModel>, String>((ref, userId) async {
+final getActiveCustomQuestsProvider = FutureProvider.family<List<QuestModel>, String>((
+  ref,
+  userId,
+) async {
   final _controller = ref.watch(questsControllerProvider.notifier);
   return await _controller.getActiveCustomQuests(userId);
 });
@@ -35,9 +39,7 @@ final getAllQuestTypesProvider = FutureProvider<List<QuestTypeModel>>((ref) asyn
 
 class QuestsController extends StateNotifier<bool> {
   final Ref _ref;
-  QuestsController({required Ref ref})
-      : _ref = ref,
-        super(false);
+  QuestsController({required Ref ref}) : _ref = ref, super(false);
 
   QuestsRepository get _repository => _ref.watch(questsRepositoryProvider);
 
@@ -68,10 +70,7 @@ class QuestsController extends StateNotifier<bool> {
     try {
       state = true;
 
-      QuestModel updatedQuest = await _repository.finishQuest(
-        quest: quest,
-        feedback: feedback,
-      );
+      QuestModel updatedQuest = await _repository.finishQuest(quest: quest, feedback: feedback);
 
       final images = await _uploadImages(quest.id);
       updatedQuest = updatedQuest.copyWith(images: images);
@@ -110,11 +109,14 @@ class QuestsController extends StateNotifier<bool> {
     try {
       final userId = _ref.read(authStateProvider)?.id;
       final _images = _ref.read(questImagesProvider) ?? [];
+      final uuid = Uuid().v4();
       List<String> links = [];
 
       for (final image in _images) {
-        final link =
-            await UploadStorage.uploadImages(image: image, path: "$userId/quests/$questId/");
+        final link = await UploadStorage.uploadImages(
+          image: image,
+          path: "users/$userId/quests/$questId/$uuid/",
+        );
         links.add(link);
       }
 
@@ -134,11 +136,7 @@ class QuestsController extends StateNotifier<bool> {
       state = true;
       final userId = _ref.read(authStateProvider)?.id ?? "";
 
-      await _repository.handleSkip(
-        quest: quest,
-        userId: userId,
-        feedback: feedback,
-      );
+      await _repository.handleSkip(quest: quest, userId: userId, feedback: feedback);
 
       CustomToast.systemToast("quest skipped successfully");
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
@@ -215,11 +213,7 @@ class QuestsController extends StateNotifier<bool> {
         throw "Sorry but you can't try again until ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
       }
 
-      await _ref.read(aiFunctionsProvider).customQuestAnalizer(
-            description,
-            0,
-            user.id,
-          );
+      await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0, user.id);
       state = false;
       context.pop();
     } catch (e) {
@@ -231,8 +225,11 @@ class QuestsController extends StateNotifier<bool> {
     }
   }
 
-  Future<void> deActiveCustomQuest(
-      {required String userId, required String questId, required BuildContext context}) async {
+  Future<void> deActiveCustomQuest({
+    required String userId,
+    required String questId,
+    required BuildContext context,
+  }) async {
     try {
       state = true;
       await _repository.deActiveCustomQuest(userId, questId);

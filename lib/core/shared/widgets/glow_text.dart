@@ -10,6 +10,7 @@ class GlowText extends StatelessWidget {
     this.textAlign,
     this.blurRadius = 15.0,
     this.spreadRadius = 0.5,
+    this.textDirection = TextDirection.ltr,
   });
 
   final Color glowColor;
@@ -18,34 +19,36 @@ class GlowText extends StatelessWidget {
   final double blurRadius;
   final double spreadRadius;
   final TextAlign? textAlign;
+  final TextDirection? textDirection;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Text(
+          textDirection: textDirection,
+
           text,
           style: TextStyle(
             fontSize: style?.fontSize ?? 14,
             fontWeight: style?.fontWeight ?? FontWeight.bold,
             fontFamily: style?.fontFamily ?? AppFonts.header,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = spreadRadius
-              ..color = glowColor.withValues(alpha: .5),
+            foreground:
+                Paint()
+                  ..style = PaintingStyle.stroke
+                  ..strokeWidth = spreadRadius
+                  ..color = glowColor.withValues(alpha: .5),
           ),
           textAlign: textAlign ?? TextAlign.center,
         ),
         // Main Text Layer
         Text(
           text,
-          style: style?.copyWith(
+          textDirection: textDirection,
+          style:
+              style?.copyWith(
                 shadows: [
-                  BoxShadow(
-                    color: glowColor,
-                    blurRadius: blurRadius,
-                    spreadRadius: spreadRadius,
-                  ),
+                  BoxShadow(color: glowColor, blurRadius: blurRadius, spreadRadius: spreadRadius),
                 ],
               ) ??
               TextStyle(
@@ -54,11 +57,7 @@ class GlowText extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
                 shadows: [
-                  BoxShadow(
-                    color: glowColor,
-                    blurRadius: blurRadius,
-                    spreadRadius: spreadRadius,
-                  ),
+                  BoxShadow(color: glowColor, blurRadius: blurRadius, spreadRadius: spreadRadius),
                 ],
               ),
           textAlign: textAlign ?? TextAlign.center,

@@ -61,6 +61,8 @@ class _SelectSelectAvtivityLevelWidgetState extends ConsumerState<SelectRadioWid
                     value: activiy,
                     groupValue: selectedGender,
                     onChanged: (v) {
+                      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
                       if (v != null) {
                         setState(() {
                           selectedGender = v;
@@ -71,10 +73,7 @@ class _SelectSelectAvtivityLevelWidgetState extends ConsumerState<SelectRadioWid
                     activeColor: AppColors.primary,
                     title: Text(
                       activiy,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.whiteColor,
-                      ),
+                      style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.whiteColor),
                     ),
                   ),
                 ),

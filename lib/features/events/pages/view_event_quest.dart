@@ -1,0 +1,79 @@
+import 'package:questra_app/features/events/models/event_quest_model.dart';
+import 'package:questra_app/features/events/widgets/event_quest_card.dart';
+import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
+import 'package:questra_app/imports.dart';
+
+import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
+
+class ViewEventQuest extends ConsumerStatefulWidget {
+  const ViewEventQuest({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ViewQuestPageState();
+}
+
+class _ViewQuestPageState extends ConsumerState<ViewEventQuest> {
+  // EventModel get _event => widget.event;
+  bool _finish = false;
+
+  void play() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+  }
+
+  void cancel() {
+    setState(() {
+      _finish = false;
+    });
+  }
+
+  void finish() {
+    play();
+
+    setState(() {
+      _finish = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final quest = ref.watch(viewEventQuestProvider)!;
+    return BackgroundWidget(
+      child: Scaffold(
+        appBar: TheAppBar(title: "View Quest"),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: (_finish) ? buildFinish() : buildBody(quest),
+        ),
+      ),
+    );
+  }
+
+  Widget buildFinish() {
+    final event = ref.watch(selectedQuestEvent);
+    return Center(
+      child: QuestImageUpload(isEvent: true, minImagesCount: event?.minImageUploadCount ?? 1),
+    );
+  }
+
+  Widget buildSkip() => Center(child: QuestFeedbackWidget(skip: true));
+
+  Widget buildBody(EventQuestModel quest) {
+    // final isLoading = ref.watch(questsControllerProvider);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        EventsQuestCard(quest: quest, isView: true),
+        const SizedBox(height: 30),
+        SystemCard(
+          onTap: finish,
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+          // isButton:
+          // true,
+          child: Center(child: Text("finish", style: TextStyle(fontFamily: AppFonts.header))),
+        ),
+      ],
+    );
+  }
+}

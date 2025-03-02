@@ -6,12 +6,12 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.actions,
     // this.ref,
-    required this.title,
+    this.title,
   });
 
   // final WidgetRef? ref;
   final List<Widget>? actions;
-  final String title;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class TheAppBar extends StatelessWidget implements PreferredSizeWidget {
         glowColor: HexColor('7AD5FF').withValues(alpha: 0.5),
         spreadRadius: 0.5,
         blurRadius: 30,
-        text: title,
+        text: title ?? '',
         textAlign: TextAlign.center,
         style: TextStyle(
           fontWeight: FontWeight.bold,

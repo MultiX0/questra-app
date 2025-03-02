@@ -3,6 +3,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/imports.dart';
@@ -15,14 +16,16 @@ final profileControllerProvider = StateNotifierProvider<ProfileController, bool>
 
 class ProfileController extends StateNotifier<bool> {
   final Ref _ref;
-  ProfileController({required Ref ref})
-      : _ref = ref,
-        super(false);
+  ProfileController({required Ref ref}) : _ref = ref, super(false);
 
   ProfileRepository get _repo => _ref.watch(profileRepositoryProvider);
 
-  Future<bool> checkTheCode(String code, String uesrId,
-      {bool inserted = false, required BuildContext context}) async {
+  Future<bool> checkTheCode(
+    String code,
+    String uesrId, {
+    bool inserted = false,
+    required BuildContext context,
+  }) async {
     try {
       state = true;
       _ref.invalidate(localCodeProvider);
@@ -70,7 +73,10 @@ class ProfileController extends StateNotifier<bool> {
 
       for (final image in _images) {
         final link = await UploadStorage.uploadImages(
-            image: image, path: "$userId/avatar/$userId", quiality: 40);
+          image: image,
+          path: "users/$userId/avatar/$userId",
+          quiality: 40,
+        );
         links.add(link);
       }
 
@@ -79,5 +85,18 @@ class ProfileController extends StateNotifier<bool> {
       log(e.toString());
       throw Exception(e);
     }
+  }
+
+  Future<void> defineReligion({required String userId, required Religions? religion}) async {
+    try {
+      state = true;
+      await _repo.defineReligion(userId: userId, religion: religion);
+      await Future.delayed(const Duration(milliseconds: 600));
+      CustomToast.systemToast("Your religion has been set successfully.", systemMessage: true);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+    state = false;
   }
 }

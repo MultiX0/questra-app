@@ -20,6 +20,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   late Timer _timer;
   @override
   void initState() {
+    final user = ref.read(authStateProvider);
+    handleLootBoxes(user!.id);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkDevice();
       // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
@@ -33,6 +35,18 @@ class _HomePageState extends ConsumerState<HomePage> {
       });
     });
     super.initState();
+  }
+
+  void handleLootBoxes(String userId) async {
+    final user = ref.read(authStateProvider);
+    if (user == null) return;
+    if (user.username.isEmpty) return;
+    final lootBoxManager = LootBoxManager();
+    bool hasUntakenLootBox = await lootBoxManager.unTakenLootBox(userId);
+    if (hasUntakenLootBox) {
+      ref.read(hasLootBoxProvider.notifier).state = true;
+      return;
+    }
   }
 
   void _checkDevice() {

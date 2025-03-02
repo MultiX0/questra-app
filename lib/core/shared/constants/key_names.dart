@@ -80,4 +80,17 @@ class KeyNames {
   static const total_actions = 'total_actions';
   static const session_time = 'session_time';
   static const hasTaken = 'has_taken';
+  static const religion = 'religion';
+  static const start_at = 'start_at';
+  static const end_at = 'end_at';
+  static const religion_based = 'religion_based';
+  static const event_type = 'event_type';
+  static const thumbnail = 'thumbnail';
+  static const event_id = 'event_id';
+  static const min_upload_image_count = 'min_upload_image_count';
+  static const break_duration = 'break_duration';
+  static const is_banned = 'is_banned';
+  static const reporter_id = 'reporter_id';
+  static const reason = 'reason';
+  static const finish_log_id = 'finish_log_id';
 }

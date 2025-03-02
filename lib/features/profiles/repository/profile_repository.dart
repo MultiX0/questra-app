@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
@@ -142,6 +143,17 @@ class ProfileRepository {
       final _user = _ref.read(authStateProvider);
       if (_user == null) return;
       await _profilesTable.update({KeyNames.is_online: isOnline}).eq(KeyNames.id, _user.id);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> defineReligion({required String userId, required Religions? religion}) async {
+    try {
+      await _profilesTable
+          .update({KeyNames.religion: religionToString(religion)})
+          .eq(KeyNames.id, userId);
     } catch (e) {
       log(e.toString());
       rethrow;

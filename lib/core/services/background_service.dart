@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
+import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
@@ -14,15 +15,12 @@ void callbackDispatcher() {
     WidgetsFlutterBinding.ensureInitialized(); // Required for plugins
 
     try {
+      await _initializeSupabase();
+
       switch (taskName) {
         case 'questCheck':
-          await _initializeSupabase();
-          // await _checkExpiringQuests();
           await _sendSystemMessage();
-
-          // Always send a test notification to verify background execution
-          // await sendNotification(
-          //     "Background Task", "Background task executed at ${DateTime.now()}");
+          await _lootBoxTask();
           break;
       }
       return Future.value(true);
@@ -40,6 +38,26 @@ void callbackDispatcher() {
       return Future.value(false);
     }
   });
+}
+
+Future<void> _lootBoxTask() async {
+  try {
+    final _client = Supabase.instance.client;
+    final session = _client.auth.currentSession;
+    if (session == null) return;
+
+    final userId = session.user.id;
+    final userData =
+        await _client.from(TableNames.players).select("*").eq(KeyNames.id, userId).maybeSingle();
+
+    if (userData == null) return;
+
+    final lootBoxManager = LootBoxManager();
+    await lootBoxManager.checkLootBoxDrop();
+  } catch (e) {
+    log(e.toString());
+    rethrow;
+  }
 }
 
 Future<void> _initializeSupabase() async {
@@ -82,13 +100,13 @@ Future<void> _sendSystemMessage() async {
     );
 
     if (data is int) {
-      if (data > 3) {
+      if (data > 6) {
         return;
       }
     }
 
     if (data is String) {
-      if ((int.tryParse(data) ?? 0) > 3) {
+      if ((int.tryParse(data) ?? 0) > 6) {
         return;
       }
     }
@@ -153,6 +171,11 @@ Future<void> sendNotification(String body, String title) async {
       priority: Priority.high,
       playSound: true,
       enableVibration: true,
+      styleInformation: BigTextStyleInformation(
+        '',
+        htmlFormatBigText: true,
+        htmlFormatContentTitle: true,
+      ),
     );
 
     const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);

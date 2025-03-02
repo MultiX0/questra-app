@@ -1,6 +1,8 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/features/lootbox/pages/lootbox_page.dart' show LootboxPage;
+import 'package:questra_app/features/onboarding/pages/define_religion_page.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
@@ -35,6 +37,7 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
   Widget build(BuildContext context) {
     // return NewVersionPage();
     final hasLootBox = ref.watch(hasLootBoxProvider);
+    final user = ref.watch(authStateProvider);
 
     return Stack(
       children: [
@@ -81,7 +84,8 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
             },
           ),
         ),
-        if (hasLootBox) LootboxPage(),
+        if (hasLootBox && user?.religion != null) LootboxPage(),
+        if (user?.religion == null) DefineReligionPage().fadeIn(),
       ],
     );
   }

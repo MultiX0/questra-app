@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
-import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/router.dart';
@@ -33,21 +32,11 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         prefs.setString(KeyNames.user_id, userId);
         handleFCMInsert(userId);
         handleAppPackage();
-        handleLootBoxes(userId);
 
         await NotificationsRepository.insertLog(userId);
       }
     });
     super.initState();
-  }
-
-  void handleLootBoxes(String userId) async {
-    final lootBoxManager = LootBoxManager();
-    bool hasUntakenLootBox = await lootBoxManager.unTakenLootBox(userId);
-    if (hasUntakenLootBox) {
-      ref.read(hasLootBoxProvider.notifier).state = true;
-      return;
-    }
   }
 
   void handleAppPackage() async {
