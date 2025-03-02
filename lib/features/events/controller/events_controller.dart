@@ -73,14 +73,19 @@ class EventsController extends StateNotifier<bool> {
   }
 
   Future<void> registerToEvent({
-    required String userId,
     required int eventId,
     required BuildContext context,
+    required UserModel user,
   }) async {
     try {
       state = true;
       await _ref.read(adsServiceProvider.notifier).showAd();
-      await _repo.registerToEvent(userId: userId, eventId: eventId);
+      if (user.wallet!.balance < calcEventRegisterationFee(user.level?.level ?? 1)) {
+        CustomToast.systemToast("You do not have enough coins to register.");
+        return;
+      }
+
+      await _repo.registerToEvent(userId: user.id, eventId: eventId);
       CustomToast.systemToast("✅ Registration Successful!", systemMessage: true);
 
       context.pushReplacement(Routes.eventQuestsPage);

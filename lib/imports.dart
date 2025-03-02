@@ -46,7 +46,7 @@ export 'package:questra_app/features/analytics/providers/analytics_providers.dar
 export 'package:flame_audio/flame_audio.dart';
 export 'package:questra_app/core/services/sound_effects_service.dart';
 export 'package:questra_app/core/services/exception_service.dart';
-export 'package:questra_app/core/shared/utils/levels_calc.dart';
+export 'package:questra_app/core/shared/utils/calcs.dart';
 export 'package:questra_app/features/notifications/functions/notifications_functions.dart';
 export 'package:questra_app/features/profiles/repository/profile_repository.dart';
 export 'package:questra_app/features/quests/ai/ai_model.dart';
