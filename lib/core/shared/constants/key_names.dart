@@ -92,4 +92,5 @@ class KeyNames {
   static const is_banned = 'is_banned';
   static const reporter_id = 'reporter_id';
   static const reason = 'reason';
+  static const finish_log_id = 'finish_log_id';
 }

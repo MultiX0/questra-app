@@ -3,10 +3,7 @@ import 'package:questra_app/imports.dart';
 class Navs {
   final BuildContext context;
   final WidgetRef ref;
-  Navs(
-    this.context,
-    this.ref,
-  );
+  Navs(this.context, this.ref);
 
   void viewQuest(QuestModel quest, bool special) {
     ref.read(viewQuestProvider.notifier).state = quest;
@@ -19,5 +16,9 @@ class Navs {
 
   void goToAboutUs() {
     context.push(Routes.aboutUsPage);
+  }
+
+  void goToEventPlayerQuestCompletionPage(String userId) {
+    context.push('${Routes.playerCompletionPage}/$userId');
   }
 }

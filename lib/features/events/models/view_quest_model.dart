@@ -5,15 +5,19 @@ import 'package:questra_app/imports.dart';
 
 class ViewEventQuestModel {
   final String userId;
+  final int finishLogId;
   final String questId;
   final String questDescription;
   final String questTitle;
+  final DateTime submittedAt;
   final List<String>? images;
   ViewEventQuestModel({
     required this.userId,
     required this.questId,
     required this.questDescription,
     required this.questTitle,
+    required this.submittedAt,
+    required this.finishLogId,
     this.images,
   });
 
@@ -23,6 +27,8 @@ class ViewEventQuestModel {
     String? questDescription,
     String? questTitle,
     List<String>? images,
+    DateTime? submittedAt,
+    int? finishLogId,
   }) {
     return ViewEventQuestModel(
       userId: userId ?? this.userId,
@@ -30,6 +36,8 @@ class ViewEventQuestModel {
       questDescription: questDescription ?? this.questDescription,
       questTitle: questTitle ?? this.questTitle,
       images: images ?? this.images,
+      submittedAt: submittedAt ?? this.submittedAt,
+      finishLogId: finishLogId ?? this.finishLogId,
     );
   }
 
@@ -49,6 +57,8 @@ class ViewEventQuestModel {
       questId: map[KeyNames.quest_id] ?? "",
       questDescription: map[KeyNames.quest_description] ?? "",
       questTitle: map[KeyNames.quest_title] ?? "",
+      finishLogId: map[KeyNames.finish_log_id] ?? "",
+      submittedAt: DateTime.parse(map[KeyNames.created_at]),
     );
   }
   @override

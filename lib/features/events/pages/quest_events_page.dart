@@ -1,5 +1,6 @@
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
+import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/events/controller/events_controller.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
 import 'package:questra_app/features/events/pages/player_registered.dart';
@@ -20,7 +21,6 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
   int selectedIndex = 0;
 
   void onTap(EventQuestModel quest) {
-    // final event = ref.watch(selectedQuestEvent);
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
     ref.read(viewEventQuestProvider.notifier).state = quest;
     context.push(Routes.viewEventQuestPage);
@@ -28,7 +28,6 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final size = MediaQuery.sizeOf(context);
     final event = ref.watch(selectedQuestEvent);
     return BackgroundWidget(
       child: Scaffold(
@@ -40,35 +39,43 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
               buildCategoryChange(),
               const SizedBox(height: 10),
               Expanded(
-                child:
-                    selectedIndex == 0
-                        ? ref
-                            .watch(getAllQuestsInEventProvider)
-                            .when(
-                              data: (quests) {
-                                if (quests.isEmpty) return Center(child: buildEmptyQuests());
-                                return ListView.builder(
-                                  itemCount: quests.length,
-                                  itemBuilder: (conext, i) {
-                                    final quest = quests[i];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 15),
-                                      child: EventsQuestCard(
-                                        quest: quest,
-                                        onTap: () => onTap(quest),
-                                      ),
-                                    );
-                                  },
-                                );
+                child: IndexedStack(
+                  index: selectedIndex,
+                  children: [
+                    ref
+                        .watch(getAllQuestsInEventProvider)
+                        .when(
+                          data: (quests) {
+                            if (quests.isEmpty) return Center(child: buildEmptyQuests());
+                            return AppRefreshIndicator(
+                              onRefresh: () async {
+                                await Future.delayed(const Duration(milliseconds: 800), () {
+                                  ref.invalidate(getAllQuestsInEventProvider);
+                                });
                               },
-                              error: (error, _) => Center(child: ErrorWidget(error)),
-                              loading:
-                                  () => ListView.builder(
-                                    itemCount: 4,
-                                    itemBuilder: (context, i) => LoadingQuestsCard(),
-                                  ),
-                            )
-                        : PlayerRegisteredToEvent(),
+                              child: ListView.builder(
+                                itemCount: quests.length,
+                                itemBuilder: (context, i) {
+                                  final quest = quests[i];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
+                                    child: EventsQuestCard(quest: quest, onTap: () => onTap(quest)),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          error: (error, _) => Center(child: ErrorWidget(error)),
+                          loading:
+                              () => ListView.builder(
+                                itemCount: 4,
+                                itemBuilder: (context, i) => LoadingQuestsCard(),
+                              ),
+                        ),
+
+                    PlayerRegisteredToEvent(),
+                  ],
+                ),
               ),
             ],
           ),

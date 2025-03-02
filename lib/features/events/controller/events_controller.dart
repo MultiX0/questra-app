@@ -6,6 +6,8 @@ import 'package:questra_app/core/shared/utils/upload_storage.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/events/models/event_model.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
+import 'package:questra_app/features/events/models/view_quest_model.dart';
+import 'package:questra_app/features/events/providers/providers.dart';
 import 'package:questra_app/features/events/repository/events_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -22,6 +24,18 @@ final getAllQuestsInEventProvider = FutureProvider<List<EventQuestModel>>((ref) 
   final controller = ref.watch(eventsControllerProvider.notifier);
   final eventId = ref.watch(selectedQuestEvent)!.id;
   return controller.getEventQuests(eventId);
+});
+
+final getPlyaerQuestSubmissionProvider = FutureProvider.family<List<ViewEventQuestModel>, String>((
+  ref,
+  userId,
+) async {
+  log("here in getPlyaerQuestSubmissionProvider");
+  final controller = ref.watch(eventsControllerProvider.notifier);
+  final questId = ref.watch(selectedEventQuestIdProvider)!;
+  log("the quest id is: $questId");
+
+  return await controller.getPlayerSubmissions(userId: userId, questId: questId);
 });
 
 class EventsController extends StateNotifier<bool> {
@@ -135,24 +149,41 @@ class EventsController extends StateNotifier<bool> {
     }
   }
 
-  Future<void> insertQuestReport({
-    required String reporterId,
-    required String userId,
-    required String questId,
-    required String reason,
-  }) async {
+  Future<void> insertQuestReport({required String reason, required int finishLogId}) async {
     try {
       state = true;
+      final eventId = _ref.read(selectedQuestEvent)!.id;
+      final questId = _ref.read(selectedEventQuestIdProvider)!;
+      final reporterId = _ref.read(authStateProvider)!.id;
+      final userId = _ref.read(selectedEventPlayer)!.id;
       await _repo.insertQuestReport(
         reporterId: reporterId,
         userId: userId,
         questId: questId,
         reason: reason,
+        eventId: eventId,
+        finishLogId: finishLogId,
+      );
+      CustomToast.systemToast(
+        "Report submitted successfully. Our team will review it soon. Thank you for helping keep Questra fair and fun!",
       );
     } catch (e) {
       log(e.toString());
       CustomToast.systemToast(e.toString());
     }
     state = false;
+  }
+
+  Future<List<ViewEventQuestModel>> getPlayerSubmissions({
+    required String userId,
+    required String questId,
+  }) async {
+    try {
+      return await _repo.getPlayerSubmissions(userId: userId, questId: questId);
+    } catch (e) {
+      log(e.toString());
+      CustomToast.systemToast(appError);
+      rethrow;
+    }
   }
 }

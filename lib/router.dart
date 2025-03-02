@@ -4,6 +4,7 @@ import 'package:questra_app/features/app/pages/about_page.dart';
 import 'package:questra_app/features/app/pages/home_page.dart';
 import 'package:questra_app/features/app/widgets/nav_bar.dart';
 import 'package:questra_app/features/app/widgets/upload_avatar_widget.dart';
+import 'package:questra_app/features/events/pages/player_completion_page.dart';
 import 'package:questra_app/features/events/pages/quest_events_page.dart';
 import 'package:questra_app/features/events/pages/register_to_event_page.dart';
 import 'package:questra_app/features/events/pages/view_event_quest.dart';
@@ -130,6 +131,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       buildRoute(fade: true, path: Routes.eventQuestsPage, child: QuestEventsPage()),
       buildRoute(fade: true, path: Routes.registerToEventPage, child: RegisterToEventPage()),
       buildRoute(fade: true, path: Routes.viewEventQuestPage, child: ViewEventQuest()),
+      GoRoute(
+        path: "${Routes.playerCompletionPage}/:${KeyNames.user_id}",
+        pageBuilder: (context, state) {
+          final userId = state.pathParameters[KeyNames.user_id] ?? "";
+          return MaterialPage(child: PlayerCompletionPage(userId: userId));
+        },
+      ),
     ],
   );
 });

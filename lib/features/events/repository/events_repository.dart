@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/providers/leveling_providers.dart';
+import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/events/models/event_model.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
 import 'package:questra_app/features/events/models/view_quest_model.dart';
@@ -182,6 +183,8 @@ class EventsRepository {
     required String userId,
     required String questId,
     required String reason,
+    required int eventId,
+    required int finishLogId,
   }) async {
     try {
       await _eventQuestReportsTable.insert({
@@ -189,6 +192,8 @@ class EventsRepository {
         KeyNames.reporter_id: reporterId,
         KeyNames.quest_id: questId,
         KeyNames.reason: reason,
+        KeyNames.event_id: eventId,
+        KeyNames.finish_log_id: finishLogId,
       });
     } catch (e) {
       log(e.toString());
@@ -214,20 +219,56 @@ class EventsRepository {
     }
   }
 
+  Future<List<String>> getImagesByIds(List ids) async {
+    try {
+      final data = await _eventQuestImagesTable.select("*").inFilter(KeyNames.id, ids);
+      return data.map((image) => image[KeyNames.image_url].toString()).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<List<ViewEventQuestModel>> getPlayerSubmissions({
     required String userId,
     required String questId,
   }) async {
-    final data = await _eventFinishQuestsLogs.select('*,${TableNames.event_quests}(*)');
-    final viewList =
-        data.map((d) {
-          return ViewEventQuestModel(
-            userId: userId,
-            questId: questId,
-            questDescription: d[TableNames.event_quests][KeyNames.description],
-            questTitle: d[TableNames.event_quests][KeyNames.title],
-          );
-        }).toList();
+    final data = await _eventFinishQuestsLogs
+        .select('*,${TableNames.event_quests}(*)')
+        .eq(KeyNames.user_id, userId)
+        .eq(KeyNames.quest_id, questId)
+        .order(KeyNames.created_at, ascending: false);
+
+    List<ViewEventQuestModel> viewList = [];
+    for (final d in data) {
+      final images = await getImagesByIds(d[KeyNames.images] ?? []);
+      final view = ViewEventQuestModel(
+        userId: userId,
+        questId: questId,
+        questDescription: d[TableNames.event_quests][KeyNames.description],
+        questTitle: d[TableNames.event_quests][KeyNames.title],
+        images: images,
+        submittedAt: DateTime.parse(d[KeyNames.created_at]),
+        finishLogId: d[KeyNames.id],
+      );
+
+      viewList.add(view);
+    }
+
     return viewList;
+  }
+
+  Future<int> getEventPlayersCount(int eventId) async {
+    try {
+      final count = await _client.rpc(
+        FunctionNames.count_event_players,
+        params: {'event_id_param': eventId},
+      );
+
+      return count;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }

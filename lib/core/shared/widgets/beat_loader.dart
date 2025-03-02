@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/imports.dart';
 
 class BeatLoader extends ConsumerWidget {
@@ -6,11 +7,6 @@ class BeatLoader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: LoadingAnimationWidget.beat(
-        color: AppColors.primary,
-        size: 30,
-      ),
-    );
+    return Center(child: LoadingAnimationWidget.beat(color: AppColors.primary, size: 30).swing());
   }
 }
