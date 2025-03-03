@@ -186,11 +186,18 @@ class NotificationsRepository {
 
   static Future<List<Map<String, dynamic>>> _getFailedQuests(String userId) async {
     final now = DateTime.now();
-    final data = await _playerQuestsTable
+    List<Map<String, dynamic>> data = await _playerQuestsTable
         .select("*")
         .eq(KeyNames.user_id, userId)
         .eq(KeyNames.status, StatusEnum.in_progress.name)
         .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
+
+    if (data.isEmpty) {
+      data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.status, StatusEnum.failed.name);
+    }
 
     final quests = data.map((q) => QuestModel.fromMap(q)).toList();
     final cleanedData =
@@ -227,9 +234,10 @@ class NotificationsRepository {
           .join("\n\n");
 
       final res = await AiNotifications.makeAiResponse(
-        temp: 0.7,
-        topP: 0.9,
-        maxTokens: 500,
+        temp: 0.9,
+        topP: 0.75,
+        topK: 30,
+        maxTokens: 300,
         content: [
           {"role": "system", "content": systemInstructions},
           {"role": "user", "content": prompt},

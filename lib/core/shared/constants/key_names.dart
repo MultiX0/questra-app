@@ -93,4 +93,5 @@ class KeyNames {
   static const reporter_id = 'reporter_id';
   static const reason = 'reason';
   static const finish_log_id = 'finish_log_id';
+  static const ar_name = 'ar_name';
 }

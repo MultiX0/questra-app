@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
+import 'package:questra_app/l10n/l10n.dart';
 import 'package:questra_app/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,8 +35,6 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         prefs.setString(KeyNames.user_id, userId);
         handleFCMInsert(userId);
         handleAppPackage();
-
-        await NotificationsRepository.insertLog(userId);
       }
     });
     super.initState();
@@ -161,6 +162,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final currentLocale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
     return ToastificationWrapper(
       child: MaterialApp.router(
@@ -169,6 +171,15 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         routeInformationProvider: router.routeInformationProvider,
         routerDelegate: router.routerDelegate,
         debugShowCheckedModeBanner: false,
+        supportedLocales: L10n.all, // List of supported locales
+        locale: currentLocale, // Default language
+
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+          AppLocalizations.delegate,
+        ],
       ),
     );
   }

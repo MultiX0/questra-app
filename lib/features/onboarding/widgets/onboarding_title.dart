@@ -2,10 +2,7 @@ import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
 class OnboardingTitle extends ConsumerWidget {
-  const OnboardingTitle({
-    super.key,
-    this.title,
-  });
+  const OnboardingTitle({super.key, this.title});
 
   final String? title;
 
@@ -15,7 +12,7 @@ class OnboardingTitle extends ConsumerWidget {
       children: [
         Center(
           child: GlowText(
-            text: title ?? "Be a player now!",
+            text: title ?? AppLocalizations.of(context).on_boarding_title,
             glowColor: HexColor('7AD5FF'),
             blurRadius: 25,
             spreadRadius: 1,
@@ -28,17 +25,12 @@ class OnboardingTitle extends ConsumerWidget {
             ),
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 5,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Center(
             child: GlowText(
-              text:
-                  "Join the adventure! Share your details to get personalized quests and start leveling up!",
+              text: AppLocalizations.of(context).on_boarding_subtitle,
               textAlign: TextAlign.center,
               glowColor: Colors.white,
               spreadRadius: 1,

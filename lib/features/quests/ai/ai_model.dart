@@ -13,14 +13,14 @@ class AiModel {
 
   final dio = Dio();
   final _options = Options(
-    headers: {
-      'Authorization': 'Bearer $_apiKey',
-      'Content-Type': 'application/json',
-    },
+    headers: {'Authorization': 'Bearer $_apiKey', 'Content-Type': 'application/json'},
   );
 
   Future<String> makeAiResponse({
     int? maxTokens,
+    double? temp,
+    double? topP,
+    double? topK,
     required List<Map<String, dynamic>> content,
   }) async {
     try {
@@ -28,11 +28,13 @@ class AiModel {
         _deepinfra_api,
         options: _options,
         data: jsonEncode({
+          // "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
           "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+
           "messages": content,
-          "temperature": 0.0,
-          "top_p": 0.1,
-          "top_k": 30,
+          "temperature": temp ?? 0.8,
+          "top_p": topP ?? 0.85,
+          "top_k": topK ?? 45,
           "max_tokens": maxTokens ?? 700,
           "frequency_penalty": 0.0,
           "presence_penalty": 0.0,

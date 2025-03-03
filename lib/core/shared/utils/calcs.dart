@@ -1,3 +1,5 @@
+import 'package:questra_app/core/shared/utils/between.dart';
+
 int calculateHigherXpForLevel(int level) {
   return (100 * (level * level) - (200 * level) + 400).toInt();
 }
@@ -44,10 +46,28 @@ Map<String, int> addXp(int xp, Map<String, int> currentData) {
     currentLevel++;
   }
 
-  return {
-    "xp": currentXp,
-    "level": currentLevel,
-  };
+  return {"xp": currentXp, "level": currentLevel};
+}
+
+int calcEventRegisterationFee(int level) {
+  int baseCoins = 50;
+  if (isBetween(level, 1, 5)) {
+    return baseCoins * 2;
+  }
+
+  if (isBetween(level, 5, 10)) {
+    return baseCoins * 10;
+  }
+
+  if (isBetween(level, 10, 20)) {
+    return baseCoins * 100;
+  }
+
+  if (isBetween(level, 20, 40)) {
+    return baseCoins * 200;
+  }
+
+  return baseCoins * 500;
 }
 
 // class Player {

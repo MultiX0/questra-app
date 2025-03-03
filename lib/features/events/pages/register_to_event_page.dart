@@ -15,14 +15,15 @@ class RegisterToEventPage extends ConsumerStatefulWidget {
 class _RegisterToEventPageState extends ConsumerState<RegisterToEventPage> {
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(authStateProvider);
+
     final event = ref.watch(selectedQuestEvent);
     final isLoading = ref.watch(eventsControllerProvider);
 
     void register() {
-      final user = ref.read(authStateProvider);
       ref
           .read(eventsControllerProvider.notifier)
-          .registerToEvent(userId: user!.id, eventId: event!.id, context: context);
+          .registerToEvent(eventId: event!.id, context: context, user: user!);
     }
 
     return BackgroundWidget(
@@ -49,6 +50,15 @@ class _RegisterToEventPageState extends ConsumerState<RegisterToEventPage> {
                   style: TextStyle(color: AppColors.descriptionColor),
                   textAlign: TextAlign.center,
                 ).fadeIn(duration: const Duration(milliseconds: 1400)),
+                const SizedBox(height: 15),
+                Text(
+                  "registration fee is \$${calcEventRegisterationFee(user!.level!.level)}",
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
                 const SizedBox(height: 30),
                 if (isLoading)
                   BeatLoader()

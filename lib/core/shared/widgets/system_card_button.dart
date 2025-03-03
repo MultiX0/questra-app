@@ -6,7 +6,7 @@ class SystemCardButton extends ConsumerWidget {
     this.isCenter = true,
     this.doneButton = true,
     required this.onTap,
-    this.text = "done",
+    this.text,
     this.defaultSound = true,
   });
 
@@ -19,15 +19,13 @@ class SystemCardButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (isCenter != null && isCenter == false) {
-      return buildText(ref);
+      return buildText(ref, context);
     }
 
-    return Center(
-      child: buildText(ref),
-    );
+    return Center(child: buildText(ref, context));
   }
 
-  GestureDetector buildText(WidgetRef ref) {
+  GestureDetector buildText(WidgetRef ref, BuildContext context) {
     return GestureDetector(
       onTap: () {
         if (defaultSound) {
@@ -37,7 +35,7 @@ class SystemCardButton extends ConsumerWidget {
         onTap();
       },
       child: Text(
-        "[ $text ]",
+        "[ ${text ?? AppLocalizations.of(context).done} ]",
         style: TextStyle(
           fontSize: 16,
           color: doneButton == false ? AppColors.redColor : AppColors.primary,

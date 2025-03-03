@@ -5,6 +5,7 @@ import 'package:questra_app/core/services/device_service.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
+import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -22,8 +23,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     final user = ref.read(authStateProvider);
     handleLootBoxes(user!.id);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _checkDevice();
+      await NotificationsRepository.insertLog(user.id);
+
       // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
       _timer = Timer.periodic(const Duration(minutes: 10), (_) async {
         final lootBoxManager = LootBoxManager();

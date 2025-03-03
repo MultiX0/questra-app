@@ -1,16 +1,27 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/gestures.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 
-class OnboardingFirstPage extends ConsumerWidget {
+class OnboardingFirstPage extends ConsumerStatefulWidget {
   const OnboardingFirstPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _OnboardingFirstPageState();
+}
+
+class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
+  bool hover = false;
+
+  @override
+  Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     final isLoading = ref.watch(authControllerProvider);
 
@@ -20,21 +31,28 @@ class OnboardingFirstPage extends ConsumerWidget {
       await ref.read(authControllerProvider.notifier).login();
     }
 
+    void hangleLangChange() {
+      final currentLang = ref.read(localeProvider);
+      if (currentLang.languageCode == 'en') {
+        ref.read(localeProvider.notifier).state = Locale("ar");
+      } else {
+        ref.read(localeProvider.notifier).state = Locale("en");
+      }
+    }
+
     return OnboardingBg(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [IconButton(onPressed: hangleLangChange, icon: Icon(LucideIcons.languages))],
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                Assets.getImage('splash_icon.png'),
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
+              Image.asset(Assets.getImage('splash_icon.png'), fit: BoxFit.cover).swing(),
+              const SizedBox(height: 30),
               GlowText(
-                text: "Level Up Your Life!",
+                text: AppLocalizations.of(context).firstPageTitle,
                 textAlign: TextAlign.center,
                 glowColor: HexColor('7AD5FF'),
                 spreadRadius: .75,
@@ -45,12 +63,10 @@ class OnboardingFirstPage extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   color: HexColor('7AD5FF'),
                 ),
-              ),
-              const SizedBox(
-                height: 15,
-              ),
+              ).fadeInDown(duration: const Duration(milliseconds: 900)),
+              const SizedBox(height: 15),
               GlowText(
-                text: "Embark on your personalized\nquest journey now",
+                text: AppLocalizations.of(context).firstPageSubtitle,
                 textAlign: TextAlign.center,
                 glowColor: Colors.white,
                 style: TextStyle(
@@ -60,32 +76,40 @@ class OnboardingFirstPage extends ConsumerWidget {
                   color: Colors.white,
                 ),
                 blurRadius: 3,
-              ),
-              const SizedBox(
-                height: 35,
-              ),
+              ).fadeInUp(duration: const Duration(milliseconds: 1000)),
+              const SizedBox(height: 35),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: GlowButton(
-                  spreadRadius: 1.5,
-                  blurRadius: 20,
-                  glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
-                  color: Color.fromARGB(151, 99, 206, 255),
-                  onPressed: handleLogin,
-                  padding: EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: size.width * .35,
-                  ),
-                  child: isLoading ? BeatLoader() : Text("Level up!"),
+                child: GestureDetector(
+                  onLongPress: () {
+                    log("message");
+                    setState(() {
+                      hover = true;
+                    });
+                  },
+                  onLongPressEnd: (_) {
+                    log("cancel");
+                    setState(() {
+                      hover = false;
+                    });
+                  },
+                  child: GlowButton(
+                    spreadRadius: 1.5,
+                    blurRadius: 20,
+                    glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
+                    color: Color.fromARGB(151, 99, 206, 255),
+                    onPressed: handleLogin,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: size.width * .35),
+                    child:
+                        isLoading
+                            ? BeatLoader()
+                            : Text(AppLocalizations.of(context).firstPageButtonTitle),
+                  ).tada(duration: const Duration(milliseconds: 1100), infinite: hover),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               buildReachText(context),
-              const SizedBox(
-                height: 25,
-              ),
+              const SizedBox(height: 25),
             ],
           ),
         ),
@@ -100,7 +124,7 @@ class OnboardingFirstPage extends ConsumerWidget {
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.center,
         text: TextSpan(
-          text: "By clicking the login button, you agree to ",
+          text: AppLocalizations.of(context).firstPageTermsPart1,
           style: TextStyle(
             fontWeight: FontWeight.w700,
             color: AppColors.descriptionColor,
@@ -109,7 +133,7 @@ class OnboardingFirstPage extends ConsumerWidget {
           ),
           children: [
             TextSpan(
-              text: "Terms ",
+              text: AppLocalizations.of(context).firstPageTermsPart2,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
@@ -117,13 +141,14 @@ class OnboardingFirstPage extends ConsumerWidget {
                 fontFamily: AppFonts.primary,
                 decoration: TextDecoration.underline,
               ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.push(Routes.termsPage);
-                },
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      context.push(Routes.termsPage);
+                    },
             ),
             TextSpan(
-              text: "and ",
+              text: AppLocalizations.of(context).firstPageTermsPart3,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.whiteColor,
@@ -133,7 +158,7 @@ class OnboardingFirstPage extends ConsumerWidget {
               ),
             ),
             TextSpan(
-              text: "Privacy policy",
+              text: AppLocalizations.of(context).firstPageTermsPart4,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
@@ -141,14 +166,15 @@ class OnboardingFirstPage extends ConsumerWidget {
                 fontFamily: AppFonts.primary,
                 decoration: TextDecoration.underline,
               ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.push(Routes.privacyPage);
-                },
+              recognizer:
+                  TapGestureRecognizer()
+                    ..onTap = () {
+                      context.push(Routes.privacyPage);
+                    },
             ),
           ],
         ),
-      ),
+      ).fadeInUp(duration: const Duration(milliseconds: 1200)),
     );
   }
 }

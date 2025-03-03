@@ -27,9 +27,7 @@ class QuestCard extends ConsumerWidget {
         SystemCard(
           duration: const Duration(milliseconds: 800),
           onTap: onTap,
-          padding: EdgeInsets.all(
-            20,
-          ),
+          padding: EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -38,16 +36,10 @@ class QuestCard extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: size.width * .15,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: size.width * .15),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: HexColor('43A7D5'),
-                        width: 0.75,
-                      ),
+                      border: Border.all(color: HexColor('43A7D5'), width: 0.75),
                     ),
                     child: Center(
                       child: GlowText(
@@ -64,9 +56,7 @@ class QuestCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,9 +72,7 @@ class QuestCard extends ConsumerWidget {
                     spreadRadius: 0.5,
                     blurRadius: 15,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   Text(
                     // glowColor: AppColors.whiteColor,
                     questModel.title,
@@ -97,9 +85,7 @@ class QuestCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 14,
-              ),
+              const SizedBox(height: 14),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,9 +101,7 @@ class QuestCard extends ConsumerWidget {
                     spreadRadius: 0.5,
                     blurRadius: 15,
                   ),
-                  const SizedBox(
-                    height: 5,
-                  ),
+                  const SizedBox(height: 5),
                   Text(
                     questModel.description,
                     maxLines: isView ? null : 1,
@@ -130,33 +114,22 @@ class QuestCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 14,
-              ),
+              const SizedBox(height: 14),
               GlowText(
                 glowColor: Colors.white54,
                 textAlign: TextAlign.start,
                 text:
                     "Reward: +${questModel.xp_reward} XP, +${questModel.coin_reward} Coins${questModel.owned_title != null ? ", “${questModel.owned_title}” Title" : ''}",
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontFamily: AppFonts.primary,
-                  fontSize: 10,
-                ),
+                style: TextStyle(color: Colors.white54, fontFamily: AppFonts.primary, fontSize: 10),
                 spreadRadius: 0.5,
                 blurRadius: 15,
               ),
               if (isView) ...[
-                const SizedBox(
-                  height: 14,
-                ),
+                const SizedBox(height: 14),
                 if (questModel.expected_completion_time_date != null)
                   Text(
                     "Expected finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date!)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w200,
-                      fontSize: 11,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.w200, fontSize: 11),
                   ),
               ],
             ],
@@ -168,21 +141,18 @@ class QuestCard extends ConsumerWidget {
               child: GestureDetector(
                 onTap: () {
                   CustomToast.systemToast(
-                      "you need to wait until ${appDateFormat(questModel.completed_at!.add(const Duration(hours: 24)))}");
+                    "you need to wait until ${appDateFormat(questModel.completed_at!.add(const Duration(hours: 24)))}",
+                  );
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.black.withValues(
-                        alpha: 0.8,
-                      )),
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.black.withValues(alpha: 0.8),
+                  ),
                   child: Center(
                     child: Text(
                       "Locked",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                        fontSize: 20,
-                      ),
+                      style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
                     ),
                   ),
                 ),

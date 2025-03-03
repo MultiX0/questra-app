@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -11,7 +12,7 @@ class SplashPage extends ConsumerStatefulWidget {
 }
 
 class _SplashPageState extends ConsumerState<SplashPage> {
-  late final StreamSubscription<UserModel?> _userSubscription;
+  StreamSubscription<UserModel?>? _userSubscription;
 
   @override
   void initState() {
@@ -62,7 +63,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   void dispose() {
-    _userSubscription.cancel();
+    _userSubscription?.cancel();
     super.dispose();
   }
 
@@ -75,7 +76,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
           child: Image.asset(
             Assets.getImage('splash_icon.png'),
             fit: BoxFit.cover,
-          ),
+          ).spinPerfect(infinite: true),
         ),
       ),
     );
