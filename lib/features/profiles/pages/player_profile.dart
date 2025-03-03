@@ -7,11 +7,7 @@ import 'package:questra_app/imports.dart';
 class PlayerProfile extends ConsumerStatefulWidget {
   final String userId;
   final bool isMe;
-  const PlayerProfile({
-    super.key,
-    required this.userId,
-    this.isMe = false,
-  });
+  const PlayerProfile({super.key, required this.userId, this.isMe = false});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PlayerProfileState();
@@ -47,20 +43,14 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
             ],
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: buildUserBody(isMe),
-        ),
+        body: Padding(padding: const EdgeInsets.only(top: 5), child: buildUserBody(isMe)),
       ),
     );
   }
 
   Widget buildUserBody(bool isMe) {
     if (isMe) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: buildMe(),
-      );
+      return Padding(padding: const EdgeInsets.symmetric(horizontal: 3), child: buildMe());
     }
     return const SizedBox();
   }
@@ -70,9 +60,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       children: [
         const SizedBox(height: 10),
         UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         BuildDashboardGrid(),
         const SizedBox(height: 15),
         buildSpecialQuestsCard(),
@@ -80,9 +68,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         buildGuildCard(),
         const SizedBox(height: 15),
         buildFriendsCard(),
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -95,7 +81,8 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
         if (user!.level!.level < 5) {
           CustomToast.systemToast(
-              "You need to reach level 5 to be able to create your own quests.");
+            "You need to reach level 5 to be able to create your own quests.",
+          );
           return;
         }
 
@@ -104,11 +91,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(LucideIcons.diamond),
-          const SizedBox(height: 10),
-          Text("Custom Quests"),
-        ],
+        children: [Icon(LucideIcons.diamond), const SizedBox(height: 10), Text("Custom Quests")],
       ),
     );
   }
@@ -120,11 +103,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(LucideIcons.building_2),
-          const SizedBox(height: 10),
-          Text("Guild"),
-        ],
+        children: [Icon(LucideIcons.building_2), const SizedBox(height: 10), Text("Guild")],
       ),
     );
   }
@@ -136,17 +115,15 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(LucideIcons.users),
-          const SizedBox(height: 10),
-          Text("Friends"),
-        ],
+        children: [Icon(LucideIcons.users), const SizedBox(height: 10), Text("Friends")],
       ),
     );
   }
 
   void soon() {
+    final isArabic = ref.read(localeProvider).languageCode == 'ar';
+
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-    CustomToast.soon();
+    CustomToast.soon(isArabic);
   }
 }

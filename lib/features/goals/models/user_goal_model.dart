@@ -8,6 +8,7 @@ class UserGoalModel {
   final DateTime? target_date;
   final String status;
   final DateTime? updated_at;
+  final String? ar_description;
   UserGoalModel({
     required this.id,
     required this.created_at,
@@ -15,6 +16,7 @@ class UserGoalModel {
     required this.description,
     this.target_date,
     required this.status,
+    this.ar_description,
     this.updated_at,
   });
 
@@ -26,6 +28,7 @@ class UserGoalModel {
     DateTime? target_date,
     String? status,
     DateTime? updated_at,
+    String? ar_description,
   }) {
     return UserGoalModel(
       id: id ?? this.id,
@@ -35,6 +38,7 @@ class UserGoalModel {
       target_date: target_date ?? this.target_date,
       status: status ?? this.status,
       updated_at: updated_at ?? this.updated_at,
+      ar_description: ar_description ?? this.ar_description,
     );
   }
 
@@ -46,6 +50,7 @@ class UserGoalModel {
       KeyNames.target_date: target_date?.toIso8601String(),
       KeyNames.status: status,
       KeyNames.updated_at: updated_at,
+      KeyNames.ar_description: ar_description,
     };
   }
 
@@ -59,6 +64,7 @@ class UserGoalModel {
           map[KeyNames.target_date] == null ? null : DateTime.tryParse(map[KeyNames.target_date]),
       status: map[KeyNames.status] ?? "",
       updated_at: DateTime.tryParse(map[KeyNames.updated_at] ?? ""),
+      ar_description: map[KeyNames.ar_description],
     );
   }
 

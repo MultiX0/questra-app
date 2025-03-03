@@ -26,6 +26,7 @@ class UserModel {
   final LevelsModel? level;
   final String? religion;
   final WalletModel? wallet;
+  final String lang;
 
   UserModel({
     required this.id,
@@ -43,6 +44,7 @@ class UserModel {
     this.level,
     this.wallet,
     this.religion,
+    required this.lang,
   });
 
   UserModel copyWith({
@@ -61,6 +63,7 @@ class UserModel {
     String? activeTitleId,
     PlayerTitleModel? activeTitle,
     String? religion,
+    String? lang,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -78,6 +81,7 @@ class UserModel {
       activeTitle: activeTitle ?? this.activeTitle,
       activeTitleId: activeTitleId ?? this.activeTitleId,
       religion: religion ?? this.religion,
+      lang: lang ?? this.lang,
     );
   }
 
@@ -91,6 +95,7 @@ class UserModel {
       KeyNames.avatar: (avatar ?? "").isNotEmpty ? avatar : _defaultAvatar,
       KeyNames.gender: gender.toLowerCase(),
       KeyNames.religion: religion?.toLowerCase(),
+      KeyNames.lang: lang.toLowerCase(),
     };
   }
 
@@ -104,6 +109,7 @@ class UserModel {
       avatar: map[KeyNames.avatar] ?? _defaultAvatar,
       gender: map[KeyNames.gender] ?? "male",
       activeTitleId: map[KeyNames.active_title],
+      lang: map[KeyNames.lang] ?? 'en',
       religion:
           map[KeyNames.religion] != null ? stringToReligion(map[KeyNames.religion])?.name : null,
     );

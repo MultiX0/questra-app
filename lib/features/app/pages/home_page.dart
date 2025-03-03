@@ -71,7 +71,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TheAppBar(title: 'Questra'),
+        appBar: TheAppBar(title: AppLocalizations.of(context).appTitle),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
@@ -90,10 +90,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.75,
                       glowColor: AppColors.whiteColor,
-                      text: "Marketplace",
+                      text: AppLocalizations.of(context).marketplace_title,
                       style: TextStyle(
                         fontSize: 20,
                         fontFamily: AppFonts.header,
@@ -103,11 +101,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     ),
                     const SizedBox(height: 5),
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.5,
                       glowColor: AppColors.whiteColor,
-                      text:
-                          "Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!",
+                      text: AppLocalizations.of(context).marketplace_subtitle,
                       style: TextStyle(
                         fontSize: 13,
                         fontFamily: AppFonts.primary,

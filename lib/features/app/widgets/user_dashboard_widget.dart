@@ -1,17 +1,14 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class UserDashboardWidget extends ConsumerWidget {
-  const UserDashboardWidget({
-    super.key,
-    this.duration,
-    this.profilePage = false,
-  });
+  const UserDashboardWidget({super.key, this.duration, this.profilePage = false});
 
   final Duration? duration;
   final bool profilePage;
@@ -36,8 +33,17 @@ class UserDashboardWidget extends ConsumerWidget {
     );
   }
 
-  Column buildBody(double aspects, UserModel user, WidgetRef ref, BuildContext context, rank,
-      Size size, double barSize) {
+  Column buildBody(
+    double aspects,
+    UserModel user,
+    WidgetRef ref,
+    BuildContext context,
+    rank,
+    Size size,
+    double barSize,
+  ) {
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -49,41 +55,27 @@ class UserDashboardWidget extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: HexColor('224F63'),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: HexColor('43A7D5'),
-                  width: 0.75,
-                ),
+                border: Border.all(color: HexColor('43A7D5'), width: 0.75),
                 image: DecorationImage(
                   image: CachedNetworkImageProvider(user.avatar!),
                   fit: BoxFit.cover,
                 ),
                 boxShadow: [
-                  BoxShadow(
-                    blurRadius: 10,
-                    color: HexColor('43A7D5').withValues(alpha: .5),
-                  ),
+                  BoxShadow(blurRadius: 10, color: HexColor('43A7D5').withValues(alpha: .5)),
                 ],
               ),
               child: !profilePage ? null : buildEditAvatar(ref, context),
             ),
-            const SizedBox(
-              width: 10,
-            ),
+            const SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GlowText(
                   glowColor: Colors.white,
                   text: user.username,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white,
-                    fontFamily: AppFonts.primary,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.white, fontFamily: AppFonts.primary),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
+                const SizedBox(height: 5),
                 GlowText(
                   glowColor: Colors.white.withValues(alpha: .57),
                   text: "LvL ${user.level?.level}",
@@ -97,8 +89,10 @@ class UserDashboardWidget extends ConsumerWidget {
             ),
             const Spacer(),
             GlowText(
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+
               glowColor: Colors.white.withValues(alpha: .57),
-              text: 'Coins: ${user.wallet?.balance ?? 0}\$',
+              text: '${AppLocalizations.of(context).coins}: ${user.wallet?.balance ?? 0}\$',
               style: TextStyle(
                 color: Colors.white.withValues(alpha: .57),
                 fontSize: 12,
@@ -107,13 +101,12 @@ class UserDashboardWidget extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         GlowText(
           textAlign: TextAlign.start,
           glowColor: Colors.white.withValues(alpha: .85),
-          text: "Full Name: ${user.name}",
+          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+          text: "${AppLocalizations.of(context).full_name}: ${user.name}",
           style: TextStyle(
             fontSize: 12,
             color: Colors.white.withValues(alpha: .85),
@@ -121,12 +114,17 @@ class UserDashboardWidget extends ConsumerWidget {
             fontFamily: AppFonts.primary,
           ),
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         GlowText(
+          textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+
           glowColor: Colors.white.withValues(alpha: .85),
-          text: "Active Title: ${user.activeTitle?.title ?? "NA"}",
+          text:
+              "${AppLocalizations.of(context).active_title}: ${user.activeTitle?.title == null
+                  ? isArabic
+                      ? "لايوجد"
+                      : "NA"
+                  : user.activeTitle!.title}",
           style: TextStyle(
             fontSize: 12,
             color: Colors.white.withValues(alpha: .85),
@@ -134,15 +132,15 @@ class UserDashboardWidget extends ConsumerWidget {
             fontFamily: AppFonts.primary,
           ),
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             GlowText(
+              textDirection: isArabic ? TextDirection.rtl : TextDirection.ltr,
+
               glowColor: Colors.white.withValues(alpha: .85),
-              text: "Rank: #$rank",
+              text: "${AppLocalizations.of(context).rank}: #$rank",
               style: TextStyle(
                 fontSize: 12,
                 color: Colors.white.withValues(alpha: .85),
@@ -165,9 +163,7 @@ class UserDashboardWidget extends ConsumerWidget {
             // ),
           ],
         ),
-        SizedBox(
-          height: size.height * 0.02,
-        ),
+        SizedBox(height: size.height * 0.02),
         Stack(
           children: [
             Container(
@@ -176,10 +172,7 @@ class UserDashboardWidget extends ConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(1),
                 color: Colors.transparent,
-                border: Border.all(
-                  color: HexColor('43A7D5'),
-                  width: 0.3,
-                ),
+                border: Border.all(color: HexColor('43A7D5'), width: 0.3),
               ),
             ),
             AnimatedContainer(
@@ -203,9 +196,7 @@ class UserDashboardWidget extends ConsumerWidget {
             ),
           ],
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         Center(
           child: RichText(
             text: TextSpan(
@@ -251,15 +242,7 @@ class UserDashboardWidget extends ConsumerWidget {
               ),
             ),
           ),
-          Center(
-            child: Text(
-              "Edit",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary.withValues(alpha: .9),
-              ),
-            ),
-          ),
+          Center(child: Icon(LucideIcons.pencil)),
         ],
       ),
     );

@@ -26,7 +26,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
 
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "Quests"),
+        appBar: TheAppBar(title: AppLocalizations.of(context).quests),
         body: RefreshIndicator(
           color: AppColors.whiteColor,
           backgroundColor: AppColors.primary.withValues(alpha: 0.5),
@@ -55,7 +55,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
                 SizedBox(height: size.height * 0.075),
                 Center(
                   child: GlowText(
-                    text: "Quests Archive",
+                    text: AppLocalizations.of(context).quests_archive,
                     spreadRadius: 0.5,
                     blurRadius: 20,
                     glowColor: AppColors.whiteColor,

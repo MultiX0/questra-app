@@ -15,7 +15,7 @@ class CustomToast {
     );
   }
 
-  static void soon() {
-    systemToast("soon...");
+  static void soon(bool isArabic) {
+    systemToast("${isArabic ? "قريبا" : "soon"}...");
   }
 }

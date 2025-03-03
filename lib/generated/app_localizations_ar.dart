@@ -707,4 +707,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error => 'خطأ';
+
+  @override
+  String get marketplace_title => 'متجر الأغراض';
+
+  @override
+  String get marketplace_subtitle => '! اكتشف العناصر الحصرية، والتعزيزات، والمعدات التي سترتقي برحلتك إلى مستوى جديد. أنفق عملاتك وطوّر مغامرتك';
+
+  @override
+  String get active_title => 'اللقب النشط';
+
+  @override
+  String get rank => 'الترتيب';
+
+  @override
+  String get coins => 'العملات';
+
+  @override
+  String get quest_title => 'عنوان المهمة';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get quest => 'مهمة';
+
+  @override
+  String get custom_quest => 'مهمة خاصة';
+
+  @override
+  String get custom_quest_empty => 'ليس لديك أي مهام خاصة حاليًا. هل ترغب في إضافة مهمة جديدة؟';
+
+  @override
+  String get add_quest => 'اضافة مهمة';
+
+  @override
+  String get custom_quest_requirements => 'يجب أن تصل إلى المستوى 5 لتتمكن من إنشاء مهامك الخاصة.';
+
+  @override
+  String get custom_quest_level_locked => 'مغلق (يفتح عند المستوى 5)';
+
+  @override
+  String get quests_archive => 'أرشيف المهام';
+
+  @override
+  String get quests => 'المهام';
+
+  @override
+  String get title => 'العنوان';
+
+  @override
+  String get quest_status => 'الحاله';
+
+  @override
+  String get empty_quest_archive => 'أرشيف المهام فارغ حاليًا';
+
+  @override
+  String get view_more => 'عرض المزيد';
+
+  @override
+  String get empty_quests => 'ليس لديك أي مهام نشطة حاليًا. هل ترغب في الانطلاق في مهمة جديدة؟';
+
+  @override
+  String get quest_generation_toast => 'إنشاء مهام جديدة لك';
+
+  @override
+  String get wait_until => 'يجب عليك الانتظار حتى';
+
+  @override
+  String get quest_finished => 'أكملتها بنجاح';
+
+  @override
+  String get quest_failed => 'لم أتمكن من اكمالها';
+
+  @override
+  String get quest_status_card_title => 'هل تمكنت من انهاء المهمة؟';
+
+  @override
+  String get quest_complete_confirmation => 'هل أنت متأكد أنك أكملت المهمة؟';
+
+  @override
+  String get quest_finish_alert1 => 'إكمال المهمة هو إنجاز شرفي! ومع ذلك، إذا ادعيت إتمام المهمة دون أن تكملها بالفعل، فقد تواجه عقوبات.';
+
+  @override
+  String get quest_finish_alert2 => '· فقدان تقدمك الحالي.\n· فقدان نقاط الخبرة المكتسبة.\n· حظر حسابك!';
+
+  @override
+  String get quest_finish_alert3 => '· كن صريحًا، أيها المغامر—سمعتك وتقدمك يعتمدان على ذلك. هل أنت مستعد لتأكيد إتمام المهمة؟';
+
+  @override
+  String get quest_finish_btn1 => 'نعم، لقد أكملتها.';
+
+  @override
+  String get quest_finish_btn2 => 'لا، سأستمر في العمل عليها.';
+
+  @override
+  String image_upload_count_alert(Object minImagesCount) {
+    return 'يجب عليك إضافة على الأقل $minImagesCount صور.';
+  }
+
+  @override
+  String get image_submit_card_title => 'يرجى تقديم بعض الصور من نتائجك.';
+
+  @override
+  String get image_submit_card_note => 'ملاحظة: لضمان مزيد من الأمان لحسابك وحمايته من البلاغات الكاذبة، نوصي باختيار صورة واحدة على الأقل للمهمة التي أنجزتها.';
+
+  @override
+  String get free_coins => 'عملات مجانية؟';
+
+  @override
+  String free_coins_amount(Object amount) {
+    return '$amount عملة لكل إعلان';
+  }
+
+  @override
+  String get free_coins_button => 'مشاهدة';
+
+  @override
+  String get marketplace_categories => 'الفئات';
+
+  @override
+  String get soon => 'سيتوفر قريبا';
+
+  @override
+  String get marketplace_item_locked_toast => 'تم قفل هذا العنصر حاليًا.';
+
+  @override
+  String get marketplace_item_locked => 'مقفل';
 }

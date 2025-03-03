@@ -142,6 +142,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         gender: '',
         joined_at: DateTime.now(),
         avatar: '',
+        lang: 'en',
         is_online: false,
       );
     }
@@ -199,6 +200,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     } else {
       user = user.copyWith(birth_date: DateTime.tryParse(birthDate), activeTitle: activeTitle);
     }
+    final currentLang = _ref.read(localeProvider).languageCode;
+    if (currentLang != user.lang) {
+      _ref.read(localeProvider.notifier).state = Locale(user.lang);
+    }
 
     return user;
   }
@@ -215,7 +220,8 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         current.wallet == next.wallet &&
         current.avatar == next.avatar &&
         current.activeTitleId == next.activeTitleId &&
-        current.religion == next.religion;
+        current.religion == next.religion &&
+        current.lang == next.lang;
   }
 
   void _retryUserDataStream(String userId) {

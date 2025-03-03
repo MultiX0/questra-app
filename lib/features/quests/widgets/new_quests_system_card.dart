@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
@@ -29,26 +31,15 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
             glowColor: HexColor('7AD5FF'),
             color: HexColor('7AD5FF'),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Text(
-            "You don’t have any active quests right now. Would you like to embark on a new quest?\n\n(using ai)",
+            AppLocalizations.of(context).empty_quests,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           if (isLoading) ...[
-            Center(
-              child: LoadingAnimationWidget.beat(
-                color: AppColors.primary,
-                size: 30,
-              ),
-            )
+            Center(child: LoadingAnimationWidget.beat(color: AppColors.primary, size: 30)),
           ] else ...[
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -56,9 +47,7 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
                 backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(
-                    color: HexColor('7AD5FF'),
-                  ),
+                  side: BorderSide(color: HexColor('7AD5FF')),
                 ),
                 foregroundColor: AppColors.whiteColor,
                 textStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -71,7 +60,10 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
                 if (!kDebugMode) {
                   await ref.read(adsServiceProvider.notifier).showAd();
                 }
-                CustomToast.systemToast("making new quest for you...", systemMessage: true);
+                CustomToast.systemToast(
+                  "${AppLocalizations.of(context).quest_generation_toast}...",
+                  systemMessage: true,
+                );
                 await ref.read(aiFunctionsProvider).generateQuests();
                 await ref.read(aiFunctionsProvider).generateQuests();
                 if (!mounted) return;
@@ -79,7 +71,7 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
                   isLoading = false;
                 });
               },
-              child: Text("new quests"),
+              child: Text(AppLocalizations.of(context).add_quest),
             ),
           ],
         ],

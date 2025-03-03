@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/imports.dart';
 import 'package:intl/intl.dart';
 
@@ -170,6 +171,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
         is_online: true,
         birth_date: selectedDate,
         gender: gender['key'].toLowerCase(),
+        lang: ref.read(localeProvider).languageCode,
         avatar: "",
       );
 

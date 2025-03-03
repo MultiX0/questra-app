@@ -707,4 +707,131 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get marketplace_title => 'Marketplace';
+
+  @override
+  String get marketplace_subtitle => 'Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!';
+
+  @override
+  String get active_title => 'Active Title';
+
+  @override
+  String get rank => 'Rank';
+
+  @override
+  String get coins => 'Coins';
+
+  @override
+  String get quest_title => 'Quest Title';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get quest => 'Quest';
+
+  @override
+  String get custom_quest => 'Custom Quest';
+
+  @override
+  String get custom_quest_empty => 'You don’t have any custom quests right now. Would you like to add a new quest?';
+
+  @override
+  String get add_quest => 'add quests';
+
+  @override
+  String get custom_quest_requirements => 'You need to reach level 5 to be able to create your own quests.';
+
+  @override
+  String get custom_quest_level_locked => 'Locked (opens at LVL 5)';
+
+  @override
+  String get quests_archive => 'Quests Archive';
+
+  @override
+  String get quests => 'Quests';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get quest_status => 'Status';
+
+  @override
+  String get empty_quest_archive => 'There is no quests in the archive for now';
+
+  @override
+  String get view_more => 'view more';
+
+  @override
+  String get empty_quests => 'You don’t have any active quests right now. Would you like to embark on a new quest?\n\n(using ai)';
+
+  @override
+  String get quest_generation_toast => 'making new quest for you';
+
+  @override
+  String get wait_until => 'you need to wait until';
+
+  @override
+  String get quest_finished => 'Finished';
+
+  @override
+  String get quest_failed => 'Failed';
+
+  @override
+  String get quest_status_card_title => 'Quest Status is ?';
+
+  @override
+  String get quest_complete_confirmation => 'Are You Sure You’ve Completed the Quest?';
+
+  @override
+  String get quest_finish_alert1 => 'Completing a quest is an honorable achievement! However, if you claim completion without truly finishing, you may face penalties';
+
+  @override
+  String get quest_finish_alert2 => '· Lose Your Current Streak.\n· Forfeit Earned XP.\n· Block your account!';
+
+  @override
+  String get quest_finish_alert3 => '· Be honest, adventurer—your reputation and progress depend on it. Are you ready to confirm quest completion?';
+
+  @override
+  String get quest_finish_btn1 => 'Yes, I’ve Completed It';
+
+  @override
+  String get quest_finish_btn2 => 'No, I’ll Keep Working';
+
+  @override
+  String image_upload_count_alert(Object minImagesCount) {
+    return 'You need to add at least $minImagesCount photos.';
+  }
+
+  @override
+  String get image_submit_card_title => 'Provide some pictures from your results please.';
+
+  @override
+  String get image_submit_card_note => 'Note: for more safety for your account from false reports we suggest at least to select one image for the quest that you\'ve done.';
+
+  @override
+  String get free_coins => 'Free Coins ?';
+
+  @override
+  String free_coins_amount(Object amount) {
+    return '$amount coins per AD';
+  }
+
+  @override
+  String get free_coins_button => 'Yes';
+
+  @override
+  String get marketplace_categories => 'Categories';
+
+  @override
+  String get soon => 'soon';
+
+  @override
+  String get marketplace_item_locked_toast => 'this item is locked for now';
+
+  @override
+  String get marketplace_item_locked => 'Locked';
 }

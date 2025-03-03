@@ -237,7 +237,65 @@
   "goals_alert": "أضف 4 أهداف واضحة على الأقل بمحتوى محدد، (يمكنك ازالة أو إضافة أهداف جديدة لاحقًا)",
   "quest_types": "أنواع المهام",
   "you_need_to_select_5_to_8_quest_types": "يجب عليك اختيار من 5 إلى 8 أنواع من المهام",
-  "error": "خطأ"
+  "error": "خطأ",
+  "marketplace_title": "متجر الأغراض",
+  "marketplace_subtitle": "! اكتشف العناصر الحصرية، والتعزيزات، والمعدات التي سترتقي برحلتك إلى مستوى جديد. أنفق عملاتك وطوّر مغامرتك",
+  "active_title": "اللقب النشط",
+  "rank": "الترتيب",
+  "coins": "العملات",
+  "quest_title": "عنوان المهمة",
+  "description": "الوصف",
+  "quest": "مهمة",
+  "custom_quest": "مهمة خاصة",
+  "custom_quest_empty": "ليس لديك أي مهام خاصة حاليًا. هل ترغب في إضافة مهمة جديدة؟",
+  "add_quest": "اضافة مهمة",
+  "custom_quest_requirements": "يجب أن تصل إلى المستوى 5 لتتمكن من إنشاء مهامك الخاصة.",
+  "custom_quest_level_locked": "مغلق (يفتح عند المستوى 5)",
+  "quests_archive": "أرشيف المهام",
+  "quests": "المهام",
+  "title": "العنوان",
+  "quest_status": "الحاله",
+  "empty_quest_archive": "أرشيف المهام فارغ حاليًا",
+  "view_more": "عرض المزيد",
+  "empty_quests": "ليس لديك أي مهام نشطة حاليًا. هل ترغب في الانطلاق في مهمة جديدة؟",
+  "quest_generation_toast": "إنشاء مهام جديدة لك",
+  "wait_until": "يجب عليك الانتظار حتى",
+  "quest_finished": "أكملتها بنجاح",
+  "quest_failed": "لم أتمكن من اكمالها",
+  "quest_status_card_title": "هل تمكنت من انهاء المهمة؟",
+  "quest_complete_confirmation": "هل أنت متأكد أنك أكملت المهمة؟",
+  "quest_finish_alert1": "إكمال المهمة هو إنجاز شرفي! ومع ذلك، إذا ادعيت إتمام المهمة دون أن تكملها بالفعل، فقد تواجه عقوبات.",
+  "quest_finish_alert2": "· فقدان تقدمك الحالي.\n· فقدان نقاط الخبرة المكتسبة.\n· حظر حسابك!",
+  "quest_finish_alert3": "· كن صريحًا، أيها المغامر—سمعتك وتقدمك يعتمدان على ذلك. هل أنت مستعد لتأكيد إتمام المهمة؟",
+  "quest_finish_btn1": "نعم، لقد أكملتها.",
+  "quest_finish_btn2": "لا، سأستمر في العمل عليها.",
+  "image_upload_count_alert": "يجب عليك إضافة على الأقل {minImagesCount} صور.",
+  "image_submit_card_title": "يرجى تقديم بعض الصور من نتائجك.",
+  "image_submit_card_note": "ملاحظة: لضمان مزيد من الأمان لحسابك وحمايته من البلاغات الكاذبة، نوصي باختيار صورة واحدة على الأقل للمهمة التي أنجزتها.",
+  "free_coins": "عملات مجانية؟",
+  "free_coins_amount": "{amount} عملة لكل إعلان",
+  "free_coins_button": "مشاهدة",
+  "marketplace_categories": "الفئات",
+  "soon": "سيتوفر قريبا",
+  "marketplace_item_locked_toast": "تم قفل هذا العنصر حاليًا.",
+  "marketplace_item_locked": "مقفل"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

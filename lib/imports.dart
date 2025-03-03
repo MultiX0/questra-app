@@ -54,3 +54,4 @@ export 'package:questra_app/features/quests/ai/custom_quests_system_parts.dart';
 export 'package:questra_app/features/quests/ai/system_parts.dart';
 export 'package:questra_app/features/quests/repository/quests_repository.dart';
 export 'package:questra_app/generated/app_localizations.dart';
+export 'package:questra_app/core/providers/app_providers.dart';

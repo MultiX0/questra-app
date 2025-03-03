@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
+import 'dart:ui' as ui;
 
 class QuestCard extends ConsumerWidget {
   const QuestCard({
@@ -21,6 +23,9 @@ class QuestCard extends ConsumerWidget {
     final isView = viewPage != null && viewPage == true;
     final size = MediaQuery.sizeOf(context);
     final now = DateTime.now();
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
+    // log('is arabic lang: $isArabic');
+    // log("arabic title ${questModel.ar_title}");
 
     return Stack(
       children: [
@@ -44,7 +49,10 @@ class QuestCard extends ConsumerWidget {
                     child: Center(
                       child: GlowText(
                         glowColor: AppColors.whiteColor,
-                        text: special ? "Custom Quest" : "Quest",
+                        text:
+                            special
+                                ? AppLocalizations.of(context).custom_quest
+                                : AppLocalizations.of(context).quest,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w200,
@@ -62,7 +70,9 @@ class QuestCard extends ConsumerWidget {
                 children: [
                   GlowText(
                     glowColor: AppColors.whiteColor,
-                    text: "Quest Title:",
+                    text: "${AppLocalizations.of(context).quest_title}:",
+                    textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+
                     style: TextStyle(
                       color: AppColors.whiteColor,
                       fontWeight: FontWeight.bold,
@@ -75,7 +85,7 @@ class QuestCard extends ConsumerWidget {
                   const SizedBox(height: 5),
                   Text(
                     // glowColor: AppColors.whiteColor,
-                    questModel.title,
+                    isArabic ? questModel.ar_title ?? questModel.title : questModel.title,
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       color: AppColors.whiteColor,
@@ -90,8 +100,11 @@ class QuestCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GlowText(
+                    textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+
                     glowColor: AppColors.whiteColor,
-                    text: "Description:",
+                    text: "${AppLocalizations.of(context).description}:",
+
                     style: TextStyle(
                       color: AppColors.whiteColor,
                       fontWeight: FontWeight.bold,
@@ -103,7 +116,9 @@ class QuestCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    questModel.description,
+                    isArabic
+                        ? questModel.ar_description ?? questModel.description
+                        : questModel.description,
                     maxLines: isView ? null : 1,
                     overflow: isView ? null : TextOverflow.ellipsis,
                     style: TextStyle(

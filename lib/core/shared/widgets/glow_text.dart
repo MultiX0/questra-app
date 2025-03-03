@@ -31,7 +31,7 @@ class GlowText extends StatelessWidget {
           text,
           style: TextStyle(
             fontSize: style?.fontSize ?? 14,
-            fontWeight: style?.fontWeight ?? FontWeight.bold,
+            fontWeight: style?.fontWeight,
             fontFamily: style?.fontFamily ?? AppFonts.header,
             foreground:
                 Paint()

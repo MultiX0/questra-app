@@ -88,6 +88,8 @@ dependencies:
   zo_animated_border: ^0.0.6
   retry: ^3.1.2
   intl_utils: ^2.8.10
+  translator: ^1.0.3+1
+  flutter_langdetect: ^0.0.2
 flutter_intl:
   enabled: true
   arb_dir: lib/l10n

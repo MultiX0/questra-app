@@ -26,13 +26,9 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
           child: Column(
             children: [
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               buildCategoryChange(),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
@@ -44,67 +40,64 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Your Rank"),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
                     buildCard(userRank, AppColors.primary, user!, true),
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Expanded(
-                child: ref.watch(getAllRankingLeaderboardProvider).when(
-                    data: (players) {
-                      return RefreshIndicator(
-                        color: AppColors.whiteColor,
-                        backgroundColor: AppColors.primary.withValues(alpha: 0.5),
-                        onRefresh: () async {
-                          await Future.delayed(const Duration(milliseconds: 300), () {
-                            ref.invalidate(getAllRankingLeaderboardProvider);
-                          });
-                        },
-                        child: ListView.builder(
-                          itemCount: players.length,
-                          itemBuilder: (context, i) {
-                            Color playerColor;
-                            switch (i + 1) {
-                              case 1:
-                                playerColor = AppColors.primary;
-                              case 2:
-                                playerColor = Colors.green[300]!;
-                              case 3:
-                                playerColor = Colors.blueGrey[200]!;
-
-                              default:
-                                playerColor = AppColors.whiteColor;
-                            }
-                            final player = players[i];
-                            if (player.id == user.id) {
-                              return const SizedBox();
-                            }
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  buildCard(i, playerColor, player, false),
-                                  const SizedBox(height: 15),
-                                  Divider(
-                                    color: AppColors.descriptionColor.withValues(alpha: .15),
-                                  ),
-                                ],
-                              ),
-                            );
+                child: ref
+                    .watch(getAllRankingLeaderboardProvider)
+                    .when(
+                      data: (players) {
+                        return RefreshIndicator(
+                          color: AppColors.whiteColor,
+                          backgroundColor: AppColors.primary.withValues(alpha: 0.5),
+                          onRefresh: () async {
+                            await Future.delayed(const Duration(milliseconds: 300), () {
+                              ref.invalidate(getAllRankingLeaderboardProvider);
+                            });
                           },
-                        ),
-                      );
-                    },
-                    error: (error, _) => Center(
-                          child: Text(error.toString()),
-                        ),
-                    loading: () => BeatLoader()),
+                          child: ListView.builder(
+                            itemCount: players.length,
+                            itemBuilder: (context, i) {
+                              Color playerColor;
+                              switch (i + 1) {
+                                case 1:
+                                  playerColor = AppColors.primary;
+                                case 2:
+                                  playerColor = Colors.green[300]!;
+                                case 3:
+                                  playerColor = Colors.blueGrey[200]!;
+
+                                default:
+                                  playerColor = AppColors.whiteColor;
+                              }
+                              final player = players[i];
+                              if (player.id == user.id) {
+                                return const SizedBox();
+                              }
+                              return Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 15, 5, 5),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    buildCard(i, playerColor, player, false),
+                                    const SizedBox(height: 15),
+                                    Divider(
+                                      color: AppColors.descriptionColor.withValues(alpha: .15),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      error: (error, _) => Center(child: Text(error.toString())),
+                      loading: () => BeatLoader(),
+                    ),
               ),
             ],
           ),
@@ -132,13 +125,7 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                player.name,
-                style: TextStyle(
-                  color: playerColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(player.name, style: TextStyle(color: playerColor, fontWeight: FontWeight.bold)),
               const SizedBox(height: 5),
               Text(
                 player.username,
@@ -163,41 +150,51 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
   }
 
   Row buildCategoryChange() => Row(
-        spacing: 10,
-        children: [
-          Expanded(
-            child: buildCategoryCard(
-                duration: const Duration(milliseconds: 300), index: 0, text: "Global"),
-          ),
-          Expanded(
-            child: buildCategoryCard(
-                duration: const Duration(milliseconds: 300), index: 1, text: "Friends"),
-          ),
-        ],
-      );
+    spacing: 10,
+    children: [
+      Expanded(
+        child: buildCategoryCard(
+          duration: const Duration(milliseconds: 300),
+          index: 0,
+          text: "Global",
+        ),
+      ),
+      Expanded(
+        child: buildCategoryCard(
+          duration: const Duration(milliseconds: 300),
+          index: 1,
+          text: "Friends",
+        ),
+      ),
+    ],
+  );
 
-  GestureDetector buildCategoryCard(
-      {required Duration duration, required int index, required String text}) {
+  GestureDetector buildCategoryCard({
+    required Duration duration,
+    required int index,
+    required String text,
+  }) {
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     bool isActive = selectedIndex == index;
     return GestureDetector(
       onTap: () {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
         if (index == 0 && isActive) return;
-        CustomToast.soon();
+        CustomToast.soon(isArabic);
       },
       child: AnimatedContainer(
         duration: duration,
         decoration: BoxDecoration(
-          color: isActive
-              ? Colors.purpleAccent.withValues(alpha: .15)
-              : AppColors.primary.withValues(alpha: 0.15),
+          color:
+              isActive
+                  ? Colors.purpleAccent.withValues(alpha: .15)
+                  : AppColors.primary.withValues(alpha: 0.15),
           border: Border.all(color: isActive ? Colors.purpleAccent : AppColors.primary),
           borderRadius: BorderRadius.circular(8),
         ),
         padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-        child: Center(
-          child: Text(text),
-        ),
+        child: Center(child: Text(text)),
       ),
     );
   }

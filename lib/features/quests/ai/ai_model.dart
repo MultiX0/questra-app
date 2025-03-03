@@ -21,6 +21,7 @@ class AiModel {
     double? temp,
     double? topP,
     double? topK,
+    bool translate = false,
     required List<Map<String, dynamic>> content,
   }) async {
     try {
@@ -29,7 +30,10 @@ class AiModel {
         options: _options,
         data: jsonEncode({
           // "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-          "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+          "model":
+              translate
+                  ? "meta-llama/Llama-3.3-70B-Instruct-Turbo"
+                  : "meta-llama/Meta-Llama-3.1-8B-Instruct",
 
           "messages": content,
           "temperature": temp ?? 0.8,

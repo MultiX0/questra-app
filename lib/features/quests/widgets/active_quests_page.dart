@@ -40,7 +40,7 @@ class ActiveQuestsCarousel extends ConsumerWidget {
             questModel: quest,
             onTap: () {
               ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-
+              // log("quest description ${quest.ar_description}");
               Navs(context, ref).viewQuest(quest, special);
             },
           ),
