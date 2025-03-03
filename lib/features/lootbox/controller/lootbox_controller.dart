@@ -17,13 +17,16 @@ class LootboxController extends StateNotifier<bool> {
 
   Future<void> reciveReward({required String userId, required int amount}) async {
     try {
+      final isArabic = _ref.read(localeProvider).languageCode == 'ar';
       state = true;
       await _ref.read(walletRepositoryProvider).addCoins(userId: userId, amount: amount);
       await _manager.takeLootBox(userId);
 
       _ref.read(soundEffectsServiceProvider).playEffect("marketplace_buy.aac");
       state = false;
-      CustomToast.systemToast("Lootbox has successfully received");
+      CustomToast.systemToast(
+        isArabic ? "تم حصد الجوائز بنجاح" : "Lootbox has successfully received",
+      );
     } catch (e) {
       state = false;
 

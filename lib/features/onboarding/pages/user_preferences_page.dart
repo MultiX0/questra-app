@@ -79,34 +79,24 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
           // 'Acts of Kindness',
           // 'Real-World Social Prompts',
           {
-            'key': "Gamified Social Challenges",
+            'key': "Solo Explorer",
             'value': AppLocalizations.of(context).gamified_social_challenges,
           },
+
           {
-            'key': "Story-Driven Social Quests",
-            'value': AppLocalizations.of(context).story_driven_social_quests,
-          },
-          {
-            'key': "Community-Based Engagement",
+            'key': "Friendly Collaborator",
             'value': AppLocalizations.of(context).community_based_engagement,
           },
           {
-            'key': "Simulated Social Scenarios",
+            'key': "Competitive Challenger",
             'value': AppLocalizations.of(context).simulated_social_scenarios,
           },
+          {'key': "Casual Engager", 'value': AppLocalizations.of(context).virtual_collaboration},
           {
-            'key': "Virtual Collaboration",
-            'value': AppLocalizations.of(context).virtual_collaboration,
-          },
-          {
-            'key': "Interactive Forums or Chatrooms",
+            'key': "Silent Observer",
             'value': AppLocalizations.of(context).interactive_forums_or_chatrooms,
           },
-          {'key': "Acts of Kindness", 'value': AppLocalizations.of(context).acts_of_kindness},
-          {
-            'key': "Real-World Social Prompts",
-            'value': AppLocalizations.of(context).real_world_social_prompts,
-          },
+          {'key': "Troll Master", 'value': AppLocalizations.of(context).acts_of_kindness},
         ],
         title: AppLocalizations.of(context).select_social_interactions,
       ),

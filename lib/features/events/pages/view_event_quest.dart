@@ -40,7 +40,7 @@ class _ViewQuestPageState extends ConsumerState<ViewEventQuest> {
     final quest = ref.watch(viewEventQuestProvider)!;
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "View Quest"),
+        appBar: TheAppBar(title: AppLocalizations.of(context).view_quest),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: (_finish) ? buildFinish() : buildBody(quest),
@@ -71,7 +71,12 @@ class _ViewQuestPageState extends ConsumerState<ViewEventQuest> {
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
           // isButton:
           // true,
-          child: Center(child: Text("finish", style: TextStyle(fontFamily: AppFonts.header))),
+          child: Center(
+            child: Text(
+              AppLocalizations.of(context).finish,
+              style: TextStyle(fontFamily: AppFonts.header),
+            ),
+          ),
         ),
       ],
     );

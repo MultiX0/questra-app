@@ -42,15 +42,28 @@ class _LeveledUpPageState extends ConsumerState<LeveledUpPage> {
     "NONE CAN MATCH ME 💪",
   ];
 
+  final _arStrings = [
+    "شاهدوا العظمة ⚡",
+    "أنا القوة 🔥",
+    "الأسطورة مستمرة 🚀",
+    "لا أحد يمكنه مجارتي 💪",
+  ];
+
   Future<void> _load() async {
     final rand = math.Random.secure();
+    bool isArabic = ref.read(localeProvider).languageCode == 'ar';
     setState(() {
-      btnString = _strings[rand.nextInt(_strings.length)];
+      if (isArabic) {
+        btnString = _strings[rand.nextInt(_arStrings.length)];
+      } else {
+        btnString = _strings[rand.nextInt(_strings.length)];
+      }
     });
 
     final cachedLevel = ref.read(cachedUserLevelProvider);
 
-    final file = ref.read(levelUpRiveFileProvider) ??
+    final file =
+        ref.read(levelUpRiveFileProvider) ??
         await RiveFile.asset('assets/rive/level_display_modifed.riv');
 
     final artboard = file.mainArtboard;
@@ -59,10 +72,7 @@ class _LeveledUpPageState extends ConsumerState<LeveledUpPage> {
     final artboardCopy = artboard.instance();
 
     // Look at the UI in the second screenshot, it shows "Number 1" as the input name
-    final controller = StateMachineController.fromArtboard(
-      artboardCopy,
-      'State Machine 1',
-    );
+    final controller = StateMachineController.fromArtboard(artboardCopy, 'State Machine 1');
 
     if (controller != null) {
       artboardCopy.addController(controller);
@@ -94,50 +104,42 @@ class _LeveledUpPageState extends ConsumerState<LeveledUpPage> {
   @override
   Widget build(BuildContext context) {
     return BackgroundWidget(
-        child: Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_riveArtboard != null)
-                SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Rive(
-                    artboard: _riveArtboard!,
-                  ),
-                )
-              else ...[
-                BeatLoader(),
+      child: Scaffold(
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_riveArtboard != null)
+                  SizedBox(width: 200, height: 200, child: Rive(artboard: _riveArtboard!))
+                else ...[
+                  BeatLoader(),
+                  const SizedBox(height: 10),
+                ],
                 const SizedBox(height: 10),
-              ],
-              const SizedBox(height: 10),
-              GlowText(
-                text: "Level UP!",
-                glowColor: AppColors.primary,
-                style: TextStyle(
-                  fontFamily: AppFonts.header,
-                  fontSize: 24,
-                  color: AppColors.primary,
+                GlowText(
+                  text: "Level UP!",
+                  glowColor: AppColors.primary,
+                  style: TextStyle(
+                    fontFamily: AppFonts.header,
+                    fontSize: 24,
+                    color: AppColors.primary,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              Text(
-                "This isn’t just a level-up—it’s proof of your grind, your will, and your power. Weaklings stay the same. You? You evolve.",
-                style: TextStyle(color: AppColors.descriptionColor),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              SystemCardButton(
-                onTap: () => context.pop(),
-                text: btnString,
-              ),
-            ],
+                const SizedBox(height: 15),
+                Text(
+                  AppLocalizations.of(context).level_up_description,
+                  style: TextStyle(color: AppColors.descriptionColor),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                SystemCardButton(onTap: () => context.pop(), text: btnString),
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }

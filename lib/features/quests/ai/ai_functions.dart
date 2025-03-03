@@ -154,12 +154,16 @@ class AiFunctions {
 
         final _newQuest = await _ref.read(questsRepositoryProvider).insertQuest(quest);
         final questData = await _ref.read(questsRepositoryProvider).getQuestById(_newQuest.id);
+        final isArabic = _ref.read(localeProvider).languageCode == 'ar';
+
         NotificationService().scheduleDailyNotification(
           selectedTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
-          title: "Quest Reminder",
+          title: isArabic ? "تذكير بالمهام" : "Quest Reminder",
 
           body:
-              "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+              isArabic
+                  ? ""
+                  : "لديك أقل من ساعتين لإكمال مهمتك (${quest.title})، يرجى إنهاؤها لتجنب العقوبة.",
           notificationId: questData?.notification_id,
           // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
           // scheduledTime:

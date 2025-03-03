@@ -61,15 +61,10 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Update Your Avatar.",
-                    style: TextStyle(
-                      fontFamily: AppFonts.header,
-                      fontSize: 18,
-                    ),
+                    AppLocalizations.of(context).avatar_update,
+                    style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(25),
                     child: AspectRatio(
@@ -78,29 +73,17 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
                         padding: EdgeInsets.zero,
                         onTap: selectImages,
                         // padding: EdgeInsets.all(25),
-                        child: _images.isEmpty
-                            ? Icon(
-                                LucideIcons.upload,
-                                color: AppColors.primary,
-                                size: 20,
-                              )
-                            : ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image(
-                                  image: FileImage(_images.first),
-                                  fit: BoxFit.cover,
+                        child:
+                            _images.isEmpty
+                                ? Icon(LucideIcons.upload, color: AppColors.primary, size: 20)
+                                : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image(image: FileImage(_images.first), fit: BoxFit.cover),
                                 ),
-                              ),
                       ),
                     ),
                   ),
-                  if (isLoading) ...[
-                    const BeatLoader(),
-                  ] else ...[
-                    SystemCardButton(
-                      onTap: finish,
-                    ),
-                  ],
+                  if (isLoading) ...[const BeatLoader()] else ...[SystemCardButton(onTap: finish)],
                 ],
               ),
             ),

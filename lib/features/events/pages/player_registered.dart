@@ -95,7 +95,7 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Total number of participants:"),
+                            Text("${AppLocalizations.of(context).total_participants}:"),
                             GlowText(
                               text: playersCount.toString(),
                               style: TextStyle(

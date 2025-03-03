@@ -21,7 +21,7 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
     final userRank = ref.watch(playerRankingProvider) ?? -1;
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "Leaderboard"),
+        appBar: TheAppBar(title: AppLocalizations.of(context).leaderboard),
         body: Padding(
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
           child: Column(
@@ -39,7 +39,7 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Your Rank"),
+                    Text(AppLocalizations.of(context).your_rank),
                     const SizedBox(height: 10),
                     buildCard(userRank, AppColors.primary, user!, true),
                   ],
@@ -156,14 +156,14 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
         child: buildCategoryCard(
           duration: const Duration(milliseconds: 300),
           index: 0,
-          text: "Global",
+          text: AppLocalizations.of(context).leaderboard_buttons1,
         ),
       ),
       Expanded(
         child: buildCategoryCard(
           duration: const Duration(milliseconds: 300),
           index: 1,
-          text: "Friends",
+          text: AppLocalizations.of(context).leaderboard_buttons2,
         ),
       ),
     ],

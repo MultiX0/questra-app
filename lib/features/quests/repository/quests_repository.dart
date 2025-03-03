@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/core/shared/utils/lang_detect.dart';

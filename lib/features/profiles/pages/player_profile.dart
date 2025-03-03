@@ -26,7 +26,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return BackgroundWidget(
       child: Scaffold(
         appBar: TheAppBar(
-          title: "Profile",
+          title: AppLocalizations.of(context).profile,
           actions: [
             IconButton(
               onPressed: () {
@@ -80,9 +80,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       onTap: () {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
         if (user!.level!.level < 5) {
-          CustomToast.systemToast(
-            "You need to reach level 5 to be able to create your own quests.",
-          );
+          CustomToast.systemToast(AppLocalizations.of(context).custom_quest_level_locked);
           return;
         }
 
@@ -91,7 +89,11 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(LucideIcons.diamond), const SizedBox(height: 10), Text("Custom Quests")],
+        children: [
+          Icon(LucideIcons.diamond),
+          const SizedBox(height: 10),
+          Text(AppLocalizations.of(context).profile_custom_quests),
+        ],
       ),
     );
   }
@@ -103,7 +105,11 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(LucideIcons.building_2), const SizedBox(height: 10), Text("Guild")],
+        children: [
+          Icon(LucideIcons.building_2),
+          const SizedBox(height: 10),
+          Text(AppLocalizations.of(context).profile_guild),
+        ],
       ),
     );
   }
@@ -115,7 +121,11 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [Icon(LucideIcons.users), const SizedBox(height: 10), Text("Friends")],
+        children: [
+          Icon(LucideIcons.users),
+          const SizedBox(height: 10),
+          Text(AppLocalizations.of(context).profile_friends),
+        ],
       ),
     );
   }

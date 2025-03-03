@@ -48,7 +48,10 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
       },
       child: BackgroundWidget(
         child: Scaffold(
-          appBar: TheAppBar(title: selectedQuestId != null ? null : "Player Quests"),
+          appBar: TheAppBar(
+            title:
+                selectedQuestId != null ? null : AppLocalizations.of(context).player_quests_title,
+          ),
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.all(8),

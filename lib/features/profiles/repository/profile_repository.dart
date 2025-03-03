@@ -162,4 +162,13 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<void> updateAccountLang({required String userId, required String lang}) async {
+    try {
+      await _profilesTable.update({KeyNames.lang: lang}).eq(KeyNames.id, userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

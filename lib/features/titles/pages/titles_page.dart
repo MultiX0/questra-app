@@ -22,23 +22,18 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
     openSheet(
-        context: context,
-        body: StatefulBuilder(builder: (context, setState) {
+      context: context,
+      body: StatefulBuilder(
+        builder: (context, setState) {
           return Center(
             child: ListView(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               shrinkWrap: true,
               children: [
-                Icon(
-                  LucideIcons.hexagon,
-                  color: AppColors.primary,
-                  size: 40,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+                Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+                const SizedBox(height: 20),
                 Text(
-                  "do you want to change\nyour current active title?",
+                  AppLocalizations.of(context).titles_change_title_message,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
@@ -48,20 +43,26 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
                 ),
                 const SizedBox(height: 20),
                 SystemCardButton(
-                    onTap: () {
-                      context.pop();
-                      ref.read(titlesControllerProvider.notifier).handleTitleChange(
-                            userId: userId,
-                            id: titleId,
-                          );
-                    },
-                    text: "yes"),
+                  onTap: () {
+                    context.pop();
+                    ref
+                        .read(titlesControllerProvider.notifier)
+                        .handleTitleChange(userId: userId, id: titleId);
+                  },
+                  text: AppLocalizations.of(context).yes,
+                ),
                 const SizedBox(height: 10),
-                SystemCardButton(onTap: () => context.pop(), text: "cancel", doneButton: false),
+                SystemCardButton(
+                  onTap: () => context.pop(),
+                  text: AppLocalizations.of(context).cancel.toLowerCase(),
+                  doneButton: false,
+                ),
               ],
             ),
           );
-        }));
+        },
+      ),
+    );
   }
 
   @override
@@ -70,22 +71,23 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
     final isLoading = ref.watch(titlesControllerProvider);
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "Titles"),
-        body: isLoading
-            ? BeatLoader()
-            : ref.watch(getAllTitlesProvider(user!.id)).when(
-                  data: (titles) {
-                    if (titles.isEmpty) {
-                      return Center(child: buildEmptyTitels(user.id));
-                    }
+        appBar: TheAppBar(title: AppLocalizations.of(context).profile_titles),
+        body:
+            isLoading
+                ? BeatLoader()
+                : ref
+                    .watch(getAllTitlesProvider(user!.id))
+                    .when(
+                      data: (titles) {
+                        if (titles.isEmpty) {
+                          return Center(child: buildEmptyTitels(user.id));
+                        }
 
-                    return buildTitles(titles);
-                  },
-                  error: (error, _) => Center(
-                    child: Text(error.toString()),
-                  ),
-                  loading: () => BeatLoader(),
-                ),
+                        return buildTitles(titles);
+                      },
+                      error: (error, _) => Center(child: Text(error.toString())),
+                      loading: () => BeatLoader(),
+                    ),
       ),
     );
   }
@@ -119,26 +121,22 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
                       Expanded(
                         child: Text(
                           title.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: color,
-                          ),
+                          style: TextStyle(fontWeight: FontWeight.w600, color: color),
                         ),
                       ),
                       const SizedBox(width: 10),
                       IconButton(
                         onPressed: () => changeSheet(user!.id, title.id),
-                        icon: Icon(
-                          LucideIcons.crown,
-                          color: color,
-                        ),
-                      )
+                        icon: Icon(LucideIcons.crown, color: color),
+                      ),
                     ],
                   ),
                   Text(
-                    "owned at ${appDateFormat(title.owned_at)}",
+                    "${AppLocalizations.of(context).owned_at} ${appDateFormat(title.owned_at)}",
                     style: TextStyle(
-                        fontSize: 12, color: AppColors.descriptionColor.withValues(alpha: .5)),
+                      fontSize: 12,
+                      color: AppColors.descriptionColor.withValues(alpha: .5),
+                    ),
                   ),
                   const SizedBox(height: 10),
                 ],
@@ -163,16 +161,10 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                LucideIcons.hexagon,
-                color: AppColors.primary,
-                size: 40,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
+              Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+              const SizedBox(height: 15),
               Text(
-                "There is no titles for now",
+                AppLocalizations.of(context).titles_empty,
                 style: TextStyle(
                   fontWeight: FontWeight.w200,
                   color: AppColors.descriptionColor,
@@ -189,9 +181,7 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
                     backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(
-                        color: HexColor('7AD5FF'),
-                      ),
+                      side: BorderSide(color: HexColor('7AD5FF')),
                     ),
                     foregroundColor: AppColors.whiteColor,
                     textStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -210,7 +200,7 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
                       });
                     });
                   },
-                  child: Text("Refresh"),
+                  child: Text(AppLocalizations.of(context).titles_empty_refresh),
                 ),
               ],
             ],

@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/imports.dart';
 import 'package:intl/intl.dart';
 
@@ -193,6 +192,18 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     );
   }
 
+  void changeLang() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+    } else {
+      newLang = Locale('ar');
+    }
+    ref.read(localeProvider.notifier).state = newLang;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -204,6 +215,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
               onPressed: () => ref.read(authStateProvider.notifier).logout(),
               icon: Icon(LucideIcons.log_out),
             ),
+            IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages)),
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -232,14 +244,16 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
 
                       return null;
                     },
+                    maxLength: 20,
                   ),
                   const SizedBox(height: 15),
                   NeonTextField(
                     controller: _usernameController,
+
                     inputFormatters: [
                       FilteringTextInputFormatter.deny(RegExp(r'\s')), // Deny any whitespace
                       FilteringTextInputFormatter.allow(
-                        RegExp(r'[a-z_.]'),
+                        RegExp(r'[a-z0-9_.]'),
                       ), // Allow only lowercase, underscore, dot
                     ],
                     validator: (val) {

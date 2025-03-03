@@ -64,6 +64,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
+  void changeLang() async {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+    } else {
+      newLang = Locale('ar');
+    }
+    final user = ref.watch(authStateProvider);
+    ref.read(localeProvider.notifier).state = newLang;
+    await ref
+        .read(profileRepositoryProvider)
+        .updateAccountLang(userId: user!.id, lang: newLang.languageCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(milliseconds: 800);
@@ -71,7 +87,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TheAppBar(title: AppLocalizations.of(context).appTitle),
+        appBar: TheAppBar(
+          title: AppLocalizations.of(context).appTitle,
+          actions: [IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages))],
+        ),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),

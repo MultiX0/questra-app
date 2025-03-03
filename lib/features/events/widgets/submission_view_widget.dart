@@ -341,7 +341,7 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
             });
             selectReportType();
           },
-          child: Text('report'),
+          child: Text(AppLocalizations.of(context).report),
         ),
       ],
     );

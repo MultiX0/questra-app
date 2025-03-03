@@ -473,25 +473,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get select_social_interactions => 'Select social interactions';
 
   @override
-  String get gamified_social_challenges => 'Gamified Social Challenges';
+  String get gamified_social_challenges => 'Solo Explorer';
 
   @override
-  String get story_driven_social_quests => 'Story-Driven Social Quests';
+  String get story_driven_social_quests => 'Friendly Collaborator';
 
   @override
-  String get community_based_engagement => 'Community-Based Engagement';
+  String get community_based_engagement => 'Friendly Collaborator';
 
   @override
-  String get simulated_social_scenarios => 'Simulated Social Scenarios';
+  String get simulated_social_scenarios => 'Competitive Challenger';
 
   @override
-  String get virtual_collaboration => 'Virtual Collaboration';
+  String get virtual_collaboration => 'Casual Engager';
 
   @override
-  String get interactive_forums_or_chatrooms => 'Interactive Forums or Chatrooms';
+  String get interactive_forums_or_chatrooms => 'Silent Observer';
 
   @override
-  String get acts_of_kindness => 'Acts of Kindness';
+  String get acts_of_kindness => 'Troll Master';
 
   @override
   String get real_world_social_prompts => 'Real-World Social Prompts';
@@ -846,4 +846,143 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buy_btn => 'Buy';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get profile_custom_quests => 'Custom Quests';
+
+  @override
+  String get profile_titles => 'Titels';
+
+  @override
+  String get profile_goals => 'Goals';
+
+  @override
+  String get profile_achivments => 'Achivment';
+
+  @override
+  String get profile_guild => 'Guild';
+
+  @override
+  String get profile_friends => 'Friends';
+
+  @override
+  String get add_goal_alert => 'Goal should be contains at lease 8 characters';
+
+  @override
+  String get add_goal_card_title => 'NEW GOAL!';
+
+  @override
+  String get add_goal_card_note => 'hint: Your goals help the system to understand more about your needs to make better quests for you.';
+
+  @override
+  String get delete_goal_title => 'Delete Goal';
+
+  @override
+  String get delete_goal_readme => 'readme: Your goals help the system to understand more about your needs to make better quests for you.\ndo you want to delete this goal?';
+
+  @override
+  String get add_goal_hint => 'please enter your goal here';
+
+  @override
+  String get titles_empty => 'There is no titles for now';
+
+  @override
+  String get titles_empty_refresh => 'Refresh';
+
+  @override
+  String get titles_change_title_message => 'do you want to change\nyour current active title?';
+
+  @override
+  String get yes => 'yes';
+
+  @override
+  String get owned_at => 'owned at';
+
+  @override
+  String get leaderboard => 'Leaderboard';
+
+  @override
+  String get your_rank => 'Your Rank';
+
+  @override
+  String get leaderboard_buttons1 => 'Global';
+
+  @override
+  String get leaderboard_buttons2 => 'Friends';
+
+  @override
+  String event_join_title(Object title) {
+    return '🌟 Exclusive Event: $title – Register Now!';
+  }
+
+  @override
+  String event_join_subtitle(Object title) {
+    return 'Be part of something special! Join $title on Questra and experience an unforgettable event filled with unique opportunities. Secure your spot today and stay updated with all the latest details. Don\'t miss out! 🎉🚀';
+  }
+
+  @override
+  String get event_join_fee => 'registration fee is';
+
+  @override
+  String get event_register_btn => 'Register Now';
+
+  @override
+  String get participants => 'Participants';
+
+  @override
+  String get total_participants => 'Total number of participants';
+
+  @override
+  String get view_quest => 'View Quest';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get player_quests_title => 'Player Quests';
+
+  @override
+  String get skip => 'skip';
+
+  @override
+  String get delete_custom_quest => 'delete';
+
+  @override
+  String get quest_completetion_card_title => 'Victory Achieved, Hero!';
+
+  @override
+  String get quest_completetion_card_description => 'Your dedication and skills have led you to triumph. The realm celebrates your success great rewards await you!';
+
+  @override
+  String quest_completetion_card_reward(Object coin_reward, Object xp_reward) {
+    return '- Your reward is: ${xp_reward}XP, $coin_reward\$ coins';
+  }
+
+  @override
+  String quest_completetion_card_title_earned(Object owned_title) {
+    return '- Earned title: $owned_title';
+  }
+
+  @override
+  String get level_up_description => 'This isn’t just a level-up—it’s proof of your grind, your will, and your power. Weaklings stay the same. You? You evolve.';
+
+  @override
+  String get lootbox_title => 'WELL, WELL, LOOK WHO GOT LUCKY!';
+
+  @override
+  String get lootbox_description => 'What’s this? A loot box? Did the game accidentally mistake you for someone important? Nah, just kidding—you’re obviously a legend.';
+
+  @override
+  String lootbox_description2(Object reward) {
+    return '💰 Inside: A glorious stash of coins (\$reward).\n🎲 Luck is just skill you didn’t plan for.';
+  }
+
+  @override
+  String get lootbox_btn => 'GIMME MY MONEY 💰';
+
+  @override
+  String get avatar_update => 'Update Your Avatar.';
 }

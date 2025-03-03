@@ -43,6 +43,8 @@ class QuestsController extends StateNotifier<bool> {
 
   QuestsRepository get _repository => _ref.watch(questsRepositoryProvider);
 
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+
   Future<List<QuestTypeModel>> getAllQuestTypes() async {
     try {
       return await _repository.getAllQuestTypes();
@@ -138,7 +140,7 @@ class QuestsController extends StateNotifier<bool> {
 
       await _repository.handleSkip(quest: quest, userId: userId, feedback: feedback);
 
-      CustomToast.systemToast("quest skipped successfully");
+      CustomToast.systemToast(isArabic ? "تم تخطي المهمة بنجاح." : "quest skipped successfully");
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       _ref.invalidate(questArchiveProvider);
       state = false;
@@ -162,7 +164,10 @@ class QuestsController extends StateNotifier<bool> {
       state = true;
       await _repository.updateQuestStatus(StatusEnum.failed, quest.id);
       await _repository.failedPunishment(quest);
-      CustomToast.systemToast("penalty is received", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تم تلقي العقوبة." : "penalty is received",
+        systemMessage: true,
+      );
       await _repository.insertFeedback(feedback);
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       _ref.invalidate(questArchiveProvider);
@@ -210,7 +215,7 @@ class QuestsController extends StateNotifier<bool> {
 
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
       if (lastExceptionsCount.count >= 3) {
-        throw "Sorry but you can't try again until ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
+        throw "${isArabic ? "" : "عذرًا، لا يمكنك المحاولة مرة أخرى حتى"} ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
       }
 
       await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0, user.id);
@@ -238,7 +243,10 @@ class QuestsController extends StateNotifier<bool> {
       newQuests.removeWhere((quest) => quest.id == questId);
       _ref.read(customQuestsProvider.notifier).state = newQuests;
       state = false;
-      CustomToast.systemToast("The quest has been successfully deleted.", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تم حذف المهمة بنجاح." : "The quest has been successfully deleted.",
+        systemMessage: true,
+      );
       context.pop();
     } catch (e) {
       state = false;

@@ -13,7 +13,7 @@ class BuildDashboardGrid extends ConsumerWidget {
 
     List<Map<String, dynamic>> buttons = [
       {
-        'name': "Goals",
+        'name': AppLocalizations.of(context).profile_goals,
         "icon": LucideIcons.sparkles,
         "onTap": () {
           play();
@@ -21,7 +21,7 @@ class BuildDashboardGrid extends ConsumerWidget {
         },
       },
       {
-        'name': "Titels",
+        'name': AppLocalizations.of(context).profile_titles,
         "icon": LucideIcons.crown,
         "onTap": () {
           play();
@@ -30,7 +30,7 @@ class BuildDashboardGrid extends ConsumerWidget {
         },
       },
       {
-        'name': "Achivment",
+        'name': AppLocalizations.of(context).profile_achivments,
         "icon": LucideIcons.archive,
         "onTap": () {
           play();

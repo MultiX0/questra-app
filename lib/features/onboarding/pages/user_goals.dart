@@ -74,7 +74,10 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
             )
             .toList();
 
-    ref.read(localUserProvider.notifier).state = localUser?.copyWith(goals: goalsList);
+    ref.read(localUserProvider.notifier).state = localUser?.copyWith(
+      goals: goalsList,
+      lang: ref.read(localeProvider).languageCode,
+    );
 
     // widget.next();
 
