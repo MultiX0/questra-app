@@ -158,7 +158,17 @@ class QuestsRepository {
           .neq(KeyNames.is_custom, true);
 
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
-      return quests;
+      List<QuestModel> _quests = [];
+      for (final quest in quests) {
+        if (quest.ar_description == null || quest.ar_title == null) {
+          final translatedQuest = await translateQuest(quest);
+          _quests.add(translatedQuest);
+          await updateQuest(translatedQuest);
+        } else {
+          _quests.add(quest);
+        }
+      }
+      return _quests;
     } catch (e) {
       log(e.toString());
       throw Exception(e);

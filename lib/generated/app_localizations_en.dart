@@ -834,4 +834,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get marketplace_item_locked => 'Locked';
+
+  @override
+  String get marketplace_empty => 'There is no items';
+
+  @override
+  String get buy => 'Buy';
+
+  @override
+  String get cost => 'cost';
+
+  @override
+  String get buy_btn => 'Buy';
 }

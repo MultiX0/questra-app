@@ -17,6 +17,7 @@ class MarketplaceRepository {
   SupabaseQueryBuilder get _itemsTable => _client.from(TableNames.items);
   SupabaseQueryBuilder get _invTable => _client.from(TableNames.player_owned_items);
   bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+  // TranslationService get _translationService => TranslationService();
 
   Future<InventoryItem?> getInventoryItemById(String itemId, String userId) async {
     try {
@@ -61,8 +62,9 @@ class MarketplaceRepository {
 
   Future<List<ItemModel>> getAllItems() async {
     try {
-      final data = await _itemsTable.select("*");
+      final data = await _itemsTable.select("*").order(KeyNames.locked);
       final itemList = data.map((item) => ItemModel.fromMap(item)).toList();
+
       return itemList;
     } catch (e) {
       log(e.toString());
@@ -101,7 +103,9 @@ class MarketplaceRepository {
         }
 
         _ref.read(soundEffectsServiceProvider).playEffect("marketplace_buy.aac");
-
+        CustomToast.systemToast(
+          isArabic ? "تمت عملية الشراء بنجاح" : "The purchase was completed successfully.",
+        );
         _ref
             .read(analyticsServiceProvider)
             .logPurchase(totalPrice.toDouble(), _user.id, item.itemId);

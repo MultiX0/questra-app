@@ -834,4 +834,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get marketplace_item_locked => 'مقفل';
+
+  @override
+  String get marketplace_empty => 'لاتوجد عناصر حتى الأن';
+
+  @override
+  String get buy => 'اشتر';
+
+  @override
+  String get cost => 'التكلفة';
+
+  @override
+  String get buy_btn => 'شراء';
 }

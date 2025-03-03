@@ -229,7 +229,11 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                             style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                           ),
                           Text(
-                            item.description ?? "${AppLocalizations.of(context).soon}...",
+                            isArabic
+                                ? item.ar_description ??
+                                    item.description ??
+                                    "${AppLocalizations.of(context).soon}..."
+                                : "NA",
                             style: TextStyle(
                               fontWeight: FontWeight.w200,
                               color: AppColors.descriptionColor,
@@ -359,7 +363,10 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
     return SystemCard(
       isButton: true,
       padding: EdgeInsets.all(16),
-      child: Text("There is no items", style: TextStyle(fontFamily: AppFonts.header, fontSize: 20)),
+      child: Text(
+        AppLocalizations.of(context).marketplace_empty,
+        style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
+      ),
     );
   }
 }

@@ -282,7 +282,12 @@
   "marketplace_categories": "Categories",
   "soon": "soon",
   "marketplace_item_locked_toast": "this item is locked for now",
-  "marketplace_item_locked": "Locked"
+  "marketplace_item_locked": "Locked",
+  "marketplace_empty": "There is no items",
+  "buy": "Buy",
+  "cost": "cost",
+  "buy_btn": "Buy"
+
 
 
 

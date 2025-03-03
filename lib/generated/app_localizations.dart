@@ -1732,6 +1732,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Locked'**
   String get marketplace_item_locked;
+
+  /// No description provided for @marketplace_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no items'**
+  String get marketplace_empty;
+
+  /// No description provided for @buy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy;
+
+  /// No description provided for @cost.
+  ///
+  /// In en, this message translates to:
+  /// **'cost'**
+  String get cost;
+
+  /// No description provided for @buy_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy_btn;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

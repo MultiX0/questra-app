@@ -278,7 +278,12 @@
   "marketplace_categories": "الفئات",
   "soon": "سيتوفر قريبا",
   "marketplace_item_locked_toast": "تم قفل هذا العنصر حاليًا.",
-  "marketplace_item_locked": "مقفل"
+  "marketplace_item_locked": "مقفل",
+  "marketplace_empty": "لاتوجد عناصر حتى الأن",
+  "buy": "اشتر",
+  "cost": "التكلفة",
+  "buy_btn": "شراء"
+
 
 
 
