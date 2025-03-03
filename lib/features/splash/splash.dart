@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -11,41 +12,51 @@ class SplashPage extends ConsumerStatefulWidget {
 }
 
 class _SplashPageState extends ConsumerState<SplashPage> {
-  late final StreamSubscription<UserModel?> _userSubscription;
+  StreamSubscription<UserModel?>? _userSubscription;
+  bool _hasStartedListening = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startListening();
+      if (!_hasStartedListening) {
+        _startListening();
+      }
     });
   }
 
   void _startListening() async {
+    if (_hasStartedListening) return;
+    _hasStartedListening = true;
+
     try {
       _userSubscription = ref.read(authStateProvider.notifier).stateStream.listen((user) async {
+        // Only process if not already redirected
+        if (!mounted) return;
+
         log("the user data is $user");
-        if (mounted) {
-          if (user != null && user.id.isNotEmpty) {
-            ref.read(isLoggedInProvider.notifier).state = true;
-            final valid = await ref.read(authStateProvider.notifier).hasValidAccount();
-            ref.read(validAccountProvider.notifier).state = valid;
 
-            if (!valid) {
-              if (mounted) {
-                context.go(Routes.onboardingController);
-                return;
-              }
+        if (user != null && user.id.isNotEmpty) {
+          ref.read(isLoggedInProvider.notifier).state = true;
+          final valid = await ref.read(authStateProvider.notifier).hasValidAccount();
+          ref.read(validAccountProvider.notifier).state = valid;
+
+          if (!valid) {
+            if (mounted) {
+              context.go(Routes.onboardingController);
+              return;
             }
+          }
 
-            final quests = await ref.read(questsRepositoryProvider).currentlyOngoingQuests(user.id);
-            ref.read(currentOngointQuestsProvider.notifier).state = quests;
+          final quests = await ref.read(questsRepositoryProvider).currentlyOngoingQuests(user.id);
+          ref.read(currentOngointQuestsProvider.notifier).state = quests;
 
-            if (mounted && valid) {
-              context.go(Routes.homePage);
-            }
-          } else {
-            ref.read(isLoggedInProvider.notifier).state = false;
+          if (mounted && valid) {
+            context.go(Routes.homePage);
+          }
+        } else {
+          ref.read(isLoggedInProvider.notifier).state = false;
+          if (mounted) {
             context.go(Routes.onboardingPage);
           }
         }
@@ -62,7 +73,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   @override
   void dispose() {
-    _userSubscription.cancel();
+    _userSubscription?.cancel();
     super.dispose();
   }
 
@@ -75,7 +86,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
           child: Image.asset(
             Assets.getImage('splash_icon.png'),
             fit: BoxFit.cover,
-          ),
+          ).spinPerfect(infinite: true),
         ),
       ),
     );
