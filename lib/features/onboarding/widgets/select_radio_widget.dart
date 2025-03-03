@@ -10,9 +10,9 @@ class SelectRadioWidget extends ConsumerStatefulWidget {
     required this.title,
   });
 
-  final Function(String) changeVal;
-  final String group;
-  final List<String> choices;
+  final Function(Map<String, dynamic>) changeVal;
+  final Map<String, dynamic> group;
+  final List<Map<String, dynamic>> choices;
   final String title;
 
   @override
@@ -20,7 +20,7 @@ class SelectRadioWidget extends ConsumerStatefulWidget {
 }
 
 class _SelectSelectAvtivityLevelWidgetState extends ConsumerState<SelectRadioWidget> {
-  String selectedGender = '';
+  Map<String, dynamic> selectedGender = {};
 
   @override
   void initState() {
@@ -56,23 +56,28 @@ class _SelectSelectAvtivityLevelWidgetState extends ConsumerState<SelectRadioWid
               shrinkWrap: true,
               children: [
                 ...widget.choices.map(
-                  (activiy) => RadioListTile(
+                  (activity) => RadioListTile<String>(
                     contentPadding: EdgeInsets.zero,
-                    value: activiy,
-                    groupValue: selectedGender,
+                    value: activity['key'],
+                    groupValue: selectedGender['key'],
                     onChanged: (v) {
                       ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-
                       if (v != null) {
+                        // Find the corresponding map from choices
+                        final selectedMap = widget.choices.firstWhere(
+                          (element) => element['key'] == v,
+                          orElse: () => activity,
+                        );
+
                         setState(() {
-                          selectedGender = v;
+                          selectedGender = selectedMap;
                         });
-                        widget.changeVal(v);
+                        widget.changeVal(selectedMap);
                       }
                     },
                     activeColor: AppColors.primary,
                     title: Text(
-                      activiy,
+                      activity['value'],
                       style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.whiteColor),
                     ),
                   ),

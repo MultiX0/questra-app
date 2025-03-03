@@ -156,7 +156,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
     final List<dynamic> results = await Future.wait<dynamic>([
       _ref.read(profileRepositoryProvider).getUserBirthDate(userId),
-      _ref.read(profileRepositoryProvider).getActiveTitle(user.activeTitleId!),
+      _ref.read(profileRepositoryProvider).getActiveTitle(userEvent[KeyNames.active_title]),
       _ref.read(rankingFunctionsProvider).refreshRanking(userId),
     ]);
 

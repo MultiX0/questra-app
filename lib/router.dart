@@ -44,24 +44,22 @@ final routerProvider = Provider<GoRouter>((ref) {
     observers: [observer],
     redirect: (context, state) {
       final isLoggedIn = ref.watch(isLoggedInProvider);
-      final haveValidAccount = ref.watch(validAccountProvider);
-      final inSplash = state.uri.toString() == Routes.splash;
       final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;
+      final inSplash = state.uri.toString() == Routes.splash;
       final inSetUpPage = state.uri.toString() == Routes.setupAccountPage;
+      final haveValidAccount = ref.watch(validAccountProvider);
       final isGoingToLegal =
           state.uri.toString() == Routes.termsPage || state.uri.toString() == Routes.privacyPage;
 
-      // Always allow legal pages
       if (isGoingToLegal) {
         return null;
       }
 
-      // Allow setup page
       if (inSetUpPage) {
         return null;
       }
 
-      // Don't redirect from splash during initial load
+      // Only redirect if we're not already in the correct place
       if (inSplash) return null;
 
       if (isLoggedIn && !haveValidAccount) {

@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/gestures.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
@@ -30,8 +31,20 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
       await ref.read(authControllerProvider.notifier).login();
     }
 
+    void hangleLangChange() {
+      final currentLang = ref.read(localeProvider);
+      if (currentLang.languageCode == 'en') {
+        ref.read(localeProvider.notifier).state = Locale("ar");
+      } else {
+        ref.read(localeProvider.notifier).state = Locale("en");
+      }
+    }
+
     return OnboardingBg(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [IconButton(onPressed: hangleLangChange, icon: Icon(LucideIcons.languages))],
+        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +52,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               Image.asset(Assets.getImage('splash_icon.png'), fit: BoxFit.cover).swing(),
               const SizedBox(height: 30),
               GlowText(
-                text: "Level Up Your Life!",
+                text: AppLocalizations.of(context).firstPageTitle,
                 textAlign: TextAlign.center,
                 glowColor: HexColor('7AD5FF'),
                 spreadRadius: .75,
@@ -53,7 +66,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               ).fadeInDown(duration: const Duration(milliseconds: 900)),
               const SizedBox(height: 15),
               GlowText(
-                text: "Embark on your personalized\nquest journey now",
+                text: AppLocalizations.of(context).firstPageSubtitle,
                 textAlign: TextAlign.center,
                 glowColor: Colors.white,
                 style: TextStyle(
@@ -87,7 +100,10 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                     color: Color.fromARGB(151, 99, 206, 255),
                     onPressed: handleLogin,
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: size.width * .35),
-                    child: isLoading ? BeatLoader() : Text("Level up!"),
+                    child:
+                        isLoading
+                            ? BeatLoader()
+                            : Text(AppLocalizations.of(context).firstPageButtonTitle),
                   ).tada(duration: const Duration(milliseconds: 1100), infinite: hover),
                 ),
               ),
@@ -108,7 +124,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
         textDirection: TextDirection.rtl,
         textAlign: TextAlign.center,
         text: TextSpan(
-          text: "By clicking the login button, you agree to ",
+          text: AppLocalizations.of(context).firstPageTermsPart1,
           style: TextStyle(
             fontWeight: FontWeight.w700,
             color: AppColors.descriptionColor,
@@ -117,7 +133,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
           ),
           children: [
             TextSpan(
-              text: "Terms ",
+              text: AppLocalizations.of(context).firstPageTermsPart2,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
@@ -132,7 +148,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                     },
             ),
             TextSpan(
-              text: "and ",
+              text: AppLocalizations.of(context).firstPageTermsPart3,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.whiteColor,
@@ -142,7 +158,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               ),
             ),
             TextSpan(
-              text: "Privacy policy",
+              text: AppLocalizations.of(context).firstPageTermsPart4,
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,

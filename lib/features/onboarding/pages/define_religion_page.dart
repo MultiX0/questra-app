@@ -14,7 +14,15 @@ class DefineReligionPage extends ConsumerStatefulWidget {
 }
 
 class _DefineReligionPageState extends ConsumerState<DefineReligionPage> {
-  final religions = {'christianity', 'islam', 'hinduism', 'buddhism', 'judaism', 'atheist'};
+  List<Map<String, dynamic>> get religions => [
+    // 'christianity', 'islam', 'hinduism', 'buddhism', 'judaism', 'atheist'
+    {'key': 'christianity', 'value': AppLocalizations.of(context).christianity},
+    {'key': 'islam', 'value': AppLocalizations.of(context).islam},
+    {'key': 'hinduism', 'value': AppLocalizations.of(context).hinduism},
+    {'key': 'buddhism', 'value': AppLocalizations.of(context).buddhism},
+    {'key': 'judaism', 'value': AppLocalizations.of(context).judaism},
+    {'key': 'atheist', 'value': AppLocalizations.of(context).atheist},
+  ];
   String? selected;
 
   void finish() {
@@ -38,7 +46,7 @@ class _DefineReligionPageState extends ConsumerState<DefineReligionPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GlowText(
-                  text: "Choose your religion",
+                  text: AppLocalizations.of(context).choose_your_religion,
                   glowColor: AppColors.primary,
                   style: TextStyle(fontFamily: AppFonts.header, fontSize: 22),
                 ).tada(),
@@ -48,15 +56,15 @@ class _DefineReligionPageState extends ConsumerState<DefineReligionPage> {
                   runSpacing: 15,
                   children:
                       religions.map((r) {
-                        bool _selected = r == selected;
+                        bool _selected = r['key'] == selected;
                         return GestureDetector(
                           onTap: () {
                             setState(() {
-                              if (selected == r) {
+                              if (selected == r['key']) {
                                 selected = null;
                                 return;
                               }
-                              selected = r;
+                              selected = r['key'];
                             });
                           },
                           child: AnimatedContainer(
@@ -72,7 +80,10 @@ class _DefineReligionPageState extends ConsumerState<DefineReligionPage> {
                               ),
                             ),
                             child: Center(
-                              child: Padding(padding: const EdgeInsets.all(8.0), child: Text(r)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(r['value']),
+                              ),
                             ),
                           ),
                         );

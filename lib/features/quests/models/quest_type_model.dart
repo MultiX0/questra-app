@@ -4,21 +4,20 @@ class QuestTypeModel {
   final int id;
   final String name;
   final String description;
+  final String arName;
   QuestTypeModel({
     required this.id,
     required this.name,
     required this.description,
+    required this.arName,
   });
 
-  QuestTypeModel copyWith({
-    int? id,
-    String? name,
-    String? description,
-  }) {
+  QuestTypeModel copyWith({int? id, String? name, String? description, String? arName}) {
     return QuestTypeModel(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      arName: arName ?? this.arName,
     );
   }
 
@@ -35,6 +34,7 @@ class QuestTypeModel {
       id: map[KeyNames.id] ?? -1,
       name: map[KeyNames.name] ?? "",
       description: map[KeyNames.description] ?? "",
+      arName: map[KeyNames.ar_name] ?? "",
     );
   }
 
