@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'dart:ui' as ui;
