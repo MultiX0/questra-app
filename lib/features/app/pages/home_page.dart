@@ -64,6 +64,22 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
+  void changeLang() async {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+    } else {
+      newLang = Locale('ar');
+    }
+    final user = ref.watch(authStateProvider);
+    ref.read(localeProvider.notifier).state = newLang;
+    await ref
+        .read(profileRepositoryProvider)
+        .updateAccountLang(userId: user!.id, lang: newLang.languageCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(milliseconds: 800);
@@ -71,7 +87,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TheAppBar(title: 'Questra'),
+        appBar: TheAppBar(
+          title: AppLocalizations.of(context).appTitle,
+          actions: [IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages))],
+        ),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
@@ -90,27 +109,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.75,
                       glowColor: AppColors.whiteColor,
-                      text: "Marketplace",
+                      text: AppLocalizations.of(context).marketplace_title,
                       style: TextStyle(
                         fontSize: 20,
-                        fontFamily: AppFonts.header,
+                        // fontFamily: AppFonts.header,
                         color: AppColors.whiteColor,
                       ),
                       // glowColor: AppColors.whiteColor,
                     ),
                     const SizedBox(height: 5),
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.5,
                       glowColor: AppColors.whiteColor,
-                      text:
-                          "Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!",
+                      text: AppLocalizations.of(context).marketplace_subtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        fontFamily: AppFonts.primary,
+                        // fontFamily: AppFonts.primary,
                         color: AppColors.whiteColor,
                       ),
                     ),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
+import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -39,6 +40,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               }
             }
 
+            setUpLocate(user.lang);
+
             final quests = await ref.read(questsRepositoryProvider).currentlyOngoingQuests(user.id);
             ref.read(currentOngointQuestsProvider.notifier).state = quests;
 
@@ -59,6 +62,10 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         userId: Supabase.instance.client.auth.currentUser?.id ?? "",
       );
     }
+  }
+
+  void setUpLocate(String lang) {
+    ref.read(localeProvider.notifier).state = Locale(lang);
   }
 
   @override

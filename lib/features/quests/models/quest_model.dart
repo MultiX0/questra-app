@@ -18,6 +18,8 @@ class QuestModel {
   final bool isCustom;
   final List images;
   final int? notification_id;
+  final String? ar_title;
+  final String? ar_description;
   QuestModel({
     required this.id,
     required this.created_at,
@@ -36,6 +38,8 @@ class QuestModel {
     this.owned_title,
     this.completed_at,
     this.expected_completion_time_date,
+    this.ar_description,
+    this.ar_title,
   });
 
   factory QuestModel.newQuest({required QuestModel quest}) {
@@ -57,6 +61,8 @@ class QuestModel {
       isCustom: quest.isCustom,
       isActive: quest.isActive,
       notification_id: quest.notification_id,
+      ar_description: quest.ar_description,
+      ar_title: quest.ar_title,
     );
   }
 
@@ -78,6 +84,8 @@ class QuestModel {
     bool? isActive,
     bool? isCustom,
     int? notification_id,
+    String? ar_title,
+    String? ar_description,
   }) {
     return QuestModel(
       id: id ?? this.id,
@@ -98,6 +106,8 @@ class QuestModel {
       isActive: isActive ?? this.isActive,
       isCustom: isCustom ?? this.isCustom,
       notification_id: notification_id ?? this.notification_id,
+      ar_description: ar_description ?? this.ar_description,
+      ar_title: ar_title ?? this.ar_title,
     );
   }
 
@@ -119,6 +129,8 @@ class QuestModel {
       KeyNames.images: images,
       KeyNames.is_active: isActive,
       KeyNames.is_custom: isCustom,
+      KeyNames.ar_title: ar_title,
+      KeyNames.ar_description: ar_description,
     };
   }
 
@@ -134,9 +146,10 @@ class QuestModel {
       difficulty: map[KeyNames.difficulty] ?? '',
       estimated_completion_time: int.tryParse(map[KeyNames.estimated_completion_time]) ?? 0,
       owned_title: map[KeyNames.owned_title],
-      expected_completion_time_date: map[KeyNames.expected_completion_time_date] == null
-          ? null
-          : DateTime.tryParse(map[KeyNames.expected_completion_time_date]),
+      expected_completion_time_date:
+          map[KeyNames.expected_completion_time_date] == null
+              ? null
+              : DateTime.tryParse(map[KeyNames.expected_completion_time_date]),
       status: map[KeyNames.status] ?? "",
       completed_at:
           map[KeyNames.completed_at] != null ? DateTime.tryParse(map[KeyNames.completed_at]) : null,
@@ -144,6 +157,8 @@ class QuestModel {
       isCustom: map[KeyNames.is_custom] ?? false,
       isActive: map[KeyNames.is_active],
       notification_id: map[KeyNames.notification_id] ?? -1,
+      ar_title: map[KeyNames.ar_title],
+      ar_description: map[KeyNames.ar_description],
     );
   }
 

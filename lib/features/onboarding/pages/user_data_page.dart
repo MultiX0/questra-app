@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:questra_app/imports.dart';
@@ -170,6 +171,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
         is_online: true,
         birth_date: selectedDate,
         gender: gender['key'].toLowerCase(),
+        lang: ref.read(localeProvider).languageCode,
         avatar: "",
       );
 
@@ -191,6 +193,18 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     );
   }
 
+  void changeLang() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+    } else {
+      newLang = Locale('ar');
+    }
+    ref.read(localeProvider.notifier).state = newLang;
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -202,6 +216,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
               onPressed: () => ref.read(authStateProvider.notifier).logout(),
               icon: Icon(LucideIcons.log_out),
             ),
+            IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages)),
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -213,7 +228,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  OnboardingTitle(),
+                  OnboardingTitle().swing(),
                   const SizedBox(height: kToolbarHeight - 10),
                   NeonTextField(
                     controller: _nameController,
@@ -230,14 +245,16 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
 
                       return null;
                     },
+                    maxLength: 20,
                   ),
                   const SizedBox(height: 15),
                   NeonTextField(
                     controller: _usernameController,
+
                     inputFormatters: [
                       FilteringTextInputFormatter.deny(RegExp(r'\s')), // Deny any whitespace
                       FilteringTextInputFormatter.allow(
-                        RegExp(r'[a-z_.]'),
+                        RegExp(r'[a-z0-9_.]'),
                       ), // Allow only lowercase, underscore, dot
                     ],
                     validator: (val) {
@@ -257,7 +274,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     maxLength: 20,
                     hintText: AppLocalizations.of(context).player_username_hint,
-                  ),
+                  ).bounceIn(),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: birthDateSheet,
@@ -273,7 +290,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                       }
                       return null;
                     },
-                  ),
+                  ).bounceInRight(duration: const Duration(milliseconds: 1200)),
                   const SizedBox(height: 15),
                   NeonTextField(
                     focusNode: genderFocusNode,
@@ -290,7 +307,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
                     hintText: AppLocalizations.of(context).player_gender_hint,
-                  ),
+                  ).bounceInLeft(duration: const Duration(milliseconds: 1400)),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: activitySheet,
@@ -307,13 +324,13 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
                     hintText: AppLocalizations.of(context).general_fitness_activity_hint,
-                  ),
+                  ).bounceInDown(duration: const Duration(milliseconds: 1600)),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size).tada(),
       ),
     );
   }

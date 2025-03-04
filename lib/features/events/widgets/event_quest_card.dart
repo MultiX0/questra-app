@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:intl/intl.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
 import 'package:questra_app/imports.dart';
@@ -16,8 +13,7 @@ class EventsQuestCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    final descritpionHasArabic = Bidi.hasAnyRtl(quest.description);
-    log("this quest has arabic ?: $descritpionHasArabic");
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return SystemCard(
       duration: const Duration(milliseconds: 800),
@@ -39,7 +35,7 @@ class EventsQuestCard extends ConsumerWidget {
                 child: Center(
                   child: GlowText(
                     glowColor: AppColors.whiteColor,
-                    text: "Quest",
+                    text: AppLocalizations.of(context).quest,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w200,
@@ -56,8 +52,10 @@ class EventsQuestCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GlowText(
+                textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+
                 glowColor: AppColors.whiteColor,
-                text: "Quest Title:",
+                text: "${AppLocalizations.of(context).quest_title}:",
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,
@@ -86,9 +84,9 @@ class EventsQuestCard extends ConsumerWidget {
             children: [
               GlowText(
                 glowColor: AppColors.whiteColor,
-                text: "Description:",
-                textAlign: descritpionHasArabic ? TextAlign.right : TextAlign.left,
-                textDirection: descritpionHasArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+                text: "${AppLocalizations.of(context).description}:",
+
+                textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,

@@ -29,7 +29,7 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
     final _text = _controller.text.trim();
     if (_text.isEmpty || _text.length < 10) {
       CustomToast.systemToast(
-        "You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.",
+        AppLocalizations.of(context).custom_quest_add_toast,
         systemMessage: true,
       );
       return;
@@ -37,7 +37,7 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
 
     ref
         .read(questsControllerProvider.notifier)
-        .addCustomQuest(description: _text, context: context);
+        .addCustomQuest(ogDescription: _text, context: context);
   }
 
   @override
@@ -45,17 +45,18 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
     // final user = ref.watch(authStateProvider);
     final isLoading = ref.watch(questsControllerProvider);
     final size = MediaQuery.sizeOf(context);
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return WillPopScope(
       onWillPop: () async {
         if (isLoading) {
-          CustomToast.systemToast("You cannot leave this page while the quest is being created.");
+          CustomToast.systemToast(AppLocalizations.of(context).custom_quest_add_alert);
           return false;
         }
         return true;
       },
       child: BackgroundWidget(
         child: Scaffold(
-          appBar: TheAppBar(title: "Add Quest"),
+          appBar: TheAppBar(title: AppLocalizations.of(context).custom_quest_add_appbar_title),
           body: Center(
             child: ListView(
               shrinkWrap: true,
@@ -71,42 +72,25 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "Quest Details",
+                              AppLocalizations.of(context).custom_quest_add_card_title,
                               style: TextStyle(
-                                fontFamily: AppFonts.header,
+                                fontFamily: isArabic ? null : AppFonts.header,
+                                fontWeight: isArabic ? FontWeight.bold : null,
                                 fontSize: 18,
                               ),
                             ),
-                            Icon(
-                              LucideIcons.diamond,
-                              color: AppColors.primary,
-                            ),
+                            Icon(LucideIcons.diamond, color: AppColors.primary),
                           ],
                         ),
-                        const SizedBox(
-                          height: 15,
-                        ),
+                        const SizedBox(height: 15),
                         buildQuestForm(size),
-                        const SizedBox(
-                          height: 15,
-                        ),
+                        const SizedBox(height: 15),
                         Text(
-                          "hint: You need to write the quest details accurately in order for it to be accepted by the system.",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white60,
-                          ),
+                          AppLocalizations.of(context).custom_quest_add_card_note,
+                          style: TextStyle(fontSize: 12, color: Colors.white60),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        if (isLoading) ...[
-                          BeatLoader(),
-                        ] else ...[
-                          SystemCardButton(
-                            onTap: finish,
-                          ),
-                        ],
+                        const SizedBox(height: 10),
+                        if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: finish)],
                       ],
                     ),
                   ),
@@ -121,45 +105,27 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
 
   ConstrainedBox buildQuestForm(Size size) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: size.width * .25,
-      ),
+      constraints: BoxConstraints(maxHeight: size.width * .25),
       child: TextField(
         controller: _controller,
         maxLines: null,
         cursorColor: AppColors.primary,
         decoration: InputDecoration(
           filled: false,
-          border: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          errorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          disabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
+          border: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
           focusedErrorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
+            borderSide: BorderSide(color: AppColors.primary),
+          ),
           hintStyle: TextStyle(
             fontWeight: FontWeight.w200,
             fontSize: 14,
             color: Colors.white.withValues(alpha: .86),
           ),
-          hintText: "please enter your quest details here ...",
+          hintText: AppLocalizations.of(context).custom_quest_add_field_hint,
         ),
       ),
     );

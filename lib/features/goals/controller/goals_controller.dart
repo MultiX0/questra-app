@@ -14,11 +14,10 @@ final goalsControllerProvider = StateNotifierProvider<GoalsController, bool>((re
 
 class GoalsController extends StateNotifier<bool> {
   final Ref _ref;
-  GoalsController({required Ref ref})
-      : _ref = ref,
-        super(false);
+  GoalsController({required Ref ref}) : _ref = ref, super(false);
 
   GoalsRepository get _repo => _ref.watch(goalsRepositoryProvider);
+  bool get isArabic => _ref.read(localeProvider).languageCode == 'ar';
 
   Future<void> insertGoals({required UserGoalModel goal}) async {
     try {
@@ -29,6 +28,7 @@ class GoalsController extends StateNotifier<bool> {
       _ref.invalidate(playerGoalsProvider);
       _ref.read(playerGoalsProvider).clear();
       _ref.read(playerGoalsProvider).addAll([...goals, goal]);
+      CustomToast.systemToast(isArabic ? "تم اضافة هدف جديد بنجاح" : "New goal added successfully");
       state = false;
     } catch (e) {
       log(e.toString());
@@ -46,7 +46,10 @@ class GoalsController extends StateNotifier<bool> {
       final index = goals.indexWhere((g) => g.id == id);
       _ref.read(playerGoalsProvider).removeAt(index);
 
-      CustomToast.systemToast(systemMessage: true, "goal deleted succesfully");
+      CustomToast.systemToast(
+        systemMessage: true,
+        isArabic ? "تم حذف الهدف بنجاح." : "goal deleted succesfully",
+      );
       callback();
 
       state = false;

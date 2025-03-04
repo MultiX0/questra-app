@@ -1,19 +1,19 @@
 import 'package:questra_app/imports.dart';
 
 class BuildDashboardGrid extends ConsumerWidget {
-  const BuildDashboardGrid({
-    super.key,
-  });
+  const BuildDashboardGrid({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     void play() {
       ref.read(soundEffectsServiceProvider).playSystemButtonClick();
     }
 
     List<Map<String, dynamic>> buttons = [
       {
-        'name': "Goals",
+        'name': AppLocalizations.of(context).profile_goals,
         "icon": LucideIcons.sparkles,
         "onTap": () {
           play();
@@ -21,7 +21,7 @@ class BuildDashboardGrid extends ConsumerWidget {
         },
       },
       {
-        'name': "Titels",
+        'name': AppLocalizations.of(context).profile_titles,
         "icon": LucideIcons.crown,
         "onTap": () {
           play();
@@ -30,38 +30,37 @@ class BuildDashboardGrid extends ConsumerWidget {
         },
       },
       {
-        'name': "Achivment",
+        'name': AppLocalizations.of(context).profile_achivments,
         "icon": LucideIcons.archive,
         "onTap": () {
           play();
-          CustomToast.soon();
+          CustomToast.soon(isArabic);
         },
       },
     ];
     return Row(
-      children: buttons.asMap().entries.map((e) {
-        final btn = e.value;
-        final i = e.key;
+      children:
+          buttons.asMap().entries.map((e) {
+            final btn = e.value;
+            final i = e.key;
 
-        return Expanded(
-          child: SystemCard(
-            onTap: btn["onTap"],
-            duration: const Duration(milliseconds: 950),
-            margin: i == 1 ? EdgeInsets.symmetric(horizontal: 15) : null,
-            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-            isButton: true,
-            child: Column(
-              children: [
-                Icon(btn["icon"] as IconData),
-                const SizedBox(
-                  height: 10,
+            return Expanded(
+              child: SystemCard(
+                onTap: btn["onTap"],
+                duration: const Duration(milliseconds: 950),
+                margin: i == 1 ? EdgeInsets.symmetric(horizontal: 15) : null,
+                padding: EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                isButton: true,
+                child: Column(
+                  children: [
+                    Icon(btn["icon"] as IconData),
+                    const SizedBox(height: 10),
+                    Text(btn["name"]),
+                  ],
                 ),
-                Text(btn["name"]),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+              ),
+            );
+          }).toList(),
     );
   }
 }

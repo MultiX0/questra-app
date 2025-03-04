@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/providers/app_providers.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -90,35 +90,39 @@ class _UserQuestTypesState extends ConsumerState<UserQuestTypes> {
                                         }
                                       });
                                     },
-                                    child: AnimatedContainer(
-                                      duration: const Duration(milliseconds: 300),
-                                      margin: EdgeInsets.only(top: 5),
-                                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: .4),
-                                        borderRadius: BorderRadius.circular(15),
-                                        border: Border.all(
-                                          color:
-                                              typeIds.contains(type.id)
-                                                  ? Colors.purpleAccent
-                                                  : HexColor('7AD5FF'),
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color:
-                                                typeIds.contains(type.id)
-                                                    ? Colors.purpleAccent.withValues(alpha: .3)
-                                                    : HexColor('7AD5FF').withValues(alpha: .3),
-                                            spreadRadius: 0.25,
-                                            blurRadius: 5,
+                                    child:
+                                        AnimatedContainer(
+                                          duration: const Duration(milliseconds: 300),
+                                          margin: EdgeInsets.only(top: 5),
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 5,
+                                            horizontal: 10,
                                           ),
-                                        ],
-                                      ),
-                                      child: Text(
-                                        isArabic ? type.arName : type.name,
-                                        style: TextStyle(color: AppColors.whiteColor),
-                                      ),
-                                    ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withValues(alpha: .4),
+                                            borderRadius: BorderRadius.circular(15),
+                                            border: Border.all(
+                                              color:
+                                                  typeIds.contains(type.id)
+                                                      ? Colors.purpleAccent
+                                                      : HexColor('7AD5FF'),
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color:
+                                                    typeIds.contains(type.id)
+                                                        ? Colors.purpleAccent.withValues(alpha: .3)
+                                                        : HexColor('7AD5FF').withValues(alpha: .3),
+                                                spreadRadius: 0.25,
+                                                blurRadius: 5,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Text(
+                                            isArabic ? type.arName : type.name,
+                                            style: TextStyle(color: AppColors.whiteColor),
+                                          ),
+                                        ).swing(),
                                   ),
                                 )
                                 .toList(),

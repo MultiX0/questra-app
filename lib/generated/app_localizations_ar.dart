@@ -473,25 +473,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_social_interactions => 'حدد التفاعلات الاجتماعية';
 
   @override
-  String get gamified_social_challenges => 'تحديات اجتماعية تفاعلية';
+  String get gamified_social_challenges => 'المستكشف الفردي';
 
   @override
-  String get story_driven_social_quests => 'مهام اجتماعية مدفوعة بالقصة';
+  String get story_driven_social_quests => 'مهام اجتماعية';
 
   @override
-  String get community_based_engagement => 'المشاركة المجتمعية';
+  String get community_based_engagement => 'المتعاون الودود';
 
   @override
-  String get simulated_social_scenarios => 'سيناريوهات اجتماعية محاكاة';
+  String get simulated_social_scenarios => 'المتحدي التنافسي';
 
   @override
-  String get virtual_collaboration => 'التعاون الافتراضي';
+  String get virtual_collaboration => 'المشارك العادي';
 
   @override
-  String get interactive_forums_or_chatrooms => 'منتديات أو غرف دردشة تفاعلية';
+  String get interactive_forums_or_chatrooms => 'المراقب الصامت';
 
   @override
-  String get acts_of_kindness => 'أعمال من اللطف';
+  String get acts_of_kindness => 'سيد المزاح';
 
   @override
   String get real_world_social_prompts => 'موجهات اجتماعية من العالم الحقيقي';
@@ -509,7 +509,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get less_than_1_hour => 'أقل من ساعة';
 
   @override
-  String get exactly_1_hour => 'بالضبط ساعة';
+  String get exactly_1_hour => 'ساعة بالضبط';
 
   @override
   String get difficulty => 'الصعوبة';
@@ -574,7 +574,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get refresh => 'تحديث';
 
   @override
-  String get report => 'إبلاغ';
+  String get report => 'ابلاغ';
 
   @override
   String get confirm_report => 'تأكيد التقرير';
@@ -595,7 +595,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get false_completion_claim => 'ادعاء إتمام غير صحيح';
 
   @override
-  String get unrelated_proof_image => 'صورة إثبات غير ذات صلة';
+  String get unrelated_proof_image => 'صورة الاثبات ليس لها صلة بالموضوع';
 
   @override
   String get cheating_or_unfair_play => 'غش أو لعب غير عادل';
@@ -707,4 +707,300 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error => 'خطأ';
+
+  @override
+  String get marketplace_title => 'متجر الأغراض';
+
+  @override
+  String get marketplace_subtitle => '! اكتشف العناصر الحصرية، والتعزيزات، والمعدات التي سترتقي برحلتك إلى مستوى جديد. أنفق عملاتك وطوّر مغامرتك';
+
+  @override
+  String get active_title => 'اللقب النشط';
+
+  @override
+  String get rank => 'الترتيب';
+
+  @override
+  String get coins => 'العملات';
+
+  @override
+  String get quest_title => 'عنوان المهمة';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get quest => 'مهمة';
+
+  @override
+  String get custom_quest => 'مهمة خاصة';
+
+  @override
+  String get custom_quest_empty => 'ليس لديك أي مهام خاصة حاليًا. هل ترغب في إضافة مهمة جديدة؟';
+
+  @override
+  String get add_quest => 'اضافة مهمة';
+
+  @override
+  String get custom_quest_requirements => 'يجب أن تصل إلى المستوى 5 لتتمكن من إنشاء مهامك الخاصة.';
+
+  @override
+  String get custom_quest_level_locked => 'مغلق (يفتح عند المستوى 5)';
+
+  @override
+  String get quests_archive => 'أرشيف المهام';
+
+  @override
+  String get quests => 'المهام';
+
+  @override
+  String get title => 'العنوان';
+
+  @override
+  String get quest_status => 'الحاله';
+
+  @override
+  String get empty_quest_archive => 'أرشيف المهام فارغ حاليًا';
+
+  @override
+  String get view_more => 'عرض المزيد';
+
+  @override
+  String get empty_quests => 'ليس لديك أي مهام نشطة حاليًا. هل ترغب في الانطلاق في مهمة جديدة؟';
+
+  @override
+  String get quest_generation_toast => 'إنشاء مهام جديدة لك';
+
+  @override
+  String get wait_until => 'يجب عليك الانتظار حتى';
+
+  @override
+  String get quest_finished => 'أكملتها بنجاح';
+
+  @override
+  String get quest_failed => 'لم أتمكن من اكمالها';
+
+  @override
+  String get quest_status_card_title => 'هل تمكنت من انهاء المهمة؟';
+
+  @override
+  String get quest_complete_confirmation => 'هل أنت متأكد أنك أكملت المهمة؟';
+
+  @override
+  String get quest_finish_alert1 => 'إكمال المهمة هو إنجاز شرفي! ومع ذلك، إذا ادعيت إتمام المهمة دون أن تكملها بالفعل، فقد تواجه عقوبات.';
+
+  @override
+  String get quest_finish_alert2 => '· فقدان تقدمك الحالي.\n· فقدان نقاط الخبرة المكتسبة.\n· حظر حسابك!';
+
+  @override
+  String get quest_finish_alert3 => '· كن صريحًا، أيها المغامر—سمعتك وتقدمك يعتمدان على ذلك. هل أنت مستعد لتأكيد إتمام المهمة؟';
+
+  @override
+  String get quest_finish_btn1 => 'نعم، لقد أكملتها.';
+
+  @override
+  String get quest_finish_btn2 => 'لا، سأستمر في العمل عليها.';
+
+  @override
+  String image_upload_count_alert(Object minImagesCount) {
+    return 'يجب عليك إضافة على الأقل $minImagesCount صور.';
+  }
+
+  @override
+  String get image_submit_card_title => 'يرجى تقديم بعض الصور من نتائجك.';
+
+  @override
+  String get image_submit_card_note => 'ملاحظة: لضمان مزيد من الأمان لحسابك وحمايته من البلاغات الكاذبة، نوصي باختيار صورة واحدة على الأقل للمهمة التي أنجزتها.';
+
+  @override
+  String get free_coins => 'عملات مجانية؟';
+
+  @override
+  String free_coins_amount(Object amount) {
+    return '$amount عملة لكل إعلان';
+  }
+
+  @override
+  String get free_coins_button => 'مشاهدة';
+
+  @override
+  String get marketplace_categories => 'الفئات';
+
+  @override
+  String get soon => 'سيتوفر قريبا';
+
+  @override
+  String get marketplace_item_locked_toast => 'تم قفل هذا العنصر حاليًا.';
+
+  @override
+  String get marketplace_item_locked => 'مقفل';
+
+  @override
+  String get marketplace_empty => 'لاتوجد عناصر حتى الأن';
+
+  @override
+  String get buy => 'اشتر';
+
+  @override
+  String get cost => 'التكلفة';
+
+  @override
+  String get buy_btn => 'شراء';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get profile_custom_quests => 'المهام الخاصة';
+
+  @override
+  String get profile_titles => 'الألقاب';
+
+  @override
+  String get profile_goals => 'ألاهداف';
+
+  @override
+  String get profile_achivments => 'الانجازات';
+
+  @override
+  String get profile_guild => 'النقابة';
+
+  @override
+  String get profile_friends => 'الأصدقاء';
+
+  @override
+  String get add_goal_alert => 'يجب أن يحتوي الهدف على 8 أحرف على الأقل.';
+
+  @override
+  String get add_goal_card_title => 'اضافة هدف جديد!';
+
+  @override
+  String get add_goal_card_note => 'تلميح: تساعد أهدافك النظام على فهم احتياجاتك بشكل أفضل لإنشاء مهام أكثر ملاءمة لك.';
+
+  @override
+  String get delete_goal_title => 'حذف الهدف';
+
+  @override
+  String get delete_goal_readme => 'ملاحظة: تساعد أهدافك النظام على فهم احتياجاتك بشكل أفضل لإنشاء مهام أكثر ملاءمة لك.\nهل ترغب في حذف هذا الهدف؟';
+
+  @override
+  String get add_goal_hint => 'يرجى إدخال هدفك هنا.';
+
+  @override
+  String get titles_empty => 'لا توجد ألقاب حاليًا.';
+
+  @override
+  String get titles_empty_refresh => 'تحديث';
+
+  @override
+  String get titles_change_title_message => 'هل ترغب في تغيير لقبك النشط الحالي؟';
+
+  @override
+  String get yes => 'تأكيد';
+
+  @override
+  String get owned_at => 'تم الحصول عليه بتاريخ';
+
+  @override
+  String get leaderboard => 'لوحة الصدارة';
+
+  @override
+  String get your_rank => 'ترتيبك';
+
+  @override
+  String get leaderboard_buttons1 => 'عالمي';
+
+  @override
+  String get leaderboard_buttons2 => 'الأصدقاء';
+
+  @override
+  String event_join_title(Object title) {
+    return '🌟 حدث حصري: $title – سجّل الآن!';
+  }
+
+  @override
+  String event_join_subtitle(Object title) {
+    return 'كن جزءًا من شيء مميز! انضم إلى $title على Questra واختبر حدثًا لا يُنسى مليئًا بالفرص الفريدة. احجز مكانك اليوم وابقَ على اطلاع بكل التفاصيل الجديدة. لا تفوت الفرصة! 🎉🚀';
+  }
+
+  @override
+  String get event_join_fee => 'رسوم التسجيل هي';
+
+  @override
+  String get event_register_btn => 'سجل الأن';
+
+  @override
+  String get participants => 'المشاركين';
+
+  @override
+  String get total_participants => 'عدد المشاركين الكلي';
+
+  @override
+  String get view_quest => 'تفاصيل المهمة';
+
+  @override
+  String get finish => 'تسليم المهمة';
+
+  @override
+  String get player_quests_title => 'مهام اللاعب';
+
+  @override
+  String get skip => 'تخطي المهمة';
+
+  @override
+  String get delete_custom_quest => 'حذف المهمة';
+
+  @override
+  String get quest_completetion_card_title => 'تم تحقيق النصر، أيها البطل!';
+
+  @override
+  String get quest_completetion_card_description => 'تفانيك ومهاراتك قاداك إلى النصر. المملكة تحتفل بنجاحك، والمكافآت العظيمة في انتظارك!';
+
+  @override
+  String quest_completetion_card_reward(Object coin_reward, Object xp_reward) {
+    return 'مكافأتك هي: $xp_reward نقاط خبرة، $coin_reward عملات';
+  }
+
+  @override
+  String quest_completetion_card_title_earned(Object owned_title) {
+    return '- اللقب المكتسب: $owned_title';
+  }
+
+  @override
+  String get level_up_description => 'هذه ليست مجرد ترقية للمستوى—إنها دليل على جهدك، وإرادتك، وقوتك. الضعفاء يبقون كما هم. أما أنت؟ فأنت تتطور.';
+
+  @override
+  String get lootbox_title => 'حسنا حسنا حسنا, أنظرو معي من اللذي ابتسم له الحظ اليوم';
+
+  @override
+  String get lootbox_description => 'ما هذا؟ صندوق جوائز؟ هل أخطأ اللعبة وظنت أنك شخص مهم؟ لا، فقط أمزح—أنت بالطبع أسطورة.!';
+
+  @override
+  String lootbox_description2(Object reward) {
+    return '💰 في الداخل: مخزون رائع من العملات ($reward).\n🎲 الحظ هو مجرد مهارة لم تكن قد خططت لها.';
+  }
+
+  @override
+  String get lootbox_btn => 'أعطني أموالي 💰';
+
+  @override
+  String get avatar_update => 'تحديث الصورة الشخصية';
+
+  @override
+  String get custom_quest_add_appbar_title => 'إضافة مهمة';
+
+  @override
+  String get custom_quest_add_card_title => 'تفاصيل المهمة';
+
+  @override
+  String get custom_quest_add_card_note => 'تلميح: يجب عليك كتابة تفاصيل المهمة بدقة حتى يتم قبولها من قبل النظام.';
+
+  @override
+  String get custom_quest_add_field_hint => 'يرجى إدخال تفاصيل مهمتك هنا.';
+
+  @override
+  String get custom_quest_add_toast => 'يجب عليك إدخال 10 أحرف على الأقل لإنشاء مهمة خاصة، كما تحتاج إلى إدخال تفاصيل دقيقة حول المهمة.';
+
+  @override
+  String get custom_quest_add_alert => 'لا يمكنك مغادرة هذه الصفحة أثناء إنشاء المهمة.';
 }

@@ -80,6 +80,20 @@ class LootBoxManager {
     }
   }
 
+  Future<String> _getUserLang(String userId) async {
+    try {
+      final data = await _client
+          .from(TableNames.players)
+          .select(KeyNames.lang)
+          .eq(KeyNames.id, userId);
+
+      return data[0][KeyNames.lang];
+    } catch (e) {
+      dev.log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<LootboxModel> insertLootBox(String userId) async {
     try {
       final newLootBox = LootboxModel(
@@ -147,7 +161,13 @@ class LootBoxManager {
           .update({KeyNames.last_lootbox_time: now.toIso8601String(), KeyNames.hasTaken: false})
           .eq('user_id', user.id);
 
-      sendNotification("🎉 NEW Loot Box Dropped!", "System");
+      final userLang = await _getUserLang(user.id);
+      bool isArabic = userLang == 'ar';
+
+      sendNotification(
+        isArabic ? "تم اسقاط صندوق مكافئات عشوائي جديد!" : "🎉 NEW Loot Box Dropped!",
+        "System",
+      );
 
       dev.log("🎉 Loot Box Dropped!");
       return true;

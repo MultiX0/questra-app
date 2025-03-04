@@ -1,59 +1,50 @@
-import 'package:flutter/foundation.dart';
 import '/imports.dart';
 
+final appThemeProvider = Provider<AppTheme>((ref) => AppTheme(ref: ref));
+
 class AppTheme {
+  final Ref _ref;
+  AppTheme({required Ref ref}) : _ref = ref;
+
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
   // Colors
   static final blackColor = AppColors.scaffoldBackground;
   static final cardColor = AppColors.mainCardColor;
   static final whiteColor = AppColors.whiteColor;
+  String get fontFamily => isArabic ? "Tajwal" : AppFonts.primary;
+  double get fontSize => isArabic ? 15 : 14;
 
   // Themes
-  static var darkModeAppTheme = ThemeData.dark().copyWith(
+  ThemeData get darkModeAppTheme => ThemeData.dark().copyWith(
     scaffoldBackgroundColor: Colors.transparent,
     cardColor: cardColor,
     iconTheme: IconThemeData(color: AppColors.whiteColor),
     appBarTheme: AppBarTheme(
       scrolledUnderElevation: 0,
       elevation: 0,
-      titleTextStyle: const TextStyle(
-        fontFamily: AppFonts.header,
-        fontSize: 23,
-      ),
+      titleTextStyle: const TextStyle(fontFamily: AppFonts.header, fontSize: 23),
       backgroundColor: Colors.transparent,
-      iconTheme: IconThemeData(
-        color: whiteColor,
-      ),
+      iconTheme: IconThemeData(color: whiteColor),
     ),
-    drawerTheme: DrawerThemeData(
-      backgroundColor: blackColor,
-    ),
+    drawerTheme: DrawerThemeData(backgroundColor: blackColor),
     primaryColor: AppColors.primary,
-    textTheme: (kIsWeb)
-        ? TextTheme(
-            headlineLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            headlineMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            headlineSmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodyLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodyMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodySmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-          )
-        : TextTheme(
-            headlineLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            headlineMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            headlineSmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodyLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodyMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            bodySmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            displayLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            displayMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            displaySmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            labelLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            labelMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            labelSmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            titleLarge: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            titleMedium: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-            titleSmall: TextStyle(fontFamily: AppFonts.primary, color: whiteColor),
-          ),
+    textTheme: TextTheme(
+      headlineLarge: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      headlineMedium: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      headlineSmall: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      bodyLarge: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      bodyMedium: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      bodySmall: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      displayLarge: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      displayMedium: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      displaySmall: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      labelLarge: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      labelMedium: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      labelSmall: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      titleLarge: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      titleMedium: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+      titleSmall: TextStyle(fontFamily: fontFamily, color: whiteColor, fontSize: fontSize),
+    ),
   );
 }
 
@@ -79,8 +70,12 @@ class AppSizes {
   final EdgeInsets padding;
 
   AppSizes({required BuildContext context})
-      : padding = EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.width / 4, left: 10, right: 10, top: 10);
+    : padding = EdgeInsets.only(
+        bottom: MediaQuery.of(context).size.width / 4,
+        left: 10,
+        right: 10,
+        top: 10,
+      );
 
   static double borderRadius = 10.0;
 

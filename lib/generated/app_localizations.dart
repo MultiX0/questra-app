@@ -1022,43 +1022,43 @@ abstract class AppLocalizations {
   /// No description provided for @gamified_social_challenges.
   ///
   /// In en, this message translates to:
-  /// **'Gamified Social Challenges'**
+  /// **'Solo Explorer'**
   String get gamified_social_challenges;
 
   /// No description provided for @story_driven_social_quests.
   ///
   /// In en, this message translates to:
-  /// **'Story-Driven Social Quests'**
+  /// **'Friendly Collaborator'**
   String get story_driven_social_quests;
 
   /// No description provided for @community_based_engagement.
   ///
   /// In en, this message translates to:
-  /// **'Community-Based Engagement'**
+  /// **'Friendly Collaborator'**
   String get community_based_engagement;
 
   /// No description provided for @simulated_social_scenarios.
   ///
   /// In en, this message translates to:
-  /// **'Simulated Social Scenarios'**
+  /// **'Competitive Challenger'**
   String get simulated_social_scenarios;
 
   /// No description provided for @virtual_collaboration.
   ///
   /// In en, this message translates to:
-  /// **'Virtual Collaboration'**
+  /// **'Casual Engager'**
   String get virtual_collaboration;
 
   /// No description provided for @interactive_forums_or_chatrooms.
   ///
   /// In en, this message translates to:
-  /// **'Interactive Forums or Chatrooms'**
+  /// **'Silent Observer'**
   String get interactive_forums_or_chatrooms;
 
   /// No description provided for @acts_of_kindness.
   ///
   /// In en, this message translates to:
-  /// **'Acts of Kindness'**
+  /// **'Troll Master'**
   String get acts_of_kindness;
 
   /// No description provided for @real_world_social_prompts.
@@ -1486,6 +1486,570 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @marketplace_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Marketplace'**
+  String get marketplace_title;
+
+  /// No description provided for @marketplace_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!'**
+  String get marketplace_subtitle;
+
+  /// No description provided for @active_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Title'**
+  String get active_title;
+
+  /// No description provided for @rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get rank;
+
+  /// No description provided for @coins.
+  ///
+  /// In en, this message translates to:
+  /// **'Coins'**
+  String get coins;
+
+  /// No description provided for @quest_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Title'**
+  String get quest_title;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
+
+  /// No description provided for @quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest'**
+  String get quest;
+
+  /// No description provided for @custom_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Quest'**
+  String get custom_quest;
+
+  /// No description provided for @custom_quest_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'You don’t have any custom quests right now. Would you like to add a new quest?'**
+  String get custom_quest_empty;
+
+  /// No description provided for @add_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'add quests'**
+  String get add_quest;
+
+  /// No description provided for @custom_quest_requirements.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to reach level 5 to be able to create your own quests.'**
+  String get custom_quest_requirements;
+
+  /// No description provided for @custom_quest_level_locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked (opens at LVL 5)'**
+  String get custom_quest_level_locked;
+
+  /// No description provided for @quests_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'Quests Archive'**
+  String get quests_archive;
+
+  /// No description provided for @quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quests'**
+  String get quests;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title;
+
+  /// No description provided for @quest_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get quest_status;
+
+  /// No description provided for @empty_quest_archive.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no quests in the archive for now'**
+  String get empty_quest_archive;
+
+  /// No description provided for @view_more.
+  ///
+  /// In en, this message translates to:
+  /// **'view more'**
+  String get view_more;
+
+  /// No description provided for @empty_quests.
+  ///
+  /// In en, this message translates to:
+  /// **'You don’t have any active quests right now. Would you like to embark on a new quest?\n\n(using ai)'**
+  String get empty_quests;
+
+  /// No description provided for @quest_generation_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'making new quest for you'**
+  String get quest_generation_toast;
+
+  /// No description provided for @wait_until.
+  ///
+  /// In en, this message translates to:
+  /// **'you need to wait until'**
+  String get wait_until;
+
+  /// No description provided for @quest_finished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get quest_finished;
+
+  /// No description provided for @quest_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get quest_failed;
+
+  /// No description provided for @quest_status_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Status is ?'**
+  String get quest_status_card_title;
+
+  /// No description provided for @quest_complete_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are You Sure You’ve Completed the Quest?'**
+  String get quest_complete_confirmation;
+
+  /// No description provided for @quest_finish_alert1.
+  ///
+  /// In en, this message translates to:
+  /// **'Completing a quest is an honorable achievement! However, if you claim completion without truly finishing, you may face penalties'**
+  String get quest_finish_alert1;
+
+  /// No description provided for @quest_finish_alert2.
+  ///
+  /// In en, this message translates to:
+  /// **'· Lose Your Current Streak.\n· Forfeit Earned XP.\n· Block your account!'**
+  String get quest_finish_alert2;
+
+  /// No description provided for @quest_finish_alert3.
+  ///
+  /// In en, this message translates to:
+  /// **'· Be honest, adventurer—your reputation and progress depend on it. Are you ready to confirm quest completion?'**
+  String get quest_finish_alert3;
+
+  /// No description provided for @quest_finish_btn1.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, I’ve Completed It'**
+  String get quest_finish_btn1;
+
+  /// No description provided for @quest_finish_btn2.
+  ///
+  /// In en, this message translates to:
+  /// **'No, I’ll Keep Working'**
+  String get quest_finish_btn2;
+
+  /// No description provided for @image_upload_count_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to add at least {minImagesCount} photos.'**
+  String image_upload_count_alert(Object minImagesCount);
+
+  /// No description provided for @image_submit_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Provide some pictures from your results please.'**
+  String get image_submit_card_title;
+
+  /// No description provided for @image_submit_card_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: for more safety for your account from false reports we suggest at least to select one image for the quest that you\'ve done.'**
+  String get image_submit_card_note;
+
+  /// No description provided for @free_coins.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Coins ?'**
+  String get free_coins;
+
+  /// No description provided for @free_coins_amount.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} coins per AD'**
+  String free_coins_amount(Object amount);
+
+  /// No description provided for @free_coins_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get free_coins_button;
+
+  /// No description provided for @marketplace_categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get marketplace_categories;
+
+  /// No description provided for @soon.
+  ///
+  /// In en, this message translates to:
+  /// **'soon'**
+  String get soon;
+
+  /// No description provided for @marketplace_item_locked_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'this item is locked for now'**
+  String get marketplace_item_locked_toast;
+
+  /// No description provided for @marketplace_item_locked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get marketplace_item_locked;
+
+  /// No description provided for @marketplace_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no items'**
+  String get marketplace_empty;
+
+  /// No description provided for @buy.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy;
+
+  /// No description provided for @cost.
+  ///
+  /// In en, this message translates to:
+  /// **'cost'**
+  String get cost;
+
+  /// No description provided for @buy_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy'**
+  String get buy_btn;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @profile_custom_quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom Quests'**
+  String get profile_custom_quests;
+
+  /// No description provided for @profile_titles.
+  ///
+  /// In en, this message translates to:
+  /// **'Titels'**
+  String get profile_titles;
+
+  /// No description provided for @profile_goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get profile_goals;
+
+  /// No description provided for @profile_achivments.
+  ///
+  /// In en, this message translates to:
+  /// **'Achivment'**
+  String get profile_achivments;
+
+  /// No description provided for @profile_guild.
+  ///
+  /// In en, this message translates to:
+  /// **'Guild'**
+  String get profile_guild;
+
+  /// No description provided for @profile_friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get profile_friends;
+
+  /// No description provided for @add_goal_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal should be contains at lease 8 characters'**
+  String get add_goal_alert;
+
+  /// No description provided for @add_goal_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'NEW GOAL!'**
+  String get add_goal_card_title;
+
+  /// No description provided for @add_goal_card_note.
+  ///
+  /// In en, this message translates to:
+  /// **'hint: Your goals help the system to understand more about your needs to make better quests for you.'**
+  String get add_goal_card_note;
+
+  /// No description provided for @delete_goal_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Goal'**
+  String get delete_goal_title;
+
+  /// No description provided for @delete_goal_readme.
+  ///
+  /// In en, this message translates to:
+  /// **'readme: Your goals help the system to understand more about your needs to make better quests for you.\ndo you want to delete this goal?'**
+  String get delete_goal_readme;
+
+  /// No description provided for @add_goal_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'please enter your goal here'**
+  String get add_goal_hint;
+
+  /// No description provided for @titles_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no titles for now'**
+  String get titles_empty;
+
+  /// No description provided for @titles_empty_refresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get titles_empty_refresh;
+
+  /// No description provided for @titles_change_title_message.
+  ///
+  /// In en, this message translates to:
+  /// **'do you want to change\nyour current active title?'**
+  String get titles_change_title_message;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'yes'**
+  String get yes;
+
+  /// No description provided for @owned_at.
+  ///
+  /// In en, this message translates to:
+  /// **'owned at'**
+  String get owned_at;
+
+  /// No description provided for @leaderboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaderboard'**
+  String get leaderboard;
+
+  /// No description provided for @your_rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rank'**
+  String get your_rank;
+
+  /// No description provided for @leaderboard_buttons1.
+  ///
+  /// In en, this message translates to:
+  /// **'Global'**
+  String get leaderboard_buttons1;
+
+  /// No description provided for @leaderboard_buttons2.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get leaderboard_buttons2;
+
+  /// No description provided for @event_join_title.
+  ///
+  /// In en, this message translates to:
+  /// **'🌟 Exclusive Event: {title} – Register Now!'**
+  String event_join_title(Object title);
+
+  /// No description provided for @event_join_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Be part of something special! Join {title} on Questra and experience an unforgettable event filled with unique opportunities. Secure your spot today and stay updated with all the latest details. Don\'t miss out! 🎉🚀'**
+  String event_join_subtitle(Object title);
+
+  /// No description provided for @event_join_fee.
+  ///
+  /// In en, this message translates to:
+  /// **'registration fee is'**
+  String get event_join_fee;
+
+  /// No description provided for @event_register_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Register Now'**
+  String get event_register_btn;
+
+  /// No description provided for @participants.
+  ///
+  /// In en, this message translates to:
+  /// **'Participants'**
+  String get participants;
+
+  /// No description provided for @total_participants.
+  ///
+  /// In en, this message translates to:
+  /// **'Total number of participants'**
+  String get total_participants;
+
+  /// No description provided for @view_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'View Quest'**
+  String get view_quest;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @player_quests_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Player Quests'**
+  String get player_quests_title;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'skip'**
+  String get skip;
+
+  /// No description provided for @delete_custom_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'delete'**
+  String get delete_custom_quest;
+
+  /// No description provided for @quest_completetion_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Victory Achieved, Hero!'**
+  String get quest_completetion_card_title;
+
+  /// No description provided for @quest_completetion_card_description.
+  ///
+  /// In en, this message translates to:
+  /// **'Your dedication and skills have led you to triumph. The realm celebrates your success great rewards await you!'**
+  String get quest_completetion_card_description;
+
+  /// No description provided for @quest_completetion_card_reward.
+  ///
+  /// In en, this message translates to:
+  /// **'- Your reward is: {xp_reward}XP, {coin_reward}\$ coins'**
+  String quest_completetion_card_reward(Object coin_reward, Object xp_reward);
+
+  /// No description provided for @quest_completetion_card_title_earned.
+  ///
+  /// In en, this message translates to:
+  /// **'- Earned title: {owned_title}'**
+  String quest_completetion_card_title_earned(Object owned_title);
+
+  /// No description provided for @level_up_description.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn’t just a level-up—it’s proof of your grind, your will, and your power. Weaklings stay the same. You? You evolve.'**
+  String get level_up_description;
+
+  /// No description provided for @lootbox_title.
+  ///
+  /// In en, this message translates to:
+  /// **'WELL, WELL, LOOK WHO GOT LUCKY!'**
+  String get lootbox_title;
+
+  /// No description provided for @lootbox_description.
+  ///
+  /// In en, this message translates to:
+  /// **'What’s this? A loot box? Did the game accidentally mistake you for someone important? Nah, just kidding—you’re obviously a legend.'**
+  String get lootbox_description;
+
+  /// No description provided for @lootbox_description2.
+  ///
+  /// In en, this message translates to:
+  /// **'💰 Inside: A glorious stash of coins (\$reward).\n🎲 Luck is just skill you didn’t plan for.'**
+  String lootbox_description2(Object reward);
+
+  /// No description provided for @lootbox_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'GIMME MY MONEY 💰'**
+  String get lootbox_btn;
+
+  /// No description provided for @avatar_update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Your Avatar.'**
+  String get avatar_update;
+
+  /// No description provided for @custom_quest_add_appbar_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Quest'**
+  String get custom_quest_add_appbar_title;
+
+  /// No description provided for @custom_quest_add_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Details'**
+  String get custom_quest_add_card_title;
+
+  /// No description provided for @custom_quest_add_card_note.
+  ///
+  /// In en, this message translates to:
+  /// **'hint: You need to write the quest details accurately in order for it to be accepted by the system.'**
+  String get custom_quest_add_card_note;
+
+  /// No description provided for @custom_quest_add_field_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'please enter your quest details here'**
+  String get custom_quest_add_field_hint;
+
+  /// No description provided for @custom_quest_add_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.'**
+  String get custom_quest_add_toast;
+
+  /// No description provided for @custom_quest_add_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot leave this page while the quest is being created.'**
+  String get custom_quest_add_alert;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

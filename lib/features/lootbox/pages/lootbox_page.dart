@@ -112,7 +112,7 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                     curve: Curves.easeOut,
                     child: Text(
                       textAlign: TextAlign.center,
-                      "WELL, WELL, LOOK WHO GOT LUCKY!",
+                      AppLocalizations.of(context).lootbox_title,
                       style: TextStyle(
                         fontFamily: AppFonts.header,
                         fontSize: 16,
@@ -127,7 +127,7 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                     curve: Curves.easeOut,
                     child: Text(
                       textAlign: TextAlign.center,
-                      "What’s this? A loot box? Did the game accidentally mistake you for someone important? Nah, just kidding—you’re obviously a legend.",
+                      AppLocalizations.of(context).lootbox_description,
                       style: TextStyle(
                         // color: AppColors.primary,
                       ),
@@ -141,7 +141,7 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                     curve: Curves.easeOut,
                     child: Text(
                       textAlign: TextAlign.center,
-                      "💰 Inside: A glorious stash of coins ($reward).\n🎲 Luck is just skill you didn’t plan for.",
+                      AppLocalizations.of(context).lootbox_description2(reward),
                       style: TextStyle(color: AppColors.primary),
                     ),
                   ),
@@ -154,7 +154,10 @@ class _LootboxPageState extends ConsumerState<LootboxPage> {
                     child:
                         isLoading
                             ? BeatLoader()
-                            : SystemCardButton(onTap: finish, text: "GIMME MY MONEY 💰"),
+                            : SystemCardButton(
+                              onTap: finish,
+                              text: AppLocalizations.of(context).lootbox_btn,
+                            ),
                   ),
                 ],
               ),

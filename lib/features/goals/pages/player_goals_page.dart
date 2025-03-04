@@ -45,6 +45,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
   Widget build(BuildContext context) {
     // final user = ref.watch(authStateProvider);
     final goals = ref.watch(playerGoalsProvider);
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return WillPopScope(
       onWillPop: () async {
         if (add) {
@@ -57,67 +58,68 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
       },
       child: BackgroundWidget(
         child: Scaffold(
-          floatingActionButton: add
-              ? null
-              : FloatingActionButton(
-                  backgroundColor: AppColors.primary.withValues(alpha: .5),
-                  elevation: 3,
-                  child: Icon(LucideIcons.plus),
-                  onPressed: () {
-                    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          floatingActionButton:
+              add
+                  ? null
+                  : FloatingActionButton(
+                    backgroundColor: AppColors.primary.withValues(alpha: .5),
+                    elevation: 3,
+                    child: Icon(LucideIcons.plus),
+                    onPressed: () {
+                      ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
-                    setState(() {
-                      add = true;
-                    });
-                  },
-                ),
-          appBar: TheAppBar(title: "Goals"),
-          body: (!add)
-              ? (deleteId != null)
-                  ? buildDeleteDialog()
-                  : GridView.builder(
-                      padding: EdgeInsets.all(16),
-                      itemCount: goals.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                      ),
-                      itemBuilder: (context, index) {
-                        final goal = goals[index];
-                        return Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: HexColor('7AD5FF').withValues(alpha: .15),
-                            border: Border.all(color: HexColor('7AD5FF')),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                goal.description,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const Spacer(),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () => delete(goal.id),
-                                  icon: Icon(
-                                    LucideIcons.minus,
-                                    color: Colors.red,
+                      setState(() {
+                        add = true;
+                      });
+                    },
+                  ),
+          appBar: TheAppBar(title: AppLocalizations.of(context).profile_goals),
+          body:
+              (!add)
+                  ? (deleteId != null)
+                      ? buildDeleteDialog()
+                      : GridView.builder(
+                        padding: EdgeInsets.all(16),
+                        itemCount: goals.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 15,
+                        ),
+                        itemBuilder: (context, index) {
+                          final goal = goals[index];
+                          return Container(
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: HexColor('7AD5FF').withValues(alpha: .15),
+                              border: Border.all(color: HexColor('7AD5FF')),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  isArabic
+                                      ? goal.ar_description ?? goal.description
+                                      : goal.description,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const Spacer(),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () => delete(goal.id),
+                                    icon: Icon(LucideIcons.minus, color: Colors.red),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    )
-              : buildAddForm(),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                  : buildAddForm(),
         ),
       ),
     );
@@ -126,7 +128,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
   Future<void> finish() async {
     try {
       if (_controller.text.trim().length < 8) {
-        CustomToast.systemToast("Goal should be contains at lease 8 characters");
+        CustomToast.systemToast(AppLocalizations.of(context).add_goal_alert);
         return;
       }
       final user = ref.read(authStateProvider);
@@ -164,42 +166,21 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "NEW GOAL!",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                        fontSize: 18,
-                      ),
+                      AppLocalizations.of(context).add_goal_card_title,
+                      style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                     ),
-                    Icon(
-                      LucideIcons.sparkles,
-                      color: AppColors.primary,
-                    ),
+                    Icon(LucideIcons.sparkles, color: AppColors.primary),
                   ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 buildGoalForm(size),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 Text(
-                  "hint: Your goals help the system to understand more about your needs to make better quests for you.",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
+                  AppLocalizations.of(context).add_goal_card_note,
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                if (isLoading) ...[
-                  BeatLoader(),
-                ] else ...[
-                  SystemCardButton(
-                    onTap: finish,
-                  ),
-                ],
+                const SizedBox(height: 15),
+                if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: finish)],
               ],
             ),
           ),
@@ -224,26 +205,18 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Delete Goal",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                        fontSize: 18,
-                      ),
+                      AppLocalizations.of(context).delete_goal_title,
+                      style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                     ),
                     const SizedBox(),
                   ],
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  "readme: Your goals help the system to understand more about your needs to make better quests for you.\ndo you want to delete this goal?",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
+                  AppLocalizations.of(context).delete_goal_readme,
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 if (isLoading) ...[
                   BeatLoader(),
                 ] else ...[
@@ -266,7 +239,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
                         deleteId = null;
                       });
                     },
-                    text: "cancel",
+                    text: AppLocalizations.of(context).cancel.toLowerCase(),
                   ),
                 ],
               ],
@@ -279,9 +252,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
 
   ConstrainedBox buildGoalForm(Size size) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: size.width * .25,
-      ),
+      constraints: BoxConstraints(maxHeight: size.width * .25),
       child: TextField(
         controller: _controller,
         maxLines: null,
@@ -294,7 +265,7 @@ class _PlayerGoalsPageState extends ConsumerState<PlayerGoalsPage> {
             fontSize: 14,
             color: Colors.white.withValues(alpha: .86),
           ),
-          hintText: "please enter your goal here ...",
+          hintText: "${AppLocalizations.of(context).add_goal_hint} ...",
         ),
       ),
     );

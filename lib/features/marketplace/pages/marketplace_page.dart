@@ -27,6 +27,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return WillPopScope(
       onWillPop: () async {
         if (selectedItem != null) {
@@ -41,12 +42,15 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       child: BackgroundWidget(
         child: Scaffold(
           appBar: TheAppBar(
-            title: "Marketplace",
+            title: AppLocalizations.of(context).marketplace_title,
             actions: [
               Padding(
                 padding: EdgeInsets.only(right: 5),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                    CustomToast.soon(isArabic);
+                  },
                   icon: Icon(LucideIcons.shopping_cart),
                 ),
               ),
@@ -69,9 +73,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(
-          height: size.width * .08,
-        ),
+        SizedBox(height: size.width * .08),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SystemCard(
@@ -79,7 +81,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
             child: Column(
               children: [
                 Text(
-                  "Free Coins ?",
+                  AppLocalizations.of(context).free_coins,
                   style: TextStyle(
                     fontFamily: AppFonts.header,
                     fontSize: 18,
@@ -88,32 +90,28 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  "200 coins per AD",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.descriptionColor,
-                  ),
+                  AppLocalizations.of(context).free_coins_amount(200),
+                  style: TextStyle(fontSize: 13, color: AppColors.descriptionColor),
                 ),
                 const SizedBox(height: 15),
                 if (isLoading) ...[
                   BeatLoader(),
                 ] else
                   SystemCardButton(
-                      onTap: () {
-                        ref.read(walletControllerProvider.notifier).rewardCoins();
-                      },
-                      text: "Yes"),
+                    onTap: () {
+                      ref.read(walletControllerProvider.notifier).rewardCoins();
+                    },
+                    text: AppLocalizations.of(context).free_coins_button,
+                  ),
               ],
             ),
           ),
         ),
-        SizedBox(
-          height: size.width * .08,
-        ),
+        SizedBox(height: size.width * .08),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: GlowText(
-            text: "Categories",
+            text: AppLocalizations.of(context).marketplace_categories,
             glowColor: AppColors.whiteColor,
             spreadRadius: 0.5,
             blurRadius: 15,
@@ -132,11 +130,14 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
 
   Widget buildItems() {
     return Expanded(
-      child: ref.watch(getAllItemsProvider).when(
+      child: ref
+          .watch(getAllItemsProvider)
+          .when(
             data: (items) {
-              var filteredItems = items
-                  .where((item) => (item.image_url != null && item.image_url!.isNotEmpty))
-                  .toList();
+              var filteredItems =
+                  items
+                      .where((item) => (item.image_url != null && item.image_url!.isNotEmpty))
+                      .toList();
 
               if (selected != null) {
                 filteredItems = filteredItems.where((item) => item.type == selected).toList();
@@ -161,8 +162,9 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                         child: FadeInAnimation(
                           child: Padding(
                             padding: EdgeInsets.only(
-                                top: i != 0 ? 15 : 0,
-                                bottom: i >= (filteredItems.length - 1) ? 30 : 0),
+                              top: i != 0 ? 15 : 0,
+                              bottom: i >= (filteredItems.length - 1) ? 30 : 0,
+                            ),
                             child: buildCard(item),
                           ),
                         ),
@@ -172,11 +174,12 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 ),
               );
             },
-            error: (error, _) => Center(
-              // TODO
-              // in the future change this fucking error handle and make it good idiot;
-              child: Text(error.toString()),
-            ),
+            error:
+                (error, _) => Center(
+                  // TODO
+                  // in the future change this fucking error handle and make it good idiot;
+                  child: Text(error.toString()),
+                ),
             loading: () => buildLoadingCard(),
           ),
     );
@@ -187,15 +190,14 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       itemCount: 4,
       itemBuilder: (context, i) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: LoadingCard(),
-        );
+        return Padding(padding: const EdgeInsets.symmetric(vertical: 5), child: LoadingCard());
       },
     );
   }
 
   Widget buildCard(ItemModel item) {
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     return Stack(
       children: [
         SystemCard(
@@ -215,9 +217,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
               Row(
                 children: [
                   buildImage(item),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Center(
                       child: Column(
@@ -226,19 +226,20 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                         children: [
                           Text(
                             item.name,
-                            style: TextStyle(
-                              fontFamily: AppFonts.header,
-                              fontSize: 18,
-                            ),
+                            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                           ),
                           Text(
-                            item.description ?? "comming soon...",
+                            isArabic
+                                ? item.ar_description ??
+                                    item.description ??
+                                    "${AppLocalizations.of(context).soon}..."
+                                : "NA",
                             style: TextStyle(
                               fontWeight: FontWeight.w200,
                               color: AppColors.descriptionColor,
                               fontSize: 13,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
@@ -246,13 +247,10 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 ],
               ),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: isArabic ? Alignment.centerLeft : Alignment.centerRight,
                 child: Text(
                   "${item.price}\$",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
                 ),
               ),
             ],
@@ -265,21 +263,17 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 log(item.id);
                 ref.read(soundEffectsServiceProvider).playEffect('click1.ogg');
 
-                CustomToast.systemToast("this item is locked for now");
+                CustomToast.systemToast(AppLocalizations.of(context).marketplace_item_locked_toast);
               },
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.black.withValues(
-                      alpha: 0.8,
-                    )),
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.black.withValues(alpha: 0.8),
+                ),
                 child: Center(
                   child: Text(
-                    "Locked",
-                    style: TextStyle(
-                      fontFamily: AppFonts.header,
-                      fontSize: 20,
-                    ),
+                    AppLocalizations.of(context).marketplace_item_locked,
+                    style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
                   ),
                 ),
               ),
@@ -296,55 +290,71 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       width: 80,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: Image(
-          fit: BoxFit.cover,
-          image: CachedNetworkImageProvider(item.image_url!),
-        ),
+        child: Image(fit: BoxFit.cover, image: CachedNetworkImageProvider(item.image_url!)),
       ),
     );
   }
 
   SingleChildScrollView buildCategories() {
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
+    List<Map<String, dynamic>> marketPlaceItemsCategories = [
+      //    "boost",
+      // "consumable",
+      // "cosmetic",
+      // "defensive",
+      // "theme",
+      {'key': "utility", 'value': isArabic ? "أدوات مساعدة" : "utility"},
+      {'key': "boost", 'value': isArabic ? "تعزيز" : "boost"},
+      {'key': "consumable", 'value': isArabic ? "قابلة للاستهلاك" : "consumable"},
+
+      {'key': "defensive", 'value': isArabic ? "دفاعية" : "defensive"},
+      {'key': "theme", 'value': isArabic ? "ثيم" : "theme"},
+    ];
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 25),
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: marketPlaceItemsCategories.asMap().entries.map((e) {
-          final c = e.value;
-          final i = e.key;
-          return GestureDetector(
-            onTap: () {
-              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-              setState(() {
-                if (selected == c) {
-                  selected = null;
-                } else {
-                  selected = c;
-                }
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: (selected == c)
-                    ? Colors.purpleAccent.withValues(alpha: .15)
-                    : AppColors.primary.withValues(alpha: .15),
-                border: Border.all(
-                  color: (selected == c) ? Colors.purpleAccent : AppColors.primary,
+        children:
+            marketPlaceItemsCategories.asMap().entries.map((e) {
+              final c = e.value;
+              final i = e.key;
+              return GestureDetector(
+                onTap: () {
+                  ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                  setState(() {
+                    if (selected == c['key']) {
+                      selected = null;
+                    } else {
+                      selected = c['key'];
+                    }
+                  });
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color:
+                        (selected == c['key'])
+                            ? Colors.purpleAccent.withValues(alpha: .15)
+                            : AppColors.primary.withValues(alpha: .15),
+                    border: Border.all(
+                      color: (selected == c['key']) ? Colors.purpleAccent : AppColors.primary,
+                    ),
+                  ),
+                  margin: EdgeInsets.only(
+                    left: isArabic ? 10 : 10,
+                    right:
+                        isArabic
+                            ? (i == 0 ? 15 : 0)
+                            : (i >= marketPlaceItemsCategories.length - 1 ? 20 : 0),
+                  ),
+
+                  child: Center(child: Text(c['value'])),
                 ),
-              ),
-              margin: EdgeInsets.only(
-                left: i == 0 ? 20 : 10,
-                right: i >= (marketPlaceItemsCategories.length - 1) ? 20 : 0,
-              ),
-              child: Center(
-                child: Text(c),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -354,7 +364,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       isButton: true,
       padding: EdgeInsets.all(16),
       child: Text(
-        "There is no items",
+        AppLocalizations.of(context).marketplace_empty,
         style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
       ),
     );

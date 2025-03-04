@@ -21,28 +21,20 @@ class CustomQuestEmptyWidget extends ConsumerWidget {
                 glowColor: HexColor('7AD5FF'),
                 color: HexColor('7AD5FF'),
               ),
-              const SizedBox(
-                height: 15,
-              ),
+              const SizedBox(height: 15),
               Text(
-                "You don’t have any custom quests right now. Would you like to add a new quest?",
+                AppLocalizations.of(context).custom_quest_empty,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
                   backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(
-                      color: HexColor('7AD5FF'),
-                    ),
+                    side: BorderSide(color: HexColor('7AD5FF')),
                   ),
                   foregroundColor: AppColors.whiteColor,
                   textStyle: TextStyle(fontWeight: FontWeight.bold),
@@ -51,7 +43,7 @@ class CustomQuestEmptyWidget extends ConsumerWidget {
                   ref.read(soundEffectsServiceProvider).playSystemButtonClick();
                   context.push(Routes.customQuestsPage);
                 },
-                child: Text("add quests"),
+                child: Text(AppLocalizations.of(context).add_quest),
               ),
             ],
           ),
@@ -61,8 +53,7 @@ class CustomQuestEmptyWidget extends ConsumerWidget {
             child: GestureDetector(
               onTap: () {
                 ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-                CustomToast.systemToast(
-                    "You need to reach level 5 to be able to create your own quests.");
+                CustomToast.systemToast(AppLocalizations.of(context).custom_quest_requirements);
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -72,11 +63,8 @@ class CustomQuestEmptyWidget extends ConsumerWidget {
                 ),
                 child: Center(
                   child: Text(
-                    "Locked (opens at LVL 5)",
-                    style: TextStyle(
-                      fontFamily: AppFonts.header,
-                      fontSize: 18,
-                    ),
+                    AppLocalizations.of(context).custom_quest_level_locked,
+                    style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                   ),
                 ),
               ),

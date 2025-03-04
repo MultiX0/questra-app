@@ -12,6 +12,7 @@ class EventModel {
   final String event_type;
   final String? thumbnail;
   final int minImageUploadCount;
+  final String? ar_title;
   EventModel({
     required this.id,
     required this.title,
@@ -24,6 +25,7 @@ class EventModel {
     this.religion,
     this.thumbnail,
     required this.event_type,
+    this.ar_title,
   });
 
   EventModel copyWith({
@@ -38,6 +40,7 @@ class EventModel {
     String? event_type,
     String? thumbnail,
     int? minImageUploadCount,
+    String? ar_title,
   }) {
     return EventModel(
       id: id ?? this.id,
@@ -51,6 +54,7 @@ class EventModel {
       event_type: event_type ?? this.event_type,
       thumbnail: thumbnail ?? this.thumbnail,
       minImageUploadCount: minImageUploadCount ?? this.minImageUploadCount,
+      ar_title: ar_title ?? this.ar_title,
     );
   }
 
@@ -65,6 +69,7 @@ class EventModel {
       'religion_based': religion_based,
       'religion': religion,
       'event_type': event_type,
+      'ar_title': ar_title,
     };
   }
 
@@ -81,6 +86,7 @@ class EventModel {
       event_type: map[KeyNames.event_type] ?? 'quests',
       thumbnail: map[KeyNames.thumbnail],
       minImageUploadCount: map[KeyNames.min_upload_image_count] ?? 1,
+      ar_title: map[KeyNames.ar_title],
     );
   }
 

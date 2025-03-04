@@ -6,10 +6,7 @@ import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
 
 class FinishQuestWidget extends ConsumerStatefulWidget {
-  const FinishQuestWidget({
-    super.key,
-    required this.cancel,
-  });
+  const FinishQuestWidget({super.key, required this.cancel});
 
   final VoidCallback cancel;
 
@@ -34,8 +31,9 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
       if (!kDebugMode) {
         if (quest.created_at.toUtc().add(duration).isAfter(now.toUtc())) {
           CustomToast.systemToast(
-              "you need to wait until ${appDateFormat(quest.created_at.toLocal().add(duration))}",
-              systemMessage: true);
+            "${AppLocalizations.of(context).wait_until} ${appDateFormat(quest.created_at.toLocal().add(duration))}",
+            systemMessage: true,
+          );
           return;
         }
       }
@@ -77,6 +75,8 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
     return QuestFeedbackWidget(failed: true);
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   Widget buildDefaultPage() {
     return SystemCard(
       padding: EdgeInsets.all(20),
@@ -85,33 +85,30 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Quest Status is ?",
+            AppLocalizations.of(context).quest_status_card_title,
             style: TextStyle(
-              fontFamily: AppFonts.header,
+              fontFamily: isArabic ? null : AppFonts.header,
               fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
             ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           SystemCardButton(
             onTap: () {
               setState(() {
                 status = 'finish';
               });
             },
-            text: "Finished",
+            text: AppLocalizations.of(context).quest_finished,
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           SystemCardButton(
             onTap: () {
               setState(() {
                 status = 'failed';
               });
             },
-            text: "Failed",
+            text: AppLocalizations.of(context).quest_failed,
             doneButton: false,
           ),
         ],
@@ -127,63 +124,40 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Are You Sure You’ve Completed the Quest?",
+            AppLocalizations.of(context).quest_complete_confirmation,
             style: TextStyle(
-              fontFamily: AppFonts.header,
+              fontFamily: isArabic ? null : AppFonts.header,
               fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
             ),
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Text(
-            "Completing a quest is an honorable achievement! However, if you claim completion without truly finishing, you may face penalties",
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white70,
-            ),
+            AppLocalizations.of(context).quest_finish_alert1,
+            style: TextStyle(fontSize: 13, color: Colors.white70),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Text(
-            "· Lose Your Current Streak.\n· Forfeit Earned XP.\n· Block your account!",
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.redColor,
-              fontWeight: FontWeight.bold,
-            ),
+            AppLocalizations.of(context).quest_finish_alert2,
+
+            style: TextStyle(fontSize: 12, color: AppColors.redColor, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Text(
-            "Be honest, adventurer—your reputation and progress depend on it. Are you ready to confirm quest completion?",
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.white70,
-            ),
+            AppLocalizations.of(context).quest_finish_alert3,
+            style: TextStyle(fontSize: 13, color: Colors.white70),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          SystemCardButton(
-            onTap: finish,
-            text: "Yes, I’ve Completed It",
-          ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
+          SystemCardButton(onTap: finish, text: AppLocalizations.of(context).quest_finish_btn1),
+          const SizedBox(height: 20),
           SystemCardButton(
             onTap: () {
               widget.cancel();
             },
-            text: "No, I’ll Keep Working",
+            text: AppLocalizations.of(context).quest_finish_btn2,
             doneButton: false,
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
         ],
       ),
     );

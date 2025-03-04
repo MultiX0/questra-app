@@ -94,4 +94,8 @@ class KeyNames {
   static const reason = 'reason';
   static const finish_log_id = 'finish_log_id';
   static const ar_name = 'ar_name';
+  static const ar_title = 'ar_title';
+  static const ar_description = 'ar_description';
+  static const ar_goal_description = 'ar_goal_description';
+  static const lang = 'lang';
 }

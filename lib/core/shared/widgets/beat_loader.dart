@@ -7,6 +7,8 @@ class BeatLoader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(child: LoadingAnimationWidget.beat(color: AppColors.primary, size: 30).swing());
+    return Center(
+      child: LoadingAnimationWidget.beat(color: AppColors.primary, size: 30).swing(infinite: true),
+    );
   }
 }
