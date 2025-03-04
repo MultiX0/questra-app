@@ -39,7 +39,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final observer = ref.watch(routeObserverProvider);
   return GoRouter(
     initialLocation: Routes.splash,
-    debugLogDiagnostics: kDebugMode,
+    debugLogDiagnostics: false,
     navigatorKey: _key,
     observers: [observer],
     redirect: (context, state) {
