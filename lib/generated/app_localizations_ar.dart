@@ -985,4 +985,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get avatar_update => 'تحديث الصورة الشخصية';
+
+  @override
+  String get custom_quest_add_appbar_title => 'إضافة مهمة';
+
+  @override
+  String get custom_quest_add_card_title => 'تفاصيل المهمة';
+
+  @override
+  String get custom_quest_add_card_note => 'تلميح: يجب عليك كتابة تفاصيل المهمة بدقة حتى يتم قبولها من قبل النظام.';
+
+  @override
+  String get custom_quest_add_field_hint => 'يرجى إدخال تفاصيل مهمتك هنا.';
+
+  @override
+  String get custom_quest_add_toast => 'يجب عليك إدخال 10 أحرف على الأقل لإنشاء مهمة خاصة، كما تحتاج إلى إدخال تفاصيل دقيقة حول المهمة.';
+
+  @override
+  String get custom_quest_add_alert => 'لا يمكنك مغادرة هذه الصفحة أثناء إنشاء المهمة.';
 }

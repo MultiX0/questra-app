@@ -330,7 +330,15 @@
   "lootbox_description": "What’s this? A loot box? Did the game accidentally mistake you for someone important? Nah, just kidding—you’re obviously a legend.",
   "lootbox_description2": "💰 Inside: A glorious stash of coins ($reward).\n🎲 Luck is just skill you didn’t plan for.",
   "lootbox_btn": "GIMME MY MONEY 💰",
-  "avatar_update": "Update Your Avatar."
+  "avatar_update": "Update Your Avatar.",
+  "custom_quest_add_appbar_title": "Add Quest",
+  "custom_quest_add_card_title": "Quest Details",
+  "custom_quest_add_card_note": "hint: You need to write the quest details accurately in order for it to be accepted by the system.",
+  "custom_quest_add_field_hint": "please enter your quest details here",
+  "custom_quest_add_toast": "You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.",
+  "custom_quest_add_alert": "You cannot leave this page while the quest is being created."
+
+
 
 
   

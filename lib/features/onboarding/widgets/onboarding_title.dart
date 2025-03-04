@@ -8,6 +8,7 @@ class OnboardingTitle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return Column(
       children: [
         Center(
@@ -19,7 +20,7 @@ class OnboardingTitle extends ConsumerWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 26,
-              fontFamily: AppFonts.header,
+              fontFamily: isArabic ? null : AppFonts.header,
               fontWeight: FontWeight.bold,
               color: HexColor('7AD5FF'),
             ),
@@ -34,12 +35,7 @@ class OnboardingTitle extends ConsumerWidget {
               textAlign: TextAlign.center,
               glowColor: Colors.white,
               spreadRadius: 1,
-              style: TextStyle(
-                fontSize: 15,
-                fontFamily: AppFonts.primary,
-                fontWeight: FontWeight.normal,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal, color: Colors.white),
               blurRadius: 20,
             ),
           ),

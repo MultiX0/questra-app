@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
@@ -164,9 +163,10 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final currentLocale = ref.watch(localeProvider);
     final router = ref.watch(routerProvider);
+    final theme = ref.watch(appThemeProvider);
     return ToastificationWrapper(
       child: MaterialApp.router(
-        theme: AppTheme.darkModeAppTheme,
+        theme: theme.darkModeAppTheme,
         routeInformationParser: router.routeInformationParser,
         routeInformationProvider: router.routeInformationProvider,
         routerDelegate: router.routerDelegate,

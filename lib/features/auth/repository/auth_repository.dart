@@ -293,7 +293,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     _userSubscription?.cancel();
     _userSubscription = null;
     _debounceTimer?.cancel();
-    state = null;
+    // state = null;
     _stateStreamController.add(null);
     _ref.read(isLoggedInProvider.notifier).state = false;
     _ref.read(hasValidAccountProvider.notifier).state = false;

@@ -55,7 +55,11 @@ class GoalsRepository {
   Future<List<UserGoalModel>> getUserGoals(String user_id) async {
     try {
       final data = await _goalsTable.select('*').eq(KeyNames.user_id, user_id);
-      final goals = data.map((goal) => UserGoalModel.fromMap(goal)).toList();
+      List<UserGoalModel> goals = data.map((goal) => UserGoalModel.fromMap(goal)).toList();
+      List<UserGoalModel> _goals = goals.where((g) => g.ar_description == null).toList();
+      if (_goals.isNotEmpty) {
+        goals = await translateGoals(goals);
+      }
       return goals;
     } catch (e) {
       log(e.toString());

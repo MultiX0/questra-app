@@ -21,6 +21,7 @@ class EventsCaruosel extends ConsumerWidget {
       return const SizedBox.shrink(); // Or a placeholder widget
     }
     final isLoading = ref.watch(eventsControllerProvider);
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
     final user = ref.watch(authStateProvider);
     return ExpandableCarousel.builder(
       key: ValueKey('quest-carousel-${events.length}'),
@@ -86,9 +87,13 @@ class EventsCaruosel extends ConsumerWidget {
                           isLoading
                               ? BeatLoader()
                               : GlowText(
-                                text: event.title,
+                                text: isArabic ? event.ar_title ?? event.title : event.title,
                                 glowColor: AppColors.primary,
-                                style: TextStyle(fontFamily: AppFonts.header, fontSize: 24),
+                                style: TextStyle(
+                                  fontFamily: isArabic ? null : AppFonts.header,
+                                  fontWeight: isArabic ? FontWeight.bold : null,
+                                  fontSize: 24,
+                                ),
                               ).tada(),
                     ),
                   ),

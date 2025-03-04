@@ -2014,6 +2014,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update Your Avatar.'**
   String get avatar_update;
+
+  /// No description provided for @custom_quest_add_appbar_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Quest'**
+  String get custom_quest_add_appbar_title;
+
+  /// No description provided for @custom_quest_add_card_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Details'**
+  String get custom_quest_add_card_title;
+
+  /// No description provided for @custom_quest_add_card_note.
+  ///
+  /// In en, this message translates to:
+  /// **'hint: You need to write the quest details accurately in order for it to be accepted by the system.'**
+  String get custom_quest_add_card_note;
+
+  /// No description provided for @custom_quest_add_field_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'please enter your quest details here'**
+  String get custom_quest_add_field_hint;
+
+  /// No description provided for @custom_quest_add_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.'**
+  String get custom_quest_add_toast;
+
+  /// No description provided for @custom_quest_add_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot leave this page while the quest is being created.'**
+  String get custom_quest_add_alert;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

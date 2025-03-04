@@ -3,11 +3,13 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:questra_app/core/shared/utils/lang_detect.dart';
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
+import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/imports.dart';
 
 final questsControllerProvider = StateNotifierProvider<QuestsController, bool>((ref) {
@@ -42,6 +44,7 @@ class QuestsController extends StateNotifier<bool> {
   QuestsController({required Ref ref}) : _ref = ref, super(false);
 
   QuestsRepository get _repository => _ref.watch(questsRepositoryProvider);
+  TranslationService get _translateService => TranslationService();
 
   bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
@@ -203,10 +206,19 @@ class QuestsController extends StateNotifier<bool> {
     }
   }
 
-  Future<void> addCustomQuest({required String description, required BuildContext context}) async {
+  Future<void> addCustomQuest({
+    required String ogDescription,
+    required BuildContext context,
+  }) async {
     try {
       // final now = DateTime.now().toUtc();
       state = true;
+      String description;
+      if (isEnglish(ogDescription)) {
+        description = ogDescription;
+      } else {
+        description = await _translateService.translate("ar", "en", ogDescription);
+      }
 
       final user = _ref.read(authStateProvider)!;
       if (!kDebugMode) {

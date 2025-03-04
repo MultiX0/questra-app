@@ -73,17 +73,13 @@ class UserDashboardWidget extends ConsumerWidget {
                 GlowText(
                   glowColor: Colors.white,
                   text: user.username,
-                  style: TextStyle(fontSize: 14, color: Colors.white, fontFamily: AppFonts.primary),
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
                 const SizedBox(height: 5),
                 GlowText(
                   glowColor: Colors.white.withValues(alpha: .57),
                   text: "LvL ${user.level?.level}",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white.withValues(alpha: .57),
-                    fontFamily: AppFonts.primary,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.white.withValues(alpha: .57)),
                 ),
               ],
             ),
@@ -93,11 +89,7 @@ class UserDashboardWidget extends ConsumerWidget {
 
               glowColor: Colors.white.withValues(alpha: .57),
               text: '${AppLocalizations.of(context).coins}: ${user.wallet?.balance ?? 0}\$',
-              style: TextStyle(
-                color: Colors.white.withValues(alpha: .57),
-                fontSize: 12,
-                fontFamily: AppFonts.primary,
-              ),
+              style: TextStyle(color: Colors.white.withValues(alpha: .57), fontSize: 12),
             ),
           ],
         ),
@@ -111,7 +103,6 @@ class UserDashboardWidget extends ConsumerWidget {
             fontSize: 12,
             color: Colors.white.withValues(alpha: .85),
             fontWeight: FontWeight.bold,
-            fontFamily: AppFonts.primary,
           ),
         ),
         const SizedBox(height: 15),
@@ -129,7 +120,6 @@ class UserDashboardWidget extends ConsumerWidget {
             fontSize: 12,
             color: Colors.white.withValues(alpha: .85),
             fontWeight: FontWeight.bold,
-            fontFamily: AppFonts.primary,
           ),
         ),
         const SizedBox(height: 15),
@@ -145,7 +135,6 @@ class UserDashboardWidget extends ConsumerWidget {
                 fontSize: 12,
                 color: Colors.white.withValues(alpha: .85),
                 fontWeight: FontWeight.bold,
-                fontFamily: AppFonts.primary,
               ),
             ),
             const SizedBox(),
@@ -201,21 +190,11 @@ class UserDashboardWidget extends ConsumerWidget {
           child: RichText(
             text: TextSpan(
               text: "${user.level?.xp ?? 0}/",
-              style: TextStyle(
-                fontFamily: AppFonts.primary,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
               children: [
                 TextSpan(
                   text: '${calculateXpForLevel(user.level?.level ?? 1)}',
-                  style: TextStyle(
-                    fontFamily: AppFonts.primary,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white54,
-                    fontSize: 9,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white54, fontSize: 9),
                 ),
               ],
             ),

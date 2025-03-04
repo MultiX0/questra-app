@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/imports.dart';
@@ -117,30 +118,34 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
                 Row(
                   children: [
                     Expanded(
-                      child: NeonTextField(
-                        controller: _controller,
-                        labelText: AppLocalizations.of(context).goal,
-                        hintText: AppLocalizations.of(context).enter_your_goals,
-                      ),
+                      child:
+                          NeonTextField(
+                            controller: _controller,
+                            labelText: AppLocalizations.of(context).goal,
+                            hintText: AppLocalizations.of(context).enter_your_goals,
+                          ).tada(),
                     ),
                     const SizedBox(width: 10),
                     GestureDetector(
                       onTap: addGoal,
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: HexColor('7AD5FF'),
-                          boxShadow: [
-                            BoxShadow(
-                              spreadRadius: 0.5,
-                              blurRadius: 20,
-                              color: HexColor('7AD5FF').withValues(alpha: .4),
+                      child:
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: HexColor('7AD5FF'),
+                              boxShadow: [
+                                BoxShadow(
+                                  spreadRadius: 0.5,
+                                  blurRadius: 20,
+                                  color: HexColor('7AD5FF').withValues(alpha: .4),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Center(child: Icon(LucideIcons.plus, color: AppColors.whiteColor)),
-                      ),
+                            child: Center(
+                              child: Icon(LucideIcons.plus, color: AppColors.whiteColor),
+                            ),
+                          ).swing(),
                     ),
                   ],
                 ),

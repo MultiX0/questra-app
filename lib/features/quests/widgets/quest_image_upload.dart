@@ -69,6 +69,8 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
     }
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
     if (done) {
@@ -90,7 +92,11 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
         children: [
           Text(
             AppLocalizations.of(context).image_submit_card_title,
-            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+            style: TextStyle(
+              fontFamily: isArabic ? null : AppFonts.header,
+              fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
+            ),
           ),
           const SizedBox(height: 10),
           Text(

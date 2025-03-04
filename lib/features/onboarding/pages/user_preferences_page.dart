@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
 
@@ -194,7 +195,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  OnboardingTitle(title: AppLocalizations.of(context).preferences),
+                  OnboardingTitle(title: AppLocalizations.of(context).preferences).swing(),
                   const SizedBox(height: kToolbarHeight - 10),
                   NeonTextField(
                     onTap: selectSocialInteractions,
@@ -212,7 +213,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                     hintText: AppLocalizations.of(context).social_interactions_hint,
                     readOnly: true,
                     focusNode: socialInteractionsNode,
-                  ),
+                  ).bounceIn(),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: selectAvailability,
@@ -229,7 +230,7 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                     readOnly: true,
                     hintText: AppLocalizations.of(context).availability_hint,
                     focusNode: availabilityNode,
-                  ),
+                  ).bounceInLeft(duration: const Duration(milliseconds: 1200)),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: selectDifficulty,
@@ -245,13 +246,13 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
                     hintText: AppLocalizations.of(context).difficulty_hint,
-                  ),
+                  ).bounceInRight(duration: const Duration(milliseconds: 1400)),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size).tada(),
       ),
     );
   }

@@ -44,6 +44,8 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
     ref.read(profileControllerProvider.notifier).updateUserAvatar(_images[0], user!.id, context);
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
     final isLoading = ref.watch(profileControllerProvider);
@@ -62,7 +64,11 @@ class _UploadAvatarWidgetState extends ConsumerState<UploadAvatarWidget> {
                 children: [
                   Text(
                     AppLocalizations.of(context).avatar_update,
-                    style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+                    style: TextStyle(
+                      fontFamily: isArabic ? null : AppFonts.header,
+                      fontSize: 18,
+                      fontWeight: isArabic ? FontWeight.bold : null,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Padding(

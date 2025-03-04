@@ -56,7 +56,7 @@ class QuestCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w200,
-                          fontFamily: AppFonts.primary,
+                          // fontFamily: AppFonts.primary,
                           color: AppColors.whiteColor,
                         ),
                       ),
@@ -76,7 +76,7 @@ class QuestCard extends ConsumerWidget {
                     style: TextStyle(
                       color: AppColors.whiteColor,
                       fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       fontSize: 14,
                     ),
                     spreadRadius: 0.5,
@@ -89,7 +89,7 @@ class QuestCard extends ConsumerWidget {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                       color: AppColors.whiteColor,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       fontSize: 14,
                     ),
                   ),
@@ -108,7 +108,7 @@ class QuestCard extends ConsumerWidget {
                     style: TextStyle(
                       color: AppColors.whiteColor,
                       fontWeight: FontWeight.bold,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       fontSize: 14,
                     ),
                     spreadRadius: 0.5,
@@ -123,7 +123,7 @@ class QuestCard extends ConsumerWidget {
                     overflow: isView ? null : TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white70,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       fontSize: 13,
                     ),
                   ),
@@ -134,8 +134,8 @@ class QuestCard extends ConsumerWidget {
                 glowColor: Colors.white54,
                 textAlign: TextAlign.start,
                 text:
-                    "Reward: +${questModel.xp_reward} XP, +${questModel.coin_reward} Coins${questModel.owned_title != null ? ", “${questModel.owned_title}” Title" : ''}",
-                style: TextStyle(color: Colors.white54, fontFamily: AppFonts.primary, fontSize: 10),
+                    "${AppLocalizations.of(context).quest_completetion_card_reward(questModel.coin_reward, questModel.xp_reward)}${questModel.owned_title != null ? ", \n${AppLocalizations.of(context).quest_completetion_card_title_earned(questModel.owned_title!)}" : ''}",
+                style: TextStyle(color: Colors.white54, fontSize: 12),
                 spreadRadius: 0.5,
                 blurRadius: 15,
               ),

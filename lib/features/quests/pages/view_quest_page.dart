@@ -107,6 +107,7 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
 
   Widget buildBody(QuestModel quest) {
     final isLoading = ref.watch(questsControllerProvider);
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -118,24 +119,30 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
           children: [
             SystemCard(
               onTap: finish,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 10),
               isButton: true,
               child: Text(
                 AppLocalizations.of(context).finish.toLowerCase(),
-                style: TextStyle(fontFamily: AppFonts.header),
+                style: TextStyle(
+                  fontFamily: isArabic ? null : AppFonts.header,
+                  fontSize: isArabic ? 13 : null,
+                ),
               ),
             ),
             if (widget.special) ...[
               SystemCard(
                 onTap: delete,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 10),
                 isButton: true,
                 child:
                     isLoading
                         ? BeatLoader(size: 15)
                         : Text(
                           AppLocalizations.of(context).delete_custom_quest,
-                          style: TextStyle(fontFamily: AppFonts.header),
+                          style: TextStyle(
+                            fontFamily: isArabic ? null : AppFonts.header,
+                            fontSize: isArabic ? 13 : null,
+                          ),
                         ),
               ),
             ] else
@@ -145,7 +152,10 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
                 isButton: true,
                 child: Text(
                   AppLocalizations.of(context).skip,
-                  style: TextStyle(fontFamily: AppFonts.header),
+                  style: TextStyle(
+                    fontFamily: isArabic ? null : AppFonts.header,
+                    fontSize: isArabic ? 13 : null,
+                  ),
                 ),
               ),
           ],

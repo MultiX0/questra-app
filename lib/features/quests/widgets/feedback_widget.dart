@@ -166,6 +166,8 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
     );
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -189,7 +191,11 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
                   children: [
                     Text(
                       AppLocalizations.of(context).feedback,
-                      style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+                      style: TextStyle(
+                        fontFamily: isArabic ? null : AppFonts.header,
+                        fontSize: 18,
+                        fontWeight: isArabic ? FontWeight.bold : null,
+                      ),
                     ),
                     Icon(LucideIcons.message_circle, color: AppColors.primary),
                   ],

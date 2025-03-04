@@ -19,6 +19,8 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
     });
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   void finish() {
     final cachedLevel = ref.read(cachedUserLevelProvider);
     dynamic quest;
@@ -62,7 +64,11 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
             children: [
               Text(
                 AppLocalizations.of(context).quest_completetion_card_title,
-                style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+                style: TextStyle(
+                  fontFamily: isArabic ? null : AppFonts.header,
+                  fontSize: 18,
+                  fontWeight: isArabic ? FontWeight.bold : null,
+                ),
               ),
               Icon(LucideIcons.trophy, color: AppColors.primary),
             ],

@@ -35,8 +35,10 @@ class _CustomQuestsPageState extends ConsumerState<CustomQuestsPage> {
             context.push(Routes.addCustomQuestPage);
           },
         ),
-        appBar: TheAppBar(title: "Custom Quests"),
-        body: ref.watch(getCustomQuestsProvider(user!.id)).when(
+        appBar: TheAppBar(title: AppLocalizations.of(context).profile_custom_quests),
+        body: ref
+            .watch(getCustomQuestsProvider(user!.id))
+            .when(
               data: (quests) {
                 if (quests.isEmpty) {
                   return buildEmptyTitels();
@@ -60,9 +62,7 @@ class _CustomQuestsPageState extends ConsumerState<CustomQuestsPage> {
                   },
                 );
               },
-              error: (error, _) => Center(
-                child: ErrorWidget(error),
-              ),
+              error: (error, _) => Center(child: ErrorWidget(error)),
               loading: () => BeatLoader(),
             ),
       ),
@@ -79,16 +79,10 @@ class _CustomQuestsPageState extends ConsumerState<CustomQuestsPage> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  LucideIcons.hexagon,
-                  color: AppColors.primary,
-                  size: 40,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
+                Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+                const SizedBox(height: 15),
                 Text(
-                  "There are no quests yet.",
+                  AppLocalizations.of(context).empty_quests,
                   style: TextStyle(
                     fontWeight: FontWeight.w200,
                     color: AppColors.descriptionColor,

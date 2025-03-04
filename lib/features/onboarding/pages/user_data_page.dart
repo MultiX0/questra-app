@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:questra_app/imports.dart';
@@ -227,7 +228,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                 shrinkWrap: true,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  OnboardingTitle(),
+                  OnboardingTitle().swing(),
                   const SizedBox(height: kToolbarHeight - 10),
                   NeonTextField(
                     controller: _nameController,
@@ -273,7 +274,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     maxLength: 20,
                     hintText: AppLocalizations.of(context).player_username_hint,
-                  ),
+                  ).bounceIn(),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: birthDateSheet,
@@ -289,7 +290,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                       }
                       return null;
                     },
-                  ),
+                  ).bounceInRight(duration: const Duration(milliseconds: 1200)),
                   const SizedBox(height: 15),
                   NeonTextField(
                     focusNode: genderFocusNode,
@@ -306,7 +307,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
                     hintText: AppLocalizations.of(context).player_gender_hint,
-                  ),
+                  ).bounceInLeft(duration: const Duration(milliseconds: 1400)),
                   const SizedBox(height: 15),
                   NeonTextField(
                     onTap: activitySheet,
@@ -323,13 +324,13 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
                     hintText: AppLocalizations.of(context).general_fitness_activity_hint,
-                  ),
+                  ).bounceInDown(duration: const Duration(milliseconds: 1600)),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size).tada(),
       ),
     );
   }

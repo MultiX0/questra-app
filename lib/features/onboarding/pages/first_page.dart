@@ -18,6 +18,7 @@ class OnboardingFirstPage extends ConsumerStatefulWidget {
 
 class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
   bool hover = false;
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +59,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                 blurRadius: 30,
                 style: TextStyle(
                   fontSize: 28,
-                  fontFamily: AppFonts.header,
+                  fontFamily: isArabic ? null : AppFonts.header,
                   fontWeight: FontWeight.bold,
                   color: HexColor('7AD5FF'),
                 ),
@@ -68,12 +69,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                 text: AppLocalizations.of(context).firstPageSubtitle,
                 textAlign: TextAlign.center,
                 glowColor: Colors.white,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: AppFonts.primary,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
                 blurRadius: 3,
               ).fadeInUp(duration: const Duration(milliseconds: 1000)),
               const SizedBox(height: 35),
@@ -127,7 +123,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
           style: TextStyle(
             fontWeight: FontWeight.w700,
             color: AppColors.descriptionColor,
-            fontFamily: AppFonts.primary,
+
             fontSize: 12,
           ),
           children: [
@@ -137,7 +133,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
                 fontSize: 12,
-                fontFamily: AppFonts.primary,
+
                 decoration: TextDecoration.underline,
               ),
               recognizer:
@@ -152,7 +148,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                 fontWeight: FontWeight.w700,
                 color: AppColors.whiteColor,
                 fontSize: 12,
-                fontFamily: AppFonts.primary,
+
                 decoration: TextDecoration.underline,
               ),
             ),
@@ -162,7 +158,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
                 fontSize: 12,
-                fontFamily: AppFonts.primary,
+
                 decoration: TextDecoration.underline,
               ),
               recognizer:

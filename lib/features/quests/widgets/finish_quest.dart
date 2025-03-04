@@ -75,6 +75,8 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
     return QuestFeedbackWidget(failed: true);
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   Widget buildDefaultPage() {
     return SystemCard(
       padding: EdgeInsets.all(20),
@@ -84,7 +86,11 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
         children: [
           Text(
             AppLocalizations.of(context).quest_status_card_title,
-            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+            style: TextStyle(
+              fontFamily: isArabic ? null : AppFonts.header,
+              fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
+            ),
           ),
           const SizedBox(height: 15),
           SystemCardButton(
@@ -119,7 +125,11 @@ class _FinishQuestWidgetState extends ConsumerState<FinishQuestWidget> {
         children: [
           Text(
             AppLocalizations.of(context).quest_complete_confirmation,
-            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+            style: TextStyle(
+              fontFamily: isArabic ? null : AppFonts.header,
+              fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
+            ),
           ),
           const SizedBox(height: 15),
           Text(

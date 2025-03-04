@@ -113,7 +113,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       text: AppLocalizations.of(context).marketplace_title,
                       style: TextStyle(
                         fontSize: 20,
-                        fontFamily: AppFonts.header,
+                        // fontFamily: AppFonts.header,
                         color: AppColors.whiteColor,
                       ),
                       // glowColor: AppColors.whiteColor,
@@ -124,7 +124,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       text: AppLocalizations.of(context).marketplace_subtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        fontFamily: AppFonts.primary,
+                        // fontFamily: AppFonts.primary,
                         color: AppColors.whiteColor,
                       ),
                     ),

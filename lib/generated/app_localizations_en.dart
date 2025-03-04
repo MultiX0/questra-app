@@ -985,4 +985,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avatar_update => 'Update Your Avatar.';
+
+  @override
+  String get custom_quest_add_appbar_title => 'Add Quest';
+
+  @override
+  String get custom_quest_add_card_title => 'Quest Details';
+
+  @override
+  String get custom_quest_add_card_note => 'hint: You need to write the quest details accurately in order for it to be accepted by the system.';
+
+  @override
+  String get custom_quest_add_field_hint => 'please enter your quest details here';
+
+  @override
+  String get custom_quest_add_toast => 'You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.';
+
+  @override
+  String get custom_quest_add_alert => 'You cannot leave this page while the quest is being created.';
 }
