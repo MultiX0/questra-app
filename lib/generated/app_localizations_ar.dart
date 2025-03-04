@@ -1003,4 +1003,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get custom_quest_add_alert => 'لا يمكنك مغادرة هذه الصفحة أثناء إنشاء المهمة.';
+
+  @override
+  String last_submit_time_quest(Object date) {
+    return 'يرجى تسليم المهمة قبل $date';
+  }
 }

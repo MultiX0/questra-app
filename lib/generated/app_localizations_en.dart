@@ -1003,4 +1003,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get custom_quest_add_alert => 'You cannot leave this page while the quest is being created.';
+
+  @override
+  String last_submit_time_quest(Object date) {
+    return 'Expected finish at: $date';
+  }
 }
