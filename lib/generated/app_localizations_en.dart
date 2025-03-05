@@ -1008,4 +1008,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String last_submit_time_quest(Object date) {
     return 'Expected finish at: $date';
   }
+
+  @override
+  String event_quest_finish_alert(Object minPicsNeeds) {
+    return 'You need to provide at least $minPicsNeeds photos';
+  }
 }

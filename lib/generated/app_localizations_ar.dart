@@ -1008,4 +1008,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String last_submit_time_quest(Object date) {
     return 'يرجى تسليم المهمة قبل $date';
   }
+
+  @override
+  String event_quest_finish_alert(Object minPicsNeeds) {
+    return 'يجب عليك تقديم ما لا يقل عن $minPicsNeeds صور.';
+  }
 }

@@ -1,0 +1,1 @@
+/home/multix/questra-app/build/app/intermediates/cxx/Debug/663d1fa2/obj/arm64-v8a

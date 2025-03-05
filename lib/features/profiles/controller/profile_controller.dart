@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
-import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/imports.dart';
 
 import '../../../core/shared/utils/upload_storage.dart';

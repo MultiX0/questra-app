@@ -2056,6 +2056,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Expected finish at: {date}'**
   String last_submit_time_quest(Object date);
+
+  /// No description provided for @event_quest_finish_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to provide at least {minPicsNeeds} photos'**
+  String event_quest_finish_alert(Object minPicsNeeds);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

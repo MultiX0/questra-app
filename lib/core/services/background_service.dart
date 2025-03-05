@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:developer';
+import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -9,64 +11,55 @@ import 'package:questra_app/features/notifications/repository/notifications_repo
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
 
+// Isolate-specific data structures
+class IsolateTaskParams {
+  final String userId;
+  final String supabaseUrl;
+  final String supabaseKey;
+
+  IsolateTaskParams({required this.userId, required this.supabaseUrl, required this.supabaseKey});
+}
+
+class IsolateTaskResult {
+  final bool success;
+  final String? error;
+
+  IsolateTaskResult({required this.success, this.error});
+}
+
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
-    WidgetsFlutterBinding.ensureInitialized(); // Required for plugins
-
     try {
-      await _initializeSupabase();
+      // Lightweight and fast initialization
+      await _fastInitialize();
 
       switch (taskName) {
         case 'questCheck':
-          await _sendSystemMessage();
-          await _lootBoxTask();
+          await _performBackgroundTasks();
           break;
       }
       return Future.value(true);
     } catch (e) {
-      final failed = "Background task failed: $e";
-      log(failed);
-      await ExceptionService.insertException(
-        path: '/background_service',
-        error: failed,
-        userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
-      );
-
-      // await sendNotification("Background task failed", e.toString());
-
+      await _handleBackgroundError(e);
       return Future.value(false);
     }
   });
 }
 
-Future<void> _lootBoxTask() async {
+Future<void> _fastInitialize() async {
   try {
-    final _client = Supabase.instance.client;
-    final session = _client.auth.currentSession;
-    if (session == null) return;
+    // Ensure Flutter binding is initialized
+    WidgetsFlutterBinding.ensureInitialized();
 
-    final userId = session.user.id;
-    final userData =
-        await _client.from(TableNames.players).select("*").eq(KeyNames.id, userId).maybeSingle();
-
-    if (userData == null) return;
-
-    final lootBoxManager = LootBoxManager();
-    await lootBoxManager.checkLootBoxDrop();
-  } catch (e) {
-    log(e.toString());
-    rethrow;
-  }
-}
-
-Future<void> _initializeSupabase() async {
-  try {
+    // Initialize secure storage
     final secureStorage = SecureLocalStorage();
     await secureStorage.initialize();
 
+    // Load environment configurations
     await dotenv.load(fileName: '.env');
 
+    // Minimal Supabase initialization
     final _url = dotenv.env['SUPABASE_URL'] ?? "";
     final _key = dotenv.env['SUPABASE_KEY'] ?? "";
 
@@ -81,86 +74,152 @@ Future<void> _initializeSupabase() async {
       ),
     );
   } catch (e) {
-    log('Failed to initialize Supabase: $e');
-    throw Exception(e);
+    log('Fast initialization failed: $e');
+    rethrow;
   }
 }
 
-Future<void> _sendSystemMessage() async {
-  try {
-    final _client = Supabase.instance.client;
-    final session = _client.auth.currentSession;
-    if (session == null) return;
+Future<void> _performBackgroundTasks() async {
+  final _client = Supabase.instance.client;
+  final session = _client.auth.currentSession;
 
-    final userId = session.user.id;
+  if (session == null) return;
+
+  final userId = session.user.id;
+  final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? "";
+  final supabaseKey = dotenv.env['SUPABASE_KEY'] ?? "";
+
+  // Use Isolate for potentially heavy tasks
+  final isolateParams = IsolateTaskParams(
+    userId: userId,
+    supabaseUrl: supabaseUrl,
+    supabaseKey: supabaseKey,
+  );
+
+  // Run tasks potentially in separate isolates
+  final tasks = [
+    _runInIsolate(_checkSystemMessageTask, isolateParams),
+    _runInIsolate(_processLootBoxTask, isolateParams),
+  ];
+
+  final results = await Future.wait(tasks);
+
+  // Handle results if needed
+  for (var result in results) {
+    if (!result.success) {
+      log('Background task failed: ${result.error}');
+    }
+  }
+}
+
+// Isolate-safe static method for system message check
+@pragma('vm:entry-point')
+Future<IsolateTaskResult> _checkSystemMessageTask(IsolateTaskParams params) async {
+  try {
+    // Reinitialize Supabase in the isolate
+    await Supabase.initialize(url: params.supabaseUrl, anonKey: params.supabaseKey, debug: false);
+
+    final _client = Supabase.instance.client;
 
     final data = await _client.rpc(
       FunctionNames.get_today_notifications_count,
-      params: {'p_user_id': userId},
+      params: {'p_user_id': params.userId},
     );
 
-    if (data is int) {
-      if (data > 6) {
-        return;
-      }
+    // Safely parse notification count
+    final notificationCount = data is int ? data : int.tryParse(data.toString()) ?? 0;
+
+    // Check if notification limit is exceeded
+    if (notificationCount <= 6) {
+      await NotificationsRepository.sendNotificationFunction(params.userId);
     }
 
-    if (data is String) {
-      if ((int.tryParse(data) ?? 0) > 6) {
-        return;
-      }
-    }
-
-    await NotificationsRepository.sendNotificationFunction(userId);
+    return IsolateTaskResult(success: true);
   } catch (e) {
-    log(e.toString());
-    throw Exception(e);
+    return IsolateTaskResult(success: false, error: e.toString());
   }
 }
 
-// Future<void> _checkExpiringQuests() async {
-// try {
-// final session = Supabase.instance.client.auth.currentSession;
-// if (session == null) return;
+// Isolate-safe method for loot box processing
+@pragma('vm:entry-point')
+Future<IsolateTaskResult> _processLootBoxTask(IsolateTaskParams params) async {
+  try {
+    // Reinitialize Supabase in the isolate
+    await Supabase.initialize(url: params.supabaseUrl, anonKey: params.supabaseKey, debug: false);
 
-// final userId = session.user.id;
-// final now = DateTime.now().toUtc();
+    final _client = Supabase.instance.client;
 
-// final response = await Supabase.instance.client
-//     .from('user_quests')
-//     .select()
-//     .eq('user_id', userId)
-//     .eq('status', 'in_progress')
-//     .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
-//     .gt('expected_completion_time_date', now)
-//     .or('notified_two_hours.is.false,notified_one_hour.is.false');
+    // Fetch user data efficiently
+    final userData =
+        await _client
+            .from(TableNames.players)
+            .select("*")
+            .eq(KeyNames.id, params.userId)
+            .maybeSingle();
 
-// for (final quest in response) {
-//   final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
-//   final timeLeft = expectedTime.difference(now);
+    if (userData == null) {
+      return IsolateTaskResult(success: true);
+    }
 
-//   if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
-//     sendNotification(
-//         '2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
-//     await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
-//   }
+    final lootBoxManager = LootBoxManager();
+    await lootBoxManager.checkLootBoxDrop();
 
-//   if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
-//     sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
-//     await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
-//   }
-// }
-//   } catch (e) {
-//     log(e.toString());
-//     rethrow;
-//   }
-// }
+    return IsolateTaskResult(success: true);
+  } catch (e) {
+    return IsolateTaskResult(success: false, error: e.toString());
+  }
+}
 
-// Future<void> _updateNotificationStatus(String questId, String column) async {
-//   await Supabase.instance.client
-//       .from('user_quests')
-//       .update({column: true}).eq('user_quest_id', questId);
-// }
+// Generic method to run tasks in an isolate
+Future<IsolateTaskResult> _runInIsolate<P, R>(
+  Future<IsolateTaskResult> Function(P) task,
+  P params,
+) async {
+  final receivePort = ReceivePort();
+
+  try {
+    await Isolate.spawn(
+      _isolateEntryPoint,
+      _IsolateMessage(task: task, params: params, sendPort: receivePort.sendPort),
+    );
+
+    // Wait for the result from the isolate
+    return await receivePort.first as IsolateTaskResult;
+  } catch (e) {
+    return IsolateTaskResult(success: false, error: e.toString());
+  }
+}
+
+// Entry point for isolate communication
+@pragma('vm:entry-point')
+void _isolateEntryPoint(_IsolateMessage message) async {
+  try {
+    final result = await message.task(message.params);
+    message.sendPort.send(result);
+  } catch (e) {
+    message.sendPort.send(IsolateTaskResult(success: false, error: e.toString()));
+  }
+}
+
+// Helper class for isolate messaging
+class _IsolateMessage<P> {
+  final Future<IsolateTaskResult> Function(P) task;
+  final P params;
+  final SendPort sendPort;
+
+  _IsolateMessage({required this.task, required this.params, required this.sendPort});
+}
+
+Future<void> _handleBackgroundError(dynamic error) async {
+  log('Background task failed: $error');
+
+  // Centralized error handling
+  await ExceptionService.insertException(
+    path: '/background_service',
+    error: error.toString(),
+    userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+  );
+}
 
 Future<void> sendNotification(String body, String title) async {
   try {

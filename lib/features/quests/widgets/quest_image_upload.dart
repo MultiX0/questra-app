@@ -57,7 +57,7 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
       }
       ref.read(questImagesProvider.notifier).state = _images;
       if (widget.isEvent) {
-        await ref.read(eventsControllerProvider.notifier).finishEventQuest();
+        await ref.read(eventsControllerProvider.notifier).finishEventQuest(context);
       }
 
       setState(() {

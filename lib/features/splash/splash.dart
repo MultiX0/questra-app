@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class SplashPage extends ConsumerStatefulWidget {

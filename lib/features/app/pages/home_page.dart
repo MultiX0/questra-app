@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/device_service.dart';
+import 'package:questra_app/core/shared/utils/notifications_subs.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
@@ -70,8 +71,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     Locale newLang;
     if (currentLang == 'ar') {
       newLang = Locale('en');
+      fcmUnSubscribe('ar');
+      fcmSubscribe('en');
     } else {
       newLang = Locale('ar');
+      fcmUnSubscribe('en');
+      fcmSubscribe('ar');
     }
     final user = ref.watch(authStateProvider);
     ref.read(localeProvider.notifier).state = newLang;

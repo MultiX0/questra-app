@@ -333,7 +333,9 @@
   "custom_quest_add_field_hint": "يرجى إدخال تفاصيل مهمتك هنا.",
   "custom_quest_add_toast": "يجب عليك إدخال 10 أحرف على الأقل لإنشاء مهمة خاصة، كما تحتاج إلى إدخال تفاصيل دقيقة حول المهمة.",
   "custom_quest_add_alert": "لا يمكنك مغادرة هذه الصفحة أثناء إنشاء المهمة.",
-  "last_submit_time_quest":"يرجى تسليم المهمة قبل {date}"
+  "last_submit_time_quest":"يرجى تسليم المهمة قبل {date}",
+  "event_quest_finish_alert": "يجب عليك تقديم ما لا يقل عن {minPicsNeeds} صور."
+
 
 
 
