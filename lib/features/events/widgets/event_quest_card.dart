@@ -39,7 +39,7 @@ class EventsQuestCard extends ConsumerWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w200,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       color: AppColors.whiteColor,
                     ),
                   ),
@@ -59,7 +59,7 @@ class EventsQuestCard extends ConsumerWidget {
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
                 spreadRadius: 0.5,
@@ -72,7 +72,7 @@ class EventsQuestCard extends ConsumerWidget {
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: AppColors.whiteColor,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
               ),
@@ -90,7 +90,7 @@ class EventsQuestCard extends ConsumerWidget {
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
                 spreadRadius: 0.5,
@@ -101,7 +101,7 @@ class EventsQuestCard extends ConsumerWidget {
                 quest.description,
                 maxLines: isView ? null : 1,
                 overflow: isView ? null : TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white70, fontFamily: AppFonts.primary, fontSize: 13),
+                style: TextStyle(color: Colors.white70, fontSize: 13),
               ),
             ],
           ),
@@ -109,8 +109,10 @@ class EventsQuestCard extends ConsumerWidget {
           GlowText(
             glowColor: Colors.white54,
             textAlign: TextAlign.start,
-            text: "Reward: +${quest.xp_reward} XP, +${quest.coin_reward} Coins",
-            style: TextStyle(color: Colors.white54, fontFamily: AppFonts.primary, fontSize: 10),
+            text: AppLocalizations.of(
+              context,
+            ).quest_completetion_card_reward(quest.coin_reward, quest.xp_reward),
+            style: TextStyle(color: Colors.white54, fontSize: 10),
             spreadRadius: 0.5,
             blurRadius: 15,
           ),

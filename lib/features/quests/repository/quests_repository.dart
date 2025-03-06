@@ -475,7 +475,7 @@ class QuestsRepository {
           .select("*")
           .eq(KeyNames.user_id, userId)
           .order(KeyNames.created_at, ascending: false)
-          .limit(8);
+          .limit(10);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {

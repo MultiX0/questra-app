@@ -23,7 +23,7 @@ class AiFunctions {
 
       String userId = _user?.id ?? "";
 
-      final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
+      // final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
       log("here 3");
 
       final ongoingQuests = await _ref
@@ -48,7 +48,18 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
-      // final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      final lastQuestsData =
+          lastQuests.map((quest) {
+            return {
+              KeyNames.quest_title: quest.title,
+              KeyNames.quest_description: quest.description,
+              KeyNames.created_at: quest.created_at.toIso8601String(),
+              KeyNames.status: quest.status,
+              KeyNames.expected_completion_time_date:
+                  quest.expected_completion_time_date?.toIso8601String(),
+            };
+          }).toList();
 
       String _userPrompt = '''
                 {
@@ -67,14 +78,14 @@ class AiFunctions {
                       "previous_titles": ${playerTitles.map((title) => title.title).toList()},
                       "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                       "current_time": "${DateTime.now().toIso8601String()}",
-                      "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
+                      "last_quests": ${lastQuestsData.map((quest) => quest.toString()).toList()},
                       "preferred_quest_types": ${preferredQuestTypes.isEmpty ? ['exploration', 'puzzle'] : preferredQuestTypes.map((type) => type.name).toList()},
                       "ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()}
                     }
                   }
 
                 NOTES (IMPORTANT):
-                - MAKE QUEST DIFFERENT ON THIS : (${lastUserQuests.map((quest) => quest.description).toList()}) (VERY DIFFERENT CONTEXT)
+                - MAKE QUEST DIFFERENT ON THIS : (${ongoingQuestsData.map((quest) => quest).toList()}) (VERY DIFFERENT CONTEXT)
                 - TAKE IN MIND MY FEEDBACKS BECAUSE THEIR ARE IMPORTANT THINGS TO ME
                 - TAKE IN MIND THAT I WANT QUESTS THAT MAKE ME ACHIEVE MY GOALS WICHI IS THOSE GOALS : ${_user?.goals?.map((goal) => goal.description).toList() ?? []}
                 ''';
@@ -82,9 +93,13 @@ class AiFunctions {
       final questResponse = await _ref
           .read(aiModelObjectProvider)
           .makeAiResponse(
+            topP: 0.85,
+            temp: 0.5,
+            topK: 40,
             content: [
-              {"role": "user", "content": _userPrompt},
               ...systePrompts,
+              {"role": "user", "content": _userPrompt},
+
               if (errorExplain != null) {"role": "system", "content": errorExplain},
             ],
           );

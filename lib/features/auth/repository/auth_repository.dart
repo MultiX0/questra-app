@@ -112,6 +112,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
         final levelEvent = events[1].isNotEmpty ? events[1].first : null;
         final walletEvent = events[2].isNotEmpty ? events[2].first : null;
 
+        // log("$userEvent");
+        // log("$levelEvent");
+        // log("$walletEvent");
+
         final newState = await _buildUpdatedState(userEvent, levelEvent, walletEvent, userId);
         if (!_isEquivalentState(state, newState)) {
           state = newState;
@@ -134,78 +138,85 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     Map<String, dynamic>? walletEvent,
     String userId,
   ) async {
-    if (userEvent == null) {
-      return UserModel(
-        id: userId,
-        name: '',
-        username: '',
-        gender: '',
-        joined_at: DateTime.now(),
-        avatar: '',
-        lang: 'en',
-        is_online: false,
+    try {
+      log("=== entering the _buildUpdatedState function ===");
+      if (userEvent == null) {
+        return UserModel(
+          id: userId,
+          name: '',
+          username: '',
+          gender: '',
+          joined_at: DateTime.now(),
+          avatar: '',
+          lang: 'en',
+          is_online: false,
+        );
+      }
+
+      var user = UserModel.fromMap(userEvent);
+
+      log(
+        "active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}",
       );
-    }
 
-    var user = UserModel.fromMap(userEvent);
+      // Fetch additional user data
 
-    log(
-      "active title id ${userEvent[KeyNames.active_title]},\nactive title from the model ${user.activeTitleId}",
-    );
-
-    // Fetch additional user data
-
-    final List<dynamic> results = await Future.wait<dynamic>([
-      _ref.read(profileRepositoryProvider).getUserBirthDate(userId),
-      _ref.read(profileRepositoryProvider).getActiveTitle(userEvent[KeyNames.active_title]),
-      _ref.read(rankingFunctionsProvider).refreshRanking(userId),
-    ]);
-
-    final [String birthDate, PlayerTitleModel? activeTitle, _] = results;
-
-    // Handle level data
-    if (levelEvent == null) {
-      final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
-      user = user.copyWith(level: level);
-    } else {
-      user = user.copyWith(level: LevelsModel.fromMap(levelEvent));
-    }
-
-    // Handle wallet data
-    if (walletEvent != null) {
-      user = user.copyWith(wallet: WalletModel.fromMap(walletEvent));
-    } else {
-      final wallet = await _ref.read(walletRepositoryProvider).getUserWallet(userId);
-      user = user.copyWith(wallet: wallet);
-    }
-
-    // Only fetch preferences and goals if they're not already present
-    if (state?.goals == null || state?.user_preferences == null) {
-      final List<dynamic> combinePrefsAndGoals = await Future.wait([
-        _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId),
-        _ref.read(goalsRepositoryProvider).getUserGoals(userId),
+      final List<dynamic> results = await Future.wait<dynamic>([
+        _ref.read(profileRepositoryProvider).getUserBirthDate(userId),
+        _ref.read(profileRepositoryProvider).getActiveTitle(userEvent[KeyNames.active_title]),
       ]);
 
-      final [UserPreferencesModel? prefs, List<UserGoalModel> goals] = combinePrefsAndGoals;
+      final [String birthDate, PlayerTitleModel? activeTitle] = results;
 
-      _ref.read(playerGoalsProvider).clear();
-      _ref.read(playerGoalsProvider).addAll(goals);
+      // Handle level data
+      if (levelEvent == null) {
+        final level = await _ref.read(levelingRepositoryProvider).insertNewLevelRow(userId);
+        user = user.copyWith(level: level);
+      } else {
+        user = user.copyWith(level: LevelsModel.fromMap(levelEvent));
+      }
 
-      user = user.copyWith(
-        birth_date: DateTime.tryParse(birthDate),
-        activeTitle: activeTitle,
-        goals: goals,
-        user_preferences: prefs,
-      );
-    } else {
-      user = user.copyWith(birth_date: DateTime.tryParse(birthDate), activeTitle: activeTitle);
+      _ref.read(rankingFunctionsProvider).refreshRanking(userId);
+
+      // Handle wallet data
+      if (walletEvent != null) {
+        user = user.copyWith(wallet: WalletModel.fromMap(walletEvent));
+      } else {
+        final wallet = await _ref.read(walletRepositoryProvider).getUserWallet(userId);
+        user = user.copyWith(wallet: wallet);
+      }
+
+      // Only fetch preferences and goals if they're not already present
+      if (state?.goals == null || state?.user_preferences == null) {
+        final List<dynamic> combinePrefsAndGoals = await Future.wait([
+          _ref.read(userPreferencesControllerProvider.notifier).getUserPreferences(userId),
+          _ref.read(goalsRepositoryProvider).getUserGoals(userId),
+        ]);
+
+        final [UserPreferencesModel? prefs, List<UserGoalModel> goals] = combinePrefsAndGoals;
+
+        _ref.read(playerGoalsProvider).clear();
+        _ref.read(playerGoalsProvider).addAll(goals);
+
+        user = user.copyWith(
+          birth_date: DateTime.tryParse(birthDate),
+          activeTitle: activeTitle,
+          goals: goals,
+          user_preferences: prefs,
+        );
+      } else {
+        user = user.copyWith(birth_date: DateTime.tryParse(birthDate), activeTitle: activeTitle);
+      }
+      final currentLang = _ref.read(localeProvider).languageCode;
+      if (currentLang != user.lang) {
+        _ref.read(localeProvider.notifier).state = Locale(user.lang);
+      }
+
+      return user;
+    } catch (e, trace) {
+      log("_buildUpdatedState Exception $e", stackTrace: trace);
+      rethrow;
     }
-    final currentLang = _ref.read(localeProvider).languageCode;
-    if (currentLang != user.lang) {
-      _ref.read(localeProvider.notifier).state = Locale(user.lang);
-    }
-
-    return user;
   }
 
   bool _isEquivalentState(UserModel? current, UserModel? next) {
@@ -316,11 +327,26 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
   Future<bool> insertNewUser(UserModel user) async {
     try {
+      // First, ensure the user exists in the users table
+      final authUser = _supabase.auth.currentUser;
+      if (authUser == null) {
+        log('No authenticated user found');
+        return false;
+      }
+
+      // Ensure the user ID matches
+      if (authUser.id != user.id) {
+        log('User ID mismatch');
+        return false;
+      }
+
+      // Check if user already exists in players table
       if (await hasValidAccount()) {
         _ref.read(hasValidAccountProvider.notifier).state = true;
         return true;
       }
 
+      // Now proceed with insertion
       final data = await _supabase.from(TableNames.players).insert(user.toMap()).select().single();
 
       if (Platform.isAndroid) {
@@ -334,8 +360,9 @@ class AuthNotifier extends StateNotifier<UserModel?> {
       state = UserModel.fromMap(data);
       _ref.read(hasValidAccountProvider.notifier).state = true;
       return true;
-    } catch (e) {
-      log('insertNewUser error: $e');
+      // Rest of the method remains the same...
+    } catch (e, trace) {
+      log('insertNewUser error: $e', stackTrace: trace);
       return false;
     }
   }

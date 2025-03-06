@@ -2050,6 +2050,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You cannot leave this page while the quest is being created.'**
   String get custom_quest_add_alert;
+
+  /// No description provided for @last_submit_time_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected finish at: {date}'**
+  String last_submit_time_quest(Object date);
+
+  /// No description provided for @event_quest_finish_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'You need to provide at least {minPicsNeeds} photos'**
+  String event_quest_finish_alert(Object minPicsNeeds);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

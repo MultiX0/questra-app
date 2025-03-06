@@ -73,6 +73,8 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
     });
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(selectedEventPlayer)!;
@@ -202,7 +204,10 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
                     child: Center(
                       child: Text(
                         "+${submission.images!.length - 1}",
-                        style: TextStyle(fontFamily: AppFonts.header, fontSize: 35),
+                        style: TextStyle(
+                          fontFamily: isArabic ? null : AppFonts.header,
+                          fontSize: 35,
+                        ),
                       ),
                     ),
                   ),
@@ -275,7 +280,11 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
             GlowText(
               text: AppLocalizations.of(context).nothing_here,
               glowColor: AppColors.primary,
-              style: TextStyle(fontFamily: AppFonts.header, color: AppColors.primary, fontSize: 24),
+              style: TextStyle(
+                fontFamily: isArabic ? null : AppFonts.header,
+                color: AppColors.primary,
+                fontSize: 24,
+              ),
             ).tada(),
             const SizedBox(height: 15),
             Text(
@@ -357,7 +366,11 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
           children: [
             Text(
               AppLocalizations.of(context).confirm_report,
-              style: TextStyle(fontFamily: AppFonts.header, color: AppColors.primary, fontSize: 20),
+              style: TextStyle(
+                fontFamily: isArabic ? null : AppFonts.header,
+                color: AppColors.primary,
+                fontSize: 20,
+              ),
             ),
             const SizedBox(height: 5),
             Text(

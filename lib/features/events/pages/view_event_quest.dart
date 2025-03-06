@@ -60,6 +60,7 @@ class _ViewQuestPageState extends ConsumerState<ViewEventQuest> {
 
   Widget buildBody(EventQuestModel quest) {
     // final isLoading = ref.watch(questsControllerProvider);
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +75,7 @@ class _ViewQuestPageState extends ConsumerState<ViewEventQuest> {
           child: Center(
             child: Text(
               AppLocalizations.of(context).finish,
-              style: TextStyle(fontFamily: AppFonts.header),
+              style: TextStyle(fontFamily: isArabic ? null : AppFonts.header),
             ),
           ),
         ),

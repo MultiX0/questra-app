@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-import 'package:questra_app/core/providers/app_providers.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'dart:ui' as ui;
@@ -143,7 +141,9 @@ class QuestCard extends ConsumerWidget {
                 const SizedBox(height: 14),
                 if (questModel.expected_completion_time_date != null)
                   Text(
-                    "Expected finish at: ${DateFormat('MMM d, yyyy • h:mm a').format(questModel.expected_completion_time_date!)}",
+                    AppLocalizations.of(
+                      context,
+                    ).last_submit_time_quest(questModel.expected_completion_time_date!),
                     style: TextStyle(fontWeight: FontWeight.w200, fontSize: 11),
                   ),
               ],
@@ -156,7 +156,7 @@ class QuestCard extends ConsumerWidget {
               child: GestureDetector(
                 onTap: () {
                   CustomToast.systemToast(
-                    "you need to wait until ${appDateFormat(questModel.completed_at!.add(const Duration(hours: 24)))}",
+                    "${isArabic ? "تحتاج الى الانتظار حتى" : "you need to wait until"} ${appDateFormat(questModel.completed_at!.add(const Duration(hours: 24)))}",
                   );
                 },
                 child: Container(
@@ -166,7 +166,7 @@ class QuestCard extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      "Locked",
+                      AppLocalizations.of(context).marketplace_item_locked,
                       style: TextStyle(fontFamily: AppFonts.header, fontSize: 20),
                     ),
                   ),

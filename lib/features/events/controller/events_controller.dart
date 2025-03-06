@@ -108,10 +108,10 @@ class EventsController extends StateNotifier<bool> {
     state = false;
   }
 
-  Future<void> finishEventQuest() async {
+  Future<void> finishEventQuest(BuildContext context) async {
     try {
       state = true;
-      final eventId = _ref.read(selectedQuestEvent)!.id;
+      final event = _ref.read(selectedQuestEvent)!;
       final user = _ref.read(authStateProvider)!;
       final quest = _ref.read(viewEventQuestProvider)!;
 
@@ -125,14 +125,20 @@ class EventsController extends StateNotifier<bool> {
         }
       }
 
-      final imageLinks = await _uploadImages(eventId: eventId, questId: quest.id);
+      final imageLinks = await _uploadImages(eventId: event.id, questId: quest.id);
       final ids = await _repo.uploadEventPlayerQuestImages(
         images: imageLinks,
         userId: user.id,
-        eventId: eventId,
+        eventId: event.id,
         questId: quest.id,
       );
-      await _repo.finishQuest(quest: quest, user: user, imageIds: ids);
+      await _repo.finishQuest(
+        quest: quest,
+        user: user,
+        imageIds: ids,
+        context: context,
+        minPicsNeeds: event.minImageUploadCount,
+      );
       await _ref.read(adsServiceProvider.notifier).showAd();
       state = false;
     } catch (e) {

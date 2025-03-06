@@ -99,7 +99,7 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
               Icon(LucideIcons.hexagon, color: AppColors.primary, size: 50),
               const SizedBox(height: 15),
               Text(
-                "There is no quests for now",
+                AppLocalizations.of(context).empty_quests,
                 style: TextStyle(
                   fontWeight: FontWeight.w200,
                   color: AppColors.descriptionColor,
@@ -135,7 +135,7 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
                       });
                     });
                   },
-                  child: Text("Refresh"),
+                  child: Text(AppLocalizations.of(context).refresh),
                 ),
               ],
             ],

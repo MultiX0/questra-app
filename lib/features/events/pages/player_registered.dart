@@ -71,6 +71,7 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(paginatedItemsProvider);
+    final me = ref.watch(authStateProvider);
 
     return AppRefreshIndicator(
       onRefresh: () async {
@@ -123,7 +124,10 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                           }
 
                           final user = state.users[index];
+                          bool isMe = user.id == me?.id;
                           return ListTile(
+                            selected: isMe,
+                            selectedTileColor: isMe ? Colors.pink.withValues(alpha: .25) : null,
                             onTap: () {
                               ref.read(soundEffectsServiceProvider).playSystemButtonClick();
                               ref.read(selectedEventPlayer.notifier).state = user;
@@ -147,7 +151,13 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                                       crossAxisAlignment: CrossAxisAlignment.start,
 
                                       children: [
-                                        Text(user.name, style: TextStyle(color: AppColors.primary)),
+                                        Text(
+                                          user.name,
+                                          style: TextStyle(
+                                            color: isMe ? Colors.pink : AppColors.primary,
+                                            fontWeight: isMe ? FontWeight.bold : null,
+                                          ),
+                                        ),
                                         Text(
                                           "@${user.username}",
                                           style: TextStyle(
@@ -160,7 +170,7 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                Divider(color: AppColors.descriptionColor.withValues(alpha: 0.25)),
+                                Divider(color: AppColors.descriptionColor.withValues(alpha: 0.15)),
                               ],
                             ),
                           );

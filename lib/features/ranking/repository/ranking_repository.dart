@@ -15,13 +15,14 @@ class RankingRepository {
 
   Future<int?> getPlayerGlobalRank(String userId) async {
     try {
-      final data = await _client.rpc(FunctionNames.get_player_rank, params: {
-        KeyNames.user_id: userId,
-      });
+      final data = await _client.rpc(
+        FunctionNames.get_player_rank,
+        params: {KeyNames.user_id: userId},
+      );
       log("ranking data: $data");
       int? rank = data[0]["current_rank"];
       log("user rank is: $rank");
-      return rank;
+      return rank ?? 0;
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -30,18 +31,23 @@ class RankingRepository {
 
   Future<List<UserModel>> getLeaderboard() async {
     try {
-      final data = await _levelsTable.select('''
+      final data = await _levelsTable
+          .select('''
     *,
     players (*)
-  ''').order('level', ascending: false).order('xp', ascending: false).limit(500);
+  ''')
+          .order('level', ascending: false)
+          .order('xp', ascending: false)
+          .limit(500);
 
-      final users = data
-          .map(
-            (level) => UserModel.fromMap(level[TableNames.players]).copyWith(
-              level: LevelsModel.fromMap(level),
-            ),
-          )
-          .toList();
+      final users =
+          data
+              .map(
+                (level) => UserModel.fromMap(
+                  level[TableNames.players],
+                ).copyWith(level: LevelsModel.fromMap(level)),
+              )
+              .toList();
 
       return users;
     } catch (e) {

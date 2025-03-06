@@ -60,13 +60,13 @@ class AdsService extends StateNotifier<bool> {
             },
             onFailed: (placementId, error, message) {
               log('$error $message');
-              completer.completeError(appError);
+              completer.complete(true);
             },
           );
         },
         onFailed: (placementId, error, message) {
           log("$error $message");
-          completer.completeError(appError);
+          completer.complete(true);
         },
       );
     } catch (e) {
