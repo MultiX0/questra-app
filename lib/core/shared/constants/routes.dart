@@ -28,4 +28,5 @@ class Routes {
   static const registerToEventPage = '/registerToEventPage';
   static const viewEventQuestPage = '/viewEventQuestPage';
   static const playerCompletionPage = '/playerCompletionPage';
+  static const firendsControllerPage = '/firendsControllerPage';
 }

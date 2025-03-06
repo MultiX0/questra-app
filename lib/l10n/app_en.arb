@@ -338,11 +338,7 @@
   "custom_quest_add_toast": "You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.",
   "custom_quest_add_alert": "You cannot leave this page while the quest is being created.",
   "last_submit_time_quest":"Expected finish at: {date}",
-  "event_quest_finish_alert": "You need to provide at least {minPicsNeeds} photos"
-
-
-
-
-
-  
+  "event_quest_finish_alert": "You need to provide at least {minPicsNeeds} photos",
+  "friends": "Friends",
+  "requests": "Requests"
 }

@@ -80,3 +80,4 @@ export 'package:questra_app/features/quests/pages/view_quest_page.dart';
 export 'package:questra_app/features/ranking/pages/leaderboard_page.dart';
 export 'package:questra_app/features/splash/splash.dart';
 export 'package:questra_app/features/titles/pages/titles_page.dart';
+export 'package:questra_app/features/friends/pages/friends_controller_page.dart';

@@ -1013,4 +1013,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String event_quest_finish_alert(Object minPicsNeeds) {
     return 'You need to provide at least $minPicsNeeds photos';
   }
+
+  @override
+  String get friends => 'Friends';
+
+  @override
+  String get requests => 'Requests';
 }

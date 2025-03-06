@@ -2062,6 +2062,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You need to provide at least {minPicsNeeds} photos'**
   String event_quest_finish_alert(Object minPicsNeeds);
+
+  /// No description provided for @friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get friends;
+
+  /// No description provided for @requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get requests;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
