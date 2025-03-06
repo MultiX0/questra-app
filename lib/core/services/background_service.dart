@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -8,58 +7,104 @@ import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
+import 'package:retry/retry.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
-
-// Isolate-specific data structures
-class IsolateTaskParams {
-  final String userId;
-  final String supabaseUrl;
-  final String supabaseKey;
-
-  IsolateTaskParams({required this.userId, required this.supabaseUrl, required this.supabaseKey});
-}
-
-class IsolateTaskResult {
-  final bool success;
-  final String? error;
-
-  IsolateTaskResult({required this.success, this.error});
-}
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
+    WidgetsFlutterBinding.ensureInitialized(); // Required for plugins
+
     try {
-      // Lightweight and fast initialization
-      await _fastInitialize();
+      // Initialize Supabase with retry logic
+      await _initializeSupabaseWithRetry();
 
       switch (taskName) {
         case 'questCheck':
-          await _performBackgroundTasks();
+          // Execute tasks independently
+          await Future.wait([
+            _executeWithRetry(() => _sendSystemMessage(0), 'System message'),
+            _executeWithRetry(_lootBoxTask, 'Lootbox task'),
+          ], eagerError: false).then((results) {
+            // Log results but don't fail the entire task if some parts failed
+            log("Background tasks completed with results: $results");
+          });
           break;
       }
       return Future.value(true);
     } catch (e) {
-      await _handleBackgroundError(e);
+      final failed = "Background task failed: $e";
+      log(failed);
+      await ExceptionService.insertException(
+        path: '/background_service',
+        error: failed,
+        userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+      ).catchError((e) => log("Failed to log exception: $e"));
+
       return Future.value(false);
     }
   });
 }
 
-Future<void> _fastInitialize() async {
+// Execute a function with retry logic
+Future<bool> _executeWithRetry(Future<void> Function() task, String taskName) async {
   try {
-    // Ensure Flutter binding is initialized
-    WidgetsFlutterBinding.ensureInitialized();
+    await retry(
+      () => task(),
+      retryIf: (e) => e is! ArgumentError, // Don't retry if the error is fundamental
+      maxAttempts: 3,
+      delayFactor: const Duration(seconds: 1),
+    );
+    log("Successfully completed task: $taskName");
+    return true;
+  } catch (e) {
+    log("Task $taskName failed after retries: $e");
 
-    // Initialize secure storage
+    // Log the error but don't make the entire process fail
+    await ExceptionService.insertException(
+      path: '/background_service/$taskName',
+      error: e.toString(),
+      userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+    ).catchError((e) => log("Failed to log exception: $e"));
+
+    return false;
+  }
+}
+
+Future<void> _lootBoxTask() async {
+  final _client = Supabase.instance.client;
+  final session = _client.auth.currentSession;
+  if (session == null) return;
+
+  final userId = session.user.id;
+
+  // Optimize query by selecting only needed fields
+  final userData =
+      await _client.from(TableNames.players).select("id").eq(KeyNames.id, userId).maybeSingle();
+
+  if (userData == null) return;
+
+  final lootBoxManager = LootBoxManager();
+  await lootBoxManager.checkLootBoxDrop();
+}
+
+Future<void> _initializeSupabaseWithRetry() async {
+  await retry(
+    () => _initializeSupabase(),
+    retryIf: (e) => e is! ArgumentError, // Don't retry if env vars are missing
+    maxAttempts: 3,
+    delayFactor: const Duration(seconds: 1),
+  );
+}
+
+Future<void> _initializeSupabase() async {
+  try {
     final secureStorage = SecureLocalStorage();
     await secureStorage.initialize();
 
-    // Load environment configurations
     await dotenv.load(fileName: '.env');
 
-    // Minimal Supabase initialization
     final _url = dotenv.env['SUPABASE_URL'] ?? "";
     final _key = dotenv.env['SUPABASE_KEY'] ?? "";
 
@@ -74,151 +119,48 @@ Future<void> _fastInitialize() async {
       ),
     );
   } catch (e) {
-    log('Fast initialization failed: $e');
-    rethrow;
+    log('Failed to initialize Supabase: $e');
+    throw Exception(e);
   }
 }
 
-Future<void> _performBackgroundTasks() async {
+Future<void> _sendSystemMessage(int retry) async {
   final _client = Supabase.instance.client;
   final session = _client.auth.currentSession;
+
+  if (retry >= 3) {
+    return;
+  }
+  if (_client.auth.currentUser == null) {
+    await _client.auth.refreshSession();
+    return _sendSystemMessage(retry++);
+  }
 
   if (session == null) return;
 
   final userId = session.user.id;
-  final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? "";
-  final supabaseKey = dotenv.env['SUPABASE_KEY'] ?? "";
 
-  // Use Isolate for potentially heavy tasks
-  final isolateParams = IsolateTaskParams(
-    userId: userId,
-    supabaseUrl: supabaseUrl,
-    supabaseKey: supabaseKey,
+  // Fetch notification count
+  final data = await _client.rpc(
+    FunctionNames.get_today_notifications_count,
+    params: {'p_user_id': userId},
   );
 
-  // Run tasks potentially in separate isolates
-  final tasks = [
-    _runInIsolate(_checkSystemMessageTask, isolateParams),
-    _runInIsolate(_processLootBoxTask, isolateParams),
-  ];
-
-  final results = await Future.wait(tasks);
-
-  // Handle results if needed
-  for (var result in results) {
-    if (!result.success) {
-      log('Background task failed: ${result.error}');
-    }
+  int notificationCount;
+  if (data is int) {
+    notificationCount = data;
+  } else if (data is String) {
+    notificationCount = int.tryParse(data) ?? 0;
+  } else {
+    notificationCount = 0;
   }
-}
 
-// Isolate-safe static method for system message check
-@pragma('vm:entry-point')
-Future<IsolateTaskResult> _checkSystemMessageTask(IsolateTaskParams params) async {
-  try {
-    // Reinitialize Supabase in the isolate
-    await Supabase.initialize(url: params.supabaseUrl, anonKey: params.supabaseKey, debug: false);
-
-    final _client = Supabase.instance.client;
-
-    final data = await _client.rpc(
-      FunctionNames.get_today_notifications_count,
-      params: {'p_user_id': params.userId},
-    );
-
-    // Safely parse notification count
-    final notificationCount = data is int ? data : int.tryParse(data.toString()) ?? 0;
-
-    // Check if notification limit is exceeded
-    if (notificationCount <= 6) {
-      await NotificationsRepository.sendNotificationFunction(params.userId);
-    }
-
-    return IsolateTaskResult(success: true);
-  } catch (e) {
-    return IsolateTaskResult(success: false, error: e.toString());
+  if (notificationCount > 6) {
+    log('Maximum notifications reached for today');
+    return;
   }
-}
 
-// Isolate-safe method for loot box processing
-@pragma('vm:entry-point')
-Future<IsolateTaskResult> _processLootBoxTask(IsolateTaskParams params) async {
-  try {
-    // Reinitialize Supabase in the isolate
-    await Supabase.initialize(url: params.supabaseUrl, anonKey: params.supabaseKey, debug: false);
-
-    final _client = Supabase.instance.client;
-
-    // Fetch user data efficiently
-    final userData =
-        await _client
-            .from(TableNames.players)
-            .select("*")
-            .eq(KeyNames.id, params.userId)
-            .maybeSingle();
-
-    if (userData == null) {
-      return IsolateTaskResult(success: true);
-    }
-
-    final lootBoxManager = LootBoxManager();
-    await lootBoxManager.checkLootBoxDrop();
-
-    return IsolateTaskResult(success: true);
-  } catch (e) {
-    return IsolateTaskResult(success: false, error: e.toString());
-  }
-}
-
-// Generic method to run tasks in an isolate
-Future<IsolateTaskResult> _runInIsolate<P, R>(
-  Future<IsolateTaskResult> Function(P) task,
-  P params,
-) async {
-  final receivePort = ReceivePort();
-
-  try {
-    await Isolate.spawn(
-      _isolateEntryPoint,
-      _IsolateMessage(task: task, params: params, sendPort: receivePort.sendPort),
-    );
-
-    // Wait for the result from the isolate
-    return await receivePort.first as IsolateTaskResult;
-  } catch (e) {
-    return IsolateTaskResult(success: false, error: e.toString());
-  }
-}
-
-// Entry point for isolate communication
-@pragma('vm:entry-point')
-void _isolateEntryPoint(_IsolateMessage message) async {
-  try {
-    final result = await message.task(message.params);
-    message.sendPort.send(result);
-  } catch (e) {
-    message.sendPort.send(IsolateTaskResult(success: false, error: e.toString()));
-  }
-}
-
-// Helper class for isolate messaging
-class _IsolateMessage<P> {
-  final Future<IsolateTaskResult> Function(P) task;
-  final P params;
-  final SendPort sendPort;
-
-  _IsolateMessage({required this.task, required this.params, required this.sendPort});
-}
-
-Future<void> _handleBackgroundError(dynamic error) async {
-  log('Background task failed: $error');
-
-  // Centralized error handling
-  await ExceptionService.insertException(
-    path: '/background_service',
-    error: error.toString(),
-    userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
-  );
+  await NotificationsRepository.sendNotificationFunction(userId);
 }
 
 Future<void> sendNotification(String body, String title) async {
@@ -245,12 +187,10 @@ Future<void> sendNotification(String body, String title) async {
       const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')),
     );
 
-    await notifications.show(
-      DateTime.now().millisecond, // unique ID for each notification
-      title,
-      body,
-      platformDetails,
-    );
+    // Use timestamp for unique notification ID
+    final notificationId = DateTime.now().millisecondsSinceEpoch % 100000;
+
+    await notifications.show(notificationId, title, body, platformDetails);
   } catch (e) {
     log('Failed to send notification: $e');
   }

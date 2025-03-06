@@ -1,0 +1,1 @@
+/home/multix/questra-app/build/app/intermediates/cxx/RelWithDebInfo/685i4ab6/obj/arm64-v8a

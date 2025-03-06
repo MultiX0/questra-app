@@ -247,10 +247,11 @@ class EventsRepository {
 
     List<ViewEventQuestModel> viewList = [];
     for (final d in data) {
-      if (d['report_approved'] == true) {
+      final images = await getImagesByIds(d[KeyNames.images] ?? []);
+
+      if (d['report_approved'] == true || images.isEmpty) {
         continue;
       }
-      final images = await getImagesByIds(d[KeyNames.images] ?? []);
       final view = ViewEventQuestModel(
         userId: userId,
         questId: questId,

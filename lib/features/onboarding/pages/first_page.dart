@@ -8,6 +8,7 @@ import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class OnboardingFirstPage extends ConsumerStatefulWidget {
   const OnboardingFirstPage({super.key});
@@ -138,8 +139,9 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               ),
               recognizer:
                   TapGestureRecognizer()
-                    ..onTap = () {
-                      context.push(Routes.termsPage);
+                    ..onTap = () async {
+                      // context.push(Routes.termsPage);
+                      await launchUrlString(termsUrl);
                     },
             ),
             TextSpan(
@@ -163,8 +165,9 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               ),
               recognizer:
                   TapGestureRecognizer()
-                    ..onTap = () {
-                      context.push(Routes.privacyPage);
+                    ..onTap = () async {
+                      // context.push(Routes.privacyPage);
+                      await launchUrlString(termsUrl);
                     },
             ),
           ],
