@@ -20,17 +20,26 @@ class SubmissionViewWidget extends ConsumerStatefulWidget {
 }
 
 class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
-  String group = '';
+  Map<String, dynamic> group = {};
   int _finishLogsId = 0;
   bool refresh = false;
 
-  List<String> reportReasons = [
-    "False completion claim",
-    "Unrelated proof image",
-    "Cheating or unfair play",
-    "Inappropriate content",
-    "Spam or fake quest",
-    "Harassment or abuse",
+  List<Map<String, dynamic>> get reportReasons => [
+    // "False completion claim",
+    // "Unrelated proof image",
+    // "Cheating or unfair play",
+    // "Inappropriate content",
+    // "Spam or fake quest",
+    // "Harassment or abuse",
+    {'key': "False completion claim", 'value': AppLocalizations.of(context).false_completion_claim},
+    {'key': "Unrelated proof image", 'value': AppLocalizations.of(context).unrelated_proof_image},
+    {
+      'key': "Cheating or unfair play",
+      'value': AppLocalizations.of(context).cheating_or_unfair_play,
+    },
+    {'key': "Inappropriate content", 'value': AppLocalizations.of(context).inappropriate_content},
+    {'key': "Spam or fake quest", 'value': AppLocalizations.of(context).spam_or_fake_quest},
+    {'key': "Harassment or abuse", 'value': AppLocalizations.of(context).harassment_or_abuse},
   ];
 
   void selectReportType() {
@@ -45,7 +54,7 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
         },
         group: group,
         choices: reportReasons,
-        title: "Report a Quest",
+        title: AppLocalizations.of(context).report_quest,
       ),
     );
   }
@@ -57,12 +66,14 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
     }
     await ref
         .read(eventsControllerProvider.notifier)
-        .insertQuestReport(reason: group, finishLogId: _finishLogsId);
+        .insertQuestReport(reason: group['key'], finishLogId: _finishLogsId);
 
     setState(() {
-      group = '';
+      group = {};
     });
   }
+
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +174,8 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
         ),
         const SizedBox(height: 15),
         Text(
-          "submitted at ${appDateFormat(submission.submittedAt)}",
+          // "submitted at ${appDateFormat(submission.submittedAt)}",
+          AppLocalizations.of(context).submitted_at(appDateFormat(submission.submittedAt)),
           style: TextStyle(fontSize: 12, color: AppColors.descriptionColor),
         ),
         const SizedBox(height: 10),
@@ -192,7 +204,10 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
                     child: Center(
                       child: Text(
                         "+${submission.images!.length - 1}",
-                        style: TextStyle(fontFamily: AppFonts.header, fontSize: 35),
+                        style: TextStyle(
+                          fontFamily: isArabic ? null : AppFonts.header,
+                          fontSize: 35,
+                        ),
                       ),
                     ),
                   ),
@@ -263,13 +278,17 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
             Icon(LucideIcons.hexagon, color: AppColors.primary, size: 120, fill: 0.1).swing(),
             const SizedBox(height: 10),
             GlowText(
-              text: "NOTHING HERE!",
+              text: AppLocalizations.of(context).nothing_here,
               glowColor: AppColors.primary,
-              style: TextStyle(fontFamily: AppFonts.header, color: AppColors.primary, fontSize: 24),
+              style: TextStyle(
+                fontFamily: isArabic ? null : AppFonts.header,
+                color: AppColors.primary,
+                fontSize: 24,
+              ),
             ).tada(),
             const SizedBox(height: 15),
             Text(
-              "This player has not completed the mission even once yet.",
+              AppLocalizations.of(context).no_mission_completed,
               textAlign: TextAlign.center,
             ).fadeInDown(duration: const Duration(milliseconds: 600)),
             const SizedBox(height: 20),
@@ -298,7 +317,7 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
                     refresh = false;
                   });
                 },
-                child: Text("refresh"),
+                child: Text(AppLocalizations.of(context).refresh),
               ).swing(),
           ],
         ),
@@ -319,7 +338,7 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
             }
           },
           icon: const Icon(LucideIcons.info),
-          tooltip: 'Show menu',
+          tooltip: AppLocalizations.of(context).show_menu,
         );
       },
       menuChildren: [
@@ -331,7 +350,7 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
             });
             selectReportType();
           },
-          child: Text('report'),
+          child: Text(AppLocalizations.of(context).report),
         ),
       ],
     );
@@ -346,29 +365,36 @@ class _SubmissionViewWidgetState extends ConsumerState<SubmissionViewWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Confirm Report",
-              style: TextStyle(fontFamily: AppFonts.header, color: AppColors.primary, fontSize: 20),
+              AppLocalizations.of(context).confirm_report,
+              style: TextStyle(
+                fontFamily: isArabic ? null : AppFonts.header,
+                color: AppColors.primary,
+                fontSize: 20,
+              ),
             ),
             const SizedBox(height: 5),
             Text(
               textAlign: TextAlign.center,
-              "Are you sure you want to report this player? Reports should only be submitted for valid reasons. False reports may lead to penalties.",
+              AppLocalizations.of(context).report_confirmation_message,
               style: TextStyle(color: AppColors.descriptionColor),
             ),
             const SizedBox(height: 25),
             if (isLoading) ...[
               BeatLoader(),
             ] else ...[
-              SystemCardButton(onTap: report, text: "Confirm & Report"),
+              SystemCardButton(
+                onTap: report,
+                text: AppLocalizations.of(context).confirm_and_report,
+              ),
               const SizedBox(height: 15),
 
               SystemCardButton(
                 onTap: () {
                   setState(() {
-                    group = '';
+                    group = {};
                   });
                 },
-                text: "Cancel",
+                text: AppLocalizations.of(context).cancel,
                 doneButton: false,
               ),
             ],

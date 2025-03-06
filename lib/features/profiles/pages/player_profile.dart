@@ -7,11 +7,7 @@ import 'package:questra_app/imports.dart';
 class PlayerProfile extends ConsumerStatefulWidget {
   final String userId;
   final bool isMe;
-  const PlayerProfile({
-    super.key,
-    required this.userId,
-    this.isMe = false,
-  });
+  const PlayerProfile({super.key, required this.userId, this.isMe = false});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PlayerProfileState();
@@ -30,7 +26,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return BackgroundWidget(
       child: Scaffold(
         appBar: TheAppBar(
-          title: "Profile",
+          title: AppLocalizations.of(context).profile,
           actions: [
             IconButton(
               onPressed: () {
@@ -47,20 +43,14 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
             ],
           ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 5),
-          child: buildUserBody(isMe),
-        ),
+        body: Padding(padding: const EdgeInsets.only(top: 5), child: buildUserBody(isMe)),
       ),
     );
   }
 
   Widget buildUserBody(bool isMe) {
     if (isMe) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: buildMe(),
-      );
+      return Padding(padding: const EdgeInsets.symmetric(horizontal: 3), child: buildMe());
     }
     return const SizedBox();
   }
@@ -70,9 +60,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       children: [
         const SizedBox(height: 10),
         UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         BuildDashboardGrid(),
         const SizedBox(height: 15),
         buildSpecialQuestsCard(),
@@ -80,9 +68,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         buildGuildCard(),
         const SizedBox(height: 15),
         buildFriendsCard(),
-        const SizedBox(
-          height: 20,
-        ),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -94,8 +80,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
       onTap: () {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
         if (user!.level!.level < 5) {
-          CustomToast.systemToast(
-              "You need to reach level 5 to be able to create your own quests.");
+          CustomToast.systemToast(AppLocalizations.of(context).custom_quest_level_locked);
           return;
         }
 
@@ -107,7 +92,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         children: [
           Icon(LucideIcons.diamond),
           const SizedBox(height: 10),
-          Text("Custom Quests"),
+          Text(AppLocalizations.of(context).profile_custom_quests),
         ],
       ),
     );
@@ -123,7 +108,7 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
         children: [
           Icon(LucideIcons.building_2),
           const SizedBox(height: 10),
-          Text("Guild"),
+          Text(AppLocalizations.of(context).profile_guild),
         ],
       ),
     );
@@ -132,21 +117,23 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
   SystemCard buildFriendsCard() {
     return SystemCard(
       duration: const Duration(milliseconds: 1700),
-      onTap: soon,
+      onTap: () => context.push(Routes.firendsControllerPage),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(LucideIcons.users),
           const SizedBox(height: 10),
-          Text("Friends"),
+          Text(AppLocalizations.of(context).profile_friends),
         ],
       ),
     );
   }
 
   void soon() {
+    final isArabic = ref.read(localeProvider).languageCode == 'ar';
+
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-    CustomToast.soon();
+    CustomToast.soon(isArabic);
   }
 }

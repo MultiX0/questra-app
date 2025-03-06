@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
-import 'package:questra_app/features/onboarding/pages/setup_account_page.dart';
 import 'package:questra_app/imports.dart';
 
 import '../../../core/shared/utils/upload_storage.dart';
@@ -19,6 +18,7 @@ class ProfileController extends StateNotifier<bool> {
   ProfileController({required Ref ref}) : _ref = ref, super(false);
 
   ProfileRepository get _repo => _ref.watch(profileRepositoryProvider);
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
   Future<bool> checkTheCode(
     String code,
@@ -52,7 +52,9 @@ class ProfileController extends StateNotifier<bool> {
       state = true;
       final avatarLink = await _uploadImages(image);
       await _repo.updateAvatar(avatar: avatarLink[0], userId: userId);
-      CustomToast.systemToast("your avatar updated successfully");
+      CustomToast.systemToast(
+        isArabic ? "تم تحديث صورتك الشخصية بنجاح." : "your avatar updated successfully",
+      );
       await _ref.read(adsServiceProvider.notifier).showAd();
 
       state = false;
@@ -92,7 +94,10 @@ class ProfileController extends StateNotifier<bool> {
       state = true;
       await _repo.defineReligion(userId: userId, religion: religion);
       await Future.delayed(const Duration(milliseconds: 600));
-      CustomToast.systemToast("Your religion has been set successfully.", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تم تعيين ديانتك بنجاح." : "Your religion has been set successfully.",
+        systemMessage: true,
+      );
     } catch (e) {
       log(e.toString());
       rethrow;

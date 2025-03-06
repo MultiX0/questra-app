@@ -35,7 +35,7 @@ class _RegisterToEventPageState extends ConsumerState<RegisterToEventPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GlowText(
-                  text: "🌟 Exclusive Event: ${event?.title} – Register Now!",
+                  text: AppLocalizations.of(context).event_join_title(event!.title),
                   glowColor: AppColors.primary,
                   style: TextStyle(
                     fontFamily: AppFonts.header,
@@ -46,13 +46,13 @@ class _RegisterToEventPageState extends ConsumerState<RegisterToEventPage> {
                 ).tada(),
                 const SizedBox(height: 20),
                 Text(
-                  "Be part of something special! Join ${event?.title} on Questra and experience an unforgettable event filled with unique opportunities. Secure your spot today and stay updated with all the latest details. Don't miss out! 🎉🚀",
+                  AppLocalizations.of(context).event_join_subtitle(event.title),
                   style: TextStyle(color: AppColors.descriptionColor),
                   textAlign: TextAlign.center,
                 ).fadeIn(duration: const Duration(milliseconds: 1400)),
                 const SizedBox(height: 15),
                 Text(
-                  "registration fee is \$${calcEventRegisterationFee(user!.level!.level)}",
+                  "${AppLocalizations.of(context).event_join_fee} \$${calcEventRegisterationFee(user!.level!.level)}",
                   style: TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.w700,
@@ -63,12 +63,15 @@ class _RegisterToEventPageState extends ConsumerState<RegisterToEventPage> {
                 if (isLoading)
                   BeatLoader()
                 else
-                  SystemCardButton(onTap: register, text: "Register Now").bounceIn(),
+                  SystemCardButton(
+                    onTap: register,
+                    text: AppLocalizations.of(context).event_register_btn,
+                  ).bounceIn(),
                 const SizedBox(height: 15),
 
                 SystemCardButton(
                   onTap: () => context.pop(),
-                  text: "Cancel",
+                  text: AppLocalizations.of(context).cancel,
                   doneButton: false,
                 ).bounceIn(),
               ],

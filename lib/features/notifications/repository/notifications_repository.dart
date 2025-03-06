@@ -6,6 +6,7 @@ import 'package:questra_app/core/services/background_service.dart';
 import 'package:questra_app/core/services/notifications_service.dart';
 import 'package:questra_app/features/quests/ai/ai_notifications.dart';
 import 'package:questra_app/features/quests/ai/notifications_system_parts.dart';
+// import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/imports.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +16,7 @@ class NotificationsRepository {
   static SupabaseQueryBuilder get _playerQuestsTable => _client.from(TableNames.user_quests);
   static SupabaseQueryBuilder get _notificationLogs => _client.from(TableNames.notification_logs);
   static SupabaseQueryBuilder get _tokensTable => _client.from(TableNames.notification_tokens);
+  // static TranslationService get _translationService => TranslationService();
 
   static Future<bool> insertedToken(String userId, String token) async {
     try {
@@ -101,8 +103,20 @@ class NotificationsRepository {
         final response = await _generatePrompt(_userId);
         final jsonData = jsonDecode(response) as Map<String, dynamic>;
 
+        // final userLang = await _getUserLang(userId);
         // 4. Parse and validate response
-        final notification = jsonData["notification"] as String;
+        String notification = jsonData["notification"] as String;
+
+        // if (userLang == 'ar') {
+        //   notification = await _translationService.translate(
+        //     'en',
+        //     'ar',
+        //     jsonData["notification"] as String,
+        //   );
+        // } else {
+        //   notification = jsonData["notification"] as String;
+        // }
+
         final sentNow = _parseSentNow(jsonData["sent_now"]);
         final ptts = _parseDateTime(jsonData["perfect_time_to_send"]);
         final nptt = _parseDateTime(jsonData["next_perfect_time"], required: true)!;
@@ -184,13 +198,34 @@ class NotificationsRepository {
     }
   }
 
+  // static Future<String> _getUserLang(String userId) async {
+  //   try {
+  //     final data = await _client
+  //         .from(TableNames.players)
+  //         .select(KeyNames.lang)
+  //         .eq(KeyNames.id, userId);
+
+  //     return data[0][KeyNames.lang];
+  //   } catch (e) {
+  //     log(e.toString());
+  //     rethrow;
+  //   }
+  // }
+
   static Future<List<Map<String, dynamic>>> _getFailedQuests(String userId) async {
     final now = DateTime.now();
-    final data = await _playerQuestsTable
+    List<Map<String, dynamic>> data = await _playerQuestsTable
         .select("*")
         .eq(KeyNames.user_id, userId)
         .eq(KeyNames.status, StatusEnum.in_progress.name)
         .gte(KeyNames.expected_completion_time_date, now.toIso8601String());
+
+    if (data.isEmpty) {
+      data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.status, StatusEnum.failed.name);
+    }
 
     final quests = data.map((q) => QuestModel.fromMap(q)).toList();
     final cleanedData =
@@ -227,9 +262,10 @@ class NotificationsRepository {
           .join("\n\n");
 
       final res = await AiNotifications.makeAiResponse(
-        temp: 0.7,
-        topP: 0.9,
-        maxTokens: 500,
+        temp: 0.9,
+        topP: 0.75,
+        topK: 30,
+        maxTokens: 300,
         content: [
           {"role": "system", "content": systemInstructions},
           {"role": "user", "content": prompt},

@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.4+8
+version: 0.0.5+6
 
 environment:
   sdk: ^3.7.0
@@ -29,6 +29,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
@@ -45,7 +47,7 @@ dependencies:
   flutter_lucide: ^1.6.1
   flutter_dotenv: ^5.2.1
   flutter_datetime_picker_plus: ^2.2.0
-  intl: ^0.20.1
+  intl: ^0.19.0
   google_sign_in: ^6.2.2
   dio: ^5.7.0
   uuid: ^4.5.1
@@ -85,6 +87,15 @@ dependencies:
   badges: ^3.1.2
   zo_animated_border: ^0.0.6
   retry: ^3.1.2
+  intl_utils: ^2.8.10
+  translator: ^1.0.3+1
+  flutter_langdetect: ^0.0.2
+flutter_intl:
+  enabled: true
+  arb_dir: lib/l10n
+  template_arb_file: app_en.arb
+  output_dir: lib/generated
+
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +113,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  generate: true
+
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -143,6 +156,15 @@ flutter:
     - family: LeckerliOne
       fonts:
         - asset: assets/fonts/LeckerliOne-Regular.ttf
+    - family: HSN
+      fonts:
+        - asset: assets/fonts/HSN_Layan.ttf
+    - family: Tajwal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 900
+
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   # For details regarding fonts from package dependencies,

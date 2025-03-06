@@ -115,8 +115,13 @@ class EventsRepository {
     required EventQuestModel quest,
     required UserModel user,
     required List<int> imageIds,
+    required int minPicsNeeds,
+    required BuildContext context,
   }) async {
     try {
+      if (imageIds.isEmpty) {
+        throw AppLocalizations.of(context).event_quest_finish_alert(minPicsNeeds);
+      }
       await _eventFinishQuestsLogs.insert({
         KeyNames.user_id: user.id,
         KeyNames.quest_id: quest.id,
@@ -237,11 +242,16 @@ class EventsRepository {
         .select('*,${TableNames.event_quests}(*)')
         .eq(KeyNames.user_id, userId)
         .eq(KeyNames.quest_id, questId)
+        // .neq('report_approved', true)
         .order(KeyNames.created_at, ascending: false);
 
     List<ViewEventQuestModel> viewList = [];
     for (final d in data) {
       final images = await getImagesByIds(d[KeyNames.images] ?? []);
+
+      if (d['report_approved'] == true || images.isEmpty) {
+        continue;
+      }
       final view = ViewEventQuestModel(
         userId: userId,
         questId: questId,

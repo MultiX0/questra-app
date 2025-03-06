@@ -11,6 +11,7 @@ class ItemModel {
   final String? image_url;
   final DateTime? created_at;
   final DateTime? updated_at;
+  final String? ar_description;
   final bool locked;
   ItemModel({
     required this.id,
@@ -23,6 +24,7 @@ class ItemModel {
     this.image_url,
     this.created_at,
     this.updated_at,
+    this.ar_description,
   });
 
   ItemModel copyWith({
@@ -36,6 +38,7 @@ class ItemModel {
     DateTime? created_at,
     DateTime? updated_at,
     bool? locked,
+    String? ar_description,
   }) {
     return ItemModel(
       id: id ?? this.id,
@@ -48,6 +51,7 @@ class ItemModel {
       created_at: created_at ?? this.created_at,
       updated_at: updated_at ?? this.updated_at,
       locked: locked ?? this.locked,
+      ar_description: ar_description ?? this.ar_description,
     );
   }
 
@@ -63,6 +67,7 @@ class ItemModel {
       KeyNames.locked: locked,
       KeyNames.created_at: created_at?.toIso8601String(),
       KeyNames.updated_at: updated_at?.toIso8601String(),
+      KeyNames.ar_description: ar_description,
     };
   }
 
@@ -73,15 +78,17 @@ class ItemModel {
       description: map[KeyNames.description] != null ? map[KeyNames.description] ?? "" : null,
       type: ((map[KeyNames.type] ?? "") as String).toLowerCase(),
       price: map[KeyNames.price] ?? 0,
-      metadata: map[KeyNames.metadata] != null
-          ? Map<String, dynamic>.from((map[KeyNames.metadata] as Map<String, dynamic>))
-          : null,
+      metadata:
+          map[KeyNames.metadata] != null
+              ? Map<String, dynamic>.from((map[KeyNames.metadata] as Map<String, dynamic>))
+              : null,
       image_url: map[KeyNames.image_url] != null ? map[KeyNames.image_url] ?? "" : null,
       created_at:
           map[KeyNames.created_at] != null ? DateTime.parse(map[KeyNames.created_at]) : null,
       updated_at:
           map[KeyNames.updated_at] != null ? DateTime.parse(map[KeyNames.updated_at]) : null,
       locked: map[KeyNames.locked] ?? false,
+      ar_description: map[KeyNames.ar_description],
     );
   }
 

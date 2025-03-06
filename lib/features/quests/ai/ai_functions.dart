@@ -16,26 +16,28 @@ class AiFunctions {
   Future<void> generateQuests({int? errors, String? errorExplain}) async {
     try {
       log("here 1");
-      final preferredQuestTypes = await _ref.read(questsRepositoryProvider).getQuestTypesByIds(
-            _user?.user_preferences?.questTypes,
-          );
+      final preferredQuestTypes = await _ref
+          .read(questsRepositoryProvider)
+          .getQuestTypesByIds(_user?.user_preferences?.questTypes);
       log("here 2");
 
       String userId = _user?.id ?? "";
 
-      final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
+      // final lastUserQuests = await _ref.read(questsRepositoryProvider).getLastUserQuests(userId);
       log("here 3");
 
-      final ongoingQuests =
-          await _ref.read(questsRepositoryProvider).currentlyOngoingQuests(userId);
-      List<Map<String, dynamic>> ongoingQuestsData = ongoingQuests.map((quest) {
-        return {
-          KeyNames.description: quest.description,
-          KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
-          KeyNames.quest_title: quest.title,
-          KeyNames.created_at: quest.created_at.toUtc(),
-        };
-      }).toList();
+      final ongoingQuests = await _ref
+          .read(questsRepositoryProvider)
+          .currentlyOngoingQuests(userId);
+      List<Map<String, dynamic>> ongoingQuestsData =
+          ongoingQuests.map((quest) {
+            return {
+              KeyNames.description: quest.description,
+              KeyNames.expected_completion_time_date: quest.expected_completion_time_date?.toUtc(),
+              KeyNames.quest_title: quest.title,
+              KeyNames.created_at: quest.created_at.toUtc(),
+            };
+          }).toList();
 
       log("currentlly there is ${ongoingQuests.length} quests");
       log("here 4");
@@ -46,7 +48,18 @@ class AiFunctions {
       final playerTitles = await _ref.read(profileRepositoryProvider).getUserTitles(userId);
       log("here 6");
 
-      // final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      final lastQuests = await _ref.read(questsRepositoryProvider).getLastQuests(userId);
+      final lastQuestsData =
+          lastQuests.map((quest) {
+            return {
+              KeyNames.quest_title: quest.title,
+              KeyNames.quest_description: quest.description,
+              KeyNames.created_at: quest.created_at.toIso8601String(),
+              KeyNames.status: quest.status,
+              KeyNames.expected_completion_time_date:
+                  quest.expected_completion_time_date?.toIso8601String(),
+            };
+          }).toList();
 
       String _userPrompt = '''
                 {
@@ -65,43 +78,40 @@ class AiFunctions {
                       "previous_titles": ${playerTitles.map((title) => title.title).toList()},
                       "user_birth_date": "${_user?.birth_date?.toIso8601String()}",
                       "current_time": "${DateTime.now().toIso8601String()}",
-                      "last_quests": ${lastUserQuests.map((quest) => quest.toMap()).toList()},
-                      "preferred_quest_types": ${preferredQuestTypes.isEmpty ? [
-              'exploration',
-              'puzzle'
-            ] : preferredQuestTypes.map((type) => type.name).toList()},
+                      "last_quests": ${lastQuestsData.map((quest) => quest.toString()).toList()},
+                      "preferred_quest_types": ${preferredQuestTypes.isEmpty ? ['exploration', 'puzzle'] : preferredQuestTypes.map((type) => type.name).toList()},
                       "ongoing_quests": ${ongoingQuestsData.map((quest) => quest.toString()).toList()}
                     }
                   }
 
                 NOTES (IMPORTANT):
-                - MAKE QUEST DIFFERENT ON THIS : (${lastUserQuests.map((quest) => quest.description).toList()}) (VERY DIFFERENT CONTEXT)
+                - MAKE QUEST DIFFERENT ON THIS : (${ongoingQuestsData.map((quest) => quest).toList()}) (VERY DIFFERENT CONTEXT)
                 - TAKE IN MIND MY FEEDBACKS BECAUSE THEIR ARE IMPORTANT THINGS TO ME
                 - TAKE IN MIND THAT I WANT QUESTS THAT MAKE ME ACHIEVE MY GOALS WICHI IS THOSE GOALS : ${_user?.goals?.map((goal) => goal.description).toList() ?? []}
                 ''';
 
-      final questResponse = await _ref.read(aiModelObjectProvider).makeAiResponse(
-        content: [
-          {
-            "role": "user",
-            "content": _userPrompt,
-          },
-          ...systePrompts,
-          if (errorExplain != null)
-            {
-              "role": "system",
-              "content": errorExplain,
-            },
-        ],
-      );
+      final questResponse = await _ref
+          .read(aiModelObjectProvider)
+          .makeAiResponse(
+            topP: 0.85,
+            temp: 0.5,
+            topK: 40,
+            content: [
+              ...systePrompts,
+              {"role": "user", "content": _userPrompt},
+
+              if (errorExplain != null) {"role": "system", "content": errorExplain},
+            ],
+          );
       log(questResponse);
       await handleQuestResponse(questResponse, errors ?? 0);
     } catch (e) {
       log(e.toString());
       await ExceptionService.insertException(
-          path: "/ai_functions/generation",
-          error: e.toString(),
-          userId: Supabase.instance.client.auth.currentUser?.id ?? "null");
+        path: "/ai_functions/generation",
+        error: e.toString(),
+        userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+      );
       // CustomToast.systemToast(
       //   "there is an error, please try again later",
       // );
@@ -151,20 +161,24 @@ class AiFunctions {
           title: questTitle,
           expected_completion_time_date:
               DateTime.tryParse(completion_time_date)?.add(const Duration(hours: 12)) ??
-                  DateTime.now().add(const Duration(hours: 2)),
+              DateTime.now().add(const Duration(hours: 2)),
           owned_title: owned_title,
           images: [],
           isCustom: false,
         );
 
-        final questId = await _ref.read(questsRepositoryProvider).insertQuest(quest);
-        final questData = await _ref.read(questsRepositoryProvider).getQuestById(questId);
+        final _newQuest = await _ref.read(questsRepositoryProvider).insertQuest(quest);
+        final questData = await _ref.read(questsRepositoryProvider).getQuestById(_newQuest.id);
+        final isArabic = _ref.read(localeProvider).languageCode == 'ar';
+
         NotificationService().scheduleDailyNotification(
           selectedTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
-          title: "Quest Reminder",
+          title: isArabic ? "تذكير بالمهام" : "Quest Reminder",
 
           body:
-              "You have less than 2 hours left to complete your quest (${quest.title}), please complete it to avoid penalty.",
+              isArabic
+                  ? ""
+                  : "لديك أقل من ساعتين لإكمال مهمتك (${quest.title})، يرجى إنهاؤها لتجنب العقوبة.",
           notificationId: questData?.notification_id,
           // scheduledTime: quest.expected_completion_time_date!.subtract(const Duration(hours: 2)),
           // scheduledTime:
@@ -172,7 +186,14 @@ class AiFunctions {
         List<QuestModel> currentQuests = _ref.read(currentOngointQuestsProvider) ?? [];
         _ref.read(analyticsServiceProvider).logGenerateQuest(user.id);
 
-        currentQuests = [...currentQuests, quest.copyWith(id: questId)];
+        currentQuests = [
+          ...currentQuests,
+          quest.copyWith(
+            id: _newQuest.id,
+            ar_description: _newQuest.ar_description,
+            ar_title: _newQuest.ar_title,
+          ),
+        ];
 
         _ref.read(currentOngointQuestsProvider.notifier).state = currentQuests;
 
@@ -200,30 +221,29 @@ class AiFunctions {
         throw appError;
       }
 
-      final data = await _ref.read(aiModelObjectProvider).makeAiResponse(
-        content: [
-          {
-            "role": "user",
-            "content": "quest description: $questDescription",
-          },
-          ...userQuestProcessingSystemPrompts,
-        ],
-      );
+      final data = await _ref
+          .read(aiModelObjectProvider)
+          .makeAiResponse(
+            content: [
+              {"role": "user", "content": "quest description: $questDescription"},
+              ...userQuestProcessingSystemPrompts,
+            ],
+          );
       final jsonData = isJson(data);
       if (jsonData != null) {
         String title = jsonData['quest_title'] ?? "";
         String description = jsonData['quest_description'] ?? "";
         String difficulty = jsonData['difficulty'] ?? "";
-        int estimated_completion_time = jsonData["estimated_completion_time"] == null
-            ? 0
-            : int.tryParse(jsonData["estimated_completion_time"].toString()) ?? 0;
+        int estimated_completion_time =
+            jsonData["estimated_completion_time"] == null
+                ? 0
+                : int.tryParse(jsonData["estimated_completion_time"].toString()) ?? 0;
         final exception = jsonData["exception"];
 
         if (exception != null) {
-          await _ref.read(questsRepositoryProvider).insertCustomQuestException(
-                userId: userId,
-                exceptionText: exception.toString(),
-              );
+          await _ref
+              .read(questsRepositoryProvider)
+              .insertCustomQuestException(userId: userId, exceptionText: exception.toString());
           throw exception;
         }
 
@@ -232,9 +252,10 @@ class AiFunctions {
             estimated_completion_time == 0 ||
             difficulty.isEmpty) {
           return customQuestAnalizer(
-              "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
-              errors++,
-              userId);
+            "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
+            errors++,
+            userId,
+          );
         }
 
         final user = _ref.read(authStateProvider)!;
@@ -267,8 +288,12 @@ class AiFunctions {
           isActive: true,
         );
 
-        final id = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
-        questModel = questModel.copyWith(id: id);
+        final _quest = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
+        questModel = questModel.copyWith(
+          id: _quest.id,
+          ar_description: _quest.ar_description,
+          ar_title: _quest.ar_title,
+        );
 
         final currentQuests = _ref.read(customQuestsProvider);
         _ref.invalidate(customQuestsProvider);

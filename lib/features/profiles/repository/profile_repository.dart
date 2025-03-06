@@ -99,8 +99,11 @@ class ProfileRepository {
     }
   }
 
-  Future<PlayerTitleModel?> getActiveTitle(String titleId) async {
+  Future<PlayerTitleModel?> getActiveTitle(String? titleId) async {
     try {
+      if (titleId == null) {
+        return null;
+      }
       final data = await _playerTitleTable.select("*").eq(KeyNames.id, titleId).maybeSingle();
       return data != null ? PlayerTitleModel.fromMap(data) : null;
     } catch (e) {
@@ -154,6 +157,25 @@ class ProfileRepository {
       await _profilesTable
           .update({KeyNames.religion: religionToString(religion)})
           .eq(KeyNames.id, userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> updateAccountLang({required String userId, required String lang}) async {
+    try {
+      await _profilesTable.update({KeyNames.lang: lang}).eq(KeyNames.id, userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<UserModel>> getUsersIn(List<String> ids) async {
+    try {
+      final data = await _profilesTable.select("*").inFilter(KeyNames.id, ids);
+      return data.map((user) => UserModel.fromMap(user)).toList();
     } catch (e) {
       log(e.toString());
       rethrow;

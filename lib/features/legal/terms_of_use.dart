@@ -1,92 +1,90 @@
-// terms_of_use.dart
 import 'package:flutter/material.dart';
+import 'package:questra_app/generated/app_localizations.dart';
 
 import 'legal_page_template.dart';
 
 class TermsOfUse extends StatelessWidget {
-  final List<Map<String, dynamic>> sections = [
-    {
-      'title': '1. Acceptance of Terms',
-      'content': [
-        'By accessing or using Questra ("Service"), you:',
-        '- Confirm you are at least 13 years old',
-        '- Agree to be bound by these Terms',
-        '- Acknowledge our Privacy Policy',
-        '- Accept responsibility for all activities',
-        'If disagreeing with terms, you must immediately cease use.',
-      ]
-    },
-    {
-      'title': '2. Account Responsibilities',
-      'content': [
-        'You are solely responsible for:',
-        '- Maintaining account confidentiality',
-        '- All activities under your account',
-        '- Providing accurate information',
-        '- Compliance with applicable laws',
-        '- Any content you create/share',
-        'Immediately notify us of unauthorized use.',
-      ]
-    },
-    {
-      'title': '3. Service Modifications',
-      'content': [
-        'We reserve the right to:',
-        '- Modify or discontinue Service at any time',
-        '- Change pricing structure',
-        '- Limit/terminate free tier access',
-        '- Update Terms without notice',
-        'Continued use constitutes acceptance of changes.',
-      ]
-    },
-    {
-      'title': '4. User Content',
-      'content': [
-        'You retain ownership but grant us:',
-        '- Worldwide, non-exclusive license',
-        '- Right to use, copy, and display content',
-        '- Right to analyze for service improvement',
-        'Prohibited content includes:',
-        '- Illegal or infringing material',
-        '- Malware/spam',
-        '- NSFW or harmful content',
-      ]
-    },
-    {
-      'title': '5. Limitation of Liability',
-      'content': [
-        'To the maximum extent permitted by law:',
-        '- We exclude all warranties',
-        '- Not liable for indirect damages',
-        '- Not liable for data loss',
-        '- Not liable for service interruptions',
-        '- Not liable for third-party actions',
-        'Total liability limited to fees paid.',
-      ]
-    },
-    {
-      'title': '6. Termination',
-      'content': [
-        'We may terminate access for:',
-        '- Violations of these Terms',
-        '- Security reasons',
-        '- Inactive accounts (6+ months)',
-        '- Any reason without notice',
-        'Termination results in:',
-        '- Loss of XP and virtual items',
-        '- Account deletion',
-        '- Forfeiture of subscriptions',
-      ]
-    },
-  ];
-
-  TermsOfUse({super.key});
+  const TermsOfUse({super.key});
 
   @override
   Widget build(BuildContext context) {
     return LegalPageTemplate(
-      title: 'Terms of Use',
-      sections: sections,
+      title: AppLocalizations.of(context).terms_of_use_title,
+      sections: [
+        {
+          'title': AppLocalizations.of(context).terms_acceptance_title,
+          'content': [
+            AppLocalizations.of(context).terms_acceptance_content_1,
+            AppLocalizations.of(context).terms_acceptance_content_2,
+            AppLocalizations.of(context).terms_acceptance_content_3,
+            AppLocalizations.of(context).terms_acceptance_content_4,
+            AppLocalizations.of(context).terms_acceptance_content_5,
+            AppLocalizations.of(context).terms_acceptance_content_6,
+          ],
+        },
+        {
+          'title': AppLocalizations.of(context).account_responsibilities_title,
+          'content': [
+            AppLocalizations.of(context).account_responsibilities_content_1,
+            AppLocalizations.of(context).account_responsibilities_content_2,
+            AppLocalizations.of(context).account_responsibilities_content_3,
+            AppLocalizations.of(context).account_responsibilities_content_4,
+            AppLocalizations.of(context).account_responsibilities_content_5,
+            AppLocalizations.of(context).account_responsibilities_content_6,
+            AppLocalizations.of(context).account_responsibilities_content_7,
+          ],
+        },
+        {
+          'title': AppLocalizations.of(context).service_modifications_title,
+          'content': [
+            AppLocalizations.of(context).service_modifications_content_1,
+            AppLocalizations.of(context).service_modifications_content_2,
+            AppLocalizations.of(context).service_modifications_content_3,
+            AppLocalizations.of(context).service_modifications_content_4,
+            AppLocalizations.of(context).service_modifications_content_5,
+            AppLocalizations.of(context).service_modifications_content_6,
+          ],
+        },
+        {
+          'title': AppLocalizations.of(context).user_content_title,
+          'content': [
+            AppLocalizations.of(context).user_content_content_1,
+            AppLocalizations.of(context).user_content_content_2,
+            AppLocalizations.of(context).user_content_content_3,
+            AppLocalizations.of(context).user_content_content_4,
+            AppLocalizations.of(context).user_content_content_5,
+            AppLocalizations.of(context).user_content_content_6,
+            AppLocalizations.of(context).user_content_content_7,
+            AppLocalizations.of(context).user_content_content_8,
+          ],
+        },
+        {
+          'title': AppLocalizations.of(context).limitation_of_liability_title,
+          'content': [
+            AppLocalizations.of(context).limitation_of_liability_content_1,
+            AppLocalizations.of(context).limitation_of_liability_content_2,
+            AppLocalizations.of(context).limitation_of_liability_content_3,
+            AppLocalizations.of(context).limitation_of_liability_content_4,
+            AppLocalizations.of(context).limitation_of_liability_content_5,
+            AppLocalizations.of(context).limitation_of_liability_content_6,
+            AppLocalizations.of(context).limitation_of_liability_content_7,
+          ],
+        },
+        {
+          'title': AppLocalizations.of(context).termination_title,
+          'content': [
+            AppLocalizations.of(context).termination_content_1,
+            AppLocalizations.of(context).termination_content_2,
+            AppLocalizations.of(context).termination_content_3,
+            AppLocalizations.of(context).termination_content_4,
+            AppLocalizations.of(context).termination_content_5,
+            AppLocalizations.of(context).termination_content_6,
+            AppLocalizations.of(context).termination_content_7,
+            AppLocalizations.of(context).termination_content_8,
+            AppLocalizations.of(context).termination_content_9,
+          ],
+        },
+      ],
     );
   }
 }

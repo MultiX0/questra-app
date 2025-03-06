@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:intl/intl.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';
 import 'package:questra_app/imports.dart';
@@ -16,8 +13,7 @@ class EventsQuestCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    final descritpionHasArabic = Bidi.hasAnyRtl(quest.description);
-    log("this quest has arabic ?: $descritpionHasArabic");
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return SystemCard(
       duration: const Duration(milliseconds: 800),
@@ -39,11 +35,11 @@ class EventsQuestCard extends ConsumerWidget {
                 child: Center(
                   child: GlowText(
                     glowColor: AppColors.whiteColor,
-                    text: "Quest",
+                    text: AppLocalizations.of(context).quest,
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w200,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       color: AppColors.whiteColor,
                     ),
                   ),
@@ -56,12 +52,14 @@ class EventsQuestCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               GlowText(
+                textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+
                 glowColor: AppColors.whiteColor,
-                text: "Quest Title:",
+                text: "${AppLocalizations.of(context).quest_title}:",
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
                 spreadRadius: 0.5,
@@ -74,7 +72,7 @@ class EventsQuestCard extends ConsumerWidget {
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: AppColors.whiteColor,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
               ),
@@ -86,13 +84,13 @@ class EventsQuestCard extends ConsumerWidget {
             children: [
               GlowText(
                 glowColor: AppColors.whiteColor,
-                text: "Description:",
-                textAlign: descritpionHasArabic ? TextAlign.right : TextAlign.left,
-                textDirection: descritpionHasArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
+                text: "${AppLocalizations.of(context).description}:",
+
+                textDirection: isArabic ? ui.TextDirection.rtl : ui.TextDirection.ltr,
                 style: TextStyle(
                   color: AppColors.whiteColor,
                   fontWeight: FontWeight.bold,
-                  fontFamily: AppFonts.primary,
+                  // fontFamily: AppFonts.primary,
                   fontSize: 14,
                 ),
                 spreadRadius: 0.5,
@@ -103,7 +101,7 @@ class EventsQuestCard extends ConsumerWidget {
                 quest.description,
                 maxLines: isView ? null : 1,
                 overflow: isView ? null : TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white70, fontFamily: AppFonts.primary, fontSize: 13),
+                style: TextStyle(color: Colors.white70, fontSize: 13),
               ),
             ],
           ),
@@ -111,8 +109,10 @@ class EventsQuestCard extends ConsumerWidget {
           GlowText(
             glowColor: Colors.white54,
             textAlign: TextAlign.start,
-            text: "Reward: +${quest.xp_reward} XP, +${quest.coin_reward} Coins",
-            style: TextStyle(color: Colors.white54, fontFamily: AppFonts.primary, fontSize: 10),
+            text: AppLocalizations.of(
+              context,
+            ).quest_completetion_card_reward(quest.coin_reward, quest.xp_reward),
+            style: TextStyle(color: Colors.white54, fontSize: 10),
             spreadRadius: 0.5,
             blurRadius: 15,
           ),

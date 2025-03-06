@@ -48,7 +48,10 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
       },
       child: BackgroundWidget(
         child: Scaffold(
-          appBar: TheAppBar(title: selectedQuestId != null ? null : "Player Quests"),
+          appBar: TheAppBar(
+            title:
+                selectedQuestId != null ? null : AppLocalizations.of(context).player_quests_title,
+          ),
           body: SafeArea(
             child: Padding(
               padding: EdgeInsets.all(8),
@@ -96,7 +99,7 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
               Icon(LucideIcons.hexagon, color: AppColors.primary, size: 50),
               const SizedBox(height: 15),
               Text(
-                "There is no quests for now",
+                AppLocalizations.of(context).empty_quests,
                 style: TextStyle(
                   fontWeight: FontWeight.w200,
                   color: AppColors.descriptionColor,
@@ -132,7 +135,7 @@ class _PlayerCompletionPageState extends ConsumerState<PlayerCompletionPage> {
                       });
                     });
                   },
-                  child: Text("Refresh"),
+                  child: Text(AppLocalizations.of(context).refresh),
                 ),
               ],
             ],

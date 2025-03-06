@@ -6,10 +6,7 @@ import 'package:questra_app/features/quests/widgets/finish_quest.dart';
 import 'package:questra_app/imports.dart';
 
 class ViewQuestPage extends ConsumerStatefulWidget {
-  const ViewQuestPage({
-    super.key,
-    required this.special,
-  });
+  const ViewQuestPage({super.key, required this.special});
 
   final bool special;
 
@@ -40,7 +37,8 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
         final now = DateTime.now();
         if (now.isBefore(quest.completed_at!.add(const Duration(hours: 24)))) {
           CustomToast.systemToast(
-              "you need to wait until ${appDateFormat(quest.completed_at!.add(const Duration(hours: 24)))}");
+            "you need to wait until ${appDateFormat(quest.completed_at!.add(const Duration(hours: 24)))}",
+          );
           return;
         }
       }
@@ -89,14 +87,13 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
     final quest = ref.watch(viewQuestProvider)!;
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(
-          title: "View Quest",
-        ),
+        appBar: TheAppBar(title: AppLocalizations.of(context).view_quest),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: (_finish)
-              ? buildFinish()
-              : (_skip)
+          child:
+              (_finish)
+                  ? buildFinish()
+                  : (_skip)
                   ? buildSkip()
                   : buildBody(quest),
         ),
@@ -104,58 +101,49 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
     );
   }
 
-  Widget buildFinish() => Center(
-        child: FinishQuestWidget(
-          cancel: cancel,
-        ),
-      );
+  Widget buildFinish() => Center(child: FinishQuestWidget(cancel: cancel));
 
-  Widget buildSkip() => Center(
-        child: QuestFeedbackWidget(
-          skip: true,
-        ),
-      );
+  Widget buildSkip() => Center(child: QuestFeedbackWidget(skip: true));
 
   Widget buildBody(QuestModel quest) {
     final isLoading = ref.watch(questsControllerProvider);
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        QuestCard(
-          questModel: quest,
-          viewPage: true,
-        ),
-        const SizedBox(
-          height: 30,
-        ),
+        QuestCard(questModel: quest, viewPage: true),
+        const SizedBox(height: 30),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SystemCard(
               onTap: finish,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 10),
               isButton: true,
               child: Text(
-                "finish",
+                AppLocalizations.of(context).finish.toLowerCase(),
                 style: TextStyle(
-                  fontFamily: AppFonts.header,
+                  fontFamily: isArabic ? null : AppFonts.header,
+                  fontSize: isArabic ? 13 : null,
                 ),
               ),
             ),
             if (widget.special) ...[
               SystemCard(
                 onTap: delete,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 10),
                 isButton: true,
-                child: isLoading
-                    ? BeatLoader(size: 15)
-                    : Text(
-                        "delete",
-                        style: TextStyle(
-                          fontFamily: AppFonts.header,
+                child:
+                    isLoading
+                        ? BeatLoader(size: 15)
+                        : Text(
+                          AppLocalizations.of(context).delete_custom_quest,
+                          style: TextStyle(
+                            fontFamily: isArabic ? null : AppFonts.header,
+                            fontSize: isArabic ? 13 : null,
+                          ),
                         ),
-                      ),
               ),
             ] else
               SystemCard(
@@ -163,9 +151,10 @@ class _ViewQuestPageState extends ConsumerState<ViewQuestPage> {
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: kToolbarHeight - 5),
                 isButton: true,
                 child: Text(
-                  "skip",
+                  AppLocalizations.of(context).skip,
                   style: TextStyle(
-                    fontFamily: AppFonts.header,
+                    fontFamily: isArabic ? null : AppFonts.header,
+                    fontSize: isArabic ? 13 : null,
                   ),
                 ),
               ),

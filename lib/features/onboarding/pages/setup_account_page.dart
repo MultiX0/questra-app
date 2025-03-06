@@ -24,40 +24,34 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
 
   @override
   void initState() {
-    _opacityTimer = Timer.periodic(
-      const Duration(milliseconds: 600),
-      (_) {
-        setState(() {
-          if (opacity == 1) {
-            opacity = 0;
-          } else {
-            opacity = 1;
-          }
-        });
-      },
-    );
-    _timer = Timer(
-      const Duration(seconds: 2),
-      () async {
-        try {
-          final localUser = ref.read(localUserProvider);
-          final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
-          if (data) {
-            await Future.delayed(const Duration(seconds: 1));
-            Restart.restartApp();
-            if (!mounted) return;
-            context.go(Routes.splash);
-          }
-        } catch (e) {
-          context.go(Routes.onboardingController);
-          CustomToast.systemToast(
-            "it seems we facing an error please try again",
-            systemMessage: true,
-          );
-          rethrow;
+    _opacityTimer = Timer.periodic(const Duration(milliseconds: 600), (_) {
+      setState(() {
+        if (opacity == 1) {
+          opacity = 0;
+        } else {
+          opacity = 1;
         }
-      },
-    );
+      });
+    });
+    _timer = Timer(const Duration(seconds: 2), () async {
+      try {
+        final localUser = ref.read(localUserProvider);
+        final data = await ref.read(profileRepositoryProvider).insertProfile(localUser!);
+        if (data) {
+          await Future.delayed(const Duration(seconds: 1));
+          Restart.restartApp();
+          if (!mounted) return;
+          context.go(Routes.splash);
+        }
+      } catch (e) {
+        context.go(Routes.onboardingController);
+        CustomToast.systemToast(
+          AppLocalizations.of(context).it_seems_we_facing_an_error_please_try_again,
+          systemMessage: true,
+        );
+        rethrow;
+      }
+    });
     super.initState();
   }
 
@@ -75,9 +69,7 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: size.width * .15,
-          ),
+          padding: EdgeInsets.symmetric(vertical: size.width * .15),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -86,10 +78,7 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
                 child: AnimatedOpacity(
                   duration: const Duration(milliseconds: 600),
                   opacity: opacity,
-                  child: Image.asset(
-                    Assets.getImage('splash_icon.png'),
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.asset(Assets.getImage('splash_icon.png'), fit: BoxFit.cover),
                 ),
               ),
               RichText(
@@ -100,15 +89,13 @@ class _SetupAccountPageState extends ConsumerState<SetupAccountPage> {
                     fontWeight: FontWeight.bold,
                     color: AppColors.whiteColor,
                   ),
-                  text: 'settings up ',
+                  text: AppLocalizations.of(context).settings_up,
                   children: [
                     TextSpan(
-                      text: 'your ',
-                      style: TextStyle(
-                        color: HexColor('7AD5FF'),
-                      ),
+                      text: AppLocalizations.of(context).your,
+                      style: TextStyle(color: HexColor('7AD5FF')),
                     ),
-                    TextSpan(text: 'account'),
+                    TextSpan(text: AppLocalizations.of(context).account),
                   ],
                 ),
               ),

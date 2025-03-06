@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/device_service.dart';
+import 'package:questra_app/core/shared/utils/notifications_subs.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
+import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
@@ -22,8 +24,10 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     final user = ref.read(authStateProvider);
     handleLootBoxes(user!.id);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _checkDevice();
+      await NotificationsRepository.insertLog(user.id);
+
       // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
       _timer = Timer.periodic(const Duration(minutes: 10), (_) async {
         final lootBoxManager = LootBoxManager();
@@ -61,6 +65,26 @@ class _HomePageState extends ConsumerState<HomePage> {
     super.dispose();
   }
 
+  void changeLang() async {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+      fcmUnSubscribe('ar');
+      fcmSubscribe('en');
+    } else {
+      newLang = Locale('ar');
+      fcmUnSubscribe('en');
+      fcmSubscribe('ar');
+    }
+    final user = ref.watch(authStateProvider);
+    ref.read(localeProvider.notifier).state = newLang;
+    await ref
+        .read(profileRepositoryProvider)
+        .updateAccountLang(userId: user!.id, lang: newLang.languageCode);
+  }
+
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(milliseconds: 800);
@@ -68,7 +92,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     return BackgroundWidget(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: TheAppBar(title: 'Questra'),
+        appBar: TheAppBar(
+          title: AppLocalizations.of(context).appTitle,
+          actions: [IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages))],
+        ),
         body: SafeArea(
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
@@ -87,27 +114,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.75,
                       glowColor: AppColors.whiteColor,
-                      text: "Marketplace",
+                      text: AppLocalizations.of(context).marketplace_title,
                       style: TextStyle(
                         fontSize: 20,
-                        fontFamily: AppFonts.header,
+                        // fontFamily: AppFonts.header,
                         color: AppColors.whiteColor,
                       ),
                       // glowColor: AppColors.whiteColor,
                     ),
                     const SizedBox(height: 5),
                     GlowText(
-                      blurRadius: 20,
-                      spreadRadius: 0.5,
                       glowColor: AppColors.whiteColor,
-                      text:
-                          "Discover exclusive items, power-ups, and gear to level up your journey. Spend your coins and enhance your adventure!",
+                      text: AppLocalizations.of(context).marketplace_subtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        fontFamily: AppFonts.primary,
+                        // fontFamily: AppFonts.primary,
                         color: AppColors.whiteColor,
                       ),
                     ),

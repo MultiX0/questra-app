@@ -44,6 +44,8 @@ class EventsController extends StateNotifier<bool> {
 
   EventsRepository get _repo => _ref.watch(eventsRepositoryProvider);
 
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+
   Future<List<EventModel>> getEvents() async {
     final user = _ref.read(authStateProvider)!;
     return await _repo.getEvents(user);
@@ -81,12 +83,21 @@ class EventsController extends StateNotifier<bool> {
       state = true;
       await _ref.read(adsServiceProvider.notifier).showAd();
       if (user.wallet!.balance < calcEventRegisterationFee(user.level?.level ?? 1)) {
-        CustomToast.systemToast("You do not have enough coins to register.");
+        CustomToast.systemToast(
+          isArabic
+              ? "ليس لديك ما يكفي من العملات للتسجيل"
+              : "You do not have enough coins to register.",
+        );
+        state = false;
+
         return;
       }
 
       await _repo.registerToEvent(userId: user.id, eventId: eventId);
-      CustomToast.systemToast("✅ Registration Successful!", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "✅ تم التسجيل بنجاح!" : "✅ Registration Successful!",
+        systemMessage: true,
+      );
 
       context.pushReplacement(Routes.eventQuestsPage);
     } catch (e) {
@@ -97,10 +108,10 @@ class EventsController extends StateNotifier<bool> {
     state = false;
   }
 
-  Future<void> finishEventQuest() async {
+  Future<void> finishEventQuest(BuildContext context) async {
     try {
       state = true;
-      final eventId = _ref.read(selectedQuestEvent)!.id;
+      final event = _ref.read(selectedQuestEvent)!;
       final user = _ref.read(authStateProvider)!;
       final quest = _ref.read(viewEventQuestProvider)!;
 
@@ -110,18 +121,24 @@ class EventsController extends StateNotifier<bool> {
         final deadLine = lastTimeDate.add(Duration(seconds: quest.break_duration));
         if (now.isBefore(deadLine)) {
           // CustomToast.systemToast("");
-          throw 'You need to wait until ${appDateFormat(deadLine.toLocal())}';
+          throw '${isArabic ? "يجب عليك الانتظار حتى" : "You need to wait until"} ${appDateFormat(deadLine.toLocal())}';
         }
       }
 
-      final imageLinks = await _uploadImages(eventId: eventId, questId: quest.id);
+      final imageLinks = await _uploadImages(eventId: event.id, questId: quest.id);
       final ids = await _repo.uploadEventPlayerQuestImages(
         images: imageLinks,
         userId: user.id,
-        eventId: eventId,
+        eventId: event.id,
         questId: quest.id,
       );
-      await _repo.finishQuest(quest: quest, user: user, imageIds: ids);
+      await _repo.finishQuest(
+        quest: quest,
+        user: user,
+        imageIds: ids,
+        context: context,
+        minPicsNeeds: event.minImageUploadCount,
+      );
       await _ref.read(adsServiceProvider.notifier).showAd();
       state = false;
     } catch (e) {
@@ -170,7 +187,9 @@ class EventsController extends StateNotifier<bool> {
         finishLogId: finishLogId,
       );
       CustomToast.systemToast(
-        "Report submitted successfully. Our team will review it soon. Thank you for helping keep Questra fair and fun!",
+        isArabic
+            ? "تم تقديم التقرير بنجاح. سيقوم فريقنا بمراجعته قريبًا. شكرًا لمساعدتك في الحفاظ على نزاهة ومتعة Questra!"
+            : "Report submitted successfully. Our team will review it soon. Thank you for helping keep Questra fair and fun!",
       );
     } catch (e) {
       log(e.toString());

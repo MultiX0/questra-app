@@ -1,4 +1,3 @@
-import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/events/controller/events_controller.dart';
@@ -26,7 +25,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
 
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: "Quests"),
+        appBar: TheAppBar(title: AppLocalizations.of(context).quests),
         body: RefreshIndicator(
           color: AppColors.whiteColor,
           backgroundColor: AppColors.primary.withValues(alpha: 0.5),
@@ -43,7 +42,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 2),
             child: ListView(
               children: [
-                if (user?.religion == religionToString(Religions.islam)) buildEventsCarousel(),
+                buildEventsCarousel(),
                 const SizedBox(height: 20),
                 if (activeQuests.isEmpty) ...[
                   NewQuestsSystemCard(),
@@ -55,14 +54,14 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
                 SizedBox(height: size.height * 0.075),
                 Center(
                   child: GlowText(
-                    text: "Quests Archive",
+                    text: AppLocalizations.of(context).quests_archive,
                     spreadRadius: 0.5,
                     blurRadius: 20,
                     glowColor: AppColors.whiteColor,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: AppColors.whiteColor,
-                      fontFamily: AppFonts.primary,
+                      // fontFamily: AppFonts.primary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -87,7 +86,7 @@ class _QuestsPageState extends ConsumerState<QuestsPage> {
             return EventsCaruosel(events: events);
             // return LoadingQuestsCard();
           },
-          error: (error, _) => const SizedBox(),
+          error: (error, _) => const SizedBox.shrink(),
           loading: () => LoadingQuestsCard(),
         );
   }

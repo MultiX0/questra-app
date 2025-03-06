@@ -1,15 +1,12 @@
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/imports.dart';
 
 class UserGoalsSetup extends ConsumerStatefulWidget {
-  const UserGoalsSetup({
-    super.key,
-    required this.next,
-    required this.prev,
-  });
+  const UserGoalsSetup({super.key, required this.next, required this.prev});
 
   final VoidCallback next;
   final VoidCallback prev;
@@ -59,29 +56,28 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
     ref.read(soundEffectsServiceProvider).playMainButtonEffect();
 
     if (goals.length < 4) {
-      CustomToast.systemToast(
-        "add at least 4 clear goals with specific content, (you can edit or add new goals later)",
-        systemMessage: true,
-      );
+      CustomToast.systemToast(AppLocalizations.of(context).goals_alert, systemMessage: true);
       return;
     }
 
     final localUser = ref.read(localUserProvider);
 
-    final goalsList = goals
-        .map(
-          (goal) => UserGoalModel(
-            id: -1,
-            created_at: DateTime.now(),
-            user_id: localUser?.id ?? "",
-            description: goal,
-            status: "in_progress",
-          ),
-        )
-        .toList();
+    final goalsList =
+        goals
+            .map(
+              (goal) => UserGoalModel(
+                id: -1,
+                created_at: DateTime.now(),
+                user_id: localUser?.id ?? "",
+                description: goal,
+                status: "in_progress",
+              ),
+            )
+            .toList();
 
     ref.read(localUserProvider.notifier).state = localUser?.copyWith(
       goals: goalsList,
+      lang: ref.read(localeProvider).languageCode,
     );
 
     // widget.next();
@@ -94,32 +90,19 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
     final size = MediaQuery.sizeOf(context);
     return OnboardingBg(
       child: Scaffold(
-        appBar: AppBar(
-          leading: BackButton(
-            onPressed: widget.prev,
-          ),
-        ),
+        appBar: AppBar(leading: BackButton(onPressed: widget.prev)),
         backgroundColor: Colors.transparent,
-        bottomNavigationBar: AccountSetupNextButton(
-          next: handleNext,
-          size: size,
-        ),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: [
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
-                OnboardingTitle(
-                  title: "Preferences",
-                ),
-                SizedBox(
-                  height: size.height * 0.05,
-                ),
+                SizedBox(height: size.height * 0.05),
+                OnboardingTitle(title: AppLocalizations.of(context).preferences),
+                SizedBox(height: size.height * 0.05),
                 GlowText(
-                  text: "Your Goals",
+                  text: AppLocalizations.of(context).your_goals,
                   spreadRadius: 1,
                   blurRadius: 25,
                   style: TextStyle(
@@ -131,49 +114,42 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
                   textAlign: TextAlign.center,
                   glowColor: Colors.white,
                 ),
-                SizedBox(
-                  height: size.height * 0.025,
-                ),
+                SizedBox(height: size.height * 0.025),
                 Row(
                   children: [
                     Expanded(
-                      child: NeonTextField(
-                        controller: _controller,
-                        labelText: "Goal",
-                        hintText: "enter your goals (very importnant)",
-                      ),
+                      child:
+                          NeonTextField(
+                            controller: _controller,
+                            labelText: AppLocalizations.of(context).goal,
+                            hintText: AppLocalizations.of(context).enter_your_goals,
+                          ).tada(),
                     ),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    const SizedBox(width: 10),
                     GestureDetector(
                       onTap: addGoal,
-                      child: Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: HexColor('7AD5FF'),
-                          boxShadow: [
-                            BoxShadow(
-                              spreadRadius: 0.5,
-                              blurRadius: 20,
-                              color: HexColor('7AD5FF').withValues(alpha: .4),
+                      child:
+                          Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: HexColor('7AD5FF'),
+                              boxShadow: [
+                                BoxShadow(
+                                  spreadRadius: 0.5,
+                                  blurRadius: 20,
+                                  color: HexColor('7AD5FF').withValues(alpha: .4),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Icon(
-                            LucideIcons.plus,
-                            color: AppColors.whiteColor,
-                          ),
-                        ),
-                      ),
+                            child: Center(
+                              child: Icon(LucideIcons.plus, color: AppColors.whiteColor),
+                            ),
+                          ).swing(),
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: size.height * 0.025,
-                ),
+                SizedBox(height: size.height * 0.025),
                 Expanded(
                   child: GridView.builder(
                     itemCount: goals.length,
@@ -195,11 +171,7 @@ class _UserGoalsSetupState extends ConsumerState<UserGoalsSetup> {
                             color: HexColor('7AD5FF').withValues(alpha: .15),
                             border: Border.all(color: HexColor('7AD5FF')),
                           ),
-                          child: Text(
-                            goal,
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                          child: Text(goal, maxLines: 3, overflow: TextOverflow.ellipsis),
                         ),
                       );
                     },

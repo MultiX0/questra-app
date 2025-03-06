@@ -1,0 +1,78 @@
+import 'package:questra_app/core/shared/widgets/background_widget.dart';
+import 'package:questra_app/features/friends/pages/friend_requests_page.dart';
+import 'package:questra_app/features/friends/pages/friends_page.dart';
+import 'package:questra_app/imports.dart';
+
+class FriendsControllerPage extends ConsumerStatefulWidget {
+  const FriendsControllerPage({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _FriendsControllerPageState();
+}
+
+class _FriendsControllerPageState extends ConsumerState<FriendsControllerPage> {
+  int selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return BackgroundWidget(
+      child: Scaffold(
+        appBar: TheAppBar(title: AppLocalizations.of(context).profile_friends),
+        body: selectedIndex == 0 ? FriendsPage() : FriendRequestsPage(),
+      ),
+    );
+  }
+
+  Widget buildCategoryChange() => Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Row(
+      spacing: 10,
+      children: [
+        Expanded(
+          child: buildCategoryCard(
+            duration: const Duration(milliseconds: 300),
+            index: 0,
+            text: AppLocalizations.of(context).friends,
+          ),
+        ),
+        Expanded(
+          child: buildCategoryCard(
+            duration: const Duration(milliseconds: 300),
+            index: 1,
+            text: AppLocalizations.of(context).requests,
+          ),
+        ),
+      ],
+    ),
+  );
+
+  GestureDetector buildCategoryCard({
+    required Duration duration,
+    required int index,
+    required String text,
+  }) {
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
+    bool isActive = selectedIndex == index;
+    return GestureDetector(
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        if (index == 0 && isActive) return;
+        CustomToast.soon(isArabic);
+      },
+      child: AnimatedContainer(
+        duration: duration,
+        decoration: BoxDecoration(
+          color:
+              isActive
+                  ? Colors.purpleAccent.withValues(alpha: .15)
+                  : AppColors.primary.withValues(alpha: 0.15),
+          border: Border.all(color: isActive ? Colors.purpleAccent : AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+        child: Center(child: Text(text)),
+      ),
+    );
+  }
+}

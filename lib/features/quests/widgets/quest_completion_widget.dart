@@ -19,6 +19,8 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
     });
   }
 
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
+
   void finish() {
     final cachedLevel = ref.read(cachedUserLevelProvider);
     dynamic quest;
@@ -61,15 +63,19 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Victory Achieved, Hero!",
-                style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+                AppLocalizations.of(context).quest_completetion_card_title,
+                style: TextStyle(
+                  fontFamily: isArabic ? null : AppFonts.header,
+                  fontSize: 18,
+                  fontWeight: isArabic ? FontWeight.bold : null,
+                ),
               ),
               Icon(LucideIcons.trophy, color: AppColors.primary),
             ],
           ),
           const SizedBox(height: 15),
           Text(
-            "Your dedication and skills have led you to triumph. The realm celebrates your success great rewards await you!",
+            AppLocalizations.of(context).quest_completetion_card_description,
             style: TextStyle(
               fontWeight: FontWeight.w200,
               color: AppColors.descriptionColor,
@@ -78,13 +84,18 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
           ),
           const SizedBox(height: 10),
           Text(
-            '- Your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
+            // '- Your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
+            AppLocalizations.of(
+              context,
+            ).quest_completetion_card_reward(quest.xp_reward, quest.coin_reward),
             style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
           ),
           if (!widget.isEvent) ...[
             if (quest.owned_title != null && quest.owned_title!.isNotEmpty) ...[
               Text(
-                '- Earned title: ${quest.owned_title}',
+                AppLocalizations.of(
+                  context,
+                ).quest_completetion_card_title_earned(quest.owned_title),
                 style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
               ),
             ],

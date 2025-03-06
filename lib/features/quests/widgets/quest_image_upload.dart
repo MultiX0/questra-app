@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 import 'dart:io';
 
@@ -35,7 +37,9 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
     });
     if (widget.minImagesCount != null) {
       if (_images.length < widget.minImagesCount!) {
-        CustomToast.systemToast("You need to add at least ${widget.minImagesCount} photos.");
+        CustomToast.systemToast(
+          AppLocalizations.of(context).image_upload_count_alert(widget.minImagesCount!),
+        );
         return;
       }
     }
@@ -45,13 +49,15 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
     try {
       if (widget.minImagesCount != null) {
         if (_images.length < widget.minImagesCount!) {
-          CustomToast.systemToast("You need to add at least ${widget.minImagesCount} photos.");
+          CustomToast.systemToast(
+            AppLocalizations.of(context).image_upload_count_alert(widget.minImagesCount!),
+          );
           return;
         }
       }
       ref.read(questImagesProvider.notifier).state = _images;
       if (widget.isEvent) {
-        await ref.read(eventsControllerProvider.notifier).finishEventQuest();
+        await ref.read(eventsControllerProvider.notifier).finishEventQuest(context);
       }
 
       setState(() {
@@ -62,6 +68,8 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
       rethrow;
     }
   }
+
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +91,16 @@ class _QuestImageUploadState extends ConsumerState<QuestImageUpload> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Provide some pictures from your results please.",
-            style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
+            AppLocalizations.of(context).image_submit_card_title,
+            style: TextStyle(
+              fontFamily: isArabic ? null : AppFonts.header,
+              fontSize: 18,
+              fontWeight: isArabic ? FontWeight.bold : null,
+            ),
           ),
           const SizedBox(height: 10),
           Text(
-            "Note: for more safety for your account from false reports we suggest at least to select one image for the quest that you've done.",
+            AppLocalizations.of(context).image_submit_card_note,
             style: TextStyle(
               // fontFamily: AppFonts.header,
               fontWeight: FontWeight.w200,

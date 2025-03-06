@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:questra_app/core/providers/leveling_providers.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
+import 'package:questra_app/core/shared/utils/lang_detect.dart';
 import 'package:questra_app/features/inventory/models/inventory_model.dart';
 import 'package:questra_app/features/inventory/repository/inventory_repository.dart';
 import 'package:questra_app/features/quests/models/custom_quest_exception_model.dart';
 import 'package:questra_app/features/titles/repository/titles_repository.dart';
+import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -23,8 +25,32 @@ class QuestsRepository {
   SupabaseQueryBuilder get _questsFeedbackTable => _client.from(TableNames.user_feedback);
   SupabaseQueryBuilder get _customQuestsExceptions =>
       _client.from(TableNames.custom_quest_exceptions);
+  TranslationService get _translateService => TranslationService();
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
   final uuid = Uuid();
+
+  Future<QuestModel> translateQuest(QuestModel quest) async {
+    try {
+      final translatedQuestDescription = await _translateService.translate(
+        'en',
+        'ar',
+        quest.description,
+      );
+      final translatedQuestTitle = await _translateService.translate('en', 'ar', quest.title);
+
+      final newQuest = QuestModel.newQuest(
+        quest: quest.copyWith(
+          ar_description: translatedQuestDescription,
+          ar_title: translatedQuestTitle,
+        ),
+      );
+      return newQuest;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 
   Future<List<QuestTypeModel>> getAllQuestTypes() async {
     try {
@@ -40,8 +66,9 @@ class QuestsRepository {
 
   Future<List<QuestModel>> getQuestsArchive(String user_id) async {
     try {
-      final data =
-          await _playerQuestsTable.select("*").neq(KeyNames.status, StatusEnum.in_progress.name);
+      final data = await _playerQuestsTable
+          .select("*")
+          .neq(KeyNames.status, StatusEnum.in_progress.name);
       final quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
       return quests;
     } catch (e) {
@@ -52,7 +79,8 @@ class QuestsRepository {
 
   Future<List<FeedbackModel>> getUserFeedbacks(String user_id) async {
     try {
-      final data = await _questsFeedbackTable.select('''
+      final data = await _questsFeedbackTable
+          .select('''
       *,
       ${TableNames.user_quests}(
         user_quest_id,
@@ -70,17 +98,19 @@ class QuestsRepository {
         expected_completion_time_date,
         images
       )
-    ''').eq('user_id', user_id).limit(10).order(KeyNames.created_at, ascending: false);
+    ''')
+          .eq('user_id', user_id)
+          .limit(10)
+          .order(KeyNames.created_at, ascending: false);
 
-      final feedbacks = data
-          .map(
-            (feedback) => FeedbackModel.fromMap(feedback).copyWith(
-              quest: QuestModel.fromMap(
-                feedback[TableNames.user_quests],
-              ),
-            ),
-          )
-          .toList();
+      final feedbacks =
+          data
+              .map(
+                (feedback) => FeedbackModel.fromMap(
+                  feedback,
+                ).copyWith(quest: QuestModel.fromMap(feedback[TableNames.user_quests])),
+              )
+              .toList();
 
       return feedbacks;
     } catch (e) {
@@ -127,7 +157,17 @@ class QuestsRepository {
           .neq(KeyNames.is_custom, true);
 
       List<QuestModel> quests = data.map((quest) => QuestModel.fromMap(quest)).toList();
-      return quests;
+      List<QuestModel> _quests = [];
+      for (final quest in quests) {
+        if (quest.ar_description == null || quest.ar_title == null) {
+          final translatedQuest = await translateQuest(quest);
+          _quests.add(translatedQuest);
+          await updateQuest(translatedQuest);
+        } else {
+          _quests.add(quest);
+        }
+      }
+      return _quests;
     } catch (e) {
       log(e.toString());
       throw Exception(e);
@@ -149,12 +189,13 @@ class QuestsRepository {
     }
   }
 
-  Future<String> insertQuest(QuestModel quest) async {
+  Future<QuestModel> insertQuest(QuestModel quest) async {
     try {
       final id = uuid.v4();
-      final _quest = quest.copyWith(id: id);
+      final q = quest.copyWith(id: id);
+      final _quest = await translateQuest(q);
       await _playerQuestsTable.insert(_quest.toMap());
-      return id;
+      return _quest;
     } catch (e) {
       log(e.toString());
       throw Exception(e);
@@ -192,7 +233,7 @@ class QuestsRepository {
 
       final _quest = await getQuestById(quest.id);
       if (_quest?.status.trim() == StatusEnum.completed.name && !quest.isCustom) {
-        throw 'This quest is already completed';
+        throw isArabic ? "تم إكمال هذه المهمة بالفعل." : 'This quest is already completed';
       }
 
       if (feedback != null) {
@@ -203,13 +244,17 @@ class QuestsRepository {
       //   throw "you need to wait until ${appDateFormat(quest.expected_completion_time_date)}";
       // }
 
-      if (now.isAfter(quest.expected_completion_time_date ??
-              DateTime.now().subtract(const Duration(seconds: 3))) &&
+      if (now.isAfter(
+            quest.expected_completion_time_date ??
+                DateTime.now().subtract(const Duration(seconds: 3)),
+          ) &&
           !quest.isCustom) {
         await updateQuestStatus(StatusEnum.failed, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.failed.name);
         await failedPunishment(_quest ?? quest);
-        throw 'this quest is expired you will receive the penalties';
+        throw isArabic
+            ? "هذه المهمة منتهية الصلاحية، وستتلقى العقوبات."
+            : 'this quest is expired you will receive the penalties';
       }
 
       final updatedQuest = quest.copyWith(
@@ -223,11 +268,9 @@ class QuestsRepository {
             .haveTitle(userId: user!.id, title: quest.owned_title!);
 
         if (!haveTitle) {
-          await _ref.read(profileRepositoryProvider).insertTitle(
-                user_id: quest.user_id,
-                title: quest.owned_title!,
-                questId: quest.id,
-              );
+          await _ref
+              .read(profileRepositoryProvider)
+              .insertTitle(user_id: quest.user_id, title: quest.owned_title!, questId: quest.id);
         }
       }
 
@@ -236,10 +279,7 @@ class QuestsRepository {
       await updateQuest(updatedQuest);
 
       LevelsModel level = user?.level ?? LevelsModel(user_id: user!.id, level: 1, xp: 0);
-      final levelData = addXp(quest.xp_reward, {
-        "xp": level.xp,
-        "level": level.level,
-      });
+      final levelData = addXp(quest.xp_reward, {"xp": level.xp, "level": level.level});
 
       _ref.read(cachedUserLevelProvider.notifier).state = user?.level;
 
@@ -261,13 +301,13 @@ class QuestsRepository {
 
       final user = _ref.read(authStateProvider)!;
       final currentLevelModel = user.level ?? LevelsModel(user_id: user.id, level: 1, xp: 0);
-      final newLevelModel =
-          currentLevelModel.copyWith(xp: (currentLevelModel.xp - (quest.xp_reward / 2).toInt()));
+      final newLevelModel = currentLevelModel.copyWith(
+        xp: (currentLevelModel.xp - (quest.xp_reward / 2).toInt()),
+      );
       await _ref.read(levelingRepositoryProvider).updateUserLevelData(newLevelModel);
-      await _ref.read(walletRepositoryProvider).reduceCoins(
-            userId: user.id,
-            amount: (quest.coin_reward / 2).toInt(),
-          );
+      await _ref
+          .read(walletRepositoryProvider)
+          .reduceCoins(userId: user.id, amount: (quest.coin_reward / 2).toInt());
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -276,15 +316,9 @@ class QuestsRepository {
 
   Future<void> _updateUserCoins({required UserModel user, required QuestModel quest}) async {
     try {
-      final coins = calculateQuestCoins(
-        user.level?.level ?? 1,
-        quest.difficulty,
-      );
+      final coins = calculateQuestCoins(user.level?.level ?? 1, quest.difficulty);
 
-      await _ref.read(walletRepositoryProvider).addCoins(
-            userId: user.id,
-            amount: coins,
-          );
+      await _ref.read(walletRepositoryProvider).addCoins(userId: user.id, amount: coins);
     } catch (e) {
       log(e.toString());
     }
@@ -302,8 +336,8 @@ class QuestsRepository {
   Future<void> updateQuestStatus(StatusEnum status, String questId) async {
     try {
       await _playerQuestsTable
-          .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId}).eq(
-              KeyNames.user_quest_id, questId);
+          .update({KeyNames.status: status.name, KeyNames.user_quest_id: questId})
+          .eq(KeyNames.user_quest_id, questId);
     } catch (e) {
       log(e.toString());
     }
@@ -321,11 +355,29 @@ class QuestsRepository {
     }
   }
 
+  Future<FeedbackModel> translateFeedback(FeedbackModel feedback) async {
+    try {
+      if (isEnglish(feedback.description)) {
+        return feedback;
+      }
+
+      final translatedFeedback = await _translateService.translate(
+        'ar',
+        'en',
+        feedback.description,
+      );
+      final _feedback = feedback.copyWith(description: translatedFeedback);
+      return _feedback;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<void> insertFeedback(FeedbackModel feedback) async {
     try {
-      await _questsFeedbackTable.insert(
-        feedback.toMap(),
-      );
+      final _feedback = await translateFeedback(feedback);
+      await _questsFeedbackTable.insert(_feedback.toMap());
     } catch (e) {
       log(e.toString());
       throw Exception(appError);
@@ -336,9 +388,7 @@ class QuestsRepository {
     try {
       final data = await _client.rpc(
         FunctionNames.questSkippedCounter,
-        params: {
-          "p_user_id": userId,
-        },
+        params: {"p_user_id": userId},
       );
 
       final count = int.tryParse(data.toString());
@@ -360,17 +410,15 @@ class QuestsRepository {
       final userInv = await _ref.read(inventoryRepositoryProvider).getInventoryItems(userId);
       log(userInv.toString());
 
-      InventoryItem? skipCard = userInv
-          .where(
-            (item) => item.itemId == skipCardId,
-          )
-          .firstOrNull;
+      InventoryItem? skipCard = userInv.where((item) => item.itemId == skipCardId).firstOrNull;
 
       log(skipCard.toString());
 
       if (skipCard == null || skipCard.quantity == 0) {
         if (skippedCount > 3) {
-          throw ("you dont have any skip cards to do this action");
+          throw isArabic
+              ? "ليس لديك أي بطاقات تخطي للقيام بهذا الإجراء."
+              : ("you dont have any skip cards to do this action");
         } else {
           _ref
               .read(analyticsServiceProvider)
@@ -387,7 +435,9 @@ class QuestsRepository {
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
         await NotificationService().cancelNotification(quest.notification_id ?? -1);
 
-        await _ref.read(inventoryRepositoryProvider).updateInventoryItem(
+        await _ref
+            .read(inventoryRepositoryProvider)
+            .updateInventoryItem(
               itemId: skipCard.itemId,
               userId: userId,
               quantity: skipCard.quantity - 1,
@@ -425,7 +475,7 @@ class QuestsRepository {
           .select("*")
           .eq(KeyNames.user_id, userId)
           .order(KeyNames.created_at, ascending: false)
-          .limit(8);
+          .limit(10);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
@@ -436,10 +486,10 @@ class QuestsRepository {
 
   Future<List<QuestModel>> getCustomQuests(String userId) async {
     try {
-      final data = await _playerQuestsTable.select("*").eq(KeyNames.user_id, userId).eq(
-            KeyNames.is_custom,
-            true,
-          );
+      final data = await _playerQuestsTable
+          .select("*")
+          .eq(KeyNames.user_id, userId)
+          .eq(KeyNames.is_custom, true);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
@@ -454,10 +504,7 @@ class QuestsRepository {
           .select("*")
           .eq(KeyNames.user_id, userId)
           .eq(KeyNames.is_active, true)
-          .eq(
-            KeyNames.is_custom,
-            true,
-          );
+          .eq(KeyNames.is_custom, true);
 
       return data.map((quest) => QuestModel.fromMap(quest)).toList();
     } catch (e) {
@@ -469,9 +516,7 @@ class QuestsRepository {
   Future<void> deActiveCustomQuest(String userId, String questId) async {
     try {
       await _playerQuestsTable
-          .update({
-            KeyNames.is_active: false,
-          })
+          .update({KeyNames.is_active: false})
           .eq(KeyNames.user_quest_id, questId)
           .eq(KeyNames.user_id, userId);
     } catch (e) {
@@ -482,9 +527,10 @@ class QuestsRepository {
 
   Future<CustomQuestExceptionModel> getCustomQuestExceptions(String userId) async {
     try {
-      final data = await _client.rpc(FunctionNames.get_recent_exceptions_stats, params: {
-        'p_user_id': userId,
-      });
+      final data = await _client.rpc(
+        FunctionNames.get_recent_exceptions_stats,
+        params: {'p_user_id': userId},
+      );
 
       return CustomQuestExceptionModel.fromMap(data as Map<String, dynamic>);
     } catch (e) {
@@ -493,8 +539,10 @@ class QuestsRepository {
     }
   }
 
-  Future<void> insertCustomQuestException(
-      {required String userId, required String exceptionText}) async {
+  Future<void> insertCustomQuestException({
+    required String userId,
+    required String exceptionText,
+  }) async {
     try {
       await _customQuestsExceptions.insert({
         KeyNames.user_id: userId,

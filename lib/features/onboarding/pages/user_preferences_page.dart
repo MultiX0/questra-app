@@ -1,12 +1,9 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/features/preferences/models/user_preferences_model.dart';
 import 'package:questra_app/imports.dart';
 
 class UserPreferencesPage extends ConsumerStatefulWidget {
-  const UserPreferencesPage({
-    super.key,
-    required this.next,
-    required this.prev,
-  });
+  const UserPreferencesPage({super.key, required this.next, required this.prev});
 
   final VoidCallback next;
   final VoidCallback prev;
@@ -24,9 +21,9 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
   late FocusNode difficultyNode;
   late FocusNode availabilityNode;
 
-  String socialInteractions = '';
-  String availability = '';
-  String difficulty = '';
+  Map<String, dynamic> socialInteractions = {};
+  Map<String, dynamic> availability = {};
+  Map<String, dynamic> difficulty = {};
 
   DateTime? selectedDate;
 
@@ -67,23 +64,42 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
         changeVal: (v) {
           setState(() {
             socialInteractions = v;
-            _socialInteractionsController.text = v;
+            _socialInteractionsController.text = v['value'];
           });
           socialInteractionsNode.unfocus();
           context.pop();
         },
         group: socialInteractions,
         choices: [
-          'Gamified Social Challenges',
-          'Story-Driven Social Quests',
-          'Community-Based Engagement',
-          'Simulated Social Scenarios',
-          'Virtual Collaboration',
-          'Interactive Forums or Chatrooms',
-          'Acts of Kindness',
-          'Real-World Social Prompts',
+          // 'Gamified Social Challenges',
+          // 'Story-Driven Social Quests',
+          // 'Community-Based Engagement',
+          // 'Simulated Social Scenarios',
+          // 'Virtual Collaboration',
+          // 'Interactive Forums or Chatrooms',
+          // 'Acts of Kindness',
+          // 'Real-World Social Prompts',
+          {
+            'key': "Solo Explorer",
+            'value': AppLocalizations.of(context).gamified_social_challenges,
+          },
+
+          {
+            'key': "Friendly Collaborator",
+            'value': AppLocalizations.of(context).community_based_engagement,
+          },
+          {
+            'key': "Competitive Challenger",
+            'value': AppLocalizations.of(context).simulated_social_scenarios,
+          },
+          {'key': "Casual Engager", 'value': AppLocalizations.of(context).virtual_collaboration},
+          {
+            'key': "Silent Observer",
+            'value': AppLocalizations.of(context).interactive_forums_or_chatrooms,
+          },
+          {'key': "Troll Master", 'value': AppLocalizations.of(context).acts_of_kindness},
         ],
-        title: "Select social interactions",
+        title: AppLocalizations.of(context).select_social_interactions,
       ),
     );
   }
@@ -95,18 +111,19 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
         changeVal: (v) {
           setState(() {
             availability = v;
-            _availabilityController.text = v;
+            _availabilityController.text = v['value'];
           });
           availabilityNode.unfocus();
           context.pop();
         },
         group: availability,
         choices: [
-          'More than 1 hour',
-          'Less than 1 hour',
-          'Exactly 1 hour',
+          // 'More than 1 hour', 'Less than 1 hour', 'Exactly 1 hour'
+          {'key': "More than 1 hour", 'value': AppLocalizations.of(context).more_than_1_hour},
+          {'key': "Less than 1 hour", 'value': AppLocalizations.of(context).less_than_1_hour},
+          {'key': "Exactly 1 hour", 'value': AppLocalizations.of(context).exactly_1_hour},
         ],
-        title: 'Select availability per day',
+        title: AppLocalizations.of(context).select_availability_per_day,
       ),
     );
   }
@@ -118,18 +135,19 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
         changeVal: (v) {
           setState(() {
             difficulty = v;
-            _difficultyController.text = v;
+            _difficultyController.text = v['value'];
           });
           difficultyNode.unfocus();
           context.pop();
         },
         group: difficulty,
         choices: [
-          'Easy',
-          'Medium',
-          'Hard',
+          // 'Easy', 'Medium', 'Hard'
+          {'key': "Easy", 'value': AppLocalizations.of(context).easy},
+          {'key': "Medium", 'value': AppLocalizations.of(context).medium},
+          {'key': "Hard", 'value': AppLocalizations.of(context).hard},
         ],
-        title: 'Select quests difficulty',
+        title: AppLocalizations.of(context).select_quests_difficulty,
       ),
     );
   }
@@ -143,12 +161,12 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
       final prefernces = UserPreferencesModel(
         id: -1,
         user_id: localUser?.id ?? "",
-        difficulty: difficulty,
+        difficulty: difficulty['key'],
         activity_level: null,
         preferred_times: null,
         motivation_level: null,
-        time_availability: availability,
-        social_interactions: socialInteractions,
+        time_availability: availability['key'],
+        social_interactions: socialInteractions['key'],
       );
 
       ref.read(localUserProvider.notifier).state = localUser?.copyWith(
@@ -157,7 +175,10 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
       return;
     }
 
-    CustomToast.systemToast("please fill all the fields!", systemMessage: true);
+    CustomToast.systemToast(
+      AppLocalizations.of(context).please_fill_all_fields,
+      systemMessage: true,
+    );
   }
 
   @override
@@ -172,76 +193,66 @@ class _UserPreferencesPageState extends ConsumerState<UserPreferencesPage> {
             child: Center(
               child: ListView(
                 shrinkWrap: true,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  OnboardingTitle(
-                    title: "Preferences",
-                  ),
-                  const SizedBox(
-                    height: kToolbarHeight - 10,
-                  ),
+                  OnboardingTitle(title: AppLocalizations.of(context).preferences).swing(),
+                  const SizedBox(height: kToolbarHeight - 10),
                   NeonTextField(
                     onTap: selectSocialInteractions,
                     controller: _socialInteractionsController,
-                    labelText: 'social interactions',
+                    labelText: AppLocalizations.of(context).social_interactions,
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'please select your social interactions';
+                        return AppLocalizations.of(context).please_select_your_social_interactions;
                       }
 
                       return null;
                     },
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
-                    hintText: 'e.g (Cooperative)',
+                    hintText: AppLocalizations.of(context).social_interactions_hint,
                     readOnly: true,
                     focusNode: socialInteractionsNode,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  ).bounceIn(),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     onTap: selectAvailability,
                     controller: _availabilityController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'please select your gender';
+                        return AppLocalizations.of(context).please_select_your_availability;
                       }
                       return null;
                     },
-                    labelText: 'availability',
+                    labelText: AppLocalizations.of(context).availability,
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
-                    hintText: 'e.g (1 hour per day)',
+                    hintText: AppLocalizations.of(context).availability_hint,
                     focusNode: availabilityNode,
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  ).bounceInLeft(duration: const Duration(milliseconds: 1200)),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     onTap: selectDifficulty,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'please select your fitness/activity level';
+                        return AppLocalizations.of(context).please_select_fitness_activity_level;
                       }
                       return null;
                     },
                     controller: _difficultyController,
-                    labelText: 'difficulty',
+                    labelText: AppLocalizations.of(context).difficulty,
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
-                    hintText: 'e.g (Medium)',
-                  ),
+                    hintText: AppLocalizations.of(context).difficulty_hint,
+                  ).bounceInRight(duration: const Duration(milliseconds: 1400)),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size).tada(),
       ),
     );
   }

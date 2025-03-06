@@ -5,21 +5,23 @@ import 'package:questra_app/imports.dart';
 
 import '../models/player_title_model.dart';
 
-final titlesControllerProvider =
-    StateNotifierProvider<TitlesController, bool>((ref) => TitlesController(ref: ref));
+final titlesControllerProvider = StateNotifierProvider<TitlesController, bool>(
+  (ref) => TitlesController(ref: ref),
+);
 
-final getAllTitlesProvider =
-    FutureProvider.family<List<PlayerTitleModel>, String>((ref, String userId) async {
+final getAllTitlesProvider = FutureProvider.family<List<PlayerTitleModel>, String>((
+  ref,
+  String userId,
+) async {
   final _controller = ref.watch(titlesControllerProvider.notifier);
   return _controller.getAllTitles(userId);
 });
 
 class TitlesController extends StateNotifier<bool> {
   final Ref _ref;
-  TitlesController({required Ref ref})
-      : _ref = ref,
-        super(false);
+  TitlesController({required Ref ref}) : _ref = ref, super(false);
   TitlesRepository get _repo => _ref.watch(titlesRepositoryProvider);
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
   Future<List<PlayerTitleModel>> getAllTitles(String userId) async {
     try {
@@ -43,8 +45,10 @@ class TitlesController extends StateNotifier<bool> {
 
       state = false;
 
-      CustomToast.systemToast("Current Title is ${changed ? "changed" : "deactivate"}",
-          systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تمت العملية بنجاح" : "Current Title is ${changed ? "changed" : "deactivate"}",
+        systemMessage: true,
+      );
     } catch (e) {
       state = false;
 

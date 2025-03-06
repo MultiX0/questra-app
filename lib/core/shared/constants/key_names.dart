@@ -93,4 +93,15 @@ class KeyNames {
   static const reporter_id = 'reporter_id';
   static const reason = 'reason';
   static const finish_log_id = 'finish_log_id';
+  static const ar_name = 'ar_name';
+  static const ar_title = 'ar_title';
+  static const ar_description = 'ar_description';
+  static const ar_goal_description = 'ar_goal_description';
+  static const lang = 'lang';
+  static const user_id1 = 'user_id1';
+  static const user_id2 = 'user_id2';
+  static const request_id = 'request_id';
+  static const sender_id = 'sender_id';
+  static const receiver_id = 'receiver_id';
+  static const request_date = 'request_date';
 }

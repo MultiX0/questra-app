@@ -22,7 +22,7 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
   late TextEditingController _controller;
   late TextEditingController _feedbackStatusController;
 
-  String feedbackTypeGroup = '';
+  Map<String, dynamic> feedbackTypeGroup = {};
 
   bool done = false;
   @override
@@ -55,7 +55,9 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       feedbackModel = setFeedback(quest.id);
     }
 
-    final result = await ref.read(questsControllerProvider.notifier).finishQuest(
+    final result = await ref
+        .read(questsControllerProvider.notifier)
+        .finishQuest(
           context: context,
           special: widget.special,
           quest: quest,
@@ -70,13 +72,16 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
 
   void skip() async {
     if (feedbackTypeGroup.isEmpty) {
-      CustomToast.systemToast("please fill the feedback type", systemMessage: true);
+      CustomToast.systemToast(
+        AppLocalizations.of(context).please_fill_the_feedback_type,
+        systemMessage: true,
+      );
       return;
     }
 
     if (_controller.text.trim().length < 4 && !kDebugMode) {
       CustomToast.systemToast(
-        "please fill the feedback field",
+        AppLocalizations.of(context).please_fill_the_feedback_field,
         systemMessage: true,
       );
       return;
@@ -85,22 +90,23 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
     final quest = ref.watch(viewQuestProvider)!;
     FeedbackModel feedbackModel = setFeedback(quest.id);
 
-    await ref.read(questsControllerProvider.notifier).handleSkip(
-          quest: quest,
-          feedback: feedbackModel,
-          context: context,
-        );
+    await ref
+        .read(questsControllerProvider.notifier)
+        .handleSkip(quest: quest, feedback: feedbackModel, context: context);
   }
 
   void failed() async {
     if (feedbackTypeGroup.isEmpty) {
-      CustomToast.systemToast("please fill the feedback type", systemMessage: true);
+      CustomToast.systemToast(
+        AppLocalizations.of(context).please_fill_the_feedback_type,
+        systemMessage: true,
+      );
       return;
     }
 
     if (_controller.text.trim().length < 4 && !kDebugMode) {
       CustomToast.systemToast(
-        "please fill the feedback field",
+        AppLocalizations.of(context).please_fill_the_feedback_field,
         systemMessage: true,
       );
       return;
@@ -108,11 +114,9 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
     final quest = ref.watch(viewQuestProvider)!;
     FeedbackModel feedbackModel = setFeedback(quest.id);
 
-    await ref.read(questsControllerProvider.notifier).failedPunishment(
-          quest: quest,
-          feedback: feedbackModel,
-          context: context,
-        );
+    await ref
+        .read(questsControllerProvider.notifier)
+        .failedPunishment(quest: quest, feedback: feedbackModel, context: context);
   }
 
   FeedbackModel setFeedback(String questId) {
@@ -122,10 +126,27 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       created_at: DateTime.now(),
       user_id: user?.id ?? "",
       user_quest_id: questId,
-      feedback_type: _feedbackStatusController.text.trim(),
+      feedback_type: feedbackTypeGroup['key'].toString().trim(),
       description: _controller.text.trim(),
     );
   }
+
+  List<Map<String, dynamic>> get questFeedbackTypes => [
+    // "Difficulty Level",
+    // "Relevance",
+    // "Time Required",
+    // "Rewards",
+    // "Clarity",
+    // "Engagement",
+    // "Other Suggestions",
+    {'key': 'Difficulty Level', 'value': AppLocalizations.of(context).difficulty_level},
+    {'key': 'Relevance', 'value': AppLocalizations.of(context).relevance},
+    {'key': 'Time Required', 'value': AppLocalizations.of(context).time_required},
+    {'key': 'Rewards', 'value': AppLocalizations.of(context).rewards},
+    {'key': 'Clarity', 'value': AppLocalizations.of(context).clarity},
+    {'key': 'Engagement', 'value': AppLocalizations.of(context).engagement},
+    {'key': 'Other Suggestions', 'value': AppLocalizations.of(context).other_suggestions},
+  ];
 
   void selectFeedbackType() {
     openSheet(
@@ -133,17 +154,19 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       body: SelectRadioWidget(
         changeVal: (val) {
           setState(() {
-            _feedbackStatusController.text = val;
+            _feedbackStatusController.text = val['value'];
             feedbackTypeGroup = val;
           });
           context.pop();
         },
         group: feedbackTypeGroup,
         choices: questFeedbackTypes,
-        title: "Feedback type",
+        title: AppLocalizations.of(context).select_feedback_type,
       ),
     );
   }
+
+  bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
 
   @override
   Widget build(BuildContext context) {
@@ -167,51 +190,31 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Feedback",
+                      AppLocalizations.of(context).feedback,
                       style: TextStyle(
-                        fontFamily: AppFonts.header,
+                        fontFamily: isArabic ? null : AppFonts.header,
                         fontSize: 18,
+                        fontWeight: isArabic ? FontWeight.bold : null,
                       ),
                     ),
-                    Icon(
-                      LucideIcons.message_circle,
-                      color: AppColors.primary,
-                    ),
+                    Icon(LucideIcons.message_circle, color: AppColors.primary),
                   ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 buildFeedbackTypeForm(),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 buildFeedbackForm(size),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 Text(
-                  "hint: Your feedback help the system to understand more about your needs to make better quests for you.",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
+                  AppLocalizations.of(context).feedback_hint,
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 if (isLoading) ...[
                   // beat
-                  Center(
-                    child: LoadingAnimationWidget.beat(
-                      color: AppColors.primary,
-                      size: 30,
-                    ),
-                  )
+                  Center(child: LoadingAnimationWidget.beat(color: AppColors.primary, size: 30)),
                 ] else ...[
-                  SystemCardButton(
-                    onTap: finish,
-                  ),
+                  SystemCardButton(onTap: finish),
                 ],
               ],
             ),
@@ -223,45 +226,27 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
 
   ConstrainedBox buildFeedbackForm(Size size) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: size.width * .25,
-      ),
+      constraints: BoxConstraints(maxHeight: size.width * .25),
       child: TextField(
         controller: _controller,
         maxLines: null,
         cursorColor: AppColors.primary,
         decoration: InputDecoration(
           filled: false,
-          border: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          errorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
-          disabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
+          border: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+          disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
           focusedErrorBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-            color: AppColors.primary,
-          )),
+            borderSide: BorderSide(color: AppColors.primary),
+          ),
           hintStyle: TextStyle(
             fontWeight: FontWeight.w200,
             fontSize: 14,
             color: Colors.white.withValues(alpha: .86),
           ),
-          hintText: "please enter your feedback here ...",
+          hintText: AppLocalizations.of(context).please_enter_your_feedback_here,
         ),
       ),
     );
@@ -275,36 +260,18 @@ class _QuestFeedbackWidgetState extends ConsumerState<QuestFeedbackWidget> {
       cursorColor: AppColors.primary,
       decoration: InputDecoration(
         filled: false,
-        border: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
-        errorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
-        enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
-        focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
-        disabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
-        focusedErrorBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-          color: AppColors.primary,
-        )),
+        border: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+        errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+        enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+        disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
+        focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: AppColors.primary)),
         hintStyle: TextStyle(
           fontWeight: FontWeight.w200,
           fontSize: 14,
           color: Colors.white.withValues(alpha: .86),
         ),
-        hintText: "select feedback type",
+        hintText: AppLocalizations.of(context).select_feedback_type,
       ),
     );
   }

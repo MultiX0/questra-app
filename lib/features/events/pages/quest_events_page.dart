@@ -29,9 +29,10 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
   @override
   Widget build(BuildContext context) {
     final event = ref.watch(selectedQuestEvent);
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: event!.title),
+        appBar: TheAppBar(title: isArabic ? event!.ar_title ?? event.title : event!.title),
         body: Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
           child: Column(
@@ -93,14 +94,14 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
           child: buildCategoryCard(
             duration: const Duration(milliseconds: 300),
             index: 0,
-            text: "Quests",
+            text: AppLocalizations.of(context).quests,
           ),
         ),
         Expanded(
           child: buildCategoryCard(
             duration: const Duration(milliseconds: 300),
             index: 1,
-            text: "Participants",
+            text: AppLocalizations.of(context).participants,
           ),
         ),
       ],
@@ -148,7 +149,7 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
               Icon(LucideIcons.hexagon, color: AppColors.primary, size: 50),
               const SizedBox(height: 15),
               Text(
-                "There is no quests for now",
+                AppLocalizations.of(context).empty_quests,
                 style: TextStyle(
                   fontWeight: FontWeight.w200,
                   color: AppColors.descriptionColor,
@@ -184,7 +185,7 @@ class _QuestEventsPageState extends ConsumerState<QuestEventsPage> {
                       });
                     });
                   },
-                  child: Text("Refresh"),
+                  child: Text(AppLocalizations.of(context).refresh),
                 ),
               ],
             ],

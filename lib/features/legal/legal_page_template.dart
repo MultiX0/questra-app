@@ -4,11 +4,7 @@ class LegalPageTemplate extends StatelessWidget {
   final String title;
   final List<Map<String, dynamic>> sections;
 
-  const LegalPageTemplate({
-    super.key,
-    required this.title,
-    required this.sections,
-  });
+  const LegalPageTemplate({super.key, required this.title, required this.sections});
 
   @override
   Widget build(BuildContext context) {
@@ -27,26 +23,23 @@ class LegalPageTemplate extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(16),
           children: [
-            Text('Last Updated: August 2023',
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 12,
-                )),
+            Text(
+              '${AppLocalizations.of(context).last_updated} ${AppLocalizations.of(context).march} 2025',
+              style: TextStyle(color: Colors.grey[500], fontSize: 12),
+            ),
             SizedBox(height: 20),
-            ...sections.expand((section) => [
-                  _buildSection(
-                    title: section['title'],
-                    content: section['content'],
-                  ),
-                  Divider(color: Colors.grey[800], height: 40),
-                ]),
+            ...sections.expand(
+              (section) => [
+                _buildSection(title: section['title'], content: section['content']),
+                Divider(color: Colors.grey[800], height: 40),
+              ],
+            ),
             Padding(
               padding: EdgeInsets.only(top: 20),
-              child: Text('© 2023 Questra. All rights reserved.',
-                  style: TextStyle(
-                    color: Colors.grey[500],
-                    fontSize: 12,
-                  )),
+              child: Text(
+                '© ${DateTime.now().year} ${AppLocalizations.of(context).legal_copyright}',
+                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              ),
             ),
           ],
         ),
@@ -58,23 +51,22 @@ class LegalPageTemplate extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
-            style: TextStyle(
-              color: AppColors.primary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              height: 1.5,
-            )),
+        Text(
+          title,
+          style: TextStyle(
+            color: AppColors.primary,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            height: 1.5,
+          ),
+        ),
         SizedBox(height: 8),
-        ...content.map((text) => Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: Text(text,
-                  style: TextStyle(
-                    color: Colors.grey[300],
-                    fontSize: 14,
-                    height: 1.4,
-                  )),
-            )),
+        ...content.map(
+          (text) => Padding(
+            padding: EdgeInsets.only(bottom: 12),
+            child: Text(text, style: TextStyle(color: Colors.grey[300], fontSize: 14, height: 1.4)),
+          ),
+        ),
       ],
     );
   }

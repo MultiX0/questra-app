@@ -9,6 +9,8 @@ class EventQuestModel {
   final int xp_reward;
   final int event_id;
   final int break_duration;
+  final String? arTitle;
+  final String? arDescription;
   EventQuestModel({
     required this.id,
     required this.created_at,
@@ -18,6 +20,8 @@ class EventQuestModel {
     required this.xp_reward,
     required this.event_id,
     required this.break_duration,
+    this.arDescription,
+    this.arTitle,
   });
 
   EventQuestModel copyWith({
@@ -29,6 +33,8 @@ class EventQuestModel {
     int? xp_reward,
     int? event_id,
     int? break_duration,
+    String? arDescription,
+    String? arTitle,
   }) {
     return EventQuestModel(
       id: id ?? this.id,
@@ -39,6 +45,8 @@ class EventQuestModel {
       xp_reward: xp_reward ?? this.xp_reward,
       event_id: event_id ?? this.event_id,
       break_duration: break_duration ?? this.break_duration,
+      arDescription: arDescription ?? this.arDescription,
+      arTitle: arTitle ?? this.arTitle,
     );
   }
 
@@ -64,6 +72,8 @@ class EventQuestModel {
       xp_reward: map[KeyNames.xp_reward] ?? 0,
       event_id: map[KeyNames.event_id] ?? -1,
       break_duration: map[KeyNames.break_duration] ?? 3600,
+      arTitle: map[KeyNames.ar_title],
+      arDescription: map[KeyNames.ar_description],
     );
   }
 

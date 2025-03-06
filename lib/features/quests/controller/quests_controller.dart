@@ -3,11 +3,13 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:questra_app/core/shared/utils/lang_detect.dart';
 import 'package:questra_app/core/shared/utils/upload_storage.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/features/quests/pages/quests_archive_provider.dart';
 import 'package:questra_app/features/quests/providers/functions..dart';
+import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/imports.dart';
 
 final questsControllerProvider = StateNotifierProvider<QuestsController, bool>((ref) {
@@ -42,6 +44,9 @@ class QuestsController extends StateNotifier<bool> {
   QuestsController({required Ref ref}) : _ref = ref, super(false);
 
   QuestsRepository get _repository => _ref.watch(questsRepositoryProvider);
+  TranslationService get _translateService => TranslationService();
+
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
   Future<List<QuestTypeModel>> getAllQuestTypes() async {
     try {
@@ -138,7 +143,7 @@ class QuestsController extends StateNotifier<bool> {
 
       await _repository.handleSkip(quest: quest, userId: userId, feedback: feedback);
 
-      CustomToast.systemToast("quest skipped successfully");
+      CustomToast.systemToast(isArabic ? "تم تخطي المهمة بنجاح." : "quest skipped successfully");
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       _ref.invalidate(questArchiveProvider);
       state = false;
@@ -162,7 +167,10 @@ class QuestsController extends StateNotifier<bool> {
       state = true;
       await _repository.updateQuestStatus(StatusEnum.failed, quest.id);
       await _repository.failedPunishment(quest);
-      CustomToast.systemToast("penalty is received", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تم تلقي العقوبة." : "penalty is received",
+        systemMessage: true,
+      );
       await _repository.insertFeedback(feedback);
       _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
       _ref.invalidate(questArchiveProvider);
@@ -198,10 +206,19 @@ class QuestsController extends StateNotifier<bool> {
     }
   }
 
-  Future<void> addCustomQuest({required String description, required BuildContext context}) async {
+  Future<void> addCustomQuest({
+    required String ogDescription,
+    required BuildContext context,
+  }) async {
     try {
       // final now = DateTime.now().toUtc();
       state = true;
+      String description;
+      if (isEnglish(ogDescription)) {
+        description = ogDescription;
+      } else {
+        description = await _translateService.translate("ar", "en", ogDescription);
+      }
 
       final user = _ref.read(authStateProvider)!;
       if (!kDebugMode) {
@@ -210,7 +227,7 @@ class QuestsController extends StateNotifier<bool> {
 
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
       if (lastExceptionsCount.count >= 3) {
-        throw "Sorry but you can't try again until ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
+        throw "${isArabic ? "" : "عذرًا، لا يمكنك المحاولة مرة أخرى حتى"} ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
       }
 
       await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0, user.id);
@@ -238,7 +255,10 @@ class QuestsController extends StateNotifier<bool> {
       newQuests.removeWhere((quest) => quest.id == questId);
       _ref.read(customQuestsProvider.notifier).state = newQuests;
       state = false;
-      CustomToast.systemToast("The quest has been successfully deleted.", systemMessage: true);
+      CustomToast.systemToast(
+        isArabic ? "تم حذف المهمة بنجاح." : "The quest has been successfully deleted.",
+        systemMessage: true,
+      );
       context.pop();
     } catch (e) {
       state = false;

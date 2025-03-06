@@ -1,15 +1,15 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 import 'package:questra_app/imports.dart';
 import 'package:intl/intl.dart';
 
 class UserDataPage extends ConsumerStatefulWidget {
-  const UserDataPage({
-    super.key,
-    required this.next,
-  });
+  const UserDataPage({super.key, required this.next});
 
   final VoidCallback next;
 
@@ -28,8 +28,8 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
   late FocusNode activityFocusNode;
   late FocusNode birthDayFocusNode;
 
-  String gender = '';
-  String activityLevel = '';
+  Map<String, dynamic> gender = {};
+  Map<String, dynamic> activityLevel = {};
   DateTime? selectedDate;
 
   final _key = GlobalKey<FormState>();
@@ -65,15 +65,15 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     openSheet(
       context: context,
       body: SelectRadioWidget(
-        title: 'Select Gender',
+        title: AppLocalizations.of(context).select_gender,
         choices: [
-          'Male',
-          'Female',
+          {'key': 'male', 'value': AppLocalizations.of(context).male},
+          {'key': 'female', 'value': AppLocalizations.of(context).female},
         ],
         changeVal: (v) {
           setState(() {
             gender = v;
-            _genderController.text = v;
+            _genderController.text = v['value'];
           });
           context.pop();
           genderFocusNode.unfocus();
@@ -89,18 +89,18 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     openSheet(
       context: context,
       body: SelectRadioWidget(
-        title: "Select fitness/activity level",
+        title: AppLocalizations.of(context).select_fitness_activity_level,
         choices: [
-          'sedentary',
-          'lightly active',
-          'moderately active',
-          'very active',
-          'athletic',
+          {'key': 'sedentary', 'value': AppLocalizations.of(context).sedentary},
+          {'key': 'lightly_active', 'value': AppLocalizations.of(context).lightly_active},
+          {'key': 'moderately_active', 'value': AppLocalizations.of(context).moderately_active},
+          {'key': 'very_active', 'value': AppLocalizations.of(context).very_active},
+          {'key': 'athletic', 'value': AppLocalizations.of(context).athletic},
         ],
         changeVal: (v) {
           setState(() {
             activityLevel = v;
-            _activityController.text = v;
+            _activityController.text = v['value'];
           });
           activityFocusNode.unfocus();
           context.pop();
@@ -115,9 +115,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
       context,
       theme: picker.DatePickerTheme(
         backgroundColor: AppColors.scaffoldBackground,
-        itemStyle: TextStyle(
-          color: AppColors.whiteColor,
-        ),
+        itemStyle: TextStyle(color: AppColors.whiteColor),
         cancelStyle: TextStyle(color: Colors.white60),
       ),
       showTitleActions: true,
@@ -148,15 +146,16 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     ref.read(soundEffectsServiceProvider).playMainButtonEffect();
     if (_key.currentState!.validate()) {
       final username = _usernameController.text.trim();
-      final availableUsername =
-          await ref.read(authStateProvider.notifier).availableUsername(username);
+      final availableUsername = await ref
+          .read(authStateProvider.notifier)
+          .availableUsername(username);
 
       if (!availableUsername) {
         // TODO
         // later make a temp table on the database to store the user data temporary becuase when we have two users signup in the same time
         // and by any chanse take the same username we do not want to get an error , so we need to save the current data until the user finish signup.
 
-        CustomToast.systemToast("the username ($username) is already taken");
+        CustomToast.systemToast(AppLocalizations.of(context).the_username_is_taken(username));
         return;
       }
 
@@ -171,7 +170,8 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
         username: username,
         is_online: true,
         birth_date: selectedDate,
-        gender: gender.toLowerCase(),
+        gender: gender['key'].toLowerCase(),
+        lang: ref.read(localeProvider).languageCode,
         avatar: "",
       );
 
@@ -180,12 +180,29 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
     }
 
     if (_nameController.text.trim().length < 4 || _usernameController.text.trim().length < 4) {
-      CustomToast.systemToast("name and username should be more than 4 characters",
-          systemMessage: true);
+      CustomToast.systemToast(
+        AppLocalizations.of(context).username_should_be_more_than_4_characters,
+        systemMessage: true,
+      );
       return;
     }
 
-    CustomToast.systemToast("please fill all the fields!", systemMessage: true);
+    CustomToast.systemToast(
+      AppLocalizations.of(context).please_fill_all_fields,
+      systemMessage: true,
+    );
+  }
+
+  void changeLang() {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    final currentLang = ref.read(localeProvider).languageCode;
+    Locale newLang;
+    if (currentLang == 'ar') {
+      newLang = Locale('en');
+    } else {
+      newLang = Locale('ar');
+    }
+    ref.read(localeProvider.notifier).state = newLang;
   }
 
   @override
@@ -199,6 +216,7 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
               onPressed: () => ref.read(authStateProvider.notifier).logout(),
               icon: Icon(LucideIcons.log_out),
             ),
+            IconButton(onPressed: changeLang, icon: Icon(LucideIcons.languages)),
           ],
         ),
         backgroundColor: Colors.transparent,
@@ -208,121 +226,111 @@ class _UserDataPageState extends ConsumerState<UserDataPage> {
             child: Center(
               child: ListView(
                 shrinkWrap: true,
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 children: [
-                  OnboardingTitle(),
-                  const SizedBox(
-                    height: kToolbarHeight - 10,
-                  ),
+                  OnboardingTitle().swing(),
+                  const SizedBox(height: kToolbarHeight - 10),
                   NeonTextField(
                     controller: _nameController,
-                    labelText: 'Full name',
+                    labelText: AppLocalizations.of(context).full_name,
                     glowColor: HexColor('7AD5FF'),
-                    hintText: 'Player name ...',
+                    hintText: AppLocalizations.of(context).player_name_hint,
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'please enter valid name';
+                        return AppLocalizations.of(context).please_enter_valid_name;
                       }
                       if (val.length < 4) {
-                        return 'the name should contains at least 4 characters';
+                        return AppLocalizations.of(context).name_should_be_more_than_4_characters;
                       }
 
                       return null;
                     },
+                    maxLength: 20,
                   ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     controller: _usernameController,
+
                     inputFormatters: [
                       FilteringTextInputFormatter.deny(RegExp(r'\s')), // Deny any whitespace
                       FilteringTextInputFormatter.allow(
-                          RegExp(r'[a-z_.]')), // Allow only lowercase, underscore, dot
+                        RegExp(r'[a-z0-9_.]'),
+                      ), // Allow only lowercase, underscore, dot
                     ],
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'Enter valid username please';
+                        return AppLocalizations.of(context).enter_valid_username;
                       }
 
                       if (val.length < 4) {
-                        return 'the username should contains at least 4 characters';
+                        return AppLocalizations.of(
+                          context,
+                        ).username_should_be_more_than_4_characters;
                       }
 
                       return null;
                     },
-                    labelText: 'Username',
+                    labelText: AppLocalizations.of(context).username,
                     glowColor: HexColor('7AD5FF'),
                     maxLength: 20,
-                    hintText: 'Player usernname (unique) e.g: multix...',
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                    hintText: AppLocalizations.of(context).player_username_hint,
+                  ).bounceIn(),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     onTap: birthDateSheet,
                     controller: _birthDayController,
-                    labelText: 'Birthday',
+                    labelText: AppLocalizations.of(context).birthday,
                     icon: LucideIcons.calendar,
                     glowColor: HexColor('7AD5FF'),
-                    hintText: 'Player Birthday ...',
+                    hintText: AppLocalizations.of(context).player_birthday_hint,
                     readOnly: true,
                     validator: (val) {
                       if (val == null || val.isEmpty) {
-                        return 'please enter your birth date';
+                        return AppLocalizations.of(context).please_enter_birth_date;
                       }
                       return null;
                     },
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  ).bounceInRight(duration: const Duration(milliseconds: 1200)),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     focusNode: genderFocusNode,
                     onTap: genderSheet,
                     controller: _genderController,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'please select your gender';
+                        return AppLocalizations.of(context).please_select_gender;
                       }
                       return null;
                     },
-                    labelText: 'Gender',
+                    labelText: AppLocalizations.of(context).gender,
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
-                    hintText: 'Player Gender ...',
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                    hintText: AppLocalizations.of(context).player_gender_hint,
+                  ).bounceInLeft(duration: const Duration(milliseconds: 1400)),
+                  const SizedBox(height: 15),
                   NeonTextField(
                     onTap: activitySheet,
                     focusNode: activityFocusNode,
                     validator: (v) {
                       if (v == null || v.isEmpty) {
-                        return 'please select your fitness/activity level';
+                        return AppLocalizations.of(context).please_select_fitness_activity_level;
                       }
                       return null;
                     },
                     controller: _activityController,
-                    labelText: 'fitness/activity',
+                    labelText: AppLocalizations.of(context).fitness_activity,
                     icon: LucideIcons.chevron_down,
                     glowColor: HexColor('7AD5FF'),
                     readOnly: true,
-                    hintText: 'General fitness/activity level',
-                  ),
+                    hintText: AppLocalizations.of(context).general_fitness_activity_hint,
+                  ).bounceInDown(duration: const Duration(milliseconds: 1600)),
                 ],
               ),
             ),
           ),
         ),
-        bottomNavigationBar: AccountSetupNextButton(
-          next: handleNext,
-          size: size,
-        ),
+        bottomNavigationBar: AccountSetupNextButton(next: handleNext, size: size).tada(),
       ),
     );
   }

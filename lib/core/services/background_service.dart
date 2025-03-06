@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -6,6 +7,7 @@ import 'package:questra_app/core/services/secure_storage.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
+import 'package:retry/retry.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:questra_app/imports.dart';
 
@@ -15,12 +17,19 @@ void callbackDispatcher() {
     WidgetsFlutterBinding.ensureInitialized(); // Required for plugins
 
     try {
-      await _initializeSupabase();
+      // Initialize Supabase with retry logic
+      await _initializeSupabaseWithRetry();
 
       switch (taskName) {
         case 'questCheck':
-          await _sendSystemMessage();
-          await _lootBoxTask();
+          // Execute tasks independently
+          await Future.wait([
+            _executeWithRetry(() => _sendSystemMessage(0), 'System message'),
+            _executeWithRetry(_lootBoxTask, 'Lootbox task'),
+          ], eagerError: false).then((results) {
+            // Log results but don't fail the entire task if some parts failed
+            log("Background tasks completed with results: $results");
+          });
           break;
       }
       return Future.value(true);
@@ -31,33 +40,62 @@ void callbackDispatcher() {
         path: '/background_service',
         error: failed,
         userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
-      );
-
-      // await sendNotification("Background task failed", e.toString());
+      ).catchError((e) => log("Failed to log exception: $e"));
 
       return Future.value(false);
     }
   });
 }
 
-Future<void> _lootBoxTask() async {
+// Execute a function with retry logic
+Future<bool> _executeWithRetry(Future<void> Function() task, String taskName) async {
   try {
-    final _client = Supabase.instance.client;
-    final session = _client.auth.currentSession;
-    if (session == null) return;
-
-    final userId = session.user.id;
-    final userData =
-        await _client.from(TableNames.players).select("*").eq(KeyNames.id, userId).maybeSingle();
-
-    if (userData == null) return;
-
-    final lootBoxManager = LootBoxManager();
-    await lootBoxManager.checkLootBoxDrop();
+    await retry(
+      () => task(),
+      retryIf: (e) => e is! ArgumentError, // Don't retry if the error is fundamental
+      maxAttempts: 3,
+      delayFactor: const Duration(seconds: 1),
+    );
+    log("Successfully completed task: $taskName");
+    return true;
   } catch (e) {
-    log(e.toString());
-    rethrow;
+    log("Task $taskName failed after retries: $e");
+
+    // Log the error but don't make the entire process fail
+    await ExceptionService.insertException(
+      path: '/background_service/$taskName',
+      error: e.toString(),
+      userId: Supabase.instance.client.auth.currentUser?.id ?? "null",
+    ).catchError((e) => log("Failed to log exception: $e"));
+
+    return false;
   }
+}
+
+Future<void> _lootBoxTask() async {
+  final _client = Supabase.instance.client;
+  final session = _client.auth.currentSession;
+  if (session == null) return;
+
+  final userId = session.user.id;
+
+  // Optimize query by selecting only needed fields
+  final userData =
+      await _client.from(TableNames.players).select("id").eq(KeyNames.id, userId).maybeSingle();
+
+  if (userData == null) return;
+
+  final lootBoxManager = LootBoxManager();
+  await lootBoxManager.checkLootBoxDrop();
+}
+
+Future<void> _initializeSupabaseWithRetry() async {
+  await retry(
+    () => _initializeSupabase(),
+    retryIf: (e) => e is! ArgumentError, // Don't retry if env vars are missing
+    maxAttempts: 3,
+    delayFactor: const Duration(seconds: 1),
+  );
 }
 
 Future<void> _initializeSupabase() async {
@@ -86,81 +124,44 @@ Future<void> _initializeSupabase() async {
   }
 }
 
-Future<void> _sendSystemMessage() async {
-  try {
-    final _client = Supabase.instance.client;
-    final session = _client.auth.currentSession;
-    if (session == null) return;
+Future<void> _sendSystemMessage(int retry) async {
+  final _client = Supabase.instance.client;
+  final session = _client.auth.currentSession;
 
-    final userId = session.user.id;
-
-    final data = await _client.rpc(
-      FunctionNames.get_today_notifications_count,
-      params: {'p_user_id': userId},
-    );
-
-    if (data is int) {
-      if (data > 6) {
-        return;
-      }
-    }
-
-    if (data is String) {
-      if ((int.tryParse(data) ?? 0) > 6) {
-        return;
-      }
-    }
-
-    await NotificationsRepository.sendNotificationFunction(userId);
-  } catch (e) {
-    log(e.toString());
-    throw Exception(e);
+  if (retry >= 3) {
+    return;
   }
+  if (_client.auth.currentUser == null) {
+    await _client.auth.refreshSession();
+    return _sendSystemMessage(retry++);
+  }
+
+  if (session == null) return;
+
+  final userId = session.user.id;
+
+  // Fetch notification count
+  final data = await _client.rpc(
+    FunctionNames.get_today_notifications_count,
+    params: {'p_user_id': userId},
+  );
+
+  int notificationCount;
+  if (data is int) {
+    notificationCount = data;
+  } else if (data is String) {
+    notificationCount = int.tryParse(data) ?? 0;
+  } else {
+    notificationCount = 0;
+  }
+
+  if (notificationCount > 6) {
+    log('Maximum notifications reached for today');
+    return;
+  }
+
+  await NotificationsRepository.sendNotificationFunction(userId);
 }
-
-// Future<void> _checkExpiringQuests() async {
-// try {
-// final session = Supabase.instance.client.auth.currentSession;
-// if (session == null) return;
-
-// final userId = session.user.id;
-// final now = DateTime.now().toUtc();
-
-// final response = await Supabase.instance.client
-//     .from('user_quests')
-//     .select()
-//     .eq('user_id', userId)
-//     .eq('status', 'in_progress')
-//     .lt('expected_completion_time_date', now.add(const Duration(hours: 2)))
-//     .gt('expected_completion_time_date', now)
-//     .or('notified_two_hours.is.false,notified_one_hour.is.false');
-
-// for (final quest in response) {
-//   final expectedTime = DateTime.parse(quest['expected_completion_time_date']).toUtc();
-//   final timeLeft = expectedTime.difference(now);
-
-//   if (timeLeft <= const Duration(hours: 2) && !quest['notified_two_hours']) {
-//     sendNotification(
-//         '2 hours left to complete "${quest['quest_title']}"', quest['quest_title']);
-//     await _updateNotificationStatus(quest['user_quest_id'], 'notified_two_hours');
-//   }
-
-//   if (timeLeft <= const Duration(hours: 1) && !quest['notified_one_hour']) {
-//     sendNotification('1 hour left to complete "${quest['quest_title']}"', quest['quest_title']);
-//     await _updateNotificationStatus(quest['user_quest_id'], 'notified_one_hour');
-//   }
-// }
-//   } catch (e) {
-//     log(e.toString());
-//     rethrow;
-//   }
-// }
-
-// Future<void> _updateNotificationStatus(String questId, String column) async {
-//   await Supabase.instance.client
-//       .from('user_quests')
-//       .update({column: true}).eq('user_quest_id', questId);
-// }
 
 Future<void> sendNotification(String body, String title) async {
   try {
@@ -186,12 +187,10 @@ Future<void> sendNotification(String body, String title) async {
       const InitializationSettings(android: AndroidInitializationSettings('@mipmap/ic_launcher')),
     );
 
-    await notifications.show(
-      DateTime.now().millisecond, // unique ID for each notification
-      title,
-      body,
-      platformDetails,
-    );
+    // Use timestamp for unique notification ID
+    final notificationId = DateTime.now().millisecondsSinceEpoch % 100000;
+
+    await notifications.show(notificationId, title, body, platformDetails);
   } catch (e) {
     log('Failed to send notification: $e');
   }
