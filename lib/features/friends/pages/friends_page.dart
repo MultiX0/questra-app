@@ -1,15 +1,168 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:questra_app/core/shared/widgets/beat_loader.dart';
+import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
+import 'package:questra_app/features/friends/providers/friends_provider.dart';
+import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
 class FriendsPage extends ConsumerStatefulWidget {
-  const FriendsPage({super.key});
+  final String userId;
+  const FriendsPage({super.key, required this.userId});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _FriendsPageState();
 }
 
 class _FriendsPageState extends ConsumerState<FriendsPage> {
+  final ScrollController _scrollController = ScrollController();
+  bool fetched = false;
+  int friendsCount = 0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!fetched) {
+        fetchData();
+      }
+      _scrollController.addListener(_onScroll);
+    });
+    super.initState();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      ref.read(friendsStateProvider.notifier).fetchItems(userId: widget.userId);
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    // Load more when we're 200 pixels from the bottom
+    return currentScroll >= (maxScroll - 200);
+  }
+
+  void fetchData() async {
+    ref.read(friendsStateProvider.notifier).fetchItems(userId: widget.userId);
+    final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
+    setState(() {
+      fetched = true;
+      friendsCount = _count;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    final state = ref.watch(friendsStateProvider);
+    // final me = ref.watch(authStateProvider);
+
+    return AppRefreshIndicator(
+      child:
+          state.users.isEmpty && state.isLoading
+              ? BeatLoader()
+              : state.hasError
+              ? buildError(state)
+              : state.users.isEmpty
+              ? buildEmptyState()
+              : buildBody(state),
+      onRefresh: () async {
+        await Future.delayed(const Duration(milliseconds: 800), () async {
+          ref.read(friendsStateProvider.notifier).refresh(widget.userId);
+          final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
+          if (friendsCount != _count) {
+            setState(() {
+              friendsCount = _count;
+            });
+          }
+        });
+      },
+    );
   }
+
+  Widget buildEmptyState() => Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Empty State"),
+        SystemCardButton(
+          onTap: () => ref.read(friendsStateProvider.notifier).refresh(widget.userId),
+          text: "Refresh",
+        ),
+      ],
+    ),
+  );
+
+  Widget buildBody(FriendsState state) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  AppLocalizations.of(context).total_friends_count,
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                ),
+                Text(
+                  friendsCount.toString(),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: state.users.length + (state.isLoading ? 1 : 0),
+              itemBuilder: (context, i) {
+                if (i == state.users.length) {
+                  return const Center(
+                    child: Padding(padding: EdgeInsets.all(8.0), child: BeatLoader()),
+                  );
+                }
+                final user = state.users[i];
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SystemCard(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            user.name,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          subtitle: Text(user.username, style: TextStyle(fontSize: 16)),
+
+                          leading: CircleAvatar(
+                            radius: 22,
+                            backgroundColor: AppColors.primary.withValues(alpha: 0.25),
+                            backgroundImage: CachedNetworkImageProvider(user.avatar!),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Center buildError(FriendsState state) => Center(child: Text('Error: ${state.errorMessage}'));
 }

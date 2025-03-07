@@ -340,5 +340,8 @@
   "last_submit_time_quest":"Expected finish at: {date}",
   "event_quest_finish_alert": "You need to provide at least {minPicsNeeds} photos",
   "friends": "Friends",
-  "requests": "Requests"
+  "requests": "Requests",
+  "total_friends_count": "Total Friends",
+  "total_friend_requests_count": "Total Requests"
+
 }

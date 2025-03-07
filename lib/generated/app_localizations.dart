@@ -2074,6 +2074,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Requests'**
   String get requests;
+
+  /// No description provided for @total_friends_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Friends'**
+  String get total_friends_count;
+
+  /// No description provided for @total_friend_requests_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Requests'**
+  String get total_friend_requests_count;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

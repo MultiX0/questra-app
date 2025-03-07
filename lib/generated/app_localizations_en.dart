@@ -1019,4 +1019,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get requests => 'Requests';
+
+  @override
+  String get total_friends_count => 'Total Friends';
+
+  @override
+  String get total_friend_requests_count => 'Total Requests';
 }

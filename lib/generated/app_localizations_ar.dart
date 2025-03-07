@@ -1019,4 +1019,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get requests => 'الطلبات';
+
+  @override
+  String get total_friends_count => 'عدد الأصدقاء';
+
+  @override
+  String get total_friend_requests_count => 'عدد الطلبات';
 }

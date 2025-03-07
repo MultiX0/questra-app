@@ -88,7 +88,7 @@ class FriendRequeststateNotifier extends StateNotifier<FriendRequestsState> {
 }
 
 // Provider for our paginated items
-final paginatedItemsProvider =
+final friendsRequestsProvider =
     StateNotifierProvider<FriendRequeststateNotifier, FriendRequestsState>((ref) {
       return FriendRequeststateNotifier(ref: ref);
     });

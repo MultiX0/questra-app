@@ -141,20 +141,22 @@ class NotificationsRepository {
     } catch (e) {
       log('Notification Error: $e');
       final prefs = await SharedPreferences.getInstance();
-      await _storeFallbackNotification(prefs);
+      await prefs.setInt('next_perfect_time', 0);
+
+      // await _storeFallbackNotification(prefs);
     }
   }
 
-  static Future<void> _storeFallbackNotification(SharedPreferences prefs) async {
-    await prefs.setString(
-      "notification",
-      "🚀 Ready for your next adventure? Tap to continue your journey!",
-    );
-    await prefs.setInt(
-      "next_perfect_time",
-      DateTime.now().toUtc().add(Duration(hours: 2)).millisecondsSinceEpoch,
-    );
-  }
+  // static Future<void> _storeFallbackNotification(SharedPreferences prefs) async {
+  //   await prefs.setString(
+  //     "notification",
+  //     "🚀 Ready for your next adventure? Tap to continue your journey!",
+  //   );
+  //   await prefs.setInt(
+  //     "next_perfect_time",
+  //     DateTime.now().toUtc().add(Duration(hours: 2)).millisecondsSinceEpoch,
+  //   );
+  // }
 
   static bool _parseSentNow(dynamic value) {
     if (value is bool) return value;

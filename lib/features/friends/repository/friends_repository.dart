@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/enums/friends_status_enum.dart';
+import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
 import 'package:questra_app/imports.dart';
@@ -186,6 +187,20 @@ class FriendsRepository {
           .delete()
           .or('${KeyNames.sender_id}.eq.$user1,${KeyNames.receiver_id}.eq.$user1')
           .or('${KeyNames.sender_id}.eq.$user2,${KeyNames.receiver_id}.eq.$user2');
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<int> getFriendsCount(String userId) async {
+    try {
+      final count = await _client.rpc(
+        FunctionNames.get_friends_count,
+        params: {'user_uuid': userId},
+      );
+
+      return count ?? 0;
     } catch (e) {
       log(e.toString());
       rethrow;

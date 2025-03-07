@@ -15,16 +15,27 @@ class _FriendsControllerPageState extends ConsumerState<FriendsControllerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final me = ref.watch(authStateProvider)!;
     return BackgroundWidget(
       child: Scaffold(
         appBar: TheAppBar(title: AppLocalizations.of(context).profile_friends),
-        body: selectedIndex == 0 ? FriendsPage() : FriendRequestsPage(),
+        body: Column(
+          children: [
+            buildCategoryChange(),
+            Expanded(
+              child: IndexedStack(
+                index: selectedIndex,
+                children: [FriendsPage(userId: me.id), FriendRequestsPage()],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget buildCategoryChange() => Padding(
-    padding: const EdgeInsets.all(16.0),
+    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
     child: Row(
       spacing: 10,
       children: [
@@ -51,14 +62,15 @@ class _FriendsControllerPageState extends ConsumerState<FriendsControllerPage> {
     required int index,
     required String text,
   }) {
-    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+    // bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
 
     bool isActive = selectedIndex == index;
     return GestureDetector(
       onTap: () {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-        if (index == 0 && isActive) return;
-        CustomToast.soon(isArabic);
+        setState(() {
+          selectedIndex = index;
+        });
       },
       child: AnimatedContainer(
         duration: duration,
