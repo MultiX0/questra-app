@@ -141,9 +141,9 @@ class QuestCard extends ConsumerWidget {
                 const SizedBox(height: 14),
                 if (questModel.expected_completion_time_date != null)
                   Text(
-                    AppLocalizations.of(
-                      context,
-                    ).last_submit_time_quest(questModel.expected_completion_time_date!),
+                    AppLocalizations.of(context).last_submit_time_quest(
+                      appDateFormat(questModel.expected_completion_time_date!.toLocal()),
+                    ),
                     style: TextStyle(fontWeight: FontWeight.w200, fontSize: 11),
                   ),
               ],
