@@ -1,8 +1,9 @@
+import 'package:questra_app/features/friends/providers/count_providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
 class FriendsState {
-  final List<UserModel> users;
+  final Set<UserModel> users;
   final bool isLoading;
   final bool hasError;
   final bool hasReachedEnd;
@@ -18,12 +19,12 @@ class FriendsState {
 
   // Initial state
   factory FriendsState.initial() {
-    return FriendsState(users: [], isLoading: false, hasError: false, hasReachedEnd: false);
+    return FriendsState(users: {}, isLoading: false, hasError: false, hasReachedEnd: false);
   }
 
   // Create a new state by copying the current one with some changes
   FriendsState copyWith({
-    List<UserModel>? users,
+    Set<UserModel>? users,
     bool? isLoading,
     bool? hasError,
     bool? hasReachedEnd,
@@ -72,7 +73,7 @@ class FriendsStateNotifier extends StateNotifier<FriendsState> {
 
       // Update state
       state = state.copyWith(
-        users: refresh ? response : [...state.users, ...response],
+        users: refresh ? response.toSet() : {...state.users, ...response.toSet()},
         isLoading: false,
         hasReachedEnd: hasReachedEnd,
       );
@@ -84,6 +85,14 @@ class FriendsStateNotifier extends StateNotifier<FriendsState> {
 
   void refresh(String userId) {
     fetchItems(refresh: true, userId: userId);
+  }
+
+  void addUser(UserModel user) {
+    int previousLength = state.users.length;
+    state = state.copyWith(users: {...state.users, user});
+    if (previousLength != state.users.length) {
+      _ref.read(getUserLengthProvider.notifier).state = state.users.length;
+    }
   }
 }
 

@@ -1025,4 +1025,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get total_friend_requests_count => 'عدد الطلبات';
+
+  @override
+  String get custom_quest_success => 'تمت اضافة المهمة بنجاح';
+
+  @override
+  String get about_us_title => 'معلومات عننا';
 }

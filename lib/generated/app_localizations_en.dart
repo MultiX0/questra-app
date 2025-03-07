@@ -1025,4 +1025,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get total_friend_requests_count => 'Total Requests';
+
+  @override
+  String get custom_quest_success => 'The quest has been added successfully.';
+
+  @override
+  String get about_us_title => 'About Us';
 }

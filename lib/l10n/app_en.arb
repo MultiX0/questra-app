@@ -342,6 +342,9 @@
   "friends": "Friends",
   "requests": "Requests",
   "total_friends_count": "Total Friends",
-  "total_friend_requests_count": "Total Requests"
+  "total_friend_requests_count": "Total Requests",
+  "custom_quest_success": "The quest has been added successfully.",
+  "about_us_title": "About Us"
+
 
 }

@@ -51,7 +51,9 @@ class FriendsRepository {
 
   Future<void> updateFriendRequest(FriendRequestModel request) async {
     try {
-      _friendsRequestsTable.update(request.toMap()).eq(KeyNames.request_id, request.id);
+      await _friendsRequestsTable
+          .update({KeyNames.status: request.status.name})
+          .eq(KeyNames.request_id, request.id);
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -80,7 +82,7 @@ class FriendsRepository {
     }
   }
 
-  Future<List<UserModel>> getAllFriendRequests({
+  Future<Map<String, dynamic>> getAllFriendRequests({
     required String userId,
     required int startIndex,
     required int pageSize,
@@ -89,11 +91,22 @@ class FriendsRepository {
       final data = await _friendsRequestsTable
           .select("*")
           .eq(KeyNames.receiver_id, userId)
+          .eq(KeyNames.status, FriendsStatusEnum.pending.name)
           .range(startIndex, startIndex + pageSize - 1);
 
       final requests = data.map((request) => FriendRequestModel.fromMap(request)).toList();
       final ids = requests.map((r) => r.senderId).toList();
-      return await _ref.read(profileRepositoryProvider).getUsersIn(ids);
+      final users = await _ref.read(profileRepositoryProvider).getUsersIn(ids);
+      final requestIdByUserId =
+          requests
+              .map(
+                (r) => {
+                  KeyNames.sender_id: r.senderId,
+                  'data': {KeyNames.request_id: r.id, KeyNames.status: r.status.name},
+                },
+              )
+              .toList();
+      return {'users': users.map((user) => user.toMap()).toList(), 'ids': requestIdByUserId};
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -197,6 +210,20 @@ class FriendsRepository {
     try {
       final count = await _client.rpc(
         FunctionNames.get_friends_count,
+        params: {'user_uuid': userId},
+      );
+
+      return count ?? 0;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<int> getFriendRequestsCount(String userId) async {
+    try {
+      final count = await _client.rpc(
+        FunctionNames.get_friend_requests_count,
         params: {'user_uuid': userId},
       );
 

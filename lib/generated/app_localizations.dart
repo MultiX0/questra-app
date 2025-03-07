@@ -2086,6 +2086,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total Requests'**
   String get total_friend_requests_count;
+
+  /// No description provided for @custom_quest_success.
+  ///
+  /// In en, this message translates to:
+  /// **'The quest has been added successfully.'**
+  String get custom_quest_success;
+
+  /// No description provided for @about_us_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About Us'**
+  String get about_us_title;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

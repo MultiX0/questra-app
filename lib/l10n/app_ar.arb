@@ -338,7 +338,11 @@
   "friends": "الأصدقاء",
   "requests": "الطلبات",
   "total_friends_count": "عدد الأصدقاء",
-  "total_friend_requests_count": "عدد الطلبات"
+  "total_friend_requests_count": "عدد الطلبات",
+  "custom_quest_success": "تمت اضافة المهمة بنجاح",
+  "about_us_title": "معلومات عننا"
+
+
 
 
 

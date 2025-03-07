@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
+import 'package:questra_app/features/friends/providers/count_providers.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -10,13 +11,12 @@ class FriendsPage extends ConsumerStatefulWidget {
   const FriendsPage({super.key, required this.userId});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FriendsPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => FriendsPageState();
 }
 
-class _FriendsPageState extends ConsumerState<FriendsPage> {
+class FriendsPageState extends ConsumerState<FriendsPage> {
   final ScrollController _scrollController = ScrollController();
   bool fetched = false;
-  int friendsCount = 0;
 
   @override
   void initState() {
@@ -48,8 +48,8 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
     final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
     setState(() {
       fetched = true;
-      friendsCount = _count;
     });
+    ref.read(getUserLengthProvider.notifier).state = _count;
   }
 
   @override
@@ -62,6 +62,8 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(friendsStateProvider);
+    final friendsCount = ref.watch(getUserLengthProvider);
+
     // final me = ref.watch(authStateProvider);
 
     return AppRefreshIndicator(
@@ -78,9 +80,7 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
           ref.read(friendsStateProvider.notifier).refresh(widget.userId);
           final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
           if (friendsCount != _count) {
-            setState(() {
-              friendsCount = _count;
-            });
+            ref.read(getUserLengthProvider.notifier).state = _count;
           }
         });
       },
@@ -101,6 +101,8 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
   );
 
   Widget buildBody(FriendsState state) {
+    final friendsCount = ref.watch(getUserLengthProvider);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Column(
@@ -132,7 +134,7 @@ class _FriendsPageState extends ConsumerState<FriendsPage> {
                     child: Padding(padding: EdgeInsets.all(8.0), child: BeatLoader()),
                   );
                 }
-                final user = state.users[i];
+                final user = state.users.elementAt(i);
                 return Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: SystemCard(

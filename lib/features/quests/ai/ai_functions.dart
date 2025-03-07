@@ -298,7 +298,11 @@ class AiFunctions {
         final currentQuests = _ref.read(customQuestsProvider);
         _ref.invalidate(customQuestsProvider);
         _ref.read(customQuestsProvider.notifier).state = [...currentQuests, questModel];
-        CustomToast.systemToast("The quest has been added successfully.", systemMessage: true);
+        final isArabic = _ref.read(localeProvider).languageCode == 'ar';
+        CustomToast.systemToast(
+          isArabic ? "تمت اضافة المهمة بنجاح" : "The quest has been added successfully.",
+          systemMessage: true,
+        );
         return;
       }
 
