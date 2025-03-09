@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/services/android_id_service.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
@@ -308,6 +309,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     _stateStreamController.add(null);
     _ref.read(isLoggedInProvider.notifier).state = false;
     _ref.read(hasValidAccountProvider.notifier).state = false;
+    _ref.read(usersWithActiveRequestFromMe.notifier).state = [];
   }
 
   Future<bool> hasValidAccount() async {
