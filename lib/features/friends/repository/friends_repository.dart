@@ -4,6 +4,7 @@ import 'package:questra_app/core/enums/friends_status_enum.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/imports.dart';
 
 final friendsRepositoryProvider = Provider<FriendsRepository>((ref) => FriendsRepository(ref: ref));
@@ -15,6 +16,7 @@ class FriendsRepository {
   SupabaseClient get _client => _ref.watch(supabaseProvider);
   SupabaseQueryBuilder get _friendsRequestsTable => _client.from(TableNames.friend_requests);
   SupabaseQueryBuilder get _friendshipTable => _client.from(TableNames.friendship);
+  SupabaseQueryBuilder get _playersTable => _client.from(TableNames.players);
 
   Future<void> sendFriendRequest(FriendRequestModel request) async {
     try {
@@ -228,6 +230,59 @@ class FriendsRepository {
       );
 
       return count ?? 0;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<bool> _hasActiveRequest({required String senderId, required String reciverId}) async {
+    try {
+      final data =
+          await _friendsRequestsTable
+              .select("*")
+              .eq(KeyNames.sender_id, senderId)
+              .eq(KeyNames.receiver_id, reciverId)
+              .eq(KeyNames.status, FriendsStatusEnum.pending.name)
+              .maybeSingle();
+
+      return data != null;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<UserModel>> searchUsers(String query) async {
+    final user_id = _ref.read(authStateProvider)!.id;
+    final activeRequests = _ref.read(usersWithActiveRequestFromMe);
+
+    try {
+      final value =
+          query.isEmpty
+              ? ""
+              : query.substring(0, query.length - 1) +
+                  String.fromCharCode(query.codeUnitAt(query.length - 1) + 1);
+      final data = await _playersTable
+          .select('*')
+          .gte(KeyNames.username, query.isEmpty ? 0 : query)
+          .lt(KeyNames.username, value)
+          .neq(KeyNames.id, user_id)
+          .limit(5);
+
+      final users = data.map((user) => UserModel.fromMap(user)).toList();
+      List<UserModel> activeRequestUsers = [];
+      for (final user in users) {
+        if (activeRequests.any((u) => u.id == user.id)) continue;
+        final _isActive = await _hasActiveRequest(senderId: user_id, reciverId: user.id);
+        if (_isActive) {
+          activeRequestUsers.add(user);
+        }
+      }
+
+      _ref.read(usersWithActiveRequestFromMe.notifier).state = activeRequestUsers;
+
+      return users;
     } catch (e) {
       log(e.toString());
       rethrow;

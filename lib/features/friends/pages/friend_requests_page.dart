@@ -163,36 +163,37 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
                   );
                 }
                 final user = state.users[i];
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SystemCard(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              user.name,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            subtitle: Text(user.username, style: TextStyle(fontSize: 16)),
-
-                            leading: CircleAvatar(
-                              radius: 22,
-                              backgroundColor: AppColors.primary.withValues(alpha: 0.25),
-                              backgroundImage: CachedNetworkImageProvider(user.avatar!),
-                            ),
-                          ),
-                        ),
-                        buildActions(user.id),
-                      ],
-                    ),
-                  ),
-                );
+                return buildPlayerCard(user);
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Padding buildPlayerCard(UserModel user) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SystemCard(
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                title: Text(user.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                subtitle: Text(user.username, style: TextStyle(fontSize: 16)),
+
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.25),
+                  backgroundImage: CachedNetworkImageProvider(user.avatar!),
+                ),
+              ),
+            ),
+            buildActions(user.id),
+          ],
+        ),
       ),
     );
   }

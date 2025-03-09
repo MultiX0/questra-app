@@ -95,6 +95,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         log('Unity Ads initialization failed:');
         log('Error: $error');
         log('Message: $message');
+        CustomToast.systemToast(AppLocalizations.of(context).ad_block_toast, closeDuration: 60);
       },
     );
   }

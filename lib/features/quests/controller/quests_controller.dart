@@ -149,11 +149,17 @@ class QuestsController extends StateNotifier<bool> {
       state = false;
 
       context.pop();
-    } catch (e) {
-      state = false;
+    } catch (e, trace) {
       context.pop();
       log(e.toString());
-      CustomToast.systemToast(e.toString(), systemMessage: true);
+      final userId = _ref.read(authStateProvider)?.id ?? "";
+      // CustomToast.systemToast(e.toString(), systemMessage: true);
+      await ExceptionService.insertException(
+        path: "/quest_controller",
+        error: '$e\nstackTrace: $trace',
+        userId: userId,
+      );
+      state = false;
       rethrow;
     }
   }

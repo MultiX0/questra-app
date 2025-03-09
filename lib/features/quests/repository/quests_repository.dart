@@ -386,14 +386,17 @@ class QuestsRepository {
 
   Future<int> getSkippedQuestsCount(String userId) async {
     try {
+      // Cast the result directly to an integer
       final data = await _client.rpc(
         FunctionNames.questSkippedCounter,
         params: {"p_user_id": userId},
       );
 
-      final count = int.tryParse(data.toString());
-      log("the skipped quests count Is: $count");
-      return count ?? 0;
+      // The result from a Postgres bigint should be handled as a number
+      if (data != null) {
+        return data as int;
+      }
+      return 0;
     } catch (e) {
       log(e.toString());
       throw Exception('Exception in getSkippedQuestsCount: $e');

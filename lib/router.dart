@@ -113,6 +113,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       buildRoute(fade: true, path: Routes.firendsControllerPage, child: FriendsControllerPage()),
+      buildRoute(fade: true, path: Routes.addFriendsPage, child: AddFriendsPage()),
     ],
   );
 });

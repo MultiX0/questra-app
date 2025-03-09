@@ -29,4 +29,5 @@ class Routes {
   static const viewEventQuestPage = '/viewEventQuestPage';
   static const playerCompletionPage = '/playerCompletionPage';
   static const firendsControllerPage = '/firendsControllerPage';
+  static const addFriendsPage = '/addFriendsPage';
 }

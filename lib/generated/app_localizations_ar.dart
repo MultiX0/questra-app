@@ -1037,4 +1037,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get no_friends => 'لايوجد لديك أي أصدقاء حاليا';
+
+  @override
+  String get add_friends_btn => 'اضافة أصدقاء';
+
+  @override
+  String get ad_block_toast => 'تحذير: اذا كنت تستخدم أي مانع اعلانات أو  vpn يقوم بحظر الاعلانات بأي شكل من الأشكال الرجاء اطفائه لان بعض الخواص في التطبيق لن تتمكن من العمل بشكل صحيح.';
 }

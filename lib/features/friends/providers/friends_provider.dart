@@ -1,4 +1,4 @@
-import 'package:questra_app/features/friends/providers/count_providers.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 

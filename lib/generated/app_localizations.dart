@@ -2110,6 +2110,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You do not have any friends at the moment.'**
   String get no_friends;
+
+  /// No description provided for @add_friends_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Freinds'**
+  String get add_friends_btn;
+
+  /// No description provided for @ad_block_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.'**
+  String get ad_block_toast;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
-import 'package:questra_app/features/friends/providers/count_providers.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -17,6 +17,7 @@ class FriendsPage extends ConsumerStatefulWidget {
 class FriendsPageState extends ConsumerState<FriendsPage> {
   final ScrollController _scrollController = ScrollController();
   bool fetched = false;
+  bool btnLoading = false;
 
   @override
   void initState() {
@@ -52,6 +53,21 @@ class FriendsPageState extends ConsumerState<FriendsPage> {
     ref.read(getUserLengthProvider.notifier).state = _count;
   }
 
+  void refresh() async {
+    await Future.delayed(const Duration(milliseconds: 800), () async {
+      ref.read(friendsStateProvider.notifier).refresh(widget.userId);
+      final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
+      final friendsCount = ref.read(getUserLengthProvider);
+
+      if (friendsCount != _count) {
+        ref.read(getUserLengthProvider.notifier).state = _count;
+      }
+      setState(() {
+        btnLoading = false;
+      });
+    });
+  }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
@@ -62,7 +78,7 @@ class FriendsPageState extends ConsumerState<FriendsPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(friendsStateProvider);
-    final friendsCount = ref.watch(getUserLengthProvider);
+    // final friendsCount = ref.watch(getUserLengthProvider);
 
     // final me = ref.watch(authStateProvider);
 
@@ -75,31 +91,49 @@ class FriendsPageState extends ConsumerState<FriendsPage> {
               : state.users.isEmpty
               ? buildEmptyState()
               : buildBody(state),
-      onRefresh: () async {
-        await Future.delayed(const Duration(milliseconds: 800), () async {
-          ref.read(friendsStateProvider.notifier).refresh(widget.userId);
-          final _count = await ref.read(friendsRepositoryProvider).getFriendsCount(widget.userId);
-          if (friendsCount != _count) {
-            ref.read(getUserLengthProvider.notifier).state = _count;
-          }
-        });
-      },
+      onRefresh: () async => refresh(),
     );
   }
 
   Widget buildEmptyState() => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Empty State"),
-        SystemCardButton(
-          onTap: () => ref.read(friendsStateProvider.notifier).refresh(widget.userId),
-          text: "Refresh",
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SizedBox(
+        child: SystemCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
+              const SizedBox(height: 15),
+              Text(
+                AppLocalizations.of(context).no_friends,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 15),
+              if (btnLoading) ...[
+                BeatLoader(),
+              ] else ...[
+                MainAppButton(
+                  onTap: () {
+                    setState(() {
+                      btnLoading = true;
+                    });
+                    refresh();
+                  },
+                  title: AppLocalizations.of(context).refresh,
+                ),
+                const SizedBox(height: 15),
+                MainAppButton(
+                  onTap: () => context.push(Routes.addFriendsPage),
+                  title: AppLocalizations.of(context).add_friends_btn,
+                ),
+              ],
+            ],
+          ),
         ),
-      ],
+      ),
     ),
   );
-
   Widget buildBody(FriendsState state) {
     final friendsCount = ref.watch(getUserLengthProvider);
 

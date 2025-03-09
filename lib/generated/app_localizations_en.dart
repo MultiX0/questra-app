@@ -1037,4 +1037,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_friends => 'You do not have any friends at the moment.';
+
+  @override
+  String get add_friends_btn => 'Add Freinds';
+
+  @override
+  String get ad_block_toast => 'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.';
 }

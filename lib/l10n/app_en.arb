@@ -346,7 +346,9 @@
   "custom_quest_success": "The quest has been added successfully.",
   "about_us_title": "About Us",
   "no_friend_requests": "You do not have any friend requests at the moment.",
-  "no_friends": "You do not have any friends at the moment."
+  "no_friends": "You do not have any friends at the moment.",
+  "add_friends_btn": "Add Freinds",
+  "ad_block_toast": "Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly."
 
 
 

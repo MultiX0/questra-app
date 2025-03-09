@@ -10,6 +10,11 @@ final friendsControllerProvider = StateNotifierProvider<FriendsController, bool>
   (ref) => FriendsController(ref: ref),
 );
 
+final searchPlayers = FutureProvider.family<List<UserModel>, String>((ref, query) async {
+  final _controller = ref.watch(friendsControllerProvider.notifier);
+  return await _controller.searchUsers(query);
+});
+
 class FriendsController extends StateNotifier<bool> {
   final Ref _ref;
   FriendsController({required Ref ref}) : _ref = ref, super(false);
@@ -59,5 +64,14 @@ class FriendsController extends StateNotifier<bool> {
     }
     state = false;
     return null;
+  }
+
+  Future<List<UserModel>> searchUsers(String query) async {
+    try {
+      return await _repo.searchUsers(query);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }
