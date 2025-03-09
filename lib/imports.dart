@@ -81,3 +81,4 @@ export 'package:questra_app/features/ranking/pages/leaderboard_page.dart';
 export 'package:questra_app/features/splash/splash.dart';
 export 'package:questra_app/features/titles/pages/titles_page.dart';
 export 'package:questra_app/features/friends/pages/friends_controller_page.dart';
+export 'package:questra_app/core/shared/widgets/main_app_btn.dart';

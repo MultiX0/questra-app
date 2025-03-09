@@ -16,6 +16,7 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
   final ScrollController _scrollController = ScrollController();
   bool fetched = false;
   int requestsCount = 0;
+  bool btnLoading = false;
 
   @override
   void initState() {
@@ -69,6 +70,9 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
           requestsCount = _count;
         });
       }
+      setState(() {
+        btnLoading = false;
+      });
     });
   }
 
@@ -93,12 +97,36 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
   }
 
   Widget buildEmptyState(String userId) => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("Empty State"),
-        SystemCardButton(onTap: () => refresh(userId), text: "Refresh"),
-      ],
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SizedBox(
+        child: SystemCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
+              const SizedBox(height: 15),
+              Text(
+                AppLocalizations.of(context).no_friend_requests,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 15),
+              if (btnLoading)
+                BeatLoader()
+              else
+                MainAppButton(
+                  onTap: () {
+                    setState(() {
+                      btnLoading = true;
+                    });
+                    refresh(userId);
+                  },
+                  title: AppLocalizations.of(context).refresh,
+                ),
+            ],
+          ),
+        ),
+      ),
     ),
   );
 

@@ -2098,6 +2098,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'About Us'**
   String get about_us_title;
+
+  /// No description provided for @no_friend_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have any friend requests at the moment.'**
+  String get no_friend_requests;
+
+  /// No description provided for @no_friends.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have any friends at the moment.'**
+  String get no_friends;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

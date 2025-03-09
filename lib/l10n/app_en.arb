@@ -344,7 +344,11 @@
   "total_friends_count": "Total Friends",
   "total_friend_requests_count": "Total Requests",
   "custom_quest_success": "The quest has been added successfully.",
-  "about_us_title": "About Us"
+  "about_us_title": "About Us",
+  "no_friend_requests": "You do not have any friend requests at the moment.",
+  "no_friends": "You do not have any friends at the moment."
+
+
 
 
 }

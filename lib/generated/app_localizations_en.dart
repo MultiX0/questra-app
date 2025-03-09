@@ -1031,4 +1031,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get about_us_title => 'About Us';
+
+  @override
+  String get no_friend_requests => 'You do not have any friend requests at the moment.';
+
+  @override
+  String get no_friends => 'You do not have any friends at the moment.';
 }

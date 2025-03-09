@@ -1031,4 +1031,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get about_us_title => 'معلومات عننا';
+
+  @override
+  String get no_friend_requests => 'لا توجد لديك أي طلبات صداقة حاليا.';
+
+  @override
+  String get no_friends => 'لايوجد لديك أي أصدقاء حاليا';
 }

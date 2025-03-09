@@ -66,6 +66,8 @@ class FriendRequeststateNotifier extends StateNotifier<FriendRequestsState> {
 
   FriendsRepository get _repo => _ref.watch(friendsRepositoryProvider);
 
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+
   static const int _pageSize = 20;
 
   void removeUserFromState(String userId) async {
@@ -81,6 +83,7 @@ class FriendRequeststateNotifier extends StateNotifier<FriendRequestsState> {
       await _repo.accpetFriendRequest(request);
       _ref.read(friendsStateProvider.notifier).addUser(getUserFromState(userId));
       removeUserFromState(userId);
+      CustomToast.systemToast(isArabic ? "✅ تم قبول طلب الصداقة!" : "✅ Friend request accepted!");
     } catch (e, trace) {
       log(e.toString(), stackTrace: trace);
     }
@@ -95,6 +98,7 @@ class FriendRequeststateNotifier extends StateNotifier<FriendRequestsState> {
       final request = getFriendRequestById(userId);
       await _repo.updateFriendRequest(request.copyWith(status: FriendsStatusEnum.rejected));
       removeUserFromState(userId);
+      CustomToast.systemToast(isArabic ? "تم رفض طلب الصداقة." : "Friend request declined.");
     } catch (e, trace) {
       log(e.toString(), stackTrace: trace);
     }

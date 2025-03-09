@@ -29,22 +29,9 @@ class NoneActiveQuestsWidget extends ConsumerWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-              backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: HexColor('7AD5FF')),
-              ),
-              foregroundColor: AppColors.whiteColor,
-              textStyle: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onPressed: () {
-              ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-              ref.read(navigationShellProvider).goBranch(1);
-            },
-            child: Text(AppLocalizations.of(context).add_quest),
+          MainAppButton(
+            onTap: () => ref.read(navigationShellProvider).goBranch(1),
+            title: AppLocalizations.of(context).add_quest,
           ),
         ],
       ),
