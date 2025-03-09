@@ -5,4 +5,6 @@ class FunctionNames {
   static const get_recent_exceptions_stats = 'get_recent_exceptions_stats';
   static const get_today_coins_count = 'get_today_coins_count';
   static const count_event_players = 'count_event_players';
+  static const get_friends_count = 'get_friends_count';
+  static const get_friend_requests_count = 'get_friend_requests_count';
 }

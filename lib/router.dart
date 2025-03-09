@@ -112,6 +112,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return MaterialPage(child: PlayerCompletionPage(userId: userId));
         },
       ),
+      buildRoute(fade: true, path: Routes.firendsControllerPage, child: FriendsControllerPage()),
     ],
   );
 });

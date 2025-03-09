@@ -11,6 +11,7 @@ import 'package:questra_app/firebase_options.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_langdetect/flutter_langdetect.dart' as langdetect;
 import 'core/services/background_service.dart';
+
 import 'imports.dart';
 
 Future<void> main() async {
@@ -105,3 +106,13 @@ Future<void> _firebaseInit() async {
     throw Exception(e);
   }
 }
+
+// import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:open_settings/open_settings.dart';
+
+// Future<void> checkBatteryOptimization() async {
+//   AndroidDeviceInfo androidInfo = await DeviceInfoPlugin().androidInfo;
+//   if (androidInfo.version.sdkInt >= 23) {
+//     OpenSettings.openBatteryOptimizationSettings();
+//   }
+// }

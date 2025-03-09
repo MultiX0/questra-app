@@ -18,8 +18,8 @@ class PlayerRegisteredToEvent extends ConsumerStatefulWidget {
 
 class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEvent> {
   final ScrollController _scrollController = ScrollController();
-  int playersCount = 0;
   bool fetched = false;
+  int playersCount = 0;
 
   @override
   void initState() {
@@ -82,7 +82,7 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
       },
       child:
           state.users.isEmpty && state.isLoading
-              ? const Center(child: BeatLoader())
+              ? BeatLoader()
               : state.hasError
               ? Center(child: Text('Error: ${state.errorMessage}'))
               : Padding(

@@ -1013,4 +1013,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String event_quest_finish_alert(Object minPicsNeeds) {
     return 'You need to provide at least $minPicsNeeds photos';
   }
+
+  @override
+  String get friends => 'Friends';
+
+  @override
+  String get requests => 'Requests';
+
+  @override
+  String get total_friends_count => 'Total Friends';
+
+  @override
+  String get total_friend_requests_count => 'Total Requests';
+
+  @override
+  String get custom_quest_success => 'The quest has been added successfully.';
+
+  @override
+  String get about_us_title => 'About Us';
+
+  @override
+  String get no_friend_requests => 'You do not have any friend requests at the moment.';
+
+  @override
+  String get no_friends => 'You do not have any friends at the moment.';
 }

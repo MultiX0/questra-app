@@ -338,11 +338,17 @@
   "custom_quest_add_toast": "You need to enter at least 10 characters to be able to create a special quest, and you also need to enter precise details about the quest.",
   "custom_quest_add_alert": "You cannot leave this page while the quest is being created.",
   "last_submit_time_quest":"Expected finish at: {date}",
-  "event_quest_finish_alert": "You need to provide at least {minPicsNeeds} photos"
+  "event_quest_finish_alert": "You need to provide at least {minPicsNeeds} photos",
+  "friends": "Friends",
+  "requests": "Requests",
+  "total_friends_count": "Total Friends",
+  "total_friend_requests_count": "Total Requests",
+  "custom_quest_success": "The quest has been added successfully.",
+  "about_us_title": "About Us",
+  "no_friend_requests": "You do not have any friend requests at the moment.",
+  "no_friends": "You do not have any friends at the moment."
 
 
 
 
-
-  
 }

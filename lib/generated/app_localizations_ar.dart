@@ -1013,4 +1013,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String event_quest_finish_alert(Object minPicsNeeds) {
     return 'يجب عليك تقديم ما لا يقل عن $minPicsNeeds صور.';
   }
+
+  @override
+  String get friends => 'الأصدقاء';
+
+  @override
+  String get requests => 'الطلبات';
+
+  @override
+  String get total_friends_count => 'عدد الأصدقاء';
+
+  @override
+  String get total_friend_requests_count => 'عدد الطلبات';
+
+  @override
+  String get custom_quest_success => 'تمت اضافة المهمة بنجاح';
+
+  @override
+  String get about_us_title => 'معلومات عننا';
+
+  @override
+  String get no_friend_requests => 'لا توجد لديك أي طلبات صداقة حاليا.';
+
+  @override
+  String get no_friends => 'لايوجد لديك أي أصدقاء حاليا';
 }

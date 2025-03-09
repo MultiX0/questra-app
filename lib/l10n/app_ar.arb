@@ -334,7 +334,19 @@
   "custom_quest_add_toast": "يجب عليك إدخال 10 أحرف على الأقل لإنشاء مهمة خاصة، كما تحتاج إلى إدخال تفاصيل دقيقة حول المهمة.",
   "custom_quest_add_alert": "لا يمكنك مغادرة هذه الصفحة أثناء إنشاء المهمة.",
   "last_submit_time_quest":"يرجى تسليم المهمة قبل {date}",
-  "event_quest_finish_alert": "يجب عليك تقديم ما لا يقل عن {minPicsNeeds} صور."
+  "event_quest_finish_alert": "يجب عليك تقديم ما لا يقل عن {minPicsNeeds} صور.",
+  "friends": "الأصدقاء",
+  "requests": "الطلبات",
+  "total_friends_count": "عدد الأصدقاء",
+  "total_friend_requests_count": "عدد الطلبات",
+  "custom_quest_success": "تمت اضافة المهمة بنجاح",
+  "about_us_title": "معلومات عننا",
+  "no_friend_requests": "لا توجد لديك أي طلبات صداقة حاليا.",
+  "no_friends": "لايوجد لديك أي أصدقاء حاليا"
+
+
+
+
 
 
 

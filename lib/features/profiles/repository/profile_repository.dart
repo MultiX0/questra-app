@@ -171,4 +171,14 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<List<UserModel>> getUsersIn(List<String> ids) async {
+    try {
+      final data = await _profilesTable.select("*").inFilter(KeyNames.id, ids);
+      return data.map((user) => UserModel.fromMap(user)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }

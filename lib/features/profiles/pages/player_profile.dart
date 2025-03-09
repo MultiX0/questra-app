@@ -117,7 +117,9 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
   SystemCard buildFriendsCard() {
     return SystemCard(
       duration: const Duration(milliseconds: 1700),
-      onTap: soon,
+
+      onTap: () => context.push(Routes.firendsControllerPage),
+      // onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,

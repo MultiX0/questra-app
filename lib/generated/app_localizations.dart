@@ -2062,6 +2062,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You need to provide at least {minPicsNeeds} photos'**
   String event_quest_finish_alert(Object minPicsNeeds);
+
+  /// No description provided for @friends.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends'**
+  String get friends;
+
+  /// No description provided for @requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Requests'**
+  String get requests;
+
+  /// No description provided for @total_friends_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Friends'**
+  String get total_friends_count;
+
+  /// No description provided for @total_friend_requests_count.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Requests'**
+  String get total_friend_requests_count;
+
+  /// No description provided for @custom_quest_success.
+  ///
+  /// In en, this message translates to:
+  /// **'The quest has been added successfully.'**
+  String get custom_quest_success;
+
+  /// No description provided for @about_us_title.
+  ///
+  /// In en, this message translates to:
+  /// **'About Us'**
+  String get about_us_title;
+
+  /// No description provided for @no_friend_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have any friend requests at the moment.'**
+  String get no_friend_requests;
+
+  /// No description provided for @no_friends.
+  ///
+  /// In en, this message translates to:
+  /// **'You do not have any friends at the moment.'**
+  String get no_friends;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
