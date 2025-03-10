@@ -7,3 +7,5 @@ final getUserLengthProvider = StateProvider<int>((ref) {
 final usersWithActiveRequestFromMe = StateProvider<List<UserModel>>((ref) {
   return [];
 });
+
+final friendRequestLoadingProvider = StateProvider.family<bool, String>((ref, userId) => false);

@@ -2122,6 +2122,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.'**
   String get ad_block_toast;
+
+  /// No description provided for @already_friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get already_friend;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @add_friends_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the username you are looking for.'**
+  String get add_friends_search_hint;
+
+  /// No description provided for @add_friends_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results are empty'**
+  String get add_friends_empty_state;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

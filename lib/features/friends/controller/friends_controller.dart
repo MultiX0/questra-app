@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/core/enums/friends_status_enum.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -21,22 +22,33 @@ class FriendsController extends StateNotifier<bool> {
 
   FriendsRepository get _repo => _ref.watch(friendsRepositoryProvider);
 
-  Future<void> handleRequests({required String reciverId}) async {
+  Future<void> handleRequests({required UserModel reciver}) async {
+    _ref.read(friendRequestLoadingProvider(reciver.id).notifier).state = true;
+
     try {
       state = true;
       final user = _ref.read(authStateProvider)!;
       final request = FriendRequestModel(
         id: -1,
         senderId: user.id,
-        receiverId: reciverId,
+        receiverId: reciver.id,
         requestDate: DateTime.now(),
         status: FriendsStatusEnum.pending,
       );
+
       await _repo.sendFriendRequest(request);
+      final _currentRequests = _ref.read(usersWithActiveRequestFromMe);
+      if (_currentRequests.any((user) => user.id == reciver.id)) {
+        _ref.read(usersWithActiveRequestFromMe.notifier).state =
+            _currentRequests.where((u) => u.id != reciver.id).toList();
+      } else {
+        _ref.read(usersWithActiveRequestFromMe.notifier).state = [..._currentRequests, reciver];
+      }
     } catch (e) {
       log(e.toString());
       CustomToast.systemToast(appError);
     }
+    _ref.read(friendRequestLoadingProvider(reciver.id).notifier).state = false;
     state = false;
   }
 

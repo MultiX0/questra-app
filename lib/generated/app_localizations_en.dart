@@ -1043,4 +1043,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ad_block_toast => 'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.';
+
+  @override
+  String get already_friend => 'Friend';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get add_friends_search_hint => 'Enter the username you are looking for.';
+
+  @override
+  String get add_friends_empty_state => 'Search results are empty';
 }

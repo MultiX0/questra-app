@@ -32,7 +32,7 @@ class FriendsRepository {
       }
 
       if (_request.status == FriendsStatusEnum.pending) {
-        await _cancelFriendRequest(request);
+        await _cancelFriendRequest(_request);
       }
     } catch (e) {
       log(e.toString());
@@ -42,6 +42,8 @@ class FriendsRepository {
 
   Future<void> _cancelFriendRequest(FriendRequestModel request) async {
     try {
+      log("canceling the friend request");
+      log("request_id: ${request.id}");
       await _friendsRequestsTable
           .update({KeyNames.status: friendsEnumToString(FriendsStatusEnum.canceled)})
           .eq(KeyNames.request_id, request.id);

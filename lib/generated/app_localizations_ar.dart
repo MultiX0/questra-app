@@ -1043,4 +1043,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ad_block_toast => 'تحذير: اذا كنت تستخدم أي مانع اعلانات أو  vpn يقوم بحظر الاعلانات بأي شكل من الأشكال الرجاء اطفائه لان بعض الخواص في التطبيق لن تتمكن من العمل بشكل صحيح.';
+
+  @override
+  String get already_friend => 'صديق';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get add_friends_search_hint => 'قم بادخال اسم المستخدم الذي تبحث عنه';
+
+  @override
+  String get add_friends_empty_state => 'نتائج البحث فارغة';
 }

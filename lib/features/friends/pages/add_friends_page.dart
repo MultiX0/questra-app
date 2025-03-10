@@ -5,6 +5,7 @@ import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/friends/controller/friends_controller.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
+import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/imports.dart';
 
@@ -48,12 +49,8 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
         appBar: TheAppBar(title: AppLocalizations.of(context).add_friends_btn),
         body: Column(
           children: [
-            TextField(
-              controller: _controller,
-              decoration: InputDecoration(labelText: "Search"),
-              inputFormatters: [FilteringTextInputFormatter.deny(RegExp("[^0-9a-z_]"))],
-              onChanged: (value) => _search(value.trim()),
-            ),
+            Padding(padding: const EdgeInsets.all(16.0), child: buildField(context)),
+            const SizedBox(height: 25),
             Expanded(
               child: ref
                   .watch(searchPlayers(query))
@@ -80,9 +77,51 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
     );
   }
 
+  TextField buildField(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      cursorColor: AppColors.primary,
+
+      decoration: InputDecoration(
+        labelStyle: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 18),
+        hintText: AppLocalizations.of(context).add_friends_search_hint,
+        labelText: AppLocalizations.of(context).search,
+        hintStyle: TextStyle(fontSize: 13),
+        filled: true,
+        fillColor: Colors.black.withValues(alpha: .25),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp("[^0-9a-z_]"))],
+      onChanged: (value) => _search(value.trim()),
+    );
+  }
+
   Padding buildPlayerCard(UserModel user) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       child: SystemCard(
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
         child: Row(
@@ -99,42 +138,89 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
                 ),
               ),
             ),
-            buildActions(user.id),
+            buildActions(user),
           ],
         ),
       ),
     );
   }
 
-  void handleAddFriend(String userId) async {
+  void handleSendriendRequest(UserModel user) async {
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    ref.read(friendsControllerProvider.notifier).handleRequests(reciver: user);
   }
 
   void handleCancelFriendRequest(String userId) async {
     ref.read(soundEffectsServiceProvider).playSystemButtonClick();
   }
 
-  Widget buildActions(String userId) {
-    final isLoading = ref.watch(friendsControllerProvider);
-    final _hasActiveRequest = ref
-        .watch(usersWithActiveRequestFromMe)
-        .any((user) => user.id == userId);
+  void handleRequestForMe(bool accept, String userId) {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    if (accept) {
+      ref.read(friendsRequestsProvider.notifier).acceptFriend(userId);
+      return;
+    }
+    ref.read(friendsRequestsProvider.notifier).declineFriend(userId);
+  }
 
-    final isAlreadyFrined = ref.watch(friendsStateProvider).users.any((user) => user.id == userId);
-    return !isLoading
+  Widget buildActions(UserModel user) {
+    final isUserLoading = ref.watch(friendRequestLoadingProvider(user.id));
+    final _hasActiveRequest = ref.watch(usersWithActiveRequestFromMe).contains(user);
+
+    final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(user);
+    final isRequestingMe = ref.watch(friendsRequestsProvider).users.contains(user);
+    return !isUserLoading
         ? _hasActiveRequest
             ? buildActionButton(
               icon: LucideIcons.minus,
-              onTap: () => handleCancelFriendRequest(userId),
+              onTap: () => handleSendriendRequest(user),
               color: Colors.red[500]!,
             )
             : isAlreadyFrined
-            ? const SizedBox.shrink()
+            ? buildFriendBadge()
+            : isRequestingMe
+            ? buildRequestForMe(user.id)
             : buildActionButton(
               icon: LucideIcons.user_plus,
-              onTap: () => handleAddFriend(userId),
+              onTap: () => handleSendriendRequest(user),
               color: Colors.green.shade300,
             )
+        : BeatLoader();
+  }
+
+  Widget buildFriendBadge() {
+    return SystemCard(
+      isButton: true,
+      borderRadius: 4,
+      onTap: () => ref.read(soundEffectsServiceProvider).playSystemButtonClick(),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+      child: Center(
+        child: Text(
+          AppLocalizations.of(context).already_friend,
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
+    );
+  }
+
+  Widget buildRequestForMe(String userId) {
+    final isLoading = ref.watch(friendsRequestsProvider).loadingActionsUsers.contains(userId);
+    return !isLoading
+        ? Row(
+          children: [
+            buildActionButton(
+              icon: LucideIcons.plus,
+              onTap: () => handleRequestForMe(true, userId),
+              color: Colors.green.shade300,
+            ),
+            const SizedBox(width: 15),
+            buildActionButton(
+              icon: LucideIcons.minus,
+              onTap: () => handleRequestForMe(false, userId),
+              color: Colors.red.shade600,
+            ),
+          ],
+        )
         : BeatLoader();
   }
 
@@ -152,7 +238,25 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
     );
   }
 
-  Widget buildEmptyState() {
-    return Center();
-  }
+  Widget buildEmptyState() => Center(
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SizedBox(
+        child: SystemCard(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
+              const SizedBox(height: 15),
+              Text(
+                AppLocalizations.of(context).add_friends_empty_state,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 15),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 }
