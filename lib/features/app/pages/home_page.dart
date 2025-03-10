@@ -78,7 +78,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       fcmUnSubscribe('en');
       fcmSubscribe('ar');
     }
-    final user = ref.watch(authStateProvider);
+    final user = ref.read(authStateProvider);
     ref.read(localeProvider.notifier).state = newLang;
     await ref
         .read(profileRepositoryProvider)
@@ -88,6 +88,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final duration = const Duration(milliseconds: 800);
+    final me = ref.watch(authStateProvider);
 
     return BackgroundWidget(
       child: Scaffold(
@@ -137,7 +138,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ),
               const SizedBox(height: 15),
-              UserDashboardWidget(duration: const Duration(milliseconds: 1400)),
+              UserDashboardWidget(duration: const Duration(milliseconds: 1400), user: me!),
               const SizedBox(height: 15),
               DashboardQuestWidget(),
             ],

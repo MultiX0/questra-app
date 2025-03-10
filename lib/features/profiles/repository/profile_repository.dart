@@ -4,7 +4,10 @@ import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
 import 'package:questra_app/features/preferences/repository/user_preferences_repository.dart';
+import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
+import 'package:questra_app/features/ranking/repository/ranking_repository.dart';
 import 'package:questra_app/features/titles/models/player_title_model.dart';
+import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
@@ -176,6 +179,37 @@ class ProfileRepository {
     try {
       final data = await _profilesTable.select("*").inFilter(KeyNames.id, ids);
       return data.map((user) => UserModel.fromMap(user)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<UserModel> getUserProfileById(String userId) async {
+    try {
+      final data = await _profilesTable.select("*").eq(KeyNames.id, userId).maybeSingle();
+      UserModel _user = UserModel.fromMap(data!);
+      final _data = await Future.wait<dynamic>([
+        _ref.read(levelingRepositoryProvider).getUserLevel(userId),
+        getActiveTitle(userId),
+        _ref.read(walletRepositoryProvider).getUserWallet(userId),
+        _ref.read(rankingProvider).getPlayerGlobalRank(userId),
+      ]);
+      final [userLevel, userActiveTitle, userWallet, playerRank] = _data;
+      log(
+        "=======================================================================================",
+      );
+      _ref.read(otherPlayerProfileProvider.notifier).state = playerRank;
+      log(
+        "                                         $playerRank                                       ",
+      );
+
+      log(
+        "=======================================================================================",
+      );
+
+      _user = _user.copyWith(level: userLevel, wallet: userWallet, activeTitle: userActiveTitle);
+      return _user;
     } catch (e) {
       log(e.toString());
       rethrow;

@@ -30,4 +30,5 @@ class Routes {
   static const playerCompletionPage = '/playerCompletionPage';
   static const firendsControllerPage = '/firendsControllerPage';
   static const addFriendsPage = '/addFriendsPage';
+  static const player = '/player';
 }

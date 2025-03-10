@@ -13,6 +13,11 @@ final profileControllerProvider = StateNotifierProvider<ProfileController, bool>
   return ProfileController(ref: ref);
 });
 
+final getUserProfileProvider = FutureProvider.family<UserModel, String>((ref, userId) async {
+  final _controller = ref.watch(profileControllerProvider.notifier);
+  return await _controller.getUserProfileById(userId);
+});
+
 class ProfileController extends StateNotifier<bool> {
   final Ref _ref;
   ProfileController({required Ref ref}) : _ref = ref, super(false);
@@ -103,5 +108,14 @@ class ProfileController extends StateNotifier<bool> {
       rethrow;
     }
     state = false;
+  }
+
+  Future<UserModel> getUserProfileById(String userId) async {
+    try {
+      return await _repo.getUserProfileById(userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }

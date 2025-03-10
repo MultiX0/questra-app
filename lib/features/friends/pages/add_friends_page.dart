@@ -123,6 +123,10 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
       child: SystemCard(
+        onTap: () {
+          ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          context.push("${Routes.player}/${user.id}");
+        },
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
         child: Row(
           children: [

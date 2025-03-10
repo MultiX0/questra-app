@@ -114,6 +114,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       buildRoute(fade: true, path: Routes.firendsControllerPage, child: FriendsControllerPage()),
       buildRoute(fade: true, path: Routes.addFriendsPage, child: AddFriendsPage()),
+
+      GoRoute(
+        path: "${Routes.player}/:${KeyNames.user_id}",
+        pageBuilder: (context, state) {
+          final userId = state.pathParameters[KeyNames.user_id] ?? "";
+          return MaterialPage(child: OtherProfile(userId: userId));
+        },
+      ),
     ],
   );
 });

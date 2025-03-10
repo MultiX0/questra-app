@@ -56,10 +56,12 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
   }
 
   ListView buildMe() {
+    final user = ref.watch(authStateProvider);
+
     return ListView(
       children: [
         const SizedBox(height: 10),
-        UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true),
+        UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true, user: user!),
         const SizedBox(height: 15),
         BuildDashboardGrid(),
         const SizedBox(height: 15),
