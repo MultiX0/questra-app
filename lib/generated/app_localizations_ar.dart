@@ -1055,4 +1055,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get add_friends_empty_state => 'نتائج البحث فارغة';
+
+  @override
+  String get friendship_status => 'حالة الصداقة';
 }

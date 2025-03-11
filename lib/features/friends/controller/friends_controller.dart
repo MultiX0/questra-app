@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:questra_app/core/enums/friends_status_enum.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
+import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -49,6 +50,27 @@ class FriendsController extends StateNotifier<bool> {
       CustomToast.systemToast(appError);
     }
     _ref.read(friendRequestLoadingProvider(reciver.id).notifier).state = false;
+    state = false;
+  }
+
+  Future<void> handleRemoveFriend(String userId) async {
+    state = true;
+
+    try {
+      final me = _ref.read(authStateProvider)!;
+      await _repo.removeFriend(user1: me.id, user2: userId);
+      _ref.read(friendsStateProvider.notifier).removeUser(userId);
+      CustomToast.systemToast("friend is succefully removed");
+    } catch (e, trace) {
+      log(e.toString(), stackTrace: trace);
+      CustomToast.systemToast(appError);
+      await ExceptionService.insertException(
+        path: "/friends_controller",
+        error: "$e\ntrace:$trace",
+        userId: userId,
+      );
+    }
+
     state = false;
   }
 

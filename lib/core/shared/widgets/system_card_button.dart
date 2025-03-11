@@ -8,6 +8,7 @@ class SystemCardButton extends ConsumerWidget {
     required this.onTap,
     this.text,
     this.defaultSound = true,
+    this.color,
   });
 
   final String? text;
@@ -15,6 +16,7 @@ class SystemCardButton extends ConsumerWidget {
   final Function() onTap;
   final bool? isCenter;
   final bool defaultSound;
+  final Color? color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,7 +40,7 @@ class SystemCardButton extends ConsumerWidget {
         "[ ${text ?? AppLocalizations.of(context).done} ]",
         style: TextStyle(
           fontSize: 16,
-          color: doneButton == false ? AppColors.redColor : AppColors.primary,
+          color: color ?? (doneButton == false ? AppColors.redColor : AppColors.primary),
         ),
       ),
     );

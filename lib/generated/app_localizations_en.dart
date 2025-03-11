@@ -1055,4 +1055,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get add_friends_empty_state => 'Search results are empty';
+
+  @override
+  String get friendship_status => 'Friendship Status';
 }

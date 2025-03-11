@@ -181,12 +181,22 @@ class FriendsRepository {
 
   Future<FriendshipModel?> getFriend({required String user1, required String user2}) async {
     try {
-      final data =
-          await _friendshipTable
-              .select("*")
-              .or('${KeyNames.sender_id}.eq.$user1,${KeyNames.receiver_id}.eq.$user1')
-              .or('${KeyNames.sender_id}.eq.$user2,${KeyNames.receiver_id}.eq.$user2')
-              .maybeSingle();
+      final query = _friendshipTable.select("*");
+
+      // First possible arrangement: user1 is user_id1 and user2 is user_id2
+      final condition1 = query.eq(KeyNames.user_id1, user1).eq(KeyNames.user_id2, user2);
+
+      // Second possible arrangement: user2 is user_id1 and user1 is user_id2
+      final condition2 = _friendshipTable
+          .select("*")
+          .eq(KeyNames.user_id1, user2)
+          .eq(KeyNames.user_id2, user1);
+
+      // Try to find using first arrangement
+      var data = await condition1.maybeSingle();
+
+      // If not found, try second arrangement
+      data ??= await condition2.maybeSingle();
 
       if (data == null) return null;
       return FriendshipModel.fromMap(data);
@@ -197,13 +207,15 @@ class FriendsRepository {
   }
 
   Future<void> removeFriend({required String user1, required String user2}) async {
+    log("userId1:$user1\nuserId2:$user2");
+
     try {
       final friendShip = await getFriend(user1: user1, user2: user2);
       if (friendShip == null) return;
       await _friendshipTable
           .delete()
-          .or('${KeyNames.sender_id}.eq.$user1,${KeyNames.receiver_id}.eq.$user1')
-          .or('${KeyNames.sender_id}.eq.$user2,${KeyNames.receiver_id}.eq.$user2');
+          .eq(KeyNames.user_id1, friendShip.userId1)
+          .eq(KeyNames.user_id2, friendShip.userId2);
     } catch (e) {
       log(e.toString());
       rethrow;

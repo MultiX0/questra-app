@@ -125,6 +125,8 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
       child: SystemCard(
         onTap: () {
           ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          ref.read(selectedFriendProvider.notifier).state = user;
+
           context.push("${Routes.player}/${user.id}");
         },
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
@@ -170,7 +172,6 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
   Widget buildActions(UserModel user) {
     final isUserLoading = ref.watch(friendRequestLoadingProvider(user.id));
     final _hasActiveRequest = ref.watch(usersWithActiveRequestFromMe).contains(user);
-
     final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(user);
     final isRequestingMe = ref.watch(friendsRequestsProvider).users.contains(user);
     return !isUserLoading

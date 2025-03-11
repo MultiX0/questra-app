@@ -2146,6 +2146,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Search results are empty'**
   String get add_friends_empty_state;
+
+  /// No description provided for @friendship_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Friendship Status'**
+  String get friendship_status;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

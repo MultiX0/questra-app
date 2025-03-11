@@ -104,4 +104,7 @@ class KeyNames {
   static const sender_id = 'sender_id';
   static const receiver_id = 'receiver_id';
   static const request_date = 'request_date';
+  static const dead_line = 'dead_line';
+  static const quest_content = 'quest_content';
+  static const is_accepted = 'is_accepted';
 }

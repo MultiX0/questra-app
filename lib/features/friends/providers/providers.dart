@@ -9,3 +9,5 @@ final usersWithActiveRequestFromMe = StateProvider<List<UserModel>>((ref) {
 });
 
 final friendRequestLoadingProvider = StateProvider.family<bool, String>((ref, userId) => false);
+
+final selectedFriendProvider = StateProvider<UserModel?>((ref) => null);

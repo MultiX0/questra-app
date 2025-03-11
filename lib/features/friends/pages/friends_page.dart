@@ -174,6 +174,7 @@ class FriendsPageState extends ConsumerState<FriendsPage> {
                   child: SystemCard(
                     onTap: () {
                       ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+                      ref.read(selectedFriendProvider.notifier).state = user;
                       context.push("${Routes.player}/${user.id}");
                     },
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),

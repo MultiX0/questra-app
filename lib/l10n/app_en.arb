@@ -352,7 +352,8 @@
   "already_friend": "Friend",
   "search": "Search",
   "add_friends_search_hint": "Enter the username you are looking for.",
-  "add_friends_empty_state": "Search results are empty"
+  "add_friends_empty_state": "Search results are empty",
+  "friendship_status": "Friendship Status"
 
 
 

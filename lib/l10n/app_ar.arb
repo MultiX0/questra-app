@@ -348,8 +348,9 @@
   "already_friend": "صديق",
   "search": "بحث",
   "add_friends_search_hint": "قم بادخال اسم المستخدم الذي تبحث عنه",
-  "add_friends_empty_state": "نتائج البحث فارغة"
-
+  "add_friends_empty_state": "نتائج البحث فارغة",
+  "friendship_status": "حالة الصداقة"
+  
 
 
 

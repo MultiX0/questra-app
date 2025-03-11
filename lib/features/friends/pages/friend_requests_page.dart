@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -178,6 +179,8 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
       child: SystemCard(
         onTap: () {
           ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          ref.read(selectedFriendProvider.notifier).state = user;
+
           context.push("${Routes.player}/${user.id}");
         },
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
