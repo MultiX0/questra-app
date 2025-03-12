@@ -107,4 +107,7 @@ class KeyNames {
   static const dead_line = 'dead_line';
   static const quest_content = 'quest_content';
   static const is_accepted = 'is_accepted';
+  static const ai_generated = 'ai_generated';
+  static const first_complete_win = 'first_complete_win';
+  static const players_completed = 'players_completed';
 }

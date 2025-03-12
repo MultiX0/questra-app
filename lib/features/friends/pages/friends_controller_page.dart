@@ -1,4 +1,3 @@
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/friends/pages/friend_requests_page.dart';
 import 'package:questra_app/features/friends/pages/friends_page.dart';
 import 'package:questra_app/imports.dart';

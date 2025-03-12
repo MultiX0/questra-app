@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/goals/controller/goals_controller.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';

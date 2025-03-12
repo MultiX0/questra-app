@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/gestures.dart';
+// ignore: unnecessary_import
 import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/auth/controller/auth_controller.dart';
 import 'package:questra_app/imports.dart';

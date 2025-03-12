@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/imports.dart';
 
@@ -12,11 +13,12 @@ class SharedQuestsRepository {
   SharedQuestsRepository({required Ref ref}) : _ref = ref;
 
   SupabaseClient get _client => _ref.watch(supabaseProvider);
-  SupabaseQueryBuilder get _sharedQuestsTable => _client.from(TableNames.shared_quests);
+  SupabaseQueryBuilder get _sharedQuestRequestsTable => _client.from(TableNames.shared_quests);
+  SupabaseQueryBuilder get _sharedQuestTable => _client.from(TableNames.shared_quests);
 
   Future<void> sendRequest(RequestModel request) async {
     try {
-      await _sharedQuestsTable.insert(request.toMap());
+      await _sharedQuestRequestsTable.insert(request.toMap());
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -25,7 +27,12 @@ class SharedQuestsRepository {
 
   Future<List<RequestModel>> getAllQuestRequests(String userId) async {
     try {
-      final data = await _sharedQuestsTable.select("*").eq(KeyNames.receiver_id, userId);
+      final now = DateTime.now().add(const Duration(hours: 3)).toIso8601String();
+      final data = await _sharedQuestRequestsTable
+          .select("*")
+          .eq(KeyNames.receiver_id, userId)
+          .eq(KeyNames.is_accepted, false)
+          .gt(KeyNames.dead_line, now);
       return data.map((request) => RequestModel.fromMap(request)).toList();
     } catch (e) {
       log(e.toString());
@@ -38,13 +45,34 @@ class SharedQuestsRepository {
     required String user2Id,
   }) async {
     try {
-      final data = await _sharedQuestsTable
-          .select("*")
-          .or('${KeyNames.sender_id}.eq.$user1Id,${KeyNames.receiver_id}.eq.$user1Id,')
-          .or('${KeyNames.sender_id}.eq.$user2Id,${KeyNames.receiver_id}.eq.$user2Id,')
+      final query = _sharedQuestTable.select("*");
+      final condition1 = query
+          .eq(KeyNames.sender_id, user1Id)
+          .eq(KeyNames.receiver_id, user2Id)
+          .order(KeyNames.created_at, ascending: false);
+      final condition2 = query
+          .eq(KeyNames.sender_id, user2Id)
+          .eq(KeyNames.receiver_id, user1Id)
           .order(KeyNames.created_at, ascending: false);
 
+      var data = await condition1;
+      if (data.isEmpty) {
+        data = await condition2;
+      }
+
       return data.map((request) => RequestModel.fromMap(request)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> completeQuest({required String userId, required String questId}) async {
+    try {
+      await _client.rpc(
+        FunctionNames.addCompletedPlayersToSharedQuest,
+        params: {'user_id': questId, 'quest_id': userId},
+      );
     } catch (e) {
       log(e.toString());
       rethrow;

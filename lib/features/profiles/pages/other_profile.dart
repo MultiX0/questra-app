@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
+import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/profiles/controller/profile_controller.dart';
 import 'package:questra_app/features/profiles/widgets/friendship_status_widget.dart';
+import 'package:questra_app/features/profiles/widgets/shared_quests_card.dart';
 import 'package:questra_app/imports.dart';
 
 class OtherProfile extends ConsumerStatefulWidget {
@@ -28,6 +28,9 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
   @override
   Widget build(BuildContext context) {
     log(userId);
+    final _user = ref.watch(selectedFriendProvider)!;
+    final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(_user);
+
     return BackgroundWidget(
       child: Scaffold(
         appBar: TheAppBar(title: AppLocalizations.of(context).profile),
@@ -36,11 +39,12 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
             .when(
               data: (user) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  padding: const EdgeInsets.all(15),
                   child: ListView(
                     children: [
                       UserDashboardWidget(user: user, duration: const Duration(seconds: 1)),
-                      FriendshipStatusWidget(user: ref.watch(selectedFriendProvider)!),
+                      FriendshipStatusWidget(user: _user),
+                      if (isAlreadyFrined) SharedQuestsCard(),
                     ],
                   ),
                 );

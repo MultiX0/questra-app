@@ -3,7 +3,6 @@ import 'package:questra_app/features/events/widgets/event_quest_card.dart';
 import 'package:questra_app/features/quests/widgets/quest_image_upload.dart';
 import 'package:questra_app/imports.dart';
 
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
 
 class ViewEventQuest extends ConsumerStatefulWidget {

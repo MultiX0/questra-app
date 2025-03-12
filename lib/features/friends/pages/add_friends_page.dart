@@ -1,8 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:questra_app/core/shared/utils/debounce.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/friends/controller/friends_controller.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';

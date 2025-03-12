@@ -21,19 +21,18 @@ class FriendsRepository {
   Future<void> sendFriendRequest(FriendRequestModel request) async {
     try {
       final _request = await getFriendRequest(user1: request.senderId, user2: request.receiverId);
+      log("the request is: ${_request?.toMap()}");
       if (_request == null) {
         await _friendsRequestsTable.insert(request.toMap());
         return;
       }
 
-      if (_request.status == FriendsStatusEnum.rejected) {
-        await updateFriendRequest(request);
+      if (_request.status == FriendsStatusEnum.pending) {
+        await _cancelFriendRequest(_request);
         return;
       }
 
-      if (_request.status == FriendsStatusEnum.pending) {
-        await _cancelFriendRequest(_request);
-      }
+      await updateFriendRequest(request.copyWith(id: _request.id));
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -55,9 +54,7 @@ class FriendsRepository {
 
   Future<void> updateFriendRequest(FriendRequestModel request) async {
     try {
-      await _friendsRequestsTable
-          .update({KeyNames.status: request.status.name})
-          .eq(KeyNames.request_id, request.id);
+      await _friendsRequestsTable.update(request.toMap()).eq(KeyNames.request_id, request.id);
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -70,12 +67,12 @@ class FriendsRepository {
   }) async {
     try {
       // await
-      final data =
-          await _friendsRequestsTable
-              .select("*")
-              .or('${KeyNames.sender_id}.eq.$user1,${KeyNames.receiver_id}.eq.$user1')
-              .or('${KeyNames.sender_id}.eq.$user2,${KeyNames.receiver_id}.eq.$user2')
-              .maybeSingle();
+
+      final query = _friendsRequestsTable.select("*");
+      final condition1 = query.eq(KeyNames.sender_id, user1).eq(KeyNames.receiver_id, user2);
+      final condition2 = query.eq(KeyNames.sender_id, user2).eq(KeyNames.receiver_id, user1);
+      var data = await condition1.maybeSingle();
+      data ??= await condition2.maybeSingle();
 
       if (data == null) return null;
 
@@ -181,16 +178,13 @@ class FriendsRepository {
 
   Future<FriendshipModel?> getFriend({required String user1, required String user2}) async {
     try {
-      final query = _friendshipTable.select("*");
+      final query = _friendshipTable.select("*,${TableNames.friend_requests}(*)");
 
       // First possible arrangement: user1 is user_id1 and user2 is user_id2
       final condition1 = query.eq(KeyNames.user_id1, user1).eq(KeyNames.user_id2, user2);
 
       // Second possible arrangement: user2 is user_id1 and user1 is user_id2
-      final condition2 = _friendshipTable
-          .select("*")
-          .eq(KeyNames.user_id1, user2)
-          .eq(KeyNames.user_id2, user1);
+      final condition2 = query.eq(KeyNames.user_id1, user2).eq(KeyNames.user_id2, user1);
 
       // Try to find using first arrangement
       var data = await condition1.maybeSingle();
@@ -199,7 +193,9 @@ class FriendsRepository {
       data ??= await condition2.maybeSingle();
 
       if (data == null) return null;
-      return FriendshipModel.fromMap(data);
+      return FriendshipModel.fromMap(
+        data,
+      ).copyWith(requestModel: FriendRequestModel.fromMap(data[TableNames.friend_requests]));
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -211,7 +207,15 @@ class FriendsRepository {
 
     try {
       final friendShip = await getFriend(user1: user1, user2: user2);
+      log("request details: ${friendShip?.requestModel.toString()}");
+
       if (friendShip == null) return;
+      if (friendShip.requestModel != null) {
+        await updateFriendRequest(
+          friendShip.requestModel!.copyWith(status: FriendsStatusEnum.removed),
+        );
+      }
+
       await _friendshipTable
           .delete()
           .eq(KeyNames.user_id1, friendShip.userId1)

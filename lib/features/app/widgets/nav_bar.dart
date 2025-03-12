@@ -4,7 +4,6 @@ import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/features/lootbox/pages/lootbox_page.dart' show LootboxPage;
 import 'package:questra_app/features/onboarding/pages/define_religion_page.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
 // import '../pages/new_version_page.dart';
 

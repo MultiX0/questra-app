@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/providers/leveling_providers.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'dart:math' as math;

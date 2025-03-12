@@ -89,12 +89,12 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(const Duration(milliseconds: 550)),
+          .debounceTime(const Duration(milliseconds: 500)),
       _supabase
           .from(TableNames.wallet)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(const Duration(milliseconds: 700)),
+          .debounceTime(const Duration(milliseconds: 600)),
     ]).listen(
       (events) => _handleUserDataUpdate(events, userId),
       onError: (error) {

@@ -15,6 +15,8 @@ class SharedQuestsController extends StateNotifier<bool> {
     required String questContent,
     required String receiverId,
     required DateTime deadLine,
+    required bool isAiGenerated,
+    required bool firstCompleteWin,
   }) async {
     state = true;
     final user = _ref.read(authStateProvider)!;
@@ -24,7 +26,10 @@ class SharedQuestsController extends StateNotifier<bool> {
         deadLine: deadLine,
         receiverId: receiverId,
         senderId: user.id,
+        aiGenerated: isAiGenerated,
         requestId: -1,
+        firstCompleteWin: firstCompleteWin,
+        isAccepted: false,
       );
       await _repo.sendRequest(request);
       final toastMessage =

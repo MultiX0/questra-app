@@ -84,3 +84,5 @@ export 'package:questra_app/features/friends/pages/friends_controller_page.dart'
 export 'package:questra_app/core/shared/widgets/main_app_btn.dart';
 export 'package:questra_app/features/friends/pages/add_friends_page.dart';
 export 'package:questra_app/features/profiles/pages/other_profile.dart';
+export 'package:questra_app/core/shared/widgets/background_widget.dart';
+export 'package:questra_app/core/shared/widgets/beat_loader.dart';

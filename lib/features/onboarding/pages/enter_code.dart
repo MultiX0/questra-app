@@ -1,15 +1,8 @@
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/profiles/controller/profile_controller.dart';
 import 'package:questra_app/imports.dart';
 
-import '../../../core/shared/widgets/beat_loader.dart';
-
 class EnterCode extends ConsumerStatefulWidget {
-  const EnterCode({
-    super.key,
-    required this.next,
-    required this.prev,
-  });
+  const EnterCode({super.key, required this.next, required this.prev});
 
   final VoidCallback next;
   final VoidCallback prev;
@@ -31,12 +24,7 @@ class _EnterCodeState extends ConsumerState<EnterCode> {
     return BackgroundWidget(
       child: Scaffold(
         appBar: TheAppBar(title: "Enter Code"),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: buildAddForm(),
-          ),
-        ),
+        body: Padding(padding: const EdgeInsets.all(16.0), child: Center(child: buildAddForm())),
       ),
     );
   }
@@ -59,41 +47,20 @@ class _EnterCodeState extends ConsumerState<EnterCode> {
                   children: [
                     Text(
                       "Secret Code",
-                      style: TextStyle(
-                        fontFamily: AppFonts.header,
-                        fontSize: 18,
-                      ),
+                      style: TextStyle(fontFamily: AppFonts.header, fontSize: 18),
                     ),
-                    Icon(
-                      LucideIcons.sparkles,
-                      color: AppColors.primary,
-                    ),
+                    Icon(LucideIcons.sparkles, color: AppColors.primary),
                   ],
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 buildCodeForm(size),
-                const SizedBox(
-                  height: 15,
-                ),
+                const SizedBox(height: 15),
                 Text(
                   "hint: Your need an invite code to be able to signup",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.white60,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.white60),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                if (isLoading) ...[
-                  BeatLoader(),
-                ] else ...[
-                  SystemCardButton(
-                    onTap: finish,
-                  ),
-                ],
+                const SizedBox(height: 15),
+                if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: finish)],
               ],
             ),
           ),
@@ -104,18 +71,14 @@ class _EnterCodeState extends ConsumerState<EnterCode> {
 
   void finish() {
     final userId = Supabase.instance.client.auth.currentUser!.id;
-    ref.read(profileControllerProvider.notifier).checkTheCode(
-          _controller.text.trim(),
-          userId,
-          context: context,
-        );
+    ref
+        .read(profileControllerProvider.notifier)
+        .checkTheCode(_controller.text.trim(), userId, context: context);
   }
 
   ConstrainedBox buildCodeForm(Size size) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: size.width * .25,
-      ),
+      constraints: BoxConstraints(maxHeight: size.width * .25),
       child: TextField(
         keyboardType: TextInputType.number,
         maxLength: 8,

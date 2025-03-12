@@ -353,7 +353,18 @@
   "search": "Search",
   "add_friends_search_hint": "Enter the username you are looking for.",
   "add_friends_empty_state": "Search results are empty",
-  "friendship_status": "Friendship Status"
+  "friendship_status": "Friendship Status",
+  "notFriend": "Not Friend",
+  "friend": "Friend",
+  "pending": "Pending",
+  "requestingYou": "Requesting You",
+  "cancelRequest": "Cancel Request",
+  "removeFriend": "Remove Friend",
+  "reject": "Reject",
+  "accept": "Accept",
+  "shared_quests": "Shared Quests",
+  "remove_friend_alert": "Do you want to remove this friend from your account?"
+
 
 
 

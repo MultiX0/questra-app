@@ -2152,6 +2152,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Friendship Status'**
   String get friendship_status;
+
+  /// No description provided for @notFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Friend'**
+  String get notFriend;
+
+  /// No description provided for @friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get friend;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @requestingYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting You'**
+  String get requestingYou;
+
+  /// No description provided for @cancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Request'**
+  String get cancelRequest;
+
+  /// No description provided for @removeFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Friend'**
+  String get removeFriend;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @shared_quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared Quests'**
+  String get shared_quests;
+
+  /// No description provided for @remove_friend_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remove this friend from your account?'**
+  String get remove_friend_alert;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,15 +1,18 @@
 import 'package:questra_app/core/shared/constants/key_names.dart';
+import 'package:questra_app/features/friends/models/friend_request_model.dart';
 
 class FriendshipModel {
   final String userId1;
   final String userId2;
   final int requestId;
   final DateTime createdAt;
+  final FriendRequestModel? requestModel;
   FriendshipModel({
     required this.userId1,
     required this.userId2,
     required this.requestId,
     required this.createdAt,
+    this.requestModel,
   });
 
   FriendshipModel copyWith({
@@ -17,12 +20,14 @@ class FriendshipModel {
     String? userId2,
     int? requestId,
     DateTime? createdAt,
+    FriendRequestModel? requestModel,
   }) {
     return FriendshipModel(
       userId1: userId1 ?? this.userId1,
       userId2: userId2 ?? this.userId2,
       requestId: requestId ?? this.requestId,
       createdAt: createdAt ?? this.createdAt,
+      requestModel: requestModel ?? this.requestModel,
     );
   }
 

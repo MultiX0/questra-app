@@ -349,8 +349,18 @@
   "search": "بحث",
   "add_friends_search_hint": "قم بادخال اسم المستخدم الذي تبحث عنه",
   "add_friends_empty_state": "نتائج البحث فارغة",
-  "friendship_status": "حالة الصداقة"
-  
+  "friendship_status": "حالة الصداقة",
+  "notFriend": "ليس صديق",
+  "friend": "صديق",
+  "pending": "قيد الانتظار",
+  "requestingYou": "يطلب صداقتك",
+  "cancelRequest": "إلغاء الطلب",
+  "removeFriend": "إزالة الصديق",
+  "reject": "رفض",
+  "accept": "قبول",
+  "shared_quests": "المهام المشتركة",
+  "remove_friend_alert": "هل تريد حذف هذا الصديق من حسابك ؟"
+
 
 
 

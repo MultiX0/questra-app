@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/profiles/widgets/dashboard_grid.dart';
 import 'package:questra_app/imports.dart';

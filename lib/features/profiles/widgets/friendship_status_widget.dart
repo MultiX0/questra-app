@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/friends/controller/friends_controller.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
@@ -47,7 +46,10 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
                 ),
               ],
             ),
-            Center(child: buildActions(user)),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(padding: const EdgeInsets.only(top: 15), child: buildActions(user)),
+            ),
           ],
         ),
       ),
@@ -55,30 +57,74 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
   }
 
   Widget buildStatusText() {
-    String statusText = 'Not Friend';
+    String statusText = AppLocalizations.of(context).notFriend;
     Color statusColor = AppColors.whiteColor;
     final _hasActiveRequest = ref.watch(usersWithActiveRequestFromMe).contains(user);
     final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(user);
     final isRequestingMe = ref.watch(friendsRequestsProvider).users.contains(user);
 
     if (isAlreadyFrined) {
-      statusText = "Friend";
+      statusText = AppLocalizations.of(context).friend;
       statusColor = Colors.green[300]!;
-    }
-
-    if (_hasActiveRequest) {
-      statusText = "Pending";
+    } else if (_hasActiveRequest) {
+      statusText = AppLocalizations.of(context).pending;
       statusColor = AppColors.primary;
-    }
-
-    if (isRequestingMe) {
-      statusText = "Requesting You";
+    } else if (isRequestingMe) {
+      statusText = AppLocalizations.of(context).requestingYou;
       statusColor = Colors.orange[300]!;
+    } else {
+      statusColor = AppColors.descriptionColor.withValues(alpha: .75);
     }
 
     return Text(
       statusText,
       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: statusColor),
+    );
+  }
+
+  void removeFriendSheet(String userId) {
+    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+
+    openSheet(
+      context: context,
+      body: StatefulBuilder(
+        builder: (context, setState) {
+          return Center(
+            child: ListView(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              shrinkWrap: true,
+              children: [
+                Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+                const SizedBox(height: 20),
+                Text(
+                  AppLocalizations.of(context).remove_friend_alert,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.whiteColor,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SystemCardButton(
+                  onTap: () {
+                    context.pop();
+                    log("friend removing...");
+                    ref.read(friendsControllerProvider.notifier).handleRemoveFriend(userId);
+                  },
+                  text: AppLocalizations.of(context).yes,
+                ),
+                const SizedBox(height: 10),
+                SystemCardButton(
+                  onTap: () => context.pop(),
+                  text: AppLocalizations.of(context).cancel.toLowerCase(),
+                  doneButton: false,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -101,8 +147,7 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
   }
 
   void handleRemoveFriend(String userId) async {
-    log("friend removing...");
-    ref.read(friendsControllerProvider.notifier).handleRemoveFriend(userId);
+    removeFriendSheet(userId);
   }
 
   Widget buildActions(UserModel user) {
@@ -110,29 +155,35 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
     final _hasActiveRequest = ref.watch(usersWithActiveRequestFromMe).contains(user);
     final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(user);
     final isRequestingMe = ref.watch(friendsRequestsProvider).users.contains(user);
-    return !isUserLoading
-        ? _hasActiveRequest
-            ?
-            //  buildActionButton(
-            //   icon: LucideIcons.minus,
-            //   onTap: () => handleSendriendRequest(user),
-            //   color: Colors.red[500]!,
-            // )
-            SystemCardButton(
-              onTap: () => handleSendriendRequest(user),
-              text: "Cancel Request",
-              doneButton: false,
-            )
-            : isAlreadyFrined
-            ? buildRemoveFriendButton(user)
-            : isRequestingMe
-            ? buildRequestForMe(user.id)
-            : buildActionButton(
-              icon: LucideIcons.user_plus,
-              onTap: () => handleSendriendRequest(user),
-              color: Colors.green.shade300,
-            )
-        : BeatLoader();
+    if (!isUserLoading) {
+      if (isAlreadyFrined) {
+        return buildRemoveFriendButton(user);
+      } else {
+        if (_hasActiveRequest) {
+          return SystemCardButton(
+            onTap: () => handleSendriendRequest(user),
+            text: AppLocalizations.of(context).cancelRequest,
+            doneButton: false,
+          );
+        } else {
+          if (isAlreadyFrined) {
+            return buildRemoveFriendButton(user);
+          } else {
+            if (isRequestingMe) {
+              return buildRequestForMe(user.id);
+            } else {
+              return buildActionButton(
+                icon: LucideIcons.user_plus,
+                onTap: () => handleSendriendRequest(user),
+                color: Colors.green.shade300,
+              );
+            }
+          }
+        }
+      }
+    } else {
+      return BeatLoader();
+    }
   }
 
   Widget buildRemoveFriendButton(UserModel user) {
@@ -140,7 +191,7 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
     if (isLoading) return BeatLoader();
     return SystemCardButton(
       onTap: () => handleRemoveFriend(user.id),
-      text: "Remove Friend",
+      text: AppLocalizations.of(context).removeFriend,
       doneButton: false,
     );
   }
@@ -152,12 +203,12 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
           children: [
             SystemCardButton(
               onTap: () => handleRequestForMe(true, userId),
-              text: "Reject",
+              text: AppLocalizations.of(context).reject,
               doneButton: false,
             ),
             SystemCardButton(
               onTap: () => handleRequestForMe(false, userId),
-              text: "Accpet",
+              text: AppLocalizations.of(context).accept,
               color: Colors.green[300],
             ),
           ],

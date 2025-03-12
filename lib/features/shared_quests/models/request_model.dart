@@ -6,12 +6,18 @@ class RequestModel {
   final String receiverId;
   final String content;
   final DateTime deadLine;
+  final bool isAccepted;
+  final bool aiGenerated;
+  final bool firstCompleteWin;
   RequestModel({
     required this.requestId,
     required this.senderId,
     required this.receiverId,
     required this.content,
     required this.deadLine,
+    required this.aiGenerated,
+    required this.firstCompleteWin,
+    required this.isAccepted,
   });
 
   RequestModel copyWith({
@@ -20,6 +26,9 @@ class RequestModel {
     String? receiverId,
     String? content,
     DateTime? deadLine,
+    bool? isAccepted,
+    bool? aiGenerated,
+    bool? firstCompleteWin,
   }) {
     return RequestModel(
       requestId: requestId ?? this.requestId,
@@ -27,6 +36,9 @@ class RequestModel {
       receiverId: receiverId ?? this.receiverId,
       content: content ?? this.content,
       deadLine: deadLine ?? this.deadLine,
+      isAccepted: isAccepted ?? this.isAccepted,
+      aiGenerated: aiGenerated ?? this.aiGenerated,
+      firstCompleteWin: firstCompleteWin ?? this.firstCompleteWin,
     );
   }
 
@@ -37,6 +49,9 @@ class RequestModel {
       KeyNames.receiver_id: receiverId,
       KeyNames.quest_content: content,
       KeyNames.dead_line: deadLine.toIso8601String(),
+      KeyNames.ai_generated: aiGenerated,
+      KeyNames.is_accepted: isAccepted,
+      KeyNames.first_complete_win: firstCompleteWin,
     };
   }
 
@@ -47,6 +62,9 @@ class RequestModel {
       receiverId: map[KeyNames.receiver_id] ?? "",
       content: map[KeyNames.quest_content] ?? "",
       deadLine: DateTime.parse(map[KeyNames.dead_line]),
+      aiGenerated: map[KeyNames.ai_generated] ?? false,
+      firstCompleteWin: map[KeyNames.first_complete_win] ?? false,
+      isAccepted: map[KeyNames.is_accepted] ?? false,
     );
   }
 

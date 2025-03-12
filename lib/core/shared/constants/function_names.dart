@@ -7,4 +7,5 @@ class FunctionNames {
   static const count_event_players = 'count_event_players';
   static const get_friends_count = 'get_friends_count';
   static const get_friend_requests_count = 'get_friend_requests_count';
+  static const addCompletedPlayersToSharedQuest = 'add_player_to_quest';
 }

@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:questra_app/core/shared/utils/image_picker.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/events/controller/events_controller.dart';
 import 'package:questra_app/features/quests/widgets/feedback_widget.dart';
 import 'package:questra_app/features/quests/widgets/quest_completion_widget.dart';

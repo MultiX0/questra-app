@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/titles/controller/titles_controller.dart';
 import 'package:questra_app/imports.dart';

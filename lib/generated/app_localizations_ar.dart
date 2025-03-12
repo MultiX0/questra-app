@@ -1058,4 +1058,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get friendship_status => 'حالة الصداقة';
+
+  @override
+  String get notFriend => 'ليس صديق';
+
+  @override
+  String get friend => 'صديق';
+
+  @override
+  String get pending => 'قيد الانتظار';
+
+  @override
+  String get requestingYou => 'يطلب صداقتك';
+
+  @override
+  String get cancelRequest => 'إلغاء الطلب';
+
+  @override
+  String get removeFriend => 'إزالة الصديق';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get accept => 'قبول';
+
+  @override
+  String get shared_quests => 'المهام المشتركة';
+
+  @override
+  String get remove_friend_alert => 'هل تريد حذف هذا الصديق من حسابك ؟';
 }

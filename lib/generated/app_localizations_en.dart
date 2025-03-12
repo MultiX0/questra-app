@@ -1058,4 +1058,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get friendship_status => 'Friendship Status';
+
+  @override
+  String get notFriend => 'Not Friend';
+
+  @override
+  String get friend => 'Friend';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get requestingYou => 'Requesting You';
+
+  @override
+  String get cancelRequest => 'Cancel Request';
+
+  @override
+  String get removeFriend => 'Remove Friend';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get shared_quests => 'Shared Quests';
+
+  @override
+  String get remove_friend_alert => 'Do you want to remove this friend from your account?';
 }

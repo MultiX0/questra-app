@@ -2,45 +2,16 @@
 
 import 'package:questra_app/imports.dart';
 
-class AddCusomeQuestPage extends ConsumerStatefulWidget {
-  const AddCusomeQuestPage({super.key});
+class AddCustomSharedQuestPage extends ConsumerStatefulWidget {
+  const AddCustomSharedQuestPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddCusomeQuestPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _AddCustomSharedQuestPageState();
 }
 
-class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
-  late TextEditingController _controller;
-  @override
-  void initState() {
-    _controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void finish() {
-    final _text = _controller.text.trim();
-    if (_text.isEmpty || _text.length < 10) {
-      CustomToast.systemToast(
-        AppLocalizations.of(context).custom_quest_add_toast,
-        systemMessage: true,
-      );
-      return;
-    }
-
-    ref
-        .read(questsControllerProvider.notifier)
-        .addCustomQuest(ogDescription: _text, context: context);
-  }
-
+class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestPage> {
   @override
   Widget build(BuildContext context) {
-    // final user = ref.watch(authStateProvider);
     final isLoading = ref.watch(questsControllerProvider);
     final size = MediaQuery.sizeOf(context);
     final isArabic = ref.watch(localeProvider).languageCode == 'ar';
@@ -88,7 +59,7 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
                           style: TextStyle(fontSize: 12, color: Colors.white60),
                         ),
                         const SizedBox(height: 10),
-                        if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: finish)],
+                        if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: () {})],
                       ],
                     ),
                   ),
@@ -105,7 +76,7 @@ class _AddCusomeQuestPageState extends ConsumerState<AddCusomeQuestPage> {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: size.width * .25),
       child: TextField(
-        controller: _controller,
+        // controller: _controller,
         maxLines: null,
         cursorColor: AppColors.primary,
         decoration: InputDecoration(

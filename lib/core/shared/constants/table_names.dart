@@ -36,4 +36,5 @@ class TableNames {
   static const friend_requests = 'friend_requests';
   static const friendship = 'friendship';
   static const shared_quests = 'shared_quests';
+  static const shared_quest_requests = 'shared_quest_requests';
 }
