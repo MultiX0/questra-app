@@ -193,8 +193,10 @@ class UserDashboardWidget extends ConsumerWidget {
         const SizedBox(height: 15),
         Center(
           child: RichText(
+            textDirection: TextDirection.ltr,
             text: TextSpan(
               text: "${user.level?.xp ?? 0}/",
+
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
               children: [
                 TextSpan(

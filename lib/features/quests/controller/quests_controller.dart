@@ -97,9 +97,7 @@ class QuestsController extends StateNotifier<bool> {
 
       return true;
     } catch (e) {
-      if (e.toString().contains('expired')) {
-        _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
-      }
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
 
       state = false;
       log(e.toString());
@@ -228,7 +226,11 @@ class QuestsController extends StateNotifier<bool> {
 
       final user = _ref.read(authStateProvider)!;
       if (!kDebugMode) {
-        await _ref.read(adsServiceProvider.notifier).showAd();
+        final result = await _ref.read(adsServiceProvider.notifier).showAd();
+        if (!result) {
+          state = false;
+          return;
+        }
       }
 
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);

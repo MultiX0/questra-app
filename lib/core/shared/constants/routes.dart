@@ -31,4 +31,6 @@ class Routes {
   static const firendsControllerPage = '/firendsControllerPage';
   static const addFriendsPage = '/addFriendsPage';
   static const player = '/player';
+  static const addSharedQuestPage = '/addSharedQuestPage';
+  static const sharedQuestsPage = '/sharedQuestsPage';
 }

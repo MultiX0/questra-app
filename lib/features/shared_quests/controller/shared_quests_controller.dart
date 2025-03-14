@@ -1,8 +1,21 @@
 import 'dart:developer';
 
 import 'package:questra_app/features/shared_quests/models/request_model.dart';
+import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/imports.dart';
+
+final sharedQuestsControllerProvider = StateNotifierProvider<SharedQuestsController, bool>(
+  (ref) => SharedQuestsController(ref: ref),
+);
+
+final getAllSharedQuestsProvider = FutureProvider.family<List<SharedQuestModel>, String>((
+  ref,
+  userId,
+) async {
+  final controller = ref.watch(sharedQuestsControllerProvider.notifier);
+  return await controller.getAllSharedQuests(userId);
+});
 
 class SharedQuestsController extends StateNotifier<bool> {
   final Ref _ref;
@@ -49,11 +62,11 @@ class SharedQuestsController extends StateNotifier<bool> {
     state = false;
   }
 
-  Future<List<RequestModel>> getAllSharedRequests({required String userId}) async {
+  Future<List<RequestModel>> getAllQuestRequests() async {
     final me = _ref.read(authStateProvider)!;
 
     try {
-      return await _repo.getAllSharedRequests(user1Id: userId, user2Id: me.id);
+      return await _repo.getAllQuestRequests(me.id);
     } catch (e, trace) {
       log(e.toString());
       await ExceptionService.insertException(
@@ -61,6 +74,16 @@ class SharedQuestsController extends StateNotifier<bool> {
         error: "${e.toString()}\ntrace:$trace",
         userId: me.id,
       );
+      rethrow;
+    }
+  }
+
+  Future<List<SharedQuestModel>> getAllSharedQuests(String userId) async {
+    try {
+      final me = _ref.read(authStateProvider)!;
+      return await _repo.getAllSharedRequests(user1Id: me.id, user2Id: userId);
+    } catch (e) {
+      log(e.toString());
       rethrow;
     }
   }

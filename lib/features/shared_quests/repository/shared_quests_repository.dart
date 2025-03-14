@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/shared_quests/models/request_model.dart';
+import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/imports.dart';
 
 final sharedQuestsProvider = Provider<SharedQuestsRepository>(
@@ -40,27 +41,18 @@ class SharedQuestsRepository {
     }
   }
 
-  Future<List<RequestModel>> getAllSharedRequests({
+  Future<List<SharedQuestModel>> getAllSharedRequests({
     required String user1Id,
     required String user2Id,
   }) async {
     try {
-      final query = _sharedQuestTable.select("*");
-      final condition1 = query
-          .eq(KeyNames.sender_id, user1Id)
-          .eq(KeyNames.receiver_id, user2Id)
-          .order(KeyNames.created_at, ascending: false);
-      final condition2 = query
-          .eq(KeyNames.sender_id, user2Id)
-          .eq(KeyNames.receiver_id, user1Id)
-          .order(KeyNames.created_at, ascending: false);
+      final response = await _client.rpc(
+        FunctionNames.get_shared_quests_between_users,
+        params: {'user1': user1Id, 'user2': user2Id},
+      );
 
-      var data = await condition1;
-      if (data.isEmpty) {
-        data = await condition2;
-      }
-
-      return data.map((request) => RequestModel.fromMap(request)).toList();
+      final List<dynamic> data = response as List<dynamic>;
+      return data.map((item) => SharedQuestModel.fromMap(item)).toList();
     } catch (e) {
       log(e.toString());
       rethrow;

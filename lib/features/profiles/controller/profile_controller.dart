@@ -56,11 +56,17 @@ class ProfileController extends StateNotifier<bool> {
     try {
       state = true;
       final avatarLink = await _uploadImages(image);
+
+      try {
+        await _ref.read(adsServiceProvider.notifier).showAd();
+      } catch (e) {
+        CustomToast.systemToast(e.toString(), systemMessage: true);
+        return;
+      }
       await _repo.updateAvatar(avatar: avatarLink[0], userId: userId);
       CustomToast.systemToast(
         isArabic ? "تم تحديث صورتك الشخصية بنجاح." : "your avatar updated successfully",
       );
-      await _ref.read(adsServiceProvider.notifier).showAd();
 
       state = false;
       context.pop();

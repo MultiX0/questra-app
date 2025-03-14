@@ -1,5 +1,8 @@
 // import 'package:flutter/foundation.dart';
 
+import 'package:questra_app/features/shared_quests/pages/add_custom_shared_quest_page.dart';
+import 'package:questra_app/features/shared_quests/pages/shared_quests_page.dart';
+
 import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
 
@@ -114,7 +117,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       buildRoute(fade: true, path: Routes.firendsControllerPage, child: FriendsControllerPage()),
       buildRoute(fade: true, path: Routes.addFriendsPage, child: AddFriendsPage()),
-
       GoRoute(
         path: "${Routes.player}/:${KeyNames.user_id}",
         pageBuilder: (context, state) {
@@ -122,6 +124,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return MaterialPage(child: OtherProfile(userId: userId));
         },
       ),
+      buildRoute(fade: true, path: Routes.addSharedQuestPage, child: AddCustomSharedQuestPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestsPage, child: SharedQuestsPage()),
     ],
   );
 });

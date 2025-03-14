@@ -1088,4 +1088,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get remove_friend_alert => 'هل تريد حذف هذا الصديق من حسابك ؟';
+
+  @override
+  String get shared_quest_add_note => 'ملحوظة: سيتم ارسال اشعار لصديقك لكي يقرر ما اذا كان يريد قبول المهمة أو رفضها , في حالة قبوله للمهمة سيتم تنبيهك بذالك على الفور';
+
+  @override
+  String get shared_quest_add_details_hint => 'الرجاء ادخال تفاصيل المهمة';
+
+  @override
+  String get shared_quest_add_deadline_hint => 'الرجاء اختيار موعد نهائي لانهاء المهمة , (لن يتم قبول أي طلبات تسليم بعد هذا الموعد)';
+
+  @override
+  String get shared_quest_deadline => 'انقر هنا لاختيار موعد نهائي';
+
+  @override
+  String get shared_quest_deadline_toast => 'على الموعد النهائي أن يكون بعد خمسة ساعات أو أكثر من الوقت الحالي على أقل تقدير';
 }

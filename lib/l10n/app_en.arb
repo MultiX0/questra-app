@@ -363,7 +363,12 @@
   "reject": "Reject",
   "accept": "Accept",
   "shared_quests": "Shared Quests",
-  "remove_friend_alert": "Do you want to remove this friend from your account?"
+  "remove_friend_alert": "Do you want to remove this friend from your account?",
+  "shared_quest_add_note": "Note: A notification will be sent to your friend to decide whether to accept or reject the task. If he accepts the task, you will be notified immediately.",
+  "shared_quest_add_details_hint": "Please enter quest details.",
+  "shared_quest_add_deadline_hint": "Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)",
+  "shared_quest_deadline": "Click here to select a deadline.",
+  "shared_quest_deadline_toast": "The deadline must be at least five hours or more from the current time."
 
 
 

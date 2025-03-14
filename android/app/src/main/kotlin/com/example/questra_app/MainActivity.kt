@@ -13,6 +13,7 @@ import android.provider.Settings
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import com.unity3d.ads.UnityAds
 
 class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +32,7 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        UnityAds.initialize(this, "5790259", false)    
         flutterEngine.plugins.add(AndroidIdPlugin())
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "appVersionChannel")
             .setMethodCallHandler { call, result ->

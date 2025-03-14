@@ -45,10 +45,6 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-
-        <service
-            android:name="com.transistorsoft.flutter.backgroundfetch.HeadlessJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
             android:name="com.android.example.workmanager.worker.YourWorker"
             android:permission="android.permission.BIND_JOB_SERVICE"
@@ -56,7 +52,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -90,7 +86,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
+        <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true"/>
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

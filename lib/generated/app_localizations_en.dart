@@ -1088,4 +1088,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get remove_friend_alert => 'Do you want to remove this friend from your account?';
+
+  @override
+  String get shared_quest_add_note => 'Note: A notification will be sent to your friend to decide whether to accept or reject the task. If he accepts the task, you will be notified immediately.';
+
+  @override
+  String get shared_quest_add_details_hint => 'Please enter quest details.';
+
+  @override
+  String get shared_quest_add_deadline_hint => 'Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)';
+
+  @override
+  String get shared_quest_deadline => 'Click here to select a deadline.';
+
+  @override
+  String get shared_quest_deadline_toast => 'The deadline must be at least five hours or more from the current time.';
 }

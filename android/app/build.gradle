@@ -80,4 +80,5 @@ flutter {
 dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.7.0'  // Use latest version
     implementation 'androidx.work:work-runtime-ktx:2.9.0'
+    implementation 'com.unity3d.ads:unity-ads:4.8.0' // Use the latest version
 }

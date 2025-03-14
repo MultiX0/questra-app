@@ -2212,6 +2212,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Do you want to remove this friend from your account?'**
   String get remove_friend_alert;
+
+  /// No description provided for @shared_quest_add_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: A notification will be sent to your friend to decide whether to accept or reject the task. If he accepts the task, you will be notified immediately.'**
+  String get shared_quest_add_note;
+
+  /// No description provided for @shared_quest_add_details_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter quest details.'**
+  String get shared_quest_add_details_hint;
+
+  /// No description provided for @shared_quest_add_deadline_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)'**
+  String get shared_quest_add_deadline_hint;
+
+  /// No description provided for @shared_quest_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Click here to select a deadline.'**
+  String get shared_quest_deadline;
+
+  /// No description provided for @shared_quest_deadline_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'The deadline must be at least five hours or more from the current time.'**
+  String get shared_quest_deadline_toast;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
