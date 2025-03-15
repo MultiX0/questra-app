@@ -2242,6 +2242,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The deadline must be at least five hours or more from the current time.'**
   String get shared_quest_deadline_toast;
+
+  /// No description provided for @quest_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Requests'**
+  String get quest_requests;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

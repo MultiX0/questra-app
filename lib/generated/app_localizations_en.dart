@@ -1103,4 +1103,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shared_quest_deadline_toast => 'The deadline must be at least five hours or more from the current time.';
+
+  @override
+  String get quest_requests => 'Quest Requests';
 }

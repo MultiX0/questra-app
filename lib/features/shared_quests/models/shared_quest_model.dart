@@ -71,7 +71,7 @@ class SharedQuestModel {
       arDescription: map[KeyNames.ar_description] ?? "",
       arTitle: map[KeyNames.ar_title] ?? "",
       difficulty: map[KeyNames.difficulty] ?? "hard",
-      playersCompleted: List.from(map[KeyNames.players_completed]),
+      playersCompleted: List.from(map[KeyNames.players_completed] ?? []),
     );
   }
 

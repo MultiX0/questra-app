@@ -1103,4 +1103,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shared_quest_deadline_toast => 'على الموعد النهائي أن يكون بعد خمسة ساعات أو أكثر من الوقت الحالي على أقل تقدير';
+
+  @override
+  String get quest_requests => 'طلبات المهام';
 }
