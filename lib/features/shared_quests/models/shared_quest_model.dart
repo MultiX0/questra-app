@@ -51,7 +51,7 @@ class SharedQuestModel {
     return <String, dynamic>{
       // 'id': id,
       // 'createdAt': createdAt.millisecondsSinceEpoch,
-      KeyNames.request_id: requestId,
+      KeyNames.request_id: requestId == -1 ? null : requestId,
       KeyNames.description: description,
       KeyNames.title: title,
       KeyNames.ar_description: arDescription,

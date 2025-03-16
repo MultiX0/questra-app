@@ -23,40 +23,55 @@ class _TitlesPageState extends ConsumerState<TitlesPage> {
       context: context,
       body: StatefulBuilder(
         builder: (context, setState) {
-          return Center(
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              shrinkWrap: true,
-              children: [
-                Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
-                const SizedBox(height: 20),
-                Text(
-                  AppLocalizations.of(context).titles_change_title_message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.whiteColor,
-                    fontSize: 16,
+          return Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    shrinkWrap: true,
+                    children: [
+                      Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+                      const SizedBox(height: 20),
+                      Text(
+                        AppLocalizations.of(context).titles_change_title_message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.whiteColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                SystemCardButton(
-                  onTap: () {
-                    context.pop();
-                    ref
-                        .read(titlesControllerProvider.notifier)
-                        .handleTitleChange(userId: userId, id: titleId);
-                  },
-                  text: AppLocalizations.of(context).yes,
-                ),
-                const SizedBox(height: 10),
-                SystemCardButton(
-                  onTap: () => context.pop(),
-                  text: AppLocalizations.of(context).cancel.toLowerCase(),
-                  doneButton: false,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: SystemCardButton(
+                      onTap: () {
+                        context.pop();
+                        ref
+                            .read(titlesControllerProvider.notifier)
+                            .handleTitleChange(userId: userId, id: titleId);
+                      },
+                      text: AppLocalizations.of(context).yes,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Expanded(
+                    child: SystemCardButton(
+                      onTap: () => context.pop(),
+                      text: AppLocalizations.of(context).cancel.toLowerCase(),
+                      doneButton: false,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
           );
         },
       ),

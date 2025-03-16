@@ -110,4 +110,5 @@ class KeyNames {
   static const ai_generated = 'ai_generated';
   static const first_complete_win = 'first_complete_win';
   static const players_completed = 'players_completed';
+  static const ar_content = 'ar_content';
 }

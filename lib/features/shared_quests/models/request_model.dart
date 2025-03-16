@@ -1,3 +1,4 @@
+import 'package:questra_app/core/enums/shared_quest_status_enum.dart';
 import 'package:questra_app/imports.dart';
 
 class RequestModel {
@@ -6,9 +7,11 @@ class RequestModel {
   final String receiverId;
   final String content;
   final DateTime deadLine;
-  final bool isAccepted;
+  final SharedQuestStatusEnum status;
   final bool aiGenerated;
   final bool firstCompleteWin;
+  final DateTime sentAt;
+  final String arContent;
   RequestModel({
     required this.requestId,
     required this.senderId,
@@ -17,7 +20,9 @@ class RequestModel {
     required this.deadLine,
     required this.aiGenerated,
     required this.firstCompleteWin,
-    required this.isAccepted,
+    required this.status,
+    required this.sentAt,
+    required this.arContent,
   });
 
   RequestModel copyWith({
@@ -29,6 +34,9 @@ class RequestModel {
     bool? isAccepted,
     bool? aiGenerated,
     bool? firstCompleteWin,
+    SharedQuestStatusEnum? status,
+    DateTime? sentAt,
+    String? arContent,
   }) {
     return RequestModel(
       requestId: requestId ?? this.requestId,
@@ -36,9 +44,11 @@ class RequestModel {
       receiverId: receiverId ?? this.receiverId,
       content: content ?? this.content,
       deadLine: deadLine ?? this.deadLine,
-      isAccepted: isAccepted ?? this.isAccepted,
+      status: status ?? this.status,
       aiGenerated: aiGenerated ?? this.aiGenerated,
       firstCompleteWin: firstCompleteWin ?? this.firstCompleteWin,
+      sentAt: sentAt ?? this.sentAt,
+      arContent: arContent ?? this.arContent,
     );
   }
 
@@ -50,21 +60,24 @@ class RequestModel {
       KeyNames.quest_content: content,
       KeyNames.dead_line: deadLine.toIso8601String(),
       KeyNames.ai_generated: aiGenerated,
-      KeyNames.is_accepted: isAccepted,
+      KeyNames.status: sharedQuestStatusToString(status),
       KeyNames.first_complete_win: firstCompleteWin,
+      KeyNames.ar_content: arContent,
     };
   }
 
   factory RequestModel.fromMap(Map<String, dynamic> map) {
     return RequestModel(
-      requestId: map[KeyNames.id] ?? "",
+      requestId: map[KeyNames.id] ?? -1,
       senderId: map[KeyNames.sender_id] ?? "",
       receiverId: map[KeyNames.receiver_id] ?? "",
-      content: map[KeyNames.quest_content] ?? "",
+      content: (map[KeyNames.quest_content] as String?)?.trim() ?? "",
       deadLine: DateTime.parse(map[KeyNames.dead_line]),
       aiGenerated: map[KeyNames.ai_generated] ?? false,
       firstCompleteWin: map[KeyNames.first_complete_win] ?? false,
-      isAccepted: map[KeyNames.is_accepted] ?? false,
+      status: sharedQuestStatusFromString(map[KeyNames.status]),
+      sentAt: DateTime.tryParse(map[KeyNames.created_at]) ?? DateTime.now(),
+      arContent: map[KeyNames.ar_content] ?? "",
     );
   }
 

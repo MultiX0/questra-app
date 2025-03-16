@@ -33,4 +33,5 @@ class Routes {
   static const player = '/player';
   static const addSharedQuestPage = '/addSharedQuestPage';
   static const sharedQuestsPage = '/sharedQuestsPage';
+  static const questRequestsPage = '/questRequestsPage';
 }

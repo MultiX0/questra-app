@@ -2248,6 +2248,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quest Requests'**
   String get quest_requests;
+
+  /// No description provided for @sent_at.
+  ///
+  /// In en, this message translates to:
+  /// **'sent at {time}'**
+  String sent_at(Object time);
+
+  /// No description provided for @see_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get see_details;
+
+  /// No description provided for @request_deadline_text.
+  ///
+  /// In en, this message translates to:
+  /// **'The deadline for accepting this quest is:\n{date}'**
+  String request_deadline_text(Object date);
+
+  /// No description provided for @request_type_1.
+  ///
+  /// In en, this message translates to:
+  /// **'The first to complete this quest will be the winner, so finish it before anyone else!'**
+  String get request_type_1;
+
+  /// No description provided for @request_type_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Both of you can complete this quest, there is no single winner!'**
+  String get request_type_2;
+
+  /// No description provided for @request_type_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest type'**
+  String get request_type_title;
+
+  /// No description provided for @quest_accept_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'You have accepted the quest request. Get ready to complete it!'**
+  String get quest_accept_confirmation;
+
+  /// No description provided for @quest_reject_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'You have rejected the quest request. Maybe next time!'**
+  String get quest_reject_confirmation;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'details'**
+  String get details;
+
+  /// No description provided for @quest_deadline_required.
+  ///
+  /// In en, this message translates to:
+  /// **'You must set a deadline before sending this quest request.'**
+  String get quest_deadline_required;
+
+  /// No description provided for @quest_first_complete_win_label.
+  ///
+  /// In en, this message translates to:
+  /// **'The first to complete this quest will be the winner.'**
+  String get quest_first_complete_win_label;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

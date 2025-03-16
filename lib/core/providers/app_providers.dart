@@ -3,3 +3,4 @@ import 'package:questra_app/imports.dart';
 
 final localeProvider = StateProvider<Locale>((ref) => Locale('en'));
 final localUserPereferencesState = StateProvider<UserPreferencesModel?>((ref) => null);
+final appLoading = StateProvider<bool>((ref) => false);

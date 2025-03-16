@@ -1106,4 +1106,41 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quest_requests => 'طلبات المهام';
+
+  @override
+  String sent_at(Object time) {
+    return 'تم الارسال في $time';
+  }
+
+  @override
+  String get see_details => 'اضغط لمعرفة التفاصيل';
+
+  @override
+  String request_deadline_text(Object date) {
+    return 'الموعد النهائي لقبول هذه المهمة هو:\n$date';
+  }
+
+  @override
+  String get request_type_1 => 'أول من يكمل هذه المهمة سيكون الفائز، لذا سارع بإنهائها قبل غيرك!';
+
+  @override
+  String get request_type_2 => 'يمكن لكلاكما إكمال هذه المهمة، لا يوجد فائز واحد!';
+
+  @override
+  String get request_type_title => 'نوع المهمة';
+
+  @override
+  String get quest_accept_confirmation => 'لقد قبلت طلب المهمة، استعد لإنهائها!';
+
+  @override
+  String get quest_reject_confirmation => 'لقد رفضت طلب المهمة، ربما في وقت لاحق!';
+
+  @override
+  String get details => 'التفاصيل';
+
+  @override
+  String get quest_deadline_required => 'يجب عليك تحديد موعد نهائي قبل إرسال طلب المهمة.';
+
+  @override
+  String get quest_first_complete_win_label => 'أول من يكمل هذه المهمة سيكون الفائز.';
 }

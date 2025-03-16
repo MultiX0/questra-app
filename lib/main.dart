@@ -50,12 +50,12 @@ void initWorkManager() {
   Workmanager().registerPeriodicTask(
     "questCheckTask",
     "questCheck",
-    frequency: const Duration(minutes: 15),
-    initialDelay: const Duration(minutes: 10),
+    frequency: const Duration(minutes: 60),
+    initialDelay: const Duration(minutes: 15),
     constraints: constraints,
     existingWorkPolicy: ExistingWorkPolicy.replace,
     backoffPolicy: BackoffPolicy.linear,
-    backoffPolicyDelay: const Duration(minutes: 15),
+    backoffPolicyDelay: const Duration(minutes: 30),
   );
 }
 

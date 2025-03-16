@@ -83,45 +83,60 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
   }
 
   void removeFriendSheet(String userId) {
-    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    // ref.read(soundEffectsServiceProvider).playSystemButtonClick();
 
     openSheet(
       context: context,
       body: StatefulBuilder(
         builder: (context, setState) {
-          return Center(
-            child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              shrinkWrap: true,
-              children: [
-                Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
-                const SizedBox(height: 20),
-                Text(
-                  AppLocalizations.of(context).remove_friend_alert,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.whiteColor,
-                    fontSize: 16,
+          return Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                    shrinkWrap: true,
+                    children: [
+                      Icon(LucideIcons.hexagon, color: AppColors.primary, size: 40),
+                      const SizedBox(height: 20),
+                      Text(
+                        AppLocalizations.of(context).remove_friend_alert,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.whiteColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                SystemCardButton(
-                  onTap: () {
-                    context.pop();
-                    log("friend removing...");
-                    ref.read(friendsControllerProvider.notifier).handleRemoveFriend(userId);
-                  },
-                  text: AppLocalizations.of(context).yes,
-                ),
-                const SizedBox(height: 10),
-                SystemCardButton(
-                  onTap: () => context.pop(),
-                  text: AppLocalizations.of(context).cancel.toLowerCase(),
-                  doneButton: false,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: SystemCardButton(
+                      onTap: () {
+                        context.pop();
+                        log("friend removing...");
+                        ref.read(friendsControllerProvider.notifier).handleRemoveFriend(userId);
+                      },
+                      text: AppLocalizations.of(context).yes,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Expanded(
+                    child: SystemCardButton(
+                      onTap: () => context.pop(),
+                      text: AppLocalizations.of(context).cancel.toLowerCase(),
+                      doneButton: false,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+            ],
           );
         },
       ),

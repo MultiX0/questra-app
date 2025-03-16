@@ -78,6 +78,7 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
       child: SystemCard(
         onTap: () {
           ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          context.push(Routes.questRequestsPage);
         },
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         isButton: true,

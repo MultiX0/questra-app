@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:flutter_glow/flutter_glow.dart';
+import 'package:questra_app/features/shared_quests/controller/shared_quests_controller.dart';
 import 'package:questra_app/imports.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart' as picker;
 
@@ -16,6 +18,7 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
   late FocusNode _deadLineNode;
 
   DateTime? selectedDate;
+  bool firstCompleteWin = false;
 
   @override
   void initState() {
@@ -33,9 +36,32 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
     super.dispose();
   }
 
+  void submmit() {
+    final content = _questController.text.trim();
+
+    if (content.isEmpty || content.length < 10) {
+      CustomToast.systemToast(AppLocalizations.of(context).custom_quest_add_toast);
+      return;
+    }
+
+    if (selectedDate == null) {
+      CustomToast.systemToast(AppLocalizations.of(context).quest_deadline_required);
+      return;
+    }
+
+    ref
+        .read(sharedQuestsControllerProvider.notifier)
+        .sendRequest(
+          questContent: content,
+          deadLine: selectedDate!,
+          isAiGenerated: false,
+          firstCompleteWin: firstCompleteWin,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(questsControllerProvider);
+    final isLoading = ref.watch(sharedQuestsControllerProvider);
     final size = MediaQuery.sizeOf(context);
     final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     return WillPopScope(
@@ -104,12 +130,34 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
                           style: TextStyle(fontSize: 12, color: Colors.white60),
                         ),
                         const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            GlowCheckbox(
+                              color: AppColors.primary.withValues(alpha: .5),
+                              checkColor: Colors.black,
+                              glowColor: AppColors.primary,
+                              value: firstCompleteWin,
+                              onChange: (_) {
+                                setState(() {
+                                  firstCompleteWin = !firstCompleteWin;
+                                });
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              AppLocalizations.of(context).quest_first_complete_win_label,
+                              style: TextStyle(color: AppColors.whiteColor, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+
                         Text(
                           AppLocalizations.of(context).shared_quest_add_note,
                           style: TextStyle(fontSize: 12, color: Colors.white60),
                         ),
                         const SizedBox(height: 10),
-                        if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: () {})],
+                        if (isLoading) ...[BeatLoader()] else ...[SystemCardButton(onTap: submmit)],
                       ],
                     ),
                   ),
@@ -144,6 +192,10 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
       onConfirm: (date) {
         // final d = DateFormat.yMMMMd('en_US').format(date);
         if (date.isBefore(DateTime.now().add(const Duration(hours: 5)))) {
+          setState(() {
+            _deadLine.clear();
+            selectedDate = null;
+          });
           CustomToast.systemToast(AppLocalizations.of(context).shared_quest_deadline_toast);
           return;
         }

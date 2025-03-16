@@ -1106,4 +1106,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quest_requests => 'Quest Requests';
+
+  @override
+  String sent_at(Object time) {
+    return 'sent at $time';
+  }
+
+  @override
+  String get see_details => 'Details';
+
+  @override
+  String request_deadline_text(Object date) {
+    return 'The deadline for accepting this quest is:\n$date';
+  }
+
+  @override
+  String get request_type_1 => 'The first to complete this quest will be the winner, so finish it before anyone else!';
+
+  @override
+  String get request_type_2 => 'Both of you can complete this quest, there is no single winner!';
+
+  @override
+  String get request_type_title => 'Quest type';
+
+  @override
+  String get quest_accept_confirmation => 'You have accepted the quest request. Get ready to complete it!';
+
+  @override
+  String get quest_reject_confirmation => 'You have rejected the quest request. Maybe next time!';
+
+  @override
+  String get details => 'details';
+
+  @override
+  String get quest_deadline_required => 'You must set a deadline before sending this quest request.';
+
+  @override
+  String get quest_first_complete_win_label => 'The first to complete this quest will be the winner.';
 }

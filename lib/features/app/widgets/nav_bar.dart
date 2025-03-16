@@ -37,6 +37,7 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
     // return NewVersionPage();
     final hasLootBox = ref.watch(hasLootBoxProvider);
     final user = ref.watch(authStateProvider);
+    final isLoading = ref.watch(appLoading);
 
     return Stack(
       children: [
@@ -85,6 +86,8 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
         ),
         if (hasLootBox && user?.religion != null) LootboxPage(),
         if (user?.religion == null) DefineReligionPage().fadeIn(),
+        if (isLoading)
+          Positioned.fill(child: Container(color: Colors.black54, child: BeatLoader())),
       ],
     );
   }

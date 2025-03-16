@@ -238,7 +238,9 @@ class QuestsController extends StateNotifier<bool> {
         throw "${isArabic ? "" : "عذرًا، لا يمكنك المحاولة مرة أخرى حتى"} ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
       }
 
-      await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0, user.id);
+      await _ref
+          .read(aiFunctionsProvider)
+          .customQuestAnalizer(questDescription: description, errors: 0, userId: user.id);
       state = false;
       context.pop();
     } catch (e) {

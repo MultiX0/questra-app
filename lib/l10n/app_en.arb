@@ -369,7 +369,24 @@
   "shared_quest_add_deadline_hint": "Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)",
   "shared_quest_deadline": "Click here to select a deadline.",
   "shared_quest_deadline_toast": "The deadline must be at least five hours or more from the current time.",
-  "quest_requests": "Quest Requests"
+  "quest_requests": "Quest Requests",
+  "sent_at": "sent at {time}",
+  "see_details": "Details",
+  "request_deadline_text": "The deadline for accepting this quest is:\n{date}",
+  "request_type_1": "The first to complete this quest will be the winner, so finish it before anyone else!",
+  "request_type_2": "Both of you can complete this quest, there is no single winner!",
+  "request_type_title": "Quest type",
+  "quest_accept_confirmation": "You have accepted the quest request. Get ready to complete it!",
+  "quest_reject_confirmation": "You have rejected the quest request. Maybe next time!",
+  "details": "details",
+  "quest_deadline_required": "You must set a deadline before sending this quest request.",
+  "quest_first_complete_win_label": "The first to complete this quest will be the winner."
+
+
+
+
+
+
 
 
 
