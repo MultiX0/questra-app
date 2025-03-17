@@ -1143,4 +1143,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quest_first_complete_win_label => 'The first to complete this quest will be the winner.';
+
+  @override
+  String get quest_requests_empty_state => 'there is no quest requests';
+
+  @override
+  String get shared_quests_empty_state => 'there is no shared quests yet';
 }

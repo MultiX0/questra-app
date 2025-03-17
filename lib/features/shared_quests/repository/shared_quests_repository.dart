@@ -62,6 +62,15 @@ class SharedQuestsRepository {
     }
   }
 
+  Future<void> deleteRequest(int requestId) async {
+    try {
+      await _sharedQuestRequestsTable.delete().eq(KeyNames.id, requestId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
   Future<int> insertQuest(SharedQuestModel quest) async {
     try {
       final data = await _sharedQuestTable.insert(quest.toMap()).select();
@@ -78,7 +87,8 @@ class SharedQuestsRepository {
       final data = await _sharedQuestRequestsTable
           .select("*")
           .eq(KeyNames.receiver_id, userId)
-          .eq(KeyNames.status, sharedQuestStatusToString(SharedQuestStatusEnum.pending));
+          .eq(KeyNames.status, sharedQuestStatusToString(SharedQuestStatusEnum.pending))
+          .order(KeyNames.created_at, ascending: false);
       log(data.toString());
       // .gt(KeyNames.dead_line, now);
       return data.map((request) => RequestModel.fromMap(request)).toList();
@@ -94,11 +104,24 @@ class SharedQuestsRepository {
       final data = await _sharedQuestRequestsTable
           .select("*")
           .eq(KeyNames.sender_id, senderId)
-          .eq(KeyNames.receiver_id, me.id);
+          .eq(KeyNames.receiver_id, me.id)
+          .eq(KeyNames.status, 'pending')
+          .order(KeyNames.created_at, ascending: false);
 
-      log(data.toString());
+      // log(data.toString());
 
       return data.map((request) => RequestModel.fromMap(request)).toList();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<SharedQuestModel> getQuestByRequestId(int id) async {
+    try {
+      final data = await _sharedQuestTable.select("*").eq(KeyNames.request_id, id).maybeSingle();
+      if (data == null) throw "no data found";
+      return SharedQuestModel.fromMap(data);
     } catch (e) {
       log(e.toString());
       rethrow;

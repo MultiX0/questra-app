@@ -376,7 +376,9 @@
   "quest_reject_confirmation": "لقد رفضت طلب المهمة، ربما في وقت لاحق!",
   "details": "التفاصيل",
   "quest_deadline_required": "يجب عليك تحديد موعد نهائي قبل إرسال طلب المهمة.",
-  "quest_first_complete_win_label": "أول من يكمل هذه المهمة سيكون الفائز."
+  "quest_first_complete_win_label": "أول من يكمل هذه المهمة سيكون الفائز.",
+  "quest_requests_empty_state": "لا يوجد أي طلبات مهام",
+  "shared_quests_empty_state": "لا توجد مهام مشتركة حتى الآن"
 
 
 

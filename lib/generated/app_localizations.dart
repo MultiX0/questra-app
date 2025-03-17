@@ -2314,6 +2314,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The first to complete this quest will be the winner.'**
   String get quest_first_complete_win_label;
+
+  /// No description provided for @quest_requests_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'there is no quest requests'**
+  String get quest_requests_empty_state;
+
+  /// No description provided for @shared_quests_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'there is no shared quests yet'**
+  String get shared_quests_empty_state;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

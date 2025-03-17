@@ -11,7 +11,7 @@ class RequestDetailsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(sharedQuestsControllerProvider.notifier);
-
+    final isArabic = ref.watch(localeProvider).languageCode == 'ar';
     void check(bool isAccept) {
       context.pop();
       openSheet(
@@ -49,23 +49,12 @@ class RequestDetailsWidget extends ConsumerWidget {
                     Expanded(
                       child: SystemCardButton(
                         onTap: () {
-                          // final controller = ref.read(sharedQuestsControllerProvider.notifier);
-
-                          controller
-                              .handleRequest(
-                                id: request.requestId,
-                                isAccpeted: isAccept,
-                                senderId: request.senderId,
-                              )
-                              .then((_) {
-                                // Do the invalidation in the widget instead of in the controller
-                                ref.invalidate(getAllSharedQuestsProvider(request.senderId));
-                                ref.invalidate(getAllSharedRequestsFromUserProvider);
-                                context.pop();
-                              })
-                              .catchError((error) {
-                                CustomToast.systemToast(appError);
-                              });
+                          controller.handleRequest(
+                            id: request.requestId,
+                            isAccpeted: isAccept,
+                            senderId: request.senderId,
+                            context: context,
+                          );
                         },
                         text: AppLocalizations.of(context).yes,
                       ),
@@ -117,10 +106,10 @@ class RequestDetailsWidget extends ConsumerWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        request.content,
+                        isArabic ? request.arContent : request.content,
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white54,
+                          color: Colors.white70,
                           fontWeight: FontWeight.w100,
                         ),
                       ),

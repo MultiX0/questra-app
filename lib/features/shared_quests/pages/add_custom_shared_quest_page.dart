@@ -56,6 +56,7 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
           deadLine: selectedDate!,
           isAiGenerated: false,
           firstCompleteWin: firstCompleteWin,
+          context: context,
         );
   }
 

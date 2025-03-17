@@ -20,7 +20,12 @@ class SharedQuestCard extends ConsumerWidget {
 
     return SystemCard(
       duration: const Duration(milliseconds: 800),
-      onTap: onTap,
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        if (onTap != null) {
+          onTap!();
+        }
+      },
       padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +76,7 @@ class SharedQuestCard extends ConsumerWidget {
               const SizedBox(height: 5),
               Text(
                 // glowColor: AppColors.whiteColor,
-                quest.title,
+                isArabic ? quest.arTitle : quest.title,
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   color: AppColors.whiteColor,
@@ -101,7 +106,7 @@ class SharedQuestCard extends ConsumerWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                quest.description,
+                isArabic ? quest.arDescription : quest.description,
                 maxLines: isView ? null : 1,
                 overflow: isView ? null : TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.white70, fontSize: 13),

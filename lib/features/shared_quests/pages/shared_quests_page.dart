@@ -1,8 +1,5 @@
-import 'package:flutter_glow/flutter_glow.dart' show GlowIcon;
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
-import 'package:questra_app/features/friends/providers/providers.dart';
-import 'package:questra_app/features/quests/widgets/loading_events_card.dart';
-import 'package:questra_app/features/shared_quests/controller/shared_quests_controller.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/features/shared_quests/widgets/shared_quest_card.dart';
 import 'package:questra_app/imports.dart';
 
@@ -15,17 +12,21 @@ class SharedQuestsPage extends ConsumerStatefulWidget {
 
 class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
   Future<void> refresh() async {
-    final visitedUser = ref.watch(selectedFriendProvider)!;
-    final sharedQuestsRef = getAllSharedQuestsProvider(visitedUser.id);
+    final sharedQuestsRef = sharedQuestsStateProvider;
     await Future.delayed(const Duration(milliseconds: 800), () {
-      ref.invalidate(sharedQuestsRef);
+      ref.read(sharedQuestsRef.notifier).getQuests();
+    });
+    setState(() {
+      btnLoading = false;
     });
   }
 
+  bool btnLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    final visitedUser = ref.watch(selectedFriendProvider)!;
-    final sharedQuestsRef = ref.watch(getAllSharedQuestsProvider(visitedUser.id));
+    // final visitedUser = ref.watch(selectedFriendProvider)!;
+    final middleware = ref.watch(sharedQuestsStateProvider);
 
     return BackgroundWidget(
       child: Scaffold(
@@ -34,39 +35,32 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
           backgroundColor: AppColors.primary.withValues(alpha: .5),
           elevation: 3,
 
-          child: GlowIcon(LucideIcons.plus, glowColor: AppColors.primary),
+          child: Icon(LucideIcons.plus, color: AppColors.whiteColor),
         ),
         appBar: TheAppBar(title: AppLocalizations.of(context).shared_quests),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: sharedQuestsRef.when(
-            data: (quests) {
-              if (quests.isEmpty) {
-                return buildEmptyState();
-              }
-              return AppRefreshIndicator(
-                onRefresh: refresh,
-                child: ListView.builder(
-                  itemCount: quests.length + 1,
-                  itemBuilder: (context, i) {
-                    if (i == 0) {
-                      return buildRequestsCard();
-                    }
-                    final quest = quests.elementAt(i - 1);
-                    return SharedQuestCard(quest: quest);
-                  },
-                ),
-              );
-            },
-            error: (error, _) => Center(child: ErrorWidget(error)),
-            loading:
-                () => ListView.builder(
-                  itemCount: 4,
-                  itemBuilder: (context, i) {
-                    return LoadingQuestsCard();
-                  },
-                ),
-          ),
+          child:
+              middleware.isLoading
+                  ? BeatLoader()
+                  : (middleware.quests.isEmpty)
+                  ? buildEmptyState()
+                  : AppRefreshIndicator(
+                    onRefresh: refresh,
+                    child: ListView.builder(
+                      itemCount: middleware.quests.length + 1,
+                      itemBuilder: (context, i) {
+                        if (i == 0) {
+                          return buildRequestsCard();
+                        }
+                        final quest = middleware.quests.elementAt(i - 1);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: SharedQuestCard(quest: quest),
+                        );
+                      },
+                    ),
+                  ),
         ),
       ),
     );
@@ -102,7 +96,39 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(child: buildRequestsCard()),
-          SliverFillRemaining(hasScrollBody: false, child: Center()),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: SizedBox(
+                child: SystemCard(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
+                      const SizedBox(height: 15),
+                      Text(
+                        AppLocalizations.of(context).shared_quests_empty_state,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      const SizedBox(height: 15),
+                      if (btnLoading)
+                        BeatLoader()
+                      else
+                        MainAppButton(
+                          onTap: () {
+                            setState(() {
+                              btnLoading = true;
+                            });
+                            refresh();
+                          },
+                          title: AppLocalizations.of(context).refresh,
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

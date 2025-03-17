@@ -1143,4 +1143,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get quest_first_complete_win_label => 'أول من يكمل هذه المهمة سيكون الفائز.';
+
+  @override
+  String get quest_requests_empty_state => 'لا يوجد أي طلبات مهام';
+
+  @override
+  String get shared_quests_empty_state => 'لا توجد مهام مشتركة حتى الآن';
 }

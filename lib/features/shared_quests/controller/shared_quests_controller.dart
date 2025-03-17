@@ -2,16 +2,17 @@ import 'dart:developer';
 
 import 'package:questra_app/core/enums/shared_quest_status_enum.dart';
 import 'package:questra_app/core/shared/utils/lang_detect.dart';
+import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
 import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
+import 'package:questra_app/features/shared_quests/providers/quest_requests_provider.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/features/shared_quests/providers/shared_quests_providers.dart';
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/imports.dart';
-
-final sharedQuestsRefreshProvider = StateProvider<int>((ref) => 0);
 
 final sharedQuestsControllerProvider = StateNotifierProvider<SharedQuestsController, bool>(
   (ref) => SharedQuestsController(ref: ref),
@@ -22,15 +23,11 @@ final getAllSharedQuestsProvider = FutureProvider.family<List<SharedQuestModel>,
   userId,
 ) async {
   final controller = ref.watch(sharedQuestsControllerProvider.notifier);
-  ref.watch(sharedQuestsRefreshProvider);
-
   return await controller.getAllSharedQuests(userId);
 });
 
 final getAllSharedRequestsFromUserProvider = FutureProvider<List<RequestModel>>((ref) async {
   final controller = ref.watch(sharedQuestsControllerProvider.notifier);
-  ref.watch(sharedQuestsRefreshProvider);
-
   return await controller.getAllQuestRequestsFromUser();
 });
 
@@ -46,8 +43,11 @@ class SharedQuestsController extends StateNotifier<bool> {
     required DateTime deadLine,
     required bool isAiGenerated,
     required bool firstCompleteWin,
+    required BuildContext context,
   }) async {
     state = true;
+    final adResult = await _ref.read(adsServiceProvider.notifier).showAd();
+    if (!adResult) return;
     final receiverId = _ref.read(selectedFriendProvider)!.id;
     final user = _ref.read(authStateProvider)!;
     try {
@@ -74,6 +74,9 @@ class SharedQuestsController extends StateNotifier<bool> {
       log("request id is $requestId");
       _ref.read(insertedSharedQuestId.notifier).state = requestId;
       await _handleAiAnalyzer(request.content, requestId);
+
+      // ignore: use_build_context_synchronously
+      context.pop();
       final toastMessage =
           _isArabic
               ? "تم ارسال طلب مهمة مشتركة بنجاح"
@@ -105,6 +108,8 @@ class SharedQuestsController extends StateNotifier<bool> {
           );
     } catch (e) {
       await _repo.deleteSharedQuest(requestId);
+      await _repo.deleteRequest(requestId);
+
       rethrow;
     }
   }
@@ -113,15 +118,21 @@ class SharedQuestsController extends StateNotifier<bool> {
     required int id,
     required bool isAccpeted,
     required String senderId,
+    required BuildContext context,
   }) async {
     try {
       state = true;
       _ref.read(appLoading.notifier).state = true;
-      // final result =
-      await _repo.handleRequest(id: id, isAccpeted: isAccpeted);
+      final result = await _repo.handleRequest(id: id, isAccpeted: isAccpeted);
+      if (result) {
+        final quest = await _repo.getQuestByRequestId(id);
+        _ref.read(sharedQuestsStateProvider.notifier).addQuest(quest);
+      }
       _ref.read(appLoading.notifier).state = false;
       state = false;
-      _ref.read(sharedQuestsRefreshProvider.notifier).state++;
+      _removeRequestFromState(id);
+      // ignore: use_build_context_synchronously
+      context.pop();
     } catch (e) {
       _ref.read(appLoading.notifier).state = false;
       state = false;
@@ -129,6 +140,10 @@ class SharedQuestsController extends StateNotifier<bool> {
       log(e.toString());
       rethrow;
     }
+  }
+
+  void _removeRequestFromState(int id) {
+    _ref.read(questRequestsProvider.notifier).removeRequest(id);
   }
 
   Future<List<RequestModel>> getAllQuestRequestsFromUser() async {
