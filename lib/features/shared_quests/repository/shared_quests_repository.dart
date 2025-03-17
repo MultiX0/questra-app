@@ -4,6 +4,7 @@ import 'package:questra_app/core/enums/shared_quest_status_enum.dart';
 import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/imports.dart';
 
 final sharedQuestsProvider = Provider<SharedQuestsRepository>(
@@ -152,6 +153,23 @@ class SharedQuestsRepository {
         FunctionNames.addCompletedPlayersToSharedQuest,
         params: {'user_id': questId, 'quest_id': userId},
       );
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<SharedQuestModel> getQuestById(int id) async {
+    try {
+      final questData =
+          await _sharedQuestTable
+              .select('*,${TableNames.shared_quest_requests}')
+              .eq(KeyNames.id, id)
+              .maybeSingle();
+      if (questData == null) throw 'there is no quests with $id id';
+      final quest = SharedQuestModel.fromMap(questData);
+      _ref.read(selectedSharedQuestProvider.notifier).state = quest;
+      return quest;
     } catch (e) {
       log(e.toString());
       rethrow;

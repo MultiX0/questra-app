@@ -1149,4 +1149,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shared_quests_empty_state => 'there is no shared quests yet';
+
+  @override
+  String get shared_quests_both_win => 'The quest was completed by both of You.';
+
+  @override
+  String get you_won => 'You won';
+
+  @override
+  String get you_lost => 'You Lost';
+
+  @override
+  String get expired_quest => 'Expired';
+
+  @override
+  String get shared_quest_status => 'Quest Status';
 }

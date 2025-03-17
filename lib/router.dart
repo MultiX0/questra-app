@@ -1,6 +1,8 @@
 // import 'package:flutter/foundation.dart';
 
+import 'package:questra_app/features/shared_quests/controller/shared_quests_middleware.dart';
 import 'package:questra_app/features/shared_quests/pages/add_custom_shared_quest_page.dart';
+import 'package:questra_app/features/shared_quests/pages/quest_status_page.dart';
 import 'package:questra_app/features/shared_quests/pages/requests_page.dart';
 import 'package:questra_app/features/shared_quests/pages/shared_quests_page.dart';
 
@@ -128,6 +130,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       buildRoute(fade: true, path: Routes.addSharedQuestPage, child: AddCustomSharedQuestPage()),
       buildRoute(fade: true, path: Routes.sharedQuestsPage, child: SharedQuestsPage()),
       buildRoute(fade: true, path: Routes.questRequestsPage, child: SharedQuestRequestsPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestStatusPage, child: SharedQuestStatusPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestViewPage, child: SharedQuestStatusPage()),
+      GoRoute(
+        path: "${Routes.sharedQuestsMiddleWare}/:${KeyNames.id}",
+        pageBuilder: (context, state) {
+          int id = int.tryParse(state.pathParameters[KeyNames.id] ?? '-1') ?? -1;
+          return MaterialPage(child: SharedQuestsMiddleware(questId: id));
+        },
+      ),
     ],
   );
 });

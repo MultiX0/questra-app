@@ -2326,6 +2326,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'there is no shared quests yet'**
   String get shared_quests_empty_state;
+
+  /// No description provided for @shared_quests_both_win.
+  ///
+  /// In en, this message translates to:
+  /// **'The quest was completed by both of You.'**
+  String get shared_quests_both_win;
+
+  /// No description provided for @you_won.
+  ///
+  /// In en, this message translates to:
+  /// **'You won'**
+  String get you_won;
+
+  /// No description provided for @you_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'You Lost'**
+  String get you_lost;
+
+  /// No description provided for @expired_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expired_quest;
+
+  /// No description provided for @shared_quest_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Status'**
+  String get shared_quest_status;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

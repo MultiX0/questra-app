@@ -1,4 +1,5 @@
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
+import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/features/shared_quests/widgets/shared_quest_card.dart';
 import 'package:questra_app/imports.dart';
@@ -56,7 +57,7 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
                         final quest = middleware.quests.elementAt(i - 1);
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: SharedQuestCard(quest: quest),
+                          child: SharedQuestCard(quest: quest, onTap: () => onQuestTapped(quest)),
                         );
                       },
                     ),
@@ -64,6 +65,10 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
         ),
       ),
     );
+  }
+
+  void onQuestTapped(SharedQuestModel quest) {
+    context.push('${Routes.sharedQuestsMiddleWare}/${quest.id}');
   }
 
   Widget buildRequestsCard() {

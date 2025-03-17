@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/imports.dart';
 
 class SharedQuestModel {
@@ -11,6 +12,7 @@ class SharedQuestModel {
   final String arTitle;
   final String difficulty;
   final List<dynamic> playersCompleted;
+  final RequestModel? request;
   SharedQuestModel({
     required this.id,
     required this.createdAt,
@@ -21,6 +23,7 @@ class SharedQuestModel {
     required this.arTitle,
     required this.difficulty,
     required this.playersCompleted,
+    this.request,
   });
 
   SharedQuestModel copyWith({
@@ -33,6 +36,7 @@ class SharedQuestModel {
     String? arTitle,
     String? difficulty,
     List<dynamic>? playersCompleted,
+    RequestModel? request,
   }) {
     return SharedQuestModel(
       id: id ?? this.id,
@@ -44,6 +48,7 @@ class SharedQuestModel {
       arTitle: arTitle ?? this.arTitle,
       difficulty: difficulty ?? this.difficulty,
       playersCompleted: playersCompleted ?? this.playersCompleted,
+      request: request ?? this.request,
     );
   }
 
@@ -72,6 +77,10 @@ class SharedQuestModel {
       arTitle: map[KeyNames.ar_title] ?? "",
       difficulty: map[KeyNames.difficulty] ?? "hard",
       playersCompleted: List.from(map[KeyNames.players_completed] ?? []),
+      request:
+          map['shared_quest_request'] == null
+              ? null
+              : RequestModel.fromMap(map['shared_quest_request']),
     );
   }
 

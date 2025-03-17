@@ -382,7 +382,12 @@
   "quest_deadline_required": "You must set a deadline before sending this quest request.",
   "quest_first_complete_win_label": "The first to complete this quest will be the winner.",
   "quest_requests_empty_state": "there is no quest requests",
-  "shared_quests_empty_state": "there is no shared quests yet"
+  "shared_quests_empty_state": "there is no shared quests yet",
+  "shared_quests_both_win": "The quest was completed by both of You.",
+  "you_won":"You won",
+  "you_lost": "You Lost",
+  "expired_quest": "Expired",
+  "shared_quest_status": "Quest Status"
 
 
 

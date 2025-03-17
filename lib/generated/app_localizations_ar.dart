@@ -1149,4 +1149,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shared_quests_empty_state => 'لا توجد مهام مشتركة حتى الآن';
+
+  @override
+  String get shared_quests_both_win => 'تم اكمال المهمة من الطرفين';
+
+  @override
+  String get you_won => 'لقد فزت';
+
+  @override
+  String get you_lost => 'تمت هزيمتك';
+
+  @override
+  String get expired_quest => 'هذه المهمة منتهية الصلاحية';
+
+  @override
+  String get shared_quest_status => 'حالة المهمة';
 }

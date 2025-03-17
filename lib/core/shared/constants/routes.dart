@@ -34,4 +34,7 @@ class Routes {
   static const addSharedQuestPage = '/addSharedQuestPage';
   static const sharedQuestsPage = '/sharedQuestsPage';
   static const questRequestsPage = '/questRequestsPage';
+  static const sharedQuestStatusPage = '/sharedQuestStatusPage';
+  static const sharedQuestViewPage = '/sharedQuestViewPage';
+  static const sharedQuestsMiddleWare = '/sharedQuestsMiddleWare';
 }

@@ -7,6 +7,8 @@ import 'package:questra_app/features/shared_quests/models/shared_quest_model.dar
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
+final selectedSharedQuestProvider = StateProvider<SharedQuestModel?>((ref) => null);
+
 final sharedQuestsStateProvider =
     StateNotifierProvider<SharedQuestsProvider, SharedQuestsMiddleWare>(
       (ref) => SharedQuestsProvider(ref: ref),
