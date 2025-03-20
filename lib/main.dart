@@ -22,7 +22,7 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
   // init the databases
-  await _supabaseInit();
+  await supabaseInit();
   _firebaseInit();
   initWorkManager();
   await initNotifications();
@@ -59,11 +59,11 @@ void initWorkManager() {
   );
 }
 
-final _url = dotenv.env['SUPABASE_URL'] ?? "";
-final _key = dotenv.env['SUPABASE_KEY'] ?? "";
-
-Future<void> _supabaseInit() async {
+Future<void> supabaseInit() async {
   try {
+    final _url = dotenv.env['SUPABASE_URL'] ?? "";
+    final _key = dotenv.env['SUPABASE_KEY'] ?? "";
+
     final secureStorage = SecureLocalStorage();
     await secureStorage.initialize();
 

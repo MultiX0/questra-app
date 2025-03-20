@@ -408,6 +408,7 @@ class QuestsRepository {
   }) async {
     try {
       final skippedCount = await getSkippedQuestsCount(userId);
+      log('current skip count: $skippedCount');
       final userInv = await _ref.read(inventoryRepositoryProvider).getInventoryItems(userId);
       log(userInv.toString());
 
@@ -416,7 +417,7 @@ class QuestsRepository {
       log(skipCard.toString());
 
       if (skipCard == null || skipCard.quantity == 0) {
-        if (skippedCount > 3) {
+        if (skippedCount >= 2) {
           throw isArabic
               ? "ليس لديك أي بطاقات تخطي للقيام بهذا الإجراء."
               : ("you dont have any skip cards to do this action");
@@ -432,6 +433,7 @@ class QuestsRepository {
       }
 
       if (skipCard.quantity >= 1) {
+        log("here is the error");
         await updateQuestStatus(StatusEnum.skipped, quest.id);
         _ref.read(analyticsServiceProvider).logFinishQuest(quest.user_id, StatusEnum.skipped.name);
         await NotificationService().cancelNotification(quest.notification_id ?? -1);

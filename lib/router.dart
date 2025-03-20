@@ -5,6 +5,7 @@ import 'package:questra_app/features/shared_quests/pages/add_custom_shared_quest
 import 'package:questra_app/features/shared_quests/pages/quest_status_page.dart';
 import 'package:questra_app/features/shared_quests/pages/requests_page.dart';
 import 'package:questra_app/features/shared_quests/pages/shared_quests_page.dart';
+import 'package:questra_app/features/shared_quests/pages/view_quest_page.dart';
 
 import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
@@ -23,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _key,
     observers: [observer],
     redirect: (context, state) {
-      final isLoggedIn = ref.watch(isLoggedInProvider);
+      final isLoggedIn = ref.watch(supabaseProvider).auth.currentSession != null;
       final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;
       final inSplash = state.uri.toString() == Routes.splash;
       final inSetUpPage = state.uri.toString() == Routes.setupAccountPage;
@@ -131,7 +132,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       buildRoute(fade: true, path: Routes.sharedQuestsPage, child: SharedQuestsPage()),
       buildRoute(fade: true, path: Routes.questRequestsPage, child: SharedQuestRequestsPage()),
       buildRoute(fade: true, path: Routes.sharedQuestStatusPage, child: SharedQuestStatusPage()),
-      buildRoute(fade: true, path: Routes.sharedQuestViewPage, child: SharedQuestStatusPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestViewPage, child: SharedQuestViewPage()),
       GoRoute(
         path: "${Routes.sharedQuestsMiddleWare}/:${KeyNames.id}",
         pageBuilder: (context, state) {

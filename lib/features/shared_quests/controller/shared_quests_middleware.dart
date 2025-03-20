@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -22,7 +23,8 @@ class _SharedQuestsMiddlewareState extends ConsumerState<SharedQuestsMiddleware>
     try {
       final me = ref.read(authStateProvider)!;
       final now = DateTime.now();
-      final quest = await ref.read(sharedQuestsProvider).getQuestById(widget.questId);
+      final quest = await getQuestById(widget.questId);
+      ref.read(selectedSharedQuestProvider.notifier).state = quest;
       if (!mounted) return;
       if (quest.playersCompleted.isNotEmpty) {
         if (quest.playersCompleted.contains(me.id) ||
