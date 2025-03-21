@@ -101,12 +101,14 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
         child: SystemCard(
+          padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
               const SizedBox(height: 15),
               Text(
+                textAlign: TextAlign.center,
                 AppLocalizations.of(context).no_friend_requests,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),

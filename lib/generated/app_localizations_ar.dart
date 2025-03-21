@@ -1164,4 +1164,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shared_quest_status => 'حالة المهمة';
+
+  @override
+  String get quest_status_completed => 'مكتملة';
+
+  @override
+  String get quest_status_ongoing => 'مستمرة';
+
+  @override
+  String get quest_status_expired => 'منتهية الصلاحية';
+
+  @override
+  String get winners => 'الفائزين';
 }

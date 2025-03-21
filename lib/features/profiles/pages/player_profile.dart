@@ -119,7 +119,10 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return SystemCard(
       duration: const Duration(milliseconds: 1700),
 
-      onTap: () => context.push(Routes.firendsControllerPage),
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        context.push(Routes.firendsControllerPage);
+      },
       // onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

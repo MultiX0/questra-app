@@ -42,6 +42,13 @@ class AdsService extends StateNotifier<bool> {
         );
       },
       onFailed: (placementId, error, message) {
+        CustomToast.systemToast(
+          isArabic
+              ? "فشل تحميل الاعلان هذا الشيء قد يرجع لاستخدامك مانع اعلانات\nاو vpn يقوم بحجب الاعلانات\n اذا لم تكن تستخدم أي منهم فالرجاء تشغيل vpn"
+              : "Failed to load the ad. This may be due to the use of an ad blocker or a VPN that blocks ads. If you are not using any of them, please turn on the VPN.",
+          systemMessage: true,
+        );
+        completer.complete(false);
         log("$error $message");
       },
     );
@@ -82,8 +89,14 @@ class AdsService extends StateNotifier<bool> {
           );
         },
         onFailed: (placementId, error, message) {
+          CustomToast.systemToast(
+            isArabic
+                ? "فشل تحميل الاعلان هذا الشيء قد يرجع لاستخدامك مانع اعلانات\nاو vpn يقوم بحجب الاعلانات\n اذا لم تكن تستخدم أي منهم فالرجاء تشغيل vpn"
+                : "Failed to load the ad. This may be due to the use of an ad blocker or a VPN that blocks ads. If you are not using any of them, please turn on the VPN.",
+            systemMessage: true,
+          );
+          completer.complete(false);
           log("$error $message");
-          completer.complete(true);
         },
       );
     } catch (e) {

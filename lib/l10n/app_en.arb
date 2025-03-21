@@ -387,16 +387,9 @@
   "you_won":"You won",
   "you_lost": "You Lost",
   "expired_quest": "Expired",
-  "shared_quest_status": "Quest Status"
-
-
-
-
-
-
-
-
-
-
-
+  "shared_quest_status": "Quest Status",
+  "quest_status_completed": "Completed",
+  "quest_status_ongoing": "Ongoing",
+  "quest_status_expired": "Expired",
+  "winners": "Winners"
 }

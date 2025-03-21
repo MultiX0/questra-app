@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';

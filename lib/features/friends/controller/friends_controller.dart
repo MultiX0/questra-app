@@ -23,6 +23,7 @@ class FriendsController extends StateNotifier<bool> {
   FriendsController({required Ref ref}) : _ref = ref, super(false);
 
   FriendsRepository get _repo => _ref.watch(friendsRepositoryProvider);
+  bool get _isArabic => _ref.watch(localeProvider).languageCode == 'ar';
 
   Future<void> handleRequests({required UserModel reciver}) async {
     _ref.read(friendRequestLoadingProvider(reciver.id).notifier).state = true;
@@ -62,7 +63,9 @@ class FriendsController extends StateNotifier<bool> {
       await _repo.removeFriend(user1: me.id, user2: userId);
       _ref.read(friendsStateProvider.notifier).removeUser(userId);
       _ref.read(friendsRequestsProvider.notifier).removeUserFromState(userId);
-      CustomToast.systemToast("friend is succefully removed");
+      CustomToast.systemToast(
+        _isArabic ? "تمت ازالة الصديق بنجاح" : "friend is succefully removed",
+      );
     } catch (e, trace) {
       log(e.toString(), stackTrace: trace);
       CustomToast.systemToast(appError);

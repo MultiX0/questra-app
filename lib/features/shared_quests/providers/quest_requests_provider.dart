@@ -2,7 +2,6 @@
 import 'dart:developer';
 
 import 'package:questra_app/features/friends/providers/providers.dart';
-import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/imports.dart';
 

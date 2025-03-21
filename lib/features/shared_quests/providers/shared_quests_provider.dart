@@ -3,11 +3,37 @@
 import 'dart:developer';
 
 import 'package:questra_app/features/friends/providers/providers.dart';
-import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
 import 'package:questra_app/imports.dart';
 
-final selectedSharedQuestProvider = StateProvider<SharedQuestModel?>((ref) => null);
+class SelectedSharedQuestSupport {
+  final SharedQuestModel? quest;
+  final List<UserModel> completedPlayers;
+  SelectedSharedQuestSupport({required this.quest, required this.completedPlayers});
+
+  SelectedSharedQuestSupport copyWith({
+    SharedQuestModel? quest,
+    List<UserModel>? completedPlayers,
+  }) {
+    return SelectedSharedQuestSupport(
+      quest: quest ?? this.quest,
+      completedPlayers: completedPlayers ?? this.completedPlayers,
+    );
+  }
+}
+
+final selectedSharedQuestProvider =
+    StateNotifierProvider<SharedQuestNotifier, SelectedSharedQuestSupport?>((ref) {
+      return SharedQuestNotifier();
+    });
+
+class SharedQuestNotifier extends StateNotifier<SelectedSharedQuestSupport?> {
+  SharedQuestNotifier() : super(SelectedSharedQuestSupport(completedPlayers: [], quest: null));
+
+  void updateQuest({required SharedQuestModel quest, List<UserModel>? completedPlayers}) {
+    state = SelectedSharedQuestSupport(completedPlayers: completedPlayers ?? [], quest: quest);
+  }
+}
 
 final sharedQuestsStateProvider =
     StateNotifierProvider<SharedQuestsProvider, SharedQuestsMiddleWare>(

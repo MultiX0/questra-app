@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/services/android_id_service.dart';
@@ -293,6 +294,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
   Future<void> logout() async {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ["profile", "email"]);
+      await FirebaseMessaging.instance.deleteToken();
       await googleSignIn.signOut();
       await _supabase.auth.signOut();
       _cleanup();

@@ -153,7 +153,7 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
   }
 
   void handleRequestForMe(bool accept, String userId) {
-    ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+    // ref.read(soundEffectsServiceProvider).playSystemButtonClick();
     if (accept) {
       ref.read(friendsRequestsProvider.notifier).acceptFriend(userId);
       return;
@@ -215,16 +215,18 @@ class _FriendshipStatusWidgetState extends ConsumerState<FriendshipStatusWidget>
     final isLoading = ref.watch(friendsRequestsProvider).loadingActionsUsers.contains(userId);
     return !isLoading
         ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SystemCardButton(
               onTap: () => handleRequestForMe(true, userId),
-              text: AppLocalizations.of(context).reject,
-              doneButton: false,
-            ),
-            SystemCardButton(
-              onTap: () => handleRequestForMe(false, userId),
               text: AppLocalizations.of(context).accept,
               color: Colors.green[300],
+            ),
+            const SizedBox(width: 50),
+            SystemCardButton(
+              onTap: () => handleRequestForMe(false, userId),
+              text: AppLocalizations.of(context).reject,
+              doneButton: false,
             ),
           ],
         )

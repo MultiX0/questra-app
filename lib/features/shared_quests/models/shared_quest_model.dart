@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/imports.dart';
 
 class SharedQuestModel {
@@ -78,9 +77,9 @@ class SharedQuestModel {
       difficulty: map[KeyNames.difficulty] ?? "hard",
       playersCompleted: List.from(map[KeyNames.players_completed] ?? []),
       request:
-          map['shared_quest_request'] == null
+          map['shared_quest_requests'] == null
               ? null
-              : RequestModel.fromMap(map['shared_quest_request']),
+              : RequestModel.fromMap(map['shared_quest_requests']),
     );
   }
 

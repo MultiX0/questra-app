@@ -1164,4 +1164,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shared_quest_status => 'Quest Status';
+
+  @override
+  String get quest_status_completed => 'Completed';
+
+  @override
+  String get quest_status_ongoing => 'Ongoing';
+
+  @override
+  String get quest_status_expired => 'Expired';
+
+  @override
+  String get winners => 'Winners';
 }

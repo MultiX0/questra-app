@@ -24,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _key,
     observers: [observer],
     redirect: (context, state) {
-      final isLoggedIn = ref.watch(supabaseProvider).auth.currentSession != null;
+      final isLoggedIn = ref.watch(isLoggedInProvider);
       final inOnboardingPage = state.uri.toString() == Routes.onboardingPage;
       final inSplash = state.uri.toString() == Routes.splash;
       final inSetUpPage = state.uri.toString() == Routes.setupAccountPage;

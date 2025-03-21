@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:questra_app/core/enums/friends_status_enum.dart';
-import 'package:questra_app/core/shared/constants/function_names.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
+import 'package:questra_app/features/notifications/controller/notifications_controller.dart';
 import 'package:questra_app/imports.dart';
 
 final friendsRepositoryProvider = Provider<FriendsRepository>((ref) => FriendsRepository(ref: ref));
@@ -17,19 +17,60 @@ class FriendsRepository {
   SupabaseQueryBuilder get _friendsRequestsTable => _client.from(TableNames.friend_requests);
   SupabaseQueryBuilder get _friendshipTable => _client.from(TableNames.friendship);
   SupabaseQueryBuilder get _playersTable => _client.from(TableNames.players);
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+
+  Future<void> _sendNotification({
+    required String arTitle,
+    required String enTitle,
+    required String arContent,
+    required String enContent,
+    required String userId,
+  }) async {
+    try {
+      if (isArabic) {
+        await NotificationsController.sendNotificaction(
+          userId: userId,
+          content: arContent,
+          title: arTitle,
+        );
+        return;
+      }
+      await NotificationsController.sendNotificaction(
+        userId: userId,
+        content: enContent,
+        title: enTitle,
+      );
+    } catch (e, trace) {
+      log(e.toString(), stackTrace: trace);
+      return;
+    }
+  }
 
   Future<void> sendFriendRequest(FriendRequestModel request) async {
     try {
+      final newRequestNotification = _sendNotification(
+        userId: request.receiverId,
+        arContent: "لديك طلب صداقة جديد",
+        arTitle: "لقد قام أحد اللاعبين بارسال طلب صداقة لك",
+        enTitle: "New friend request",
+        enContent: "check your friend requests in the app",
+      );
+
       final _request = await getFriendRequest(user1: request.senderId, user2: request.receiverId);
       log("the request is: ${_request?.toMap()}");
       if (_request == null) {
         await _friendsRequestsTable.insert(request.toMap());
+        await newRequestNotification;
         return;
       }
 
       if (_request.status == FriendsStatusEnum.pending) {
         await _cancelFriendRequest(_request);
         return;
+      }
+
+      if (_request.status != FriendsStatusEnum.pending) {
+        await newRequestNotification;
       }
 
       await updateFriendRequest(request.copyWith(id: _request.id));
@@ -170,6 +211,17 @@ class FriendsRepository {
     try {
       await updateFriendRequest(request.copyWith(status: FriendsStatusEnum.accepted));
       await insertFriendShip(request: request);
+      final _recieverUsername = await _ref
+          .read(profileRepositoryProvider)
+          .getUserNameById(request.receiverId);
+      await _sendNotification(
+        arContent: 'تم قبول طلب صداقتك من $_recieverUsername! يمكنك الآن التفاعل معه.',
+        arTitle: 'تم قبول طلب الصداقة 🎉',
+        enContent:
+            '$_recieverUsername has accepted your friend request! You can now connect and interact.',
+        enTitle: 'Friend Request Accepted 🎉',
+        userId: request.senderId,
+      );
     } catch (e) {
       log(e.toString());
       rethrow;

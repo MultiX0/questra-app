@@ -2356,6 +2356,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Quest Status'**
   String get shared_quest_status;
+
+  /// No description provided for @quest_status_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get quest_status_completed;
+
+  /// No description provided for @quest_status_ongoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get quest_status_ongoing;
+
+  /// No description provided for @quest_status_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get quest_status_expired;
+
+  /// No description provided for @winners.
+  ///
+  /// In en, this message translates to:
+  /// **'Winners'**
+  String get winners;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

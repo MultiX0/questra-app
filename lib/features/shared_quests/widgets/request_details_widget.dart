@@ -50,10 +50,11 @@ class RequestDetailsWidget extends ConsumerWidget {
                       child: SystemCardButton(
                         onTap: () {
                           controller.handleRequest(
-                            id: request.requestId,
                             isAccpeted: isAccept,
                             senderId: request.senderId,
                             context: context,
+                            otherUserId: request.senderId,
+                            request: request,
                           );
                         },
                         text: AppLocalizations.of(context).yes,

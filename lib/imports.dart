@@ -86,3 +86,8 @@ export 'package:questra_app/features/friends/pages/add_friends_page.dart';
 export 'package:questra_app/features/profiles/pages/other_profile.dart';
 export 'package:questra_app/core/shared/widgets/background_widget.dart';
 export 'package:questra_app/core/shared/widgets/beat_loader.dart';
+export 'package:questra_app/core/enums/shared_quest_status_enum.dart';
+export 'package:questra_app/core/shared/constants/function_names.dart';
+export 'package:questra_app/core/shared/utils/isolate_function.dart';
+export 'package:questra_app/features/shared_quests/models/request_model.dart';
+export 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';

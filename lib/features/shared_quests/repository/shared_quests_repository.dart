@@ -1,11 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
-import 'package:questra_app/core/enums/shared_quest_status_enum.dart';
-import 'package:questra_app/core/shared/constants/function_names.dart';
-import 'package:questra_app/core/shared/utils/isolate_function.dart';
-import 'package:questra_app/features/shared_quests/models/request_model.dart';
-import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
+import 'package:questra_app/features/notifications/controller/notifications_controller.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/imports.dart';
 
 final sharedQuestsProvider = Provider<SharedQuestsRepository>(
@@ -19,10 +16,50 @@ class SharedQuestsRepository {
   SupabaseQueryBuilder get _sharedQuestRequestsTable =>
       _client.from(TableNames.shared_quest_requests);
   SupabaseQueryBuilder get _sharedQuestTable => _client.from(TableNames.shared_quests);
+  bool get isArabic => _ref.watch(localeProvider).languageCode == 'ar';
+
+  Future<void> _sendNotification({
+    required String arTitle,
+    required String enTitle,
+    required String arContent,
+    required String enContent,
+    required String userId,
+  }) async {
+    try {
+      if (isArabic) {
+        await NotificationsController.sendNotificaction(
+          userId: userId,
+          content: arContent,
+          title: arTitle,
+        );
+        return;
+      }
+      await NotificationsController.sendNotificaction(
+        userId: userId,
+        content: enContent,
+        title: enTitle,
+      );
+    } catch (e, trace) {
+      log(e.toString(), stackTrace: trace);
+      return;
+    }
+  }
 
   Future<int> sendRequest(RequestModel request) async {
     try {
       final data = await _sharedQuestRequestsTable.insert(request.toMap()).select();
+      final senderUsername = await _ref
+          .read(profileRepositoryProvider)
+          .getUserNameById(request.senderId);
+      await _sendNotification(
+        arTitle: 'تحدٍ جديد في مهمة مشتركة 🚀',
+        enTitle: 'New Shared Mission Challenge 🚀',
+        arContent: '$senderUsername قام بتحديك في مهمة مشتركة جديدة! هل أنت مستعد لقبول التحدي؟',
+        enContent:
+            '$senderUsername has challenged you to a new shared mission! Are you ready to accept the challenge?',
+        userId: request.receiverId,
+      );
+
       return data[0][KeyNames.id];
     } catch (e) {
       log(e.toString());
@@ -30,8 +67,13 @@ class SharedQuestsRepository {
     }
   }
 
-  Future<bool> handleRequest({required int id, required bool isAccpeted}) async {
+  Future<bool> handleRequest({
+    required int id,
+    required bool isAccpeted,
+    required String senderId,
+  }) async {
     try {
+      final me = _ref.read(authStateProvider)!;
       if (isAccpeted) {
         await _sharedQuestRequestsTable
             .update({KeyNames.status: sharedQuestStatusToString(SharedQuestStatusEnum.accepted)})
@@ -40,12 +82,27 @@ class SharedQuestsRepository {
             .update({KeyNames.is_accepted: true})
             .eq(KeyNames.request_id, id)
             .eq(KeyNames.request_id, id);
+        await _sendNotification(
+          arTitle: '🎯 تم قبول المهمة بنجاح!',
+          enTitle: '🎯 Mission Accepted Successfully!',
+          arContent: 'اللاعب ${me.username} قبل التحدي! استعد للمنافسة 💪🔥',
+          enContent: '${me.username} has accepted your mission! Get ready for the challenge 💪🔥',
+          userId: senderId,
+        );
+
         return true;
       } else {
         await _sharedQuestRequestsTable
             .update({KeyNames.status: sharedQuestStatusToString(SharedQuestStatusEnum.rejected)})
             .eq(KeyNames.id, id);
-        await _sharedQuestTable.delete().eq(KeyNames.request_id, id);
+        await _sendNotification(
+          arTitle: '❌ تم رفض المهمة',
+          enTitle: '❌ Mission Declined',
+          arContent: 'اللاعب ${me.username} رفض المهمة هذه المرة. حاول مرة أخرى لاحقًا!',
+          enContent: '${me.username} has declined the mission this time. Try again later!',
+          userId: senderId,
+        );
+
         return false;
       }
     } catch (e) {
@@ -139,6 +196,8 @@ class SharedQuestsRepository {
         params: {'user1': user1Id, 'user2': user2Id},
       );
 
+      log(response.toString());
+
       final List<dynamic> data = response as List<dynamic>;
       return data.map((item) => SharedQuestModel.fromMap(item)).toList();
     } catch (e) {
@@ -147,12 +206,27 @@ class SharedQuestsRepository {
     }
   }
 
-  Future<void> completeQuest({required String userId, required String questId}) async {
+  Future<void> completeQuest({required String userId, required SharedQuestModel quest}) async {
     try {
       await _client.rpc(
         FunctionNames.addCompletedPlayersToSharedQuest,
-        params: {'user_id': questId, 'quest_id': userId},
+        params: {'user_id': userId, 'quest_id': quest.id},
       );
+      final me = _ref.read(authStateProvider)!;
+      if (quest.playersCompleted.isEmpty) {
+        await _sendNotification(
+          arTitle: '⚡ لقد تم إنهاء المهمة قبلك!',
+          enTitle: '⚡ Someone Completed the Mission Before You!',
+          arContent: 'للأسف، سبقك ${me.username} في إكمال المهمة. حاول مجددًا في التحديات القادمة!',
+          enContent:
+              'Unfortunately, ${me.username} has completed the mission before you. Try again in future challenges!',
+          userId:
+              quest.request!.receiverId == userId
+                  ? quest.request!.receiverId
+                  : quest.request!.senderId,
+        );
+      }
+      await _ref.read(sharedQuestsStateProvider.notifier).getQuests();
     } catch (e) {
       log(e.toString());
       rethrow;

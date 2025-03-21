@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/device_service.dart';
@@ -23,6 +24,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   void initState() {
     final user = ref.read(authStateProvider);
     handleLootBoxes(user!.id);
+    handleFCMInsert(user.id);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       _checkDevice();
       await NotificationsRepository.insertLog(user.id);
@@ -38,6 +40,15 @@ class _HomePageState extends ConsumerState<HomePage> {
       });
     });
     super.initState();
+  }
+
+  void handleFCMInsert(String userId) async {
+    try {
+      await NotificationsRepository.insertFCMToken(userId);
+    } catch (e) {
+      log("Error in handleFCMInsert: ${e.toString()}");
+      rethrow;
+    }
   }
 
   void handleLootBoxes(String userId) async {

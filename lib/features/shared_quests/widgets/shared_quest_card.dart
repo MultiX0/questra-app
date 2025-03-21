@@ -1,16 +1,22 @@
 // import 'dart:developer';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
-import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/imports.dart';
 import 'dart:ui' as ui;
 
 class SharedQuestCard extends ConsumerWidget {
-  const SharedQuestCard({super.key, this.onTap, required this.quest, this.isView = false});
+  const SharedQuestCard({
+    super.key,
+    this.onTap,
+    required this.quest,
+    this.isView = false,
+    this.isStatus = false,
+  });
 
   final Function()? onTap;
   final SharedQuestModel quest;
   final bool isView;
+  final bool isStatus;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -133,7 +139,7 @@ class SharedQuestCard extends ConsumerWidget {
               ],
             ),
           ),
-          buildTopLayer(ref: ref, me: me, context: context),
+          if (!isView && !isStatus) buildTopLayer(ref: ref, me: me, context: context),
         ],
       ),
     );
@@ -151,6 +157,16 @@ class SharedQuestCard extends ConsumerWidget {
 
     final padding = EdgeInsets.all(16);
     final style = TextStyle(fontWeight: FontWeight.bold, fontSize: 24);
+
+    if (quest.request!.firstCompleteWin && quest.playersCompleted.contains(me.id)) {
+      return buildTopCard(
+        padding: padding,
+        decoration: decoration,
+        context: context,
+        style: style.copyWith(fontSize: 18, color: AppColors.primary),
+        text: AppLocalizations.of(context).you_won,
+      );
+    }
 
     final now = DateTime.now();
     if (quest.request != null && quest.request!.deadLine.isBefore(now)) {

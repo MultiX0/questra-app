@@ -145,9 +145,17 @@ class _AddCustomSharedQuestPageState extends ConsumerState<AddCustomSharedQuestP
                               },
                             ),
                             const SizedBox(width: 10),
-                            Text(
-                              AppLocalizations.of(context).quest_first_complete_win_label,
-                              style: TextStyle(color: AppColors.whiteColor, fontSize: 15),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  firstCompleteWin = !firstCompleteWin;
+                                });
+                              },
+                              child: Text(
+                                AppLocalizations.of(context).quest_first_complete_win_label,
+                                softWrap: true,
+                                style: TextStyle(color: AppColors.whiteColor, fontSize: 15),
+                              ),
                             ),
                           ],
                         ),

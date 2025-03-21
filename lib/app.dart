@@ -3,7 +3,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
-import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/l10n/l10n.dart';
 import 'package:questra_app/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +31,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       if (userId != null) {
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
-        handleFCMInsert(userId);
+
         handleAppPackage();
       }
     });
@@ -44,39 +43,14 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     ref.read(appBuildNumberProvider.notifier).state = await PackageInfoService.getAppBuildNumber();
   }
 
-  void handleFCMInsert(String userId) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now();
-      final prevTimestamp = prefs.getInt("fcm_check");
-
-      if (prevTimestamp != null) {
-        final prevDate = DateTime.fromMillisecondsSinceEpoch(prevTimestamp);
-        final nextAllowedTime = prevDate.add(const Duration(hours: 2));
-
-        log("Previous check time: $prevDate");
-        log("Next allowed check time: $nextAllowedTime");
-        log("Current time: $now");
-
-        if (now.isBefore(nextAllowedTime)) {
-          log("Skipping FCM check as it's within the 2-hour window.");
-          return;
-        }
-      }
-
-      // Update timestamp
-      await prefs.setInt("fcm_check", now.millisecondsSinceEpoch);
-      log("FCM check timestamp updated to: $now");
-
-      // Insert FCM token
-      await NotificationsRepository.insertFCMToken(userId);
-      log("FCM token inserted for user: $userId");
-    } catch (e) {
-      log("Error in handleFCMInsert: ${e.toString()}");
-      rethrow;
-    }
-  }
   // final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
+
+  Future<void> setAllConsentsToTrue() async {
+    await UnityAds.setPrivacyConsent(PrivacyConsentType.gdpr, true);
+    await UnityAds.setPrivacyConsent(PrivacyConsentType.ccpa, true);
+    await UnityAds.setPrivacyConsent(PrivacyConsentType.pipl, true);
+    await UnityAds.setPrivacyConsent(PrivacyConsentType.ageGate, true);
+  }
 
   Future<void> initializeUnityAds() async {
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -84,6 +58,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       log('No internet connection');
       return;
     }
+    await setAllConsentsToTrue();
 
     UnityAds.init(
       gameId: "5790259",

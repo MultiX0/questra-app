@@ -51,10 +51,14 @@ class _SharedQuestsPageState extends ConsumerState<SharedQuestsPage> {
                     child: ListView.builder(
                       itemCount: middleware.quests.length + 1,
                       itemBuilder: (context, i) {
+                        final quests = middleware.quests.toList();
                         if (i == 0) {
                           return buildRequestsCard();
                         }
-                        final quest = middleware.quests.elementAt(i - 1);
+                        quests.sort(
+                          (a, b) => a.playersCompleted.length.compareTo(b.playersCompleted.length),
+                        );
+                        final quest = quests.elementAt(i - 1);
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: SharedQuestCard(quest: quest, onTap: () => onQuestTapped(quest)),

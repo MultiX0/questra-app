@@ -215,4 +215,14 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<String> getUserNameById(String id) async {
+    try {
+      final data = await _profilesTable.select(KeyNames.username).eq(KeyNames.id, id).single();
+      return data[KeyNames.username];
+    } catch (e, trace) {
+      log(e.toString(), stackTrace: trace);
+      rethrow;
+    }
+  }
 }

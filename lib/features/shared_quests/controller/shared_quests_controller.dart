@@ -1,12 +1,9 @@
 import 'dart:developer';
 
-import 'package:questra_app/core/enums/shared_quest_status_enum.dart';
 import 'package:questra_app/core/shared/utils/lang_detect.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
-import 'package:questra_app/features/shared_quests/models/request_model.dart';
-import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
 import 'package:questra_app/features/shared_quests/providers/quest_requests_provider.dart';
 import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/features/shared_quests/providers/shared_quests_providers.dart';
@@ -115,22 +112,27 @@ class SharedQuestsController extends StateNotifier<bool> {
   }
 
   Future<void> handleRequest({
-    required int id,
     required bool isAccpeted,
     required String senderId,
     required BuildContext context,
+    required String otherUserId,
+    required RequestModel request,
   }) async {
     try {
       state = true;
       _ref.read(appLoading.notifier).state = true;
-      final result = await _repo.handleRequest(id: id, isAccpeted: isAccpeted);
+      final result = await _repo.handleRequest(
+        id: request.requestId,
+        isAccpeted: isAccpeted,
+        senderId: otherUserId,
+      );
       if (result) {
-        final quest = await _repo.getQuestByRequestId(id);
-        _ref.read(sharedQuestsStateProvider.notifier).addQuest(quest);
+        final quest = await _repo.getQuestByRequestId(request.requestId);
+        _ref.read(sharedQuestsStateProvider.notifier).addQuest(quest.copyWith(request: request));
       }
       _ref.read(appLoading.notifier).state = false;
       state = false;
-      _removeRequestFromState(id);
+      _removeRequestFromState(request.requestId);
       // ignore: use_build_context_synchronously
       context.pop();
     } catch (e) {
@@ -168,6 +170,46 @@ class SharedQuestsController extends StateNotifier<bool> {
         error: "${e.toString()}\ntrace:$trace",
         userId: me.id,
       );
+      rethrow;
+    }
+  }
+
+  Future<SharedQuestModel> getQuestByIdFromRepo(int questId) async {
+    try {
+      final me = _ref.read(authStateProvider)!;
+      final quest = await getQuestById(questId);
+      final completedPlayer = quest.playersCompleted.where((id) => id != me.id).firstOrNull;
+
+      UserModel? completedPlayerProfile;
+      if (completedPlayer != null) {
+        completedPlayerProfile = await _ref
+            .read(profileRepositoryProvider)
+            .getUserProfileById(completedPlayer);
+      }
+
+      Set<UserModel> completedPlayers = {};
+      if (quest.playersCompleted.length >= 2) {
+        completedPlayers.add(me);
+        if (completedPlayerProfile != null) {
+          completedPlayers.add(completedPlayerProfile);
+        }
+      }
+      if (quest.playersCompleted.length == 1) {
+        if (completedPlayerProfile != null) {
+          completedPlayers.add(completedPlayerProfile);
+        }
+      }
+
+      if (quest.playersCompleted.contains(me.id)) {
+        completedPlayers.add(me);
+      }
+
+      _ref
+          .read(selectedSharedQuestProvider.notifier)
+          .updateQuest(quest: quest, completedPlayers: completedPlayers.toList());
+      return quest;
+    } catch (e) {
+      log(e.toString());
       rethrow;
     }
   }

@@ -383,7 +383,12 @@
   "you_won":"لقد فزت",
   "you_lost": "تمت هزيمتك",
   "expired_quest": "هذه المهمة منتهية الصلاحية",
-  "shared_quest_status": "حالة المهمة"
+  "shared_quest_status": "حالة المهمة",
+  "quest_status_completed": "مكتملة",
+  "quest_status_ongoing": "مستمرة",
+  "quest_status_expired": "منتهية الصلاحية",
+  "winners": "الفائزين"
+
 
 
 

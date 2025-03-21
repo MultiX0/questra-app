@@ -1,6 +1,5 @@
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
-import 'package:questra_app/features/shared_quests/models/request_model.dart';
 import 'package:questra_app/features/shared_quests/providers/quest_requests_provider.dart';
 import 'package:questra_app/features/shared_quests/widgets/request_details_widget.dart';
 import 'package:questra_app/imports.dart';

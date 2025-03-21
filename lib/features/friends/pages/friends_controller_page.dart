@@ -22,6 +22,7 @@ class _FriendsControllerPageState extends ConsumerState<FriendsControllerPage> {
           actions: [
             IconButton(
               onPressed: () => context.push(Routes.addFriendsPage),
+
               icon: Icon(LucideIcons.user_plus),
             ),
           ],
