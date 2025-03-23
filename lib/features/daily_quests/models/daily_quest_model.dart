@@ -7,7 +7,11 @@ class DailyQuestModel {
   final int setUps;
   final double kmRun;
   final int squats;
-  final DateTime createdAt;
+  final DateTime? createdAt;
+  final int? pushUpsIdid;
+  final int? squatsIdid;
+  final int? setUpsIdid;
+  final double? runningIdid;
   DailyQuestModel({
     required this.id,
     required this.userId,
@@ -15,7 +19,11 @@ class DailyQuestModel {
     required this.setUps,
     required this.kmRun,
     required this.squats,
-    required this.createdAt,
+    this.createdAt,
+    this.pushUpsIdid = 0,
+    this.runningIdid = 0.0,
+    this.setUpsIdid = 0,
+    this.squatsIdid = 0,
   });
 
   DailyQuestModel copyWith({
@@ -26,6 +34,10 @@ class DailyQuestModel {
     double? kmRun,
     int? squats,
     DateTime? createdAt,
+    int? pushUpsIdid,
+    int? squatsIdid,
+    int? setUpsIdid,
+    double? runningIdid,
   }) {
     return DailyQuestModel(
       id: id ?? this.id,
@@ -35,6 +47,10 @@ class DailyQuestModel {
       kmRun: kmRun ?? this.kmRun,
       squats: squats ?? this.squats,
       createdAt: createdAt ?? this.createdAt,
+      pushUpsIdid: pushUpsIdid ?? this.pushUpsIdid,
+      squatsIdid: squatsIdid ?? this.squatsIdid,
+      setUpsIdid: setUpsIdid ?? this.setUpsIdid,
+      runningIdid: runningIdid ?? this.runningIdid,
     );
   }
 
@@ -49,6 +65,38 @@ class DailyQuestModel {
         KeyNames.squats: squats,
       },
     };
+  }
+
+  Map<String, dynamic> toLocal() {
+    return <String, dynamic>{
+      // KeyNames.id: id,
+      KeyNames.user_id: userId,
+      KeyNames.data: {
+        KeyNames.push_ups: pushUps,
+        KeyNames.set_ups: setUps,
+        KeyNames.km_run: kmRun,
+        KeyNames.squats: squats,
+        'pIdid': pushUpsIdid,
+        'setIdid': setUpsIdid,
+        'sIdid': squatsIdid,
+        'rIdid': runningIdid,
+      },
+    };
+  }
+
+  factory DailyQuestModel.fromLocal(Map<String, dynamic> map) {
+    return DailyQuestModel(
+      id: map[KeyNames.id] ?? -1,
+      userId: map[KeyNames.user_id] ?? '',
+      pushUps: map[KeyNames.data]?[KeyNames.push_ups] ?? 0,
+      setUps: map[KeyNames.data]?[KeyNames.set_ups] ?? 0,
+      kmRun: map[KeyNames.data]?[KeyNames.km_run] ?? 0.0,
+      squats: map[KeyNames.data]?[KeyNames.squats] ?? 0,
+      pushUpsIdid: map[KeyNames.data]?['pIdid'] ?? 0,
+      runningIdid: map[KeyNames.data]?['rIdid'] ?? 0.0,
+      setUpsIdid: map[KeyNames.data]?['setIdid'] ?? 0,
+      squatsIdid: map[KeyNames.data]?['sIdid'] ?? 0,
+    );
   }
 
   factory DailyQuestModel.fromMap(Map<String, dynamic> map) {

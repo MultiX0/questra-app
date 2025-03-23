@@ -1176,4 +1176,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get winners => 'الفائزين';
+
+  @override
+  String get daily_quest => 'المهمة اليومية';
 }

@@ -391,5 +391,6 @@
   "quest_status_completed": "Completed",
   "quest_status_ongoing": "Ongoing",
   "quest_status_expired": "Expired",
-  "winners": "Winners"
+  "winners": "Winners",
+  "daily_quest": "Daily Quest"
 }

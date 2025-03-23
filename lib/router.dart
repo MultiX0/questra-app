@@ -1,5 +1,6 @@
 // import 'package:flutter/foundation.dart';
 
+import 'package:questra_app/features/daily_quests/pages/daily_quest_page.dart';
 import 'package:questra_app/features/shared_quests/controller/shared_quests_middleware.dart';
 import 'package:questra_app/features/shared_quests/pages/add_custom_shared_quest_page.dart';
 import 'package:questra_app/features/shared_quests/pages/quest_status_page.dart';
@@ -140,6 +141,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           return MaterialPage(child: SharedQuestsMiddleware(questId: id));
         },
       ),
+      buildRoute(fade: true, path: Routes.dailyQuestsPage, child: DailyQuestPage()),
     ],
   );
 });

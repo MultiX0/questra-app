@@ -1176,4 +1176,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get winners => 'Winners';
+
+  @override
+  String get daily_quest => 'Daily Quest';
 }

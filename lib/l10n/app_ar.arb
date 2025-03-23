@@ -387,7 +387,9 @@
   "quest_status_completed": "مكتملة",
   "quest_status_ongoing": "مستمرة",
   "quest_status_expired": "منتهية الصلاحية",
-  "winners": "الفائزين"
+  "winners": "الفائزين",
+  "daily_quest": "المهمة اليومية"
+
 
 
 

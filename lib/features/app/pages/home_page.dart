@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/core/services/device_service.dart';
 import 'package:questra_app/core/shared/utils/notifications_subs.dart';
-import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
+import 'package:questra_app/features/app/widgets/daily_quests_card.dart';
+// import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
@@ -150,7 +151,8 @@ class _HomePageState extends ConsumerState<HomePage> {
               const SizedBox(height: 15),
               UserDashboardWidget(duration: const Duration(milliseconds: 1400), user: me!),
               const SizedBox(height: 15),
-              DashboardQuestWidget(),
+              // DashboardQuestWidget(),
+              DailyQuestsCard(),
             ],
           ),
         ),

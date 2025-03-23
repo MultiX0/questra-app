@@ -2380,6 +2380,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Winners'**
   String get winners;
+
+  /// No description provided for @daily_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Quest'**
+  String get daily_quest;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

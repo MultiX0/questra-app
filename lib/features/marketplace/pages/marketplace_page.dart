@@ -150,7 +150,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   itemCount: filteredItems.length,
                   itemBuilder: (context, i) {
-                    final item = filteredItems[i];
+                    final item = filteredItems.reversed.toList()[i];
                     return AnimationConfiguration.staggeredList(
                       position: i,
                       duration: const Duration(milliseconds: 900),
