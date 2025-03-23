@@ -111,4 +111,9 @@ class KeyNames {
   static const first_complete_win = 'first_complete_win';
   static const players_completed = 'players_completed';
   static const ar_content = 'ar_content';
+  static const push_ups = 'push_ups';
+  static const set_ups = 'set_ups';
+  static const km_run = 'km_run';
+  static const data = 'data';
+  static const squats = 'squats';
 }
