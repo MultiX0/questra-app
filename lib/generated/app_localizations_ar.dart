@@ -1179,4 +1179,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get daily_quest => 'المهمة اليومية';
+
+  @override
+  String get daily_quest_hint => 'تحدي اليوم: استعد بقوة! قم بالتمارين اليومية وحقق تقدمك';
+
+  @override
+  String get pushups_label => '🔥 تمرين الضغط: اختبر قوتك وادفع حدودك!';
+
+  @override
+  String get pushups_title => 'تمرين الضغط';
+
+  @override
+  String get situps_label => '💥 تمارين البطن: شد عضلاتك وطور قوتك الأساسية!';
+
+  @override
+  String get situps_title => 'تمارين البطن';
+
+  @override
+  String get squats_label => '🏋️‍♂️ القرفصاء: عزز قوة ساقيك وثباتك!';
+
+  @override
+  String get squats_title => 'القرفصاء';
+
+  @override
+  String get running_label => '🏃‍♂️ الجري (كم): تحدَّ نفسك وابدأ بالانطلاق!';
+
+  @override
+  String get running_title => 'الجري';
+
+  @override
+  String get exercice_hint => 'يمكنك أداء أكثر من المطلوب (اذا كنت تستطيع)';
 }

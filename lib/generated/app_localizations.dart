@@ -2386,6 +2386,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily Quest'**
   String get daily_quest;
+
+  /// No description provided for @daily_quest_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Challenge: Get stronger! Complete your daily workout and level up.'**
+  String get daily_quest_hint;
+
+  /// No description provided for @pushups_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 Push-Ups: Test your strength and push your limits!'**
+  String get pushups_label;
+
+  /// No description provided for @pushups_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-Ups'**
+  String get pushups_title;
+
+  /// No description provided for @situps_label.
+  ///
+  /// In en, this message translates to:
+  /// **'💥 Sit-Ups: Strengthen your core and build endurance!'**
+  String get situps_label;
+
+  /// No description provided for @situps_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sit-Ups'**
+  String get situps_title;
+
+  /// No description provided for @squats_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🏋️‍♂️ Squats: Build leg strength and stability!'**
+  String get squats_label;
+
+  /// No description provided for @squats_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Squats'**
+  String get squats_title;
+
+  /// No description provided for @running_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🏃‍♂️ Running (KM): Push your limits and keep moving!'**
+  String get running_label;
+
+  /// No description provided for @running_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running_title;
+
+  /// No description provided for @exercice_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can do more than what is required (if you can)'**
+  String get exercice_hint;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -125,8 +125,8 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                           final user = state.users[index];
                           bool isMe = user.id == me?.id;
                           return ListTile(
-                            selected: isMe,
-                            selectedTileColor: isMe ? Colors.pink.withValues(alpha: .25) : null,
+                            // selected: isMe,
+                            // selectedTileColor: isMe ? Colors.pink.withValues(alpha: .25) : null,
                             onTap: () {
                               ref.read(soundEffectsServiceProvider).playSystemButtonClick();
                               ref.read(selectedEventPlayer.notifier).state = user;

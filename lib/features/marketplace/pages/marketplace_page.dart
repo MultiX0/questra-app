@@ -68,6 +68,8 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       return BuyItemWidget(item: selectedItem!);
     }
 
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -81,7 +83,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 Text(
                   AppLocalizations.of(context).free_coins,
                   style: TextStyle(
-                    fontFamily: AppFonts.header,
+                    fontFamily: isArabic ? null : AppFonts.header,
                     fontSize: 18,
                     color: AppColors.primary,
                   ),

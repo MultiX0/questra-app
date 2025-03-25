@@ -392,5 +392,15 @@
   "quest_status_ongoing": "Ongoing",
   "quest_status_expired": "Expired",
   "winners": "Winners",
-  "daily_quest": "Daily Quest"
+  "daily_quest": "Daily Quest",
+  "daily_quest_hint": "Daily Challenge: Get stronger! Complete your daily workout and level up.",
+  "pushups_label": "🔥 Push-Ups: Test your strength and push your limits!",
+  "pushups_title": "Push-Ups",
+  "situps_label": "💥 Sit-Ups: Strengthen your core and build endurance!",
+  "situps_title": "Sit-Ups",
+  "squats_label": "🏋️‍♂️ Squats: Build leg strength and stability!",
+  "squats_title": "Squats",
+  "running_label": "🏃‍♂️ Running (KM): Push your limits and keep moving!",
+  "running_title": "Running",
+  "exercice_hint": "You can do more than what is required (if you can)"
 }

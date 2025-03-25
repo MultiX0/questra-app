@@ -11,10 +11,10 @@ class MainAppButton extends ConsumerWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-        backgroundColor: HexColor("7AD5FF").withValues(alpha: .35),
+        backgroundColor: AppColors.primary.withValues(alpha: .35),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: HexColor('7AD5FF')),
+          side: BorderSide(color: AppColors.primary),
         ),
         foregroundColor: AppColors.whiteColor,
         textStyle: TextStyle(fontWeight: FontWeight.bold),

@@ -93,6 +93,7 @@ dependencies:
   encrypt: ^5.0.3
   convert: ^3.1.2
   crypto: ^3.0.6
+  flutter_svg: ^2.0.17
 flutter_intl:
   enabled: true
   arb_dir: lib/l10n

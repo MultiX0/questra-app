@@ -17,7 +17,7 @@ class MyNavBar extends ConsumerStatefulWidget {
 }
 
 class _MyNavBarState extends ConsumerState<MyNavBar> {
-  final Color navigationBarColor = HexColor('22B2F4').withValues(alpha: 0.15);
+  final Color navigationBarColor = AppColors.primary.withValues(alpha: 0.05);
   int page = 0;
 
   void onTap(BuildContext context, int index) {

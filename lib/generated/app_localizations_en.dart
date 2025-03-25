@@ -1179,4 +1179,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daily_quest => 'Daily Quest';
+
+  @override
+  String get daily_quest_hint => 'Daily Challenge: Get stronger! Complete your daily workout and level up.';
+
+  @override
+  String get pushups_label => '🔥 Push-Ups: Test your strength and push your limits!';
+
+  @override
+  String get pushups_title => 'Push-Ups';
+
+  @override
+  String get situps_label => '💥 Sit-Ups: Strengthen your core and build endurance!';
+
+  @override
+  String get situps_title => 'Sit-Ups';
+
+  @override
+  String get squats_label => '🏋️‍♂️ Squats: Build leg strength and stability!';
+
+  @override
+  String get squats_title => 'Squats';
+
+  @override
+  String get running_label => '🏃‍♂️ Running (KM): Push your limits and keep moving!';
+
+  @override
+  String get running_title => 'Running';
+
+  @override
+  String get exercice_hint => 'You can do more than what is required (if you can)';
 }

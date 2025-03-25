@@ -76,8 +76,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
                   ? null
                   : BoxConstraints(minWidth: size.width),
           decoration: BoxDecoration(
-            color:
-                widget.color?.withValues(alpha: .25) ?? HexColor('7AD5FF').withValues(alpha: .05),
+            color: widget.color?.withValues(alpha: .25) ?? AppColors.primary.withValues(alpha: .05),
             border:
                 widget.border ?? Border.all(color: widget.color ?? HexColor('43A7D5'), width: 0.75),
             borderRadius: BorderRadius.circular(widget.borderRadius ?? 8),
@@ -107,7 +106,7 @@ class _SystemCardState extends State<SystemCard> with SingleTickerProviderStateM
               decoration: BoxDecoration(
                 color:
                     widget.color?.withValues(alpha: .25) ??
-                    HexColor('7AD5FF').withValues(alpha: .05),
+                    AppColors.primary.withValues(alpha: .025),
                 border:
                     widget.border ??
                     Border.all(color: widget.color ?? HexColor('43A7D5'), width: 0.75),

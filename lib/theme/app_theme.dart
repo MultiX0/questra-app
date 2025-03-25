@@ -50,7 +50,7 @@ class AppTheme {
 
 class AppColors {
   static Color scaffoldBackground = HexColor("#020403");
-  static Color primary = HexColor('#7AD5FF');
+  static Color primary = HexColor('#5fa4fa');
   static Color redColor = HexColor('FF7A7C');
   static Color descriptionColor = Colors.white.withValues(alpha: .86);
   static Color whiteColor = HexColor('#f1f2f4');

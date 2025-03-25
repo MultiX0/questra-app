@@ -48,19 +48,17 @@ class FriendsRepository {
 
   Future<void> sendFriendRequest(FriendRequestModel request) async {
     try {
-      final newRequestNotification = _sendNotification(
-        userId: request.receiverId,
-        arContent: "لديك طلب صداقة جديد",
-        arTitle: "لقد قام أحد اللاعبين بارسال طلب صداقة لك",
-        enTitle: "New friend request",
-        enContent: "check your friend requests in the app",
-      );
-
       final _request = await getFriendRequest(user1: request.senderId, user2: request.receiverId);
       log("the request is: ${_request?.toMap()}");
       if (_request == null) {
         await _friendsRequestsTable.insert(request.toMap());
-        await newRequestNotification;
+        await _sendNotification(
+          userId: request.receiverId,
+          arContent: "لديك طلب صداقة جديد",
+          arTitle: "لقد قام أحد اللاعبين بارسال طلب صداقة لك",
+          enTitle: "New friend request",
+          enContent: "check your friend requests in the app",
+        );
         return;
       }
 
@@ -69,8 +67,17 @@ class FriendsRepository {
         return;
       }
 
-      if (_request.status != FriendsStatusEnum.pending) {
-        await newRequestNotification;
+      log(_request.status.name);
+
+      if (_request.status != FriendsStatusEnum.pending &&
+          _request.status != FriendsStatusEnum.accepted) {
+        await _sendNotification(
+          userId: request.receiverId,
+          arContent: "لديك طلب صداقة جديد",
+          arTitle: "لقد قام أحد اللاعبين بارسال طلب صداقة لك",
+          enTitle: "New friend request",
+          enContent: "check your friend requests in the app",
+        );
       }
 
       await updateFriendRequest(request.copyWith(id: _request.id));

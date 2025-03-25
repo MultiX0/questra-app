@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DailyQuestsRepository {
   final _client = Supabase.instance.client;
-  // SupabaseQueryBuilder get _dailyQuestSubmissionTable =>
-  //     _client.from(TableNames.daily_quests_submission);
+  SupabaseQueryBuilder get _dailyQuestSubmissionTable =>
+      _client.from(TableNames.daily_quests_submission);
 
   Future<DailyQuestModel> getQuest(String userId) async {
     try {
@@ -49,6 +49,15 @@ class DailyQuestsRepository {
       rethrow;
     }
   }
+
+  Future<void> completeQuest(DailyQuestModel quest) async {
+    try {
+      await _dailyQuestSubmissionTable.insert(quest.toLocal());
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }
 
 Future _fetchDailyQuest(dynamic args) async {
@@ -80,7 +89,7 @@ Future _fetchDailyQuest(dynamic args) async {
       );
     }
 
-    final quests = data.map((quest) => DailyQuestModel.fromMap(quest)).toList();
+    final quests = data.map((quest) => DailyQuestModel.fromLocal(quest)).toList();
     if (quests.first.createdAt!.add(const Duration(hours: 6)).isAfter(now)) {
       return quests.first;
     }
@@ -92,10 +101,13 @@ Future _fetchDailyQuest(dynamic args) async {
 }
 
 DailyQuestModel prepareNewQuest(List<DailyQuestModel> quests, String userId) {
-  int pushUps = calcAvg(quests.map((q) => q.pushUps.toDouble()).toList(), quests.length).toInt();
-  int setUps = calcAvg(quests.map((q) => q.setUps.toDouble()).toList(), quests.length).toInt();
-  int squats = calcAvg(quests.map((q) => q.squats.toDouble()).toList(), quests.length).toInt();
-  double running = calcAvg(quests.map((q) => q.kmRun).toList(), quests.length);
+  int pushUps =
+      calcAvg(quests.map((q) => q.pushUpsIdid!.toDouble()).toList(), quests.length).toInt();
+  int setUps =
+      calcAvg(quests.map((q) => q.pushUpsIdid!.toDouble()).toList(), quests.length).toInt();
+  int squats =
+      calcAvg(quests.map((q) => q.pushUpsIdid!.toDouble()).toList(), quests.length).toInt();
+  double running = calcAvg(quests.map((q) => q.runningIdid!).toList(), quests.length);
 
   final wholeSetAvg = (pushUps + setUps + squats + running) / 4;
 

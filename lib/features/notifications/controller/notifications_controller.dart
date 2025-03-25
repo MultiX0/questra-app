@@ -27,8 +27,12 @@ class NotificationsController {
   }) async {
     try {
       final token = await (getUserFCMTokens(userId));
-      // log(token.toString());
-      final body = {'token': token.first.toString().trim(), 'title': title, 'body': content};
+
+      final body = {
+        'token': token.first[KeyNames.token].toString().trim(),
+        'title': title,
+        'body': content,
+      };
       final headers = await generateAuthHeaders(dotenv.env['NOTIFICATION_SERVERLESS_API_KEY']!);
       final options = Options(headers: headers);
       final res = await _dio.post(
@@ -37,6 +41,7 @@ class NotificationsController {
         data: jsonEncode(body),
       );
       if (res.statusCode! >= 200 && res.statusCode! <= 299) {
+        log(res.data.toString());
         return res.data;
       }
       log(DioException(requestOptions: res.requestOptions).toString());

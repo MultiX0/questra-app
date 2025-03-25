@@ -63,4 +63,16 @@ class DailyQuestState extends StateNotifier<DailyQuestHelper> {
       rethrow;
     }
   }
+
+  Future<void> finishQuest() async {
+    try {
+      await _repo.completeQuest(state.quest!);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('current_daily_quest');
+      await init();
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
 }
