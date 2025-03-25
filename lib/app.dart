@@ -29,6 +29,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
+        updateUserOnlineStatus(true);
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
 
