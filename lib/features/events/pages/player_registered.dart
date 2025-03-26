@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/events/providers/players_registered_provider.dart';
@@ -126,8 +125,8 @@ class _PlayerRegisteredToEventState extends ConsumerState<PlayerRegisteredToEven
                           final user = state.users[index];
                           bool isMe = user.id == me?.id;
                           return ListTile(
-                            selected: isMe,
-                            selectedTileColor: isMe ? Colors.pink.withValues(alpha: .25) : null,
+                            // selected: isMe,
+                            // selectedTileColor: isMe ? Colors.pink.withValues(alpha: .25) : null,
                             onTap: () {
                               ref.read(soundEffectsServiceProvider).playSystemButtonClick();
                               ref.read(selectedEventPlayer.notifier).state = user;

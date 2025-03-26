@@ -13,6 +13,11 @@ final profileControllerProvider = StateNotifierProvider<ProfileController, bool>
   return ProfileController(ref: ref);
 });
 
+final getUserProfileProvider = FutureProvider.family<UserModel, String>((ref, userId) async {
+  final _controller = ref.watch(profileControllerProvider.notifier);
+  return await _controller.getUserProfileById(userId);
+});
+
 class ProfileController extends StateNotifier<bool> {
   final Ref _ref;
   ProfileController({required Ref ref}) : _ref = ref, super(false);
@@ -51,11 +56,17 @@ class ProfileController extends StateNotifier<bool> {
     try {
       state = true;
       final avatarLink = await _uploadImages(image);
+
+      try {
+        await _ref.read(adsServiceProvider.notifier).showAd();
+      } catch (e) {
+        CustomToast.systemToast(e.toString(), systemMessage: true);
+        return;
+      }
       await _repo.updateAvatar(avatar: avatarLink[0], userId: userId);
       CustomToast.systemToast(
         isArabic ? "تم تحديث صورتك الشخصية بنجاح." : "your avatar updated successfully",
       );
-      await _ref.read(adsServiceProvider.notifier).showAd();
 
       state = false;
       context.pop();
@@ -103,5 +114,14 @@ class ProfileController extends StateNotifier<bool> {
       rethrow;
     }
     state = false;
+  }
+
+  Future<UserModel> getUserProfileById(String userId) async {
+    try {
+      return await _repo.getUserProfileById(userId);
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
   }
 }

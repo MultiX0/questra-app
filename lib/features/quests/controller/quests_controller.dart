@@ -97,9 +97,7 @@ class QuestsController extends StateNotifier<bool> {
 
       return true;
     } catch (e) {
-      if (e.toString().contains('expired')) {
-        _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
-      }
+      _ref.read(questFunctionsProvider).removeQuestFromCurrentQuests(quest.id);
 
       state = false;
       log(e.toString());
@@ -149,11 +147,17 @@ class QuestsController extends StateNotifier<bool> {
       state = false;
 
       context.pop();
-    } catch (e) {
-      state = false;
+    } catch (e, trace) {
       context.pop();
       log(e.toString());
+      final userId = _ref.read(authStateProvider)?.id ?? "";
       CustomToast.systemToast(e.toString(), systemMessage: true);
+      await ExceptionService.insertException(
+        path: "/quest_controller",
+        error: '$e\nstackTrace: $trace',
+        userId: userId,
+      );
+      state = false;
       rethrow;
     }
   }
@@ -222,7 +226,11 @@ class QuestsController extends StateNotifier<bool> {
 
       final user = _ref.read(authStateProvider)!;
       if (!kDebugMode) {
-        await _ref.read(adsServiceProvider.notifier).showAd();
+        final result = await _ref.read(adsServiceProvider.notifier).showAd();
+        if (!result) {
+          state = false;
+          return;
+        }
       }
 
       final lastExceptionsCount = await _repository.getCustomQuestExceptions(user.id);
@@ -230,7 +238,9 @@ class QuestsController extends StateNotifier<bool> {
         throw "${isArabic ? "" : "عذرًا، لا يمكنك المحاولة مرة أخرى حتى"} ${appDateFormat(lastExceptionsCount.latest_date.toUtc().add(const Duration(hours: 1)))}";
       }
 
-      await _ref.read(aiFunctionsProvider).customQuestAnalizer(description, 0, user.id);
+      await _ref
+          .read(aiFunctionsProvider)
+          .customQuestAnalizer(questDescription: description, errors: 0, userId: user.id);
       state = false;
       context.pop();
     } catch (e) {

@@ -1037,4 +1037,190 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get no_friends => 'لايوجد لديك أي أصدقاء حاليا';
+
+  @override
+  String get add_friends_btn => 'اضافة أصدقاء';
+
+  @override
+  String get ad_block_toast => 'تحذير: اذا كنت تستخدم أي مانع اعلانات أو  vpn يقوم بحظر الاعلانات بأي شكل من الأشكال الرجاء اطفائه لان بعض الخواص في التطبيق لن تتمكن من العمل بشكل صحيح.';
+
+  @override
+  String get already_friend => 'صديق';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get add_friends_search_hint => 'قم بادخال اسم المستخدم الذي تبحث عنه';
+
+  @override
+  String get add_friends_empty_state => 'نتائج البحث فارغة';
+
+  @override
+  String get friendship_status => 'حالة الصداقة';
+
+  @override
+  String get notFriend => 'ليس صديق';
+
+  @override
+  String get friend => 'صديق';
+
+  @override
+  String get pending => 'قيد الانتظار';
+
+  @override
+  String get requestingYou => 'يطلب صداقتك';
+
+  @override
+  String get cancelRequest => 'إلغاء الطلب';
+
+  @override
+  String get removeFriend => 'إزالة الصديق';
+
+  @override
+  String get reject => 'رفض';
+
+  @override
+  String get accept => 'قبول';
+
+  @override
+  String get shared_quests => 'المهام المشتركة';
+
+  @override
+  String get remove_friend_alert => 'هل تريد حذف هذا الصديق من حسابك ؟';
+
+  @override
+  String get shared_quest_add_note => 'ملحوظة: سيتم ارسال اشعار لصديقك لكي يقرر ما اذا كان يريد قبول المهمة أو رفضها , في حالة قبوله للمهمة سيتم تنبيهك بذالك على الفور';
+
+  @override
+  String get shared_quest_add_details_hint => 'الرجاء ادخال تفاصيل المهمة';
+
+  @override
+  String get shared_quest_add_deadline_hint => 'الرجاء اختيار موعد نهائي لانهاء المهمة , (لن يتم قبول أي طلبات تسليم بعد هذا الموعد)';
+
+  @override
+  String get shared_quest_deadline => 'انقر هنا لاختيار موعد نهائي';
+
+  @override
+  String get shared_quest_deadline_toast => 'على الموعد النهائي أن يكون بعد خمسة ساعات أو أكثر من الوقت الحالي على أقل تقدير';
+
+  @override
+  String get quest_requests => 'طلبات المهام';
+
+  @override
+  String sent_at(Object time) {
+    return 'تم الارسال في $time';
+  }
+
+  @override
+  String get see_details => 'اضغط لمعرفة التفاصيل';
+
+  @override
+  String request_deadline_text(Object date) {
+    return 'الموعد النهائي لقبول هذه المهمة هو:\n$date';
+  }
+
+  @override
+  String get request_type_1 => 'أول من يكمل هذه المهمة سيكون الفائز، لذا سارع بإنهائها قبل غيرك!';
+
+  @override
+  String get request_type_2 => 'يمكن لكلاكما إكمال هذه المهمة، لا يوجد فائز واحد!';
+
+  @override
+  String get request_type_title => 'نوع المهمة';
+
+  @override
+  String get quest_accept_confirmation => 'لقد قبلت طلب المهمة، استعد لإنهائها!';
+
+  @override
+  String get quest_reject_confirmation => 'لقد رفضت طلب المهمة، ربما في وقت لاحق!';
+
+  @override
+  String get details => 'التفاصيل';
+
+  @override
+  String get quest_deadline_required => 'يجب عليك تحديد موعد نهائي قبل إرسال طلب المهمة.';
+
+  @override
+  String get quest_first_complete_win_label => 'أول من يكمل هذه المهمة سيكون الفائز.';
+
+  @override
+  String get quest_requests_empty_state => 'لا يوجد أي طلبات مهام';
+
+  @override
+  String get shared_quests_empty_state => 'لا توجد مهام مشتركة حتى الآن';
+
+  @override
+  String get shared_quests_both_win => 'تم اكمال المهمة من الطرفين';
+
+  @override
+  String get you_won => 'لقد فزت';
+
+  @override
+  String get you_lost => 'تمت هزيمتك';
+
+  @override
+  String get expired_quest => 'هذه المهمة منتهية الصلاحية';
+
+  @override
+  String get shared_quest_status => 'حالة المهمة';
+
+  @override
+  String get quest_status_completed => 'مكتملة';
+
+  @override
+  String get quest_status_ongoing => 'مستمرة';
+
+  @override
+  String get quest_status_expired => 'منتهية الصلاحية';
+
+  @override
+  String get winners => 'الفائزين';
+
+  @override
+  String get daily_quest => 'المهمة اليومية';
+
+  @override
+  String get daily_quest_hint => 'تحدي اليوم: استعد بقوة! قم بالتمارين اليومية وحقق تقدمك';
+
+  @override
+  String get pushups_label => '🔥 تمرين الضغط: اختبر قوتك وادفع حدودك!';
+
+  @override
+  String get pushups_title => 'تمرين الضغط';
+
+  @override
+  String get situps_label => '💥 تمارين البطن: شد عضلاتك وطور قوتك الأساسية!';
+
+  @override
+  String get situps_title => 'تمارين البطن';
+
+  @override
+  String get squats_label => '🏋️‍♂️ القرفصاء: عزز قوة ساقيك وثباتك!';
+
+  @override
+  String get squats_title => 'القرفصاء';
+
+  @override
+  String get running_label => '🏃‍♂️ الجري (كم): تحدَّ نفسك وابدأ بالانطلاق!';
+
+  @override
+  String get running_title => 'الجري';
+
+  @override
+  String get exercice_hint => 'يمكنك أداء أكثر من المطلوب (اذا كنت تستطيع)';
+
+  @override
+  String get daily_quest_complete_confirmation => 'هل أنت متأكد من انهائك المهمة؟';
+
+  @override
+  String daily_quest_complete_alert(Object coins, Object xp) {
+    return 'تم اكمال المهمة بنجاح. مكافأتك هي $xp نقاط خبرة، و $coins عملة';
+  }
+
+  @override
+  String get cooldown_over => 'انتهت فترة التهدئة!';
+
+  @override
+  String get cooldown => 'فترة التهدئة';
 }

@@ -2110,6 +2110,366 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You do not have any friends at the moment.'**
   String get no_friends;
+
+  /// No description provided for @add_friends_btn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Freinds'**
+  String get add_friends_btn;
+
+  /// No description provided for @ad_block_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.'**
+  String get ad_block_toast;
+
+  /// No description provided for @already_friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get already_friend;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @add_friends_search_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the username you are looking for.'**
+  String get add_friends_search_hint;
+
+  /// No description provided for @add_friends_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'Search results are empty'**
+  String get add_friends_empty_state;
+
+  /// No description provided for @friendship_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Friendship Status'**
+  String get friendship_status;
+
+  /// No description provided for @notFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Not Friend'**
+  String get notFriend;
+
+  /// No description provided for @friend.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend'**
+  String get friend;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @requestingYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Requesting You'**
+  String get requestingYou;
+
+  /// No description provided for @cancelRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel Request'**
+  String get cancelRequest;
+
+  /// No description provided for @removeFriend.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Friend'**
+  String get removeFriend;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @shared_quests.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared Quests'**
+  String get shared_quests;
+
+  /// No description provided for @remove_friend_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to remove this friend from your account?'**
+  String get remove_friend_alert;
+
+  /// No description provided for @shared_quest_add_note.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: A notification will be sent to your friend to decide whether to accept or reject the task. If he accepts the task, you will be notified immediately.'**
+  String get shared_quest_add_note;
+
+  /// No description provided for @shared_quest_add_details_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter quest details.'**
+  String get shared_quest_add_details_hint;
+
+  /// No description provided for @shared_quest_add_deadline_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)'**
+  String get shared_quest_add_deadline_hint;
+
+  /// No description provided for @shared_quest_deadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Click here to select a deadline.'**
+  String get shared_quest_deadline;
+
+  /// No description provided for @shared_quest_deadline_toast.
+  ///
+  /// In en, this message translates to:
+  /// **'The deadline must be at least five hours or more from the current time.'**
+  String get shared_quest_deadline_toast;
+
+  /// No description provided for @quest_requests.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Requests'**
+  String get quest_requests;
+
+  /// No description provided for @sent_at.
+  ///
+  /// In en, this message translates to:
+  /// **'sent at {time}'**
+  String sent_at(Object time);
+
+  /// No description provided for @see_details.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get see_details;
+
+  /// No description provided for @request_deadline_text.
+  ///
+  /// In en, this message translates to:
+  /// **'The deadline for accepting this quest is:\n{date}'**
+  String request_deadline_text(Object date);
+
+  /// No description provided for @request_type_1.
+  ///
+  /// In en, this message translates to:
+  /// **'The first to complete this quest will be the winner, so finish it before anyone else!'**
+  String get request_type_1;
+
+  /// No description provided for @request_type_2.
+  ///
+  /// In en, this message translates to:
+  /// **'Both of you can complete this quest, there is no single winner!'**
+  String get request_type_2;
+
+  /// No description provided for @request_type_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest type'**
+  String get request_type_title;
+
+  /// No description provided for @quest_accept_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'You have accepted the quest request. Get ready to complete it!'**
+  String get quest_accept_confirmation;
+
+  /// No description provided for @quest_reject_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'You have rejected the quest request. Maybe next time!'**
+  String get quest_reject_confirmation;
+
+  /// No description provided for @details.
+  ///
+  /// In en, this message translates to:
+  /// **'details'**
+  String get details;
+
+  /// No description provided for @quest_deadline_required.
+  ///
+  /// In en, this message translates to:
+  /// **'You must set a deadline before sending this quest request.'**
+  String get quest_deadline_required;
+
+  /// No description provided for @quest_first_complete_win_label.
+  ///
+  /// In en, this message translates to:
+  /// **'The first to complete this quest will be the winner.'**
+  String get quest_first_complete_win_label;
+
+  /// No description provided for @quest_requests_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'there is no quest requests'**
+  String get quest_requests_empty_state;
+
+  /// No description provided for @shared_quests_empty_state.
+  ///
+  /// In en, this message translates to:
+  /// **'there is no shared quests yet'**
+  String get shared_quests_empty_state;
+
+  /// No description provided for @shared_quests_both_win.
+  ///
+  /// In en, this message translates to:
+  /// **'The quest was completed by both of You.'**
+  String get shared_quests_both_win;
+
+  /// No description provided for @you_won.
+  ///
+  /// In en, this message translates to:
+  /// **'You won'**
+  String get you_won;
+
+  /// No description provided for @you_lost.
+  ///
+  /// In en, this message translates to:
+  /// **'You Lost'**
+  String get you_lost;
+
+  /// No description provided for @expired_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get expired_quest;
+
+  /// No description provided for @shared_quest_status.
+  ///
+  /// In en, this message translates to:
+  /// **'Quest Status'**
+  String get shared_quest_status;
+
+  /// No description provided for @quest_status_completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get quest_status_completed;
+
+  /// No description provided for @quest_status_ongoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Ongoing'**
+  String get quest_status_ongoing;
+
+  /// No description provided for @quest_status_expired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get quest_status_expired;
+
+  /// No description provided for @winners.
+  ///
+  /// In en, this message translates to:
+  /// **'Winners'**
+  String get winners;
+
+  /// No description provided for @daily_quest.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Quest'**
+  String get daily_quest;
+
+  /// No description provided for @daily_quest_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Challenge: Get stronger! Complete your daily workout and level up.'**
+  String get daily_quest_hint;
+
+  /// No description provided for @pushups_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🔥 Push-Ups: Test your strength and push your limits!'**
+  String get pushups_label;
+
+  /// No description provided for @pushups_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Push-Ups'**
+  String get pushups_title;
+
+  /// No description provided for @situps_label.
+  ///
+  /// In en, this message translates to:
+  /// **'💥 Sit-Ups: Strengthen your core and build endurance!'**
+  String get situps_label;
+
+  /// No description provided for @situps_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Sit-Ups'**
+  String get situps_title;
+
+  /// No description provided for @squats_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🏋️‍♂️ Squats: Build leg strength and stability!'**
+  String get squats_label;
+
+  /// No description provided for @squats_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Squats'**
+  String get squats_title;
+
+  /// No description provided for @running_label.
+  ///
+  /// In en, this message translates to:
+  /// **'🏃‍♂️ Running (KM): Push your limits and keep moving!'**
+  String get running_label;
+
+  /// No description provided for @running_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Running'**
+  String get running_title;
+
+  /// No description provided for @exercice_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can do more than what is required (if you can)'**
+  String get exercice_hint;
+
+  /// No description provided for @daily_quest_complete_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you finished the Quest?'**
+  String get daily_quest_complete_confirmation;
+
+  /// No description provided for @daily_quest_complete_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'The mission has been successfully completed.\nYour reward is {xp} experience points and {coins} coins.'**
+  String daily_quest_complete_alert(Object coins, Object xp);
+
+  /// No description provided for @cooldown_over.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooldown Over!'**
+  String get cooldown_over;
+
+  /// No description provided for @cooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooldown'**
+  String get cooldown;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

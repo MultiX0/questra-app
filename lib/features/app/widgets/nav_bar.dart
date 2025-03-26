@@ -4,7 +4,6 @@ import 'package:questra_app/core/providers/rewards_providers.dart';
 import 'package:questra_app/features/lootbox/pages/lootbox_page.dart' show LootboxPage;
 import 'package:questra_app/features/onboarding/pages/define_religion_page.dart';
 import 'package:questra_app/imports.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 
 // import '../pages/new_version_page.dart';
 
@@ -18,7 +17,7 @@ class MyNavBar extends ConsumerStatefulWidget {
 }
 
 class _MyNavBarState extends ConsumerState<MyNavBar> {
-  final Color navigationBarColor = HexColor('22B2F4').withValues(alpha: 0.15);
+  final Color navigationBarColor = AppColors.primary.withValues(alpha: 0.05);
   int page = 0;
 
   void onTap(BuildContext context, int index) {
@@ -38,6 +37,7 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
     // return NewVersionPage();
     final hasLootBox = ref.watch(hasLootBoxProvider);
     final user = ref.watch(authStateProvider);
+    final isLoading = ref.watch(appLoading);
 
     return Stack(
       children: [
@@ -86,6 +86,8 @@ class _MyNavBarState extends ConsumerState<MyNavBar> {
         ),
         if (hasLootBox && user?.religion != null) LootboxPage(),
         if (user?.religion == null) DefineReligionPage().fadeIn(),
+        if (isLoading)
+          Positioned.fill(child: Container(color: Colors.black54, child: BeatLoader())),
       ],
     );
   }

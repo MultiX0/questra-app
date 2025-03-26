@@ -1,4 +1,3 @@
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/friends/pages/friend_requests_page.dart';
 import 'package:questra_app/features/friends/pages/friends_page.dart';
 import 'package:questra_app/imports.dart';
@@ -18,7 +17,16 @@ class _FriendsControllerPageState extends ConsumerState<FriendsControllerPage> {
     final me = ref.watch(authStateProvider)!;
     return BackgroundWidget(
       child: Scaffold(
-        appBar: TheAppBar(title: AppLocalizations.of(context).profile_friends),
+        appBar: TheAppBar(
+          title: AppLocalizations.of(context).profile_friends,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(Routes.addFriendsPage),
+
+              icon: Icon(LucideIcons.user_plus),
+            ),
+          ],
+        ),
         body: Column(
           children: [
             buildCategoryChange(),

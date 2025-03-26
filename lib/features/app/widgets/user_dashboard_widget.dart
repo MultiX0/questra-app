@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -7,21 +9,25 @@ import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/imports.dart';
 
 class UserDashboardWidget extends ConsumerWidget {
-  const UserDashboardWidget({super.key, this.duration, this.profilePage = false});
+  UserDashboardWidget({super.key, this.duration, this.profilePage = false, required this.user});
 
   final Duration? duration;
   final bool profilePage;
+  UserModel user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.sizeOf(context);
-    final user = ref.watch(authStateProvider)!;
+
     final barSize = totalXpBarWidth(
       current: user.level?.xp.toDouble() ?? 0.0,
       max: calculateXpForLevel(user.level?.level ?? 1).toDouble(),
       width: size.width,
     );
-    dynamic rank = ref.watch(playerRankingProvider) ?? "NA";
+    final me = ref.watch(authStateProvider)!;
+    final isMe = user.id == me.id;
+    dynamic rank =
+        isMe ? ref.watch(playerRankingProvider) ?? "NA" : ref.watch(otherPlayerProfileProvider);
 
     double aspects = profilePage ? 60 : 52;
 
@@ -187,8 +193,10 @@ class UserDashboardWidget extends ConsumerWidget {
         const SizedBox(height: 15),
         Center(
           child: RichText(
+            textDirection: TextDirection.ltr,
             text: TextSpan(
               text: "${user.level?.xp ?? 0}/",
+
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
               children: [
                 TextSpan(

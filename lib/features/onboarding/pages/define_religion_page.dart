@@ -1,7 +1,5 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:questra_app/core/enums/religions_enum.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/profiles/controller/profile_controller.dart';
 import 'package:questra_app/imports.dart';

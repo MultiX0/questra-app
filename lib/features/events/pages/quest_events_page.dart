@@ -1,5 +1,3 @@
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/events/controller/events_controller.dart';
 import 'package:questra_app/features/events/models/event_quest_model.dart';

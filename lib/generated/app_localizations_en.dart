@@ -1037,4 +1037,190 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_friends => 'You do not have any friends at the moment.';
+
+  @override
+  String get add_friends_btn => 'Add Freinds';
+
+  @override
+  String get ad_block_toast => 'Warning: If you are using any ad blocker or VPN that blocks ads in any way, please turn it off because some features in the app will not be able to work properly.';
+
+  @override
+  String get already_friend => 'Friend';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get add_friends_search_hint => 'Enter the username you are looking for.';
+
+  @override
+  String get add_friends_empty_state => 'Search results are empty';
+
+  @override
+  String get friendship_status => 'Friendship Status';
+
+  @override
+  String get notFriend => 'Not Friend';
+
+  @override
+  String get friend => 'Friend';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get requestingYou => 'Requesting You';
+
+  @override
+  String get cancelRequest => 'Cancel Request';
+
+  @override
+  String get removeFriend => 'Remove Friend';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get shared_quests => 'Shared Quests';
+
+  @override
+  String get remove_friend_alert => 'Do you want to remove this friend from your account?';
+
+  @override
+  String get shared_quest_add_note => 'Note: A notification will be sent to your friend to decide whether to accept or reject the task. If he accepts the task, you will be notified immediately.';
+
+  @override
+  String get shared_quest_add_details_hint => 'Please enter quest details.';
+
+  @override
+  String get shared_quest_add_deadline_hint => 'Please select a deadline to complete the quest . (No submissions will be accepted after this deadline.)';
+
+  @override
+  String get shared_quest_deadline => 'Click here to select a deadline.';
+
+  @override
+  String get shared_quest_deadline_toast => 'The deadline must be at least five hours or more from the current time.';
+
+  @override
+  String get quest_requests => 'Quest Requests';
+
+  @override
+  String sent_at(Object time) {
+    return 'sent at $time';
+  }
+
+  @override
+  String get see_details => 'Details';
+
+  @override
+  String request_deadline_text(Object date) {
+    return 'The deadline for accepting this quest is:\n$date';
+  }
+
+  @override
+  String get request_type_1 => 'The first to complete this quest will be the winner, so finish it before anyone else!';
+
+  @override
+  String get request_type_2 => 'Both of you can complete this quest, there is no single winner!';
+
+  @override
+  String get request_type_title => 'Quest type';
+
+  @override
+  String get quest_accept_confirmation => 'You have accepted the quest request. Get ready to complete it!';
+
+  @override
+  String get quest_reject_confirmation => 'You have rejected the quest request. Maybe next time!';
+
+  @override
+  String get details => 'details';
+
+  @override
+  String get quest_deadline_required => 'You must set a deadline before sending this quest request.';
+
+  @override
+  String get quest_first_complete_win_label => 'The first to complete this quest will be the winner.';
+
+  @override
+  String get quest_requests_empty_state => 'there is no quest requests';
+
+  @override
+  String get shared_quests_empty_state => 'there is no shared quests yet';
+
+  @override
+  String get shared_quests_both_win => 'The quest was completed by both of You.';
+
+  @override
+  String get you_won => 'You won';
+
+  @override
+  String get you_lost => 'You Lost';
+
+  @override
+  String get expired_quest => 'Expired';
+
+  @override
+  String get shared_quest_status => 'Quest Status';
+
+  @override
+  String get quest_status_completed => 'Completed';
+
+  @override
+  String get quest_status_ongoing => 'Ongoing';
+
+  @override
+  String get quest_status_expired => 'Expired';
+
+  @override
+  String get winners => 'Winners';
+
+  @override
+  String get daily_quest => 'Daily Quest';
+
+  @override
+  String get daily_quest_hint => 'Daily Challenge: Get stronger! Complete your daily workout and level up.';
+
+  @override
+  String get pushups_label => '🔥 Push-Ups: Test your strength and push your limits!';
+
+  @override
+  String get pushups_title => 'Push-Ups';
+
+  @override
+  String get situps_label => '💥 Sit-Ups: Strengthen your core and build endurance!';
+
+  @override
+  String get situps_title => 'Sit-Ups';
+
+  @override
+  String get squats_label => '🏋️‍♂️ Squats: Build leg strength and stability!';
+
+  @override
+  String get squats_title => 'Squats';
+
+  @override
+  String get running_label => '🏃‍♂️ Running (KM): Push your limits and keep moving!';
+
+  @override
+  String get running_title => 'Running';
+
+  @override
+  String get exercice_hint => 'You can do more than what is required (if you can)';
+
+  @override
+  String get daily_quest_complete_confirmation => 'Are you sure you finished the Quest?';
+
+  @override
+  String daily_quest_complete_alert(Object coins, Object xp) {
+    return 'The mission has been successfully completed.\nYour reward is $xp experience points and $coins coins.';
+  }
+
+  @override
+  String get cooldown_over => 'Cooldown Over!';
+
+  @override
+  String get cooldown => 'Cooldown';
 }

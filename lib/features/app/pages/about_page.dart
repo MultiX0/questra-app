@@ -1,5 +1,4 @@
 import 'package:questra_app/core/providers/package_into_provider.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/imports.dart';
 import 'package:url_launcher/url_launcher.dart';

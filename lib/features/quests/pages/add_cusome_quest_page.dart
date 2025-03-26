@@ -1,7 +1,5 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/imports.dart';
 
 class AddCusomeQuestPage extends ConsumerStatefulWidget {

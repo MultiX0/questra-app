@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:flutter/foundation.dart';
+import 'dart:developer';
+
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
 import 'package:questra_app/features/quests/ai/ai_functions.dart';
@@ -57,19 +58,28 @@ class _NewQuestsSystemCardState extends ConsumerState<NewQuestsSystemCard> {
                 setState(() {
                   isLoading = true;
                 });
-                if (!kDebugMode) {
-                  await ref.read(adsServiceProvider.notifier).showAd();
+                // if (!kDebugMode) {
+                final result = await ref.read(adsServiceProvider.notifier).showAd();
+                log("the ad result is ($result)");
+                if (!result) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  return;
+                } else {
+                  CustomToast.systemToast(
+                    "${AppLocalizations.of(context).quest_generation_toast}...",
+                    systemMessage: true,
+                  );
+                  await ref.read(aiFunctionsProvider).generateQuests();
+                  await ref.read(aiFunctionsProvider).generateQuests();
+                  if (!mounted) return;
+                  setState(() {
+                    isLoading = false;
+                  });
                 }
-                CustomToast.systemToast(
-                  "${AppLocalizations.of(context).quest_generation_toast}...",
-                  systemMessage: true,
-                );
-                await ref.read(aiFunctionsProvider).generateQuests();
-                await ref.read(aiFunctionsProvider).generateQuests();
-                if (!mounted) return;
-                setState(() {
-                  isLoading = false;
-                });
+
+                // }
               },
               child: Text(AppLocalizations.of(context).add_quest),
             ),

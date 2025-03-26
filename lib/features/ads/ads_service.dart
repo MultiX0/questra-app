@@ -4,13 +4,14 @@ import 'dart:developer';
 import 'package:questra_app/imports.dart';
 
 final adsServiceProvider = StateNotifierProvider<AdsService, bool>((ref) {
-  return AdsService();
+  return AdsService(isArabic: ref.watch(localeProvider).languageCode == 'ar');
 });
 
 class AdsService extends StateNotifier<bool> {
-  AdsService() : super(false);
+  final bool isArabic;
+  AdsService({required this.isArabic}) : super(false);
 
-  Future<void> showAd() async {
+  Future<bool> showAd() async {
     final Completer<bool> completer = Completer<bool>();
 
     state = true;
@@ -21,8 +22,16 @@ class AdsService extends StateNotifier<bool> {
           placementId: 'Rewarded_Android',
           onStart: (placementId) => log('Video Ad $placementId started'),
           onClick: (placementId) => log('Video Ad $placementId click'),
+
           onSkipped: (placementId) {
-            completer.complete(true);
+            log("skipped");
+            CustomToast.systemToast(
+              isArabic
+                  ? "الرجاء مشاهدة الاعلان كاملا بدون تخطيه"
+                  : "Please watch the ad until the end",
+              systemMessage: true,
+            );
+            completer.complete(false);
           },
           onComplete: (placementId) {
             completer.complete(true);
@@ -33,11 +42,19 @@ class AdsService extends StateNotifier<bool> {
         );
       },
       onFailed: (placementId, error, message) {
+        CustomToast.systemToast(
+          isArabic
+              ? "فشل تحميل الاعلان هذا الشيء قد يرجع لاستخدامك مانع اعلانات\nاو vpn يقوم بحجب الاعلانات\n اذا لم تكن تستخدم أي منهم فالرجاء تشغيل vpn"
+              : "Failed to load the ad. This may be due to the use of an ad blocker or a VPN that blocks ads. If you are not using any of them, please turn on the VPN.",
+          systemMessage: true,
+        );
+        completer.complete(false);
         log("$error $message");
       },
     );
-    await completer.future;
+
     state = false;
+    return await completer.future;
   }
 
   Future<bool> rewardsAd() async {
@@ -53,7 +70,14 @@ class AdsService extends StateNotifier<bool> {
             onStart: (placementId) => log('Video Ad $placementId started'),
             onClick: (placementId) => log('Video Ad $placementId clicked'),
             onSkipped: (placementId) {
-              completer.completeError("You need to finish the ad until the end (without skip)");
+              log("skipped");
+              CustomToast.systemToast(
+                isArabic
+                    ? "الرجاء مشاهدة الاعلان كاملا بدون تخطيه"
+                    : "Please watch the ad until the end",
+                systemMessage: true,
+              );
+              completer.complete(false);
             },
             onComplete: (placementId) {
               completer.complete(true);
@@ -65,8 +89,14 @@ class AdsService extends StateNotifier<bool> {
           );
         },
         onFailed: (placementId, error, message) {
+          CustomToast.systemToast(
+            isArabic
+                ? "فشل تحميل الاعلان هذا الشيء قد يرجع لاستخدامك مانع اعلانات\nاو vpn يقوم بحجب الاعلانات\n اذا لم تكن تستخدم أي منهم فالرجاء تشغيل vpn"
+                : "Failed to load the ad. This may be due to the use of an ad blocker or a VPN that blocks ads. If you are not using any of them, please turn on the VPN.",
+            systemMessage: true,
+          );
+          completer.complete(false);
           log("$error $message");
-          completer.complete(true);
         },
       );
     } catch (e) {

@@ -4,28 +4,15 @@
     <!-- Permissions for various features -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
-    <uses-permission android:name="android.permission.INSTALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-    <uses-permission android:name="android.permission.DELETE_PACKAGES"/>
+    <!-- <uses-permission android:name="android.permission.INSTALL_PACKAGES"/> -->
+    <!-- <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/> -->
+    <!-- <uses-permission android:name="android.permission.DELETE_PACKAGES"/> -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/> -->
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <uses-feature android:name="android.hardware.microphone"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-feature android:name="android.hardware.audio.output"/>
-    <uses-feature android:name="android.hardware.audio.input"/>
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CLIPBOARD"/>
     <uses-permission android:name="android.permission.WRITE_CLIPBOARD"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -47,18 +34,10 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-
-        <service
-            android:name="com.transistorsoft.flutter.backgroundfetch.HeadlessJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <service
-            android:name="com.android.example.workmanager.worker.YourWorker"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="false"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -80,10 +59,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
+        <!-- <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/> -->
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
@@ -92,7 +71,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
+        <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true"/>
         <meta-data
             android:name="io.flutter.embedding.android.EnableImpeller"
             android:value="false" />

@@ -36,7 +36,7 @@ class GoalsRepository {
       return _goals;
     } catch (e) {
       log(e.toString());
-      rethrow;
+      return [];
     }
   }
 
@@ -60,7 +60,7 @@ class GoalsRepository {
       if (_goals.isNotEmpty) {
         goals = await translateGoals(goals);
       }
-      return goals;
+      return goals.isEmpty ? data.map((goal) => UserGoalModel.fromMap(goal)).toList() : goals;
     } catch (e) {
       log(e.toString());
       throw Exception(e);

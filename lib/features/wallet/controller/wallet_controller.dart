@@ -39,9 +39,10 @@ class WalletController extends StateNotifier<bool> {
                   : "You have successfully obtained 200 coins.",
               systemMessage: true,
             );
+          } else {
+            state = false;
+            return;
           }
-          state = false;
-          return;
         }
 
         throw isArabic

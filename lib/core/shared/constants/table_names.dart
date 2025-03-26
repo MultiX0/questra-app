@@ -35,4 +35,7 @@ class TableNames {
   static const event_player_reports = 'event_player_reports';
   static const friend_requests = 'friend_requests';
   static const friendship = 'friendship';
+  static const shared_quests = 'shared_quests';
+  static const shared_quest_requests = 'shared_quest_requests';
+  static const daily_quests_submission = 'daily_quests_submission';
 }

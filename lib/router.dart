@@ -1,5 +1,13 @@
 // import 'package:flutter/foundation.dart';
 
+import 'package:questra_app/features/daily_quests/pages/daily_quest_page.dart';
+import 'package:questra_app/features/shared_quests/controller/shared_quests_middleware.dart';
+import 'package:questra_app/features/shared_quests/pages/add_custom_shared_quest_page.dart';
+import 'package:questra_app/features/shared_quests/pages/quest_status_page.dart';
+import 'package:questra_app/features/shared_quests/pages/requests_page.dart';
+import 'package:questra_app/features/shared_quests/pages/shared_quests_page.dart';
+import 'package:questra_app/features/shared_quests/pages/view_quest_page.dart';
+
 import 'features/analytics/providers/route_observer.dart';
 import 'imports.dart';
 
@@ -113,6 +121,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       buildRoute(fade: true, path: Routes.firendsControllerPage, child: FriendsControllerPage()),
+      buildRoute(fade: true, path: Routes.addFriendsPage, child: AddFriendsPage()),
+      GoRoute(
+        path: "${Routes.player}/:${KeyNames.user_id}",
+        pageBuilder: (context, state) {
+          final userId = state.pathParameters[KeyNames.user_id] ?? "";
+          return MaterialPage(child: OtherProfile(userId: userId));
+        },
+      ),
+      buildRoute(fade: true, path: Routes.addSharedQuestPage, child: AddCustomSharedQuestPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestsPage, child: SharedQuestsPage()),
+      buildRoute(fade: true, path: Routes.questRequestsPage, child: SharedQuestRequestsPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestStatusPage, child: SharedQuestStatusPage()),
+      buildRoute(fade: true, path: Routes.sharedQuestViewPage, child: SharedQuestViewPage()),
+      GoRoute(
+        path: "${Routes.sharedQuestsMiddleWare}/:${KeyNames.id}",
+        pageBuilder: (context, state) {
+          int id = int.tryParse(state.pathParameters[KeyNames.id] ?? '-1') ?? -1;
+          return MaterialPage(child: SharedQuestsMiddleware(questId: id));
+        },
+      ),
+      buildRoute(fade: true, path: Routes.dailyQuestsPage, child: DailyQuestPage()),
     ],
   );
 });

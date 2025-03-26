@@ -3,7 +3,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/events/controller/events_controller.dart';

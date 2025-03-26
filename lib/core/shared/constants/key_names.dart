@@ -104,4 +104,17 @@ class KeyNames {
   static const sender_id = 'sender_id';
   static const receiver_id = 'receiver_id';
   static const request_date = 'request_date';
+  static const dead_line = 'dead_line';
+  static const quest_content = 'quest_content';
+  static const is_accepted = 'is_accepted';
+  static const ai_generated = 'ai_generated';
+  static const first_complete_win = 'first_complete_win';
+  static const players_completed = 'players_completed';
+  static const ar_content = 'ar_content';
+  static const push_ups = 'push_ups';
+  static const set_ups = 'set_ups';
+  static const km_run = 'km_run';
+  static const data = 'data';
+  static const squats = 'squats';
+  static const submitted_at = 'submitted_at';
 }

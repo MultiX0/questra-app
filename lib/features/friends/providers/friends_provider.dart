@@ -1,4 +1,4 @@
-import 'package:questra_app/features/friends/providers/count_providers.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -90,6 +90,14 @@ class FriendsStateNotifier extends StateNotifier<FriendsState> {
   void addUser(UserModel user) {
     int previousLength = state.users.length;
     state = state.copyWith(users: {...state.users, user});
+    if (previousLength != state.users.length) {
+      _ref.read(getUserLengthProvider.notifier).state = state.users.length;
+    }
+  }
+
+  void removeUser(String userId) {
+    int previousLength = state.users.length;
+    state = state.copyWith(users: state.users.where((user) => user.id != userId).toSet());
     if (previousLength != state.users.length) {
       _ref.read(getUserLengthProvider.notifier).state = state.users.length;
     }

@@ -1,5 +1,4 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/features/lootbox/controller/lootbox_controller.dart';
 import 'package:questra_app/features/lootbox/utils/random_reward.dart';
 import 'package:questra_app/imports.dart';

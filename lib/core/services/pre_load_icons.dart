@@ -18,6 +18,7 @@ class PreLoadIcons {
       Icons.privacy_tip,
       Icons.privacy_tip_outlined,
       Icons.chevron_right,
+      Icons.chevron_left,
       LucideIcons.shield,
       LucideIcons.shield_alert,
       LucideIcons.shield_ban,

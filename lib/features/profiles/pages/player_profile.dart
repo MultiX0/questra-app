@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/profiles/widgets/dashboard_grid.dart';
 import 'package:questra_app/imports.dart';
@@ -56,10 +55,12 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
   }
 
   ListView buildMe() {
+    final user = ref.watch(authStateProvider);
+
     return ListView(
       children: [
         const SizedBox(height: 10),
-        UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true),
+        UserDashboardWidget(duration: Duration(milliseconds: 800), profilePage: true, user: user!),
         const SizedBox(height: 15),
         BuildDashboardGrid(),
         const SizedBox(height: 15),
@@ -118,7 +119,10 @@ class _PlayerProfileState extends ConsumerState<PlayerProfile> {
     return SystemCard(
       duration: const Duration(milliseconds: 1700),
 
-      onTap: () => context.push(Routes.firendsControllerPage),
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        context.push(Routes.firendsControllerPage);
+      },
       // onTap: soon,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

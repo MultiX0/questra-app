@@ -16,7 +16,7 @@ class DashboardQuestWidget extends ConsumerWidget {
     }
 
     final firstQuest = quests.first;
-    final duration = const Duration(milliseconds: 1800);
+    final duration = const Duration(milliseconds: 2000);
 
     return SystemCard(
       duration: duration,
@@ -24,7 +24,7 @@ class DashboardQuestWidget extends ConsumerWidget {
         ref.read(soundEffectsServiceProvider).playSystemButtonClick();
         Navs(context, ref).viewQuest(firstQuest, false);
       },
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -114,16 +114,6 @@ class DashboardQuestWidget extends ConsumerWidget {
                 style: TextStyle(color: Colors.white70, fontSize: 13),
               ),
             ],
-          ),
-          const SizedBox(height: 14),
-          GlowText(
-            glowColor: Colors.white54,
-            textAlign: TextAlign.start,
-            text:
-                "${AppLocalizations.of(context).quest_completetion_card_reward(firstQuest.coin_reward, firstQuest.xp_reward)}${firstQuest.owned_title != null ? ", \n${AppLocalizations.of(context).quest_completetion_card_title_earned(firstQuest.owned_title!)}" : ''}",
-            style: TextStyle(color: Colors.white54, fontSize: 12),
-            spreadRadius: 0.5,
-            blurRadius: 15,
           ),
         ],
       ),

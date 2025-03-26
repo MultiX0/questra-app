@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ui';
 
+import 'package:flutter/services.dart';
 import 'package:questra_app/core/models/login_logs_model.dart';
 import 'package:questra_app/core/services/background_service.dart';
 import 'package:questra_app/core/services/notifications_service.dart';
@@ -20,11 +22,7 @@ class NotificationsRepository {
 
   static Future<bool> insertedToken(String userId, String token) async {
     try {
-      final data = await _tokensTable
-          .select("*")
-          .eq(KeyNames.user_id, userId)
-          .eq(KeyNames.token, token)
-          .limit(1);
+      final data = await _tokensTable.select("*").eq(KeyNames.token, token).limit(1);
 
       return data.isNotEmpty;
     } catch (e) {
@@ -36,6 +34,7 @@ class NotificationsRepository {
   static Future<void> insertFCMToken(String userId) async {
     try {
       final fcmToken = await NotificationsService.getFCMToken();
+
       log("FCM TOKEN: $fcmToken");
       final inserted = await insertedToken(userId, fcmToken ?? "");
       if (inserted) return;
@@ -331,6 +330,48 @@ class NotificationsRepository {
         error: e.toString(),
         userId: userId,
       );
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> getUserFCMTokens(String userId) async {
+    try {
+      final token = RootIsolateToken.instance;
+      log(token.toString());
+      BackgroundIsolateBinaryMessenger.ensureInitialized(token!);
+      final _accessToken = Supabase.instance.client.auth.currentSession!.refreshToken;
+      List<dynamic> data = await computeIsolate(_fetchFCMTokens, {
+        'id': userId,
+        'supabaseUrl': dotenv.env['SUPABASE_URL'] ?? "",
+        'supabaseKey': dotenv.env['SUPABASE_KEY'] ?? "",
+        'refreshToken': _accessToken,
+      });
+      return data;
+    } catch (e) {
+      log(e.toString());
+      rethrow;
+    }
+  }
+
+  Future _fetchFCMTokens(dynamic args) async {
+    try {
+      final id = args['id'];
+      final supabaseUrl = args['supabaseUrl'];
+      final supabaseKey = args['supabaseKey'];
+      final refreshToken = args['refreshToken'];
+      final client = SupabaseClient(supabaseUrl, supabaseKey);
+      await client.auth.setSession(refreshToken);
+      final data = await client
+          .from(TableNames.notification_tokens)
+          .select(KeyNames.token)
+          .eq(KeyNames.user_id, id)
+          .order('added_at', ascending: false)
+          .limit(1);
+      log("the fetched data is $data");
+
+      return data;
+    } catch (e, trace) {
+      log(e.toString(), stackTrace: trace);
       rethrow;
     }
   }

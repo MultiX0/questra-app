@@ -1,10 +1,12 @@
 import 'package:questra_app/core/providers/leveling_providers.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_provider.dart';
 import 'package:questra_app/imports.dart';
 
 class QuestCompletionWidget extends ConsumerStatefulWidget {
-  const QuestCompletionWidget({super.key, this.isEvent = false});
+  const QuestCompletionWidget({super.key, this.isEvent = false, this.isShared = false});
 
   final bool isEvent;
+  final bool isShared;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _QuestCompletionWidgetState();
@@ -22,12 +24,28 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
   bool get isArabic => ref.watch(localeProvider).languageCode == 'ar';
 
   void finish() {
+    final me = ref.read(authStateProvider)!;
+    int xpRewarded = 0;
     final cachedLevel = ref.read(cachedUserLevelProvider);
     dynamic quest;
     if (widget.isEvent) {
       quest = ref.read(viewEventQuestProvider)!;
+      xpRewarded = quest.xp_reward;
+    } else if (widget.isShared) {
+      quest = ref.read(selectedSharedQuestProvider)!.quest;
+      xpRewarded = questXp(me.level?.level ?? 1, quest.difficulty);
+      final completedPlayers = quest.playersCompleted as List<dynamic>;
+      if (completedPlayers.contains(me.id)) {
+        final message =
+            isArabic
+                ? "لقد أكملت هذه المهمة مرة بالفعل"
+                : "I have already completed this quest once.";
+        CustomToast.systemToast(message);
+        context.pop();
+      }
     } else {
       quest = ref.read(viewQuestProvider)!;
+      xpRewarded = quest.xp_reward;
     }
 
     if (cachedLevel == null) {
@@ -35,7 +53,7 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
       return;
     }
 
-    final result = addXp(quest.xp_reward, {'xp': cachedLevel.xp, 'level': cachedLevel.level});
+    final result = addXp(xpRewarded, {'xp': cachedLevel.xp, 'level': cachedLevel.level});
     if ((result['level'] ?? 1) > cachedLevel.level) {
       context.pushReplacement(Routes.leveledUpPage);
       return;
@@ -46,13 +64,24 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final me = ref.watch(authStateProvider)!;
     dynamic quest;
+    int sharedCoinsRewarded = 0;
+    int xpRewarded = 0;
+
     if (widget.isEvent) {
       quest = ref.read(viewEventQuestProvider)!;
+      sharedCoinsRewarded = quest.coin_reward;
+      xpRewarded = quest.xp_reward;
+    } else if (widget.isShared) {
+      quest = ref.read(selectedSharedQuestProvider)!.quest;
+      sharedCoinsRewarded = calculateQuestCoins(me.level?.level ?? 1, quest.difficulty);
+      xpRewarded = questXp(me.level?.level ?? 1, quest.difficulty);
     } else {
       quest = ref.read(viewQuestProvider)!;
+      sharedCoinsRewarded = quest.coin_reward;
+      xpRewarded = quest.xp_reward;
     }
-
     return SystemCard(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -87,10 +116,10 @@ class _QuestCompletionWidgetState extends ConsumerState<QuestCompletionWidget> {
             // '- Your reward is: ${quest.xp_reward}XP, ${quest.coin_reward}\$ coins',
             AppLocalizations.of(
               context,
-            ).quest_completetion_card_reward(quest.xp_reward, quest.coin_reward),
+            ).quest_completetion_card_reward(xpRewarded, sharedCoinsRewarded),
             style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
           ),
-          if (!widget.isEvent) ...[
+          if (!widget.isEvent && !widget.isShared) ...[
             if (quest.owned_title != null && quest.owned_title!.isNotEmpty) ...[
               Text(
                 AppLocalizations.of(

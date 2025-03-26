@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:questra_app/core/services/android_id_service.dart';
+import 'package:questra_app/core/shared/utils/check_app.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/goals/models/user_goal_model.dart';
 import 'package:questra_app/features/goals/providers/goals_provider.dart';
 import 'package:questra_app/features/goals/repository/goals_repository.dart';
@@ -16,8 +19,10 @@ import 'package:questra_app/features/wallet/models/wallet_model.dart';
 import 'package:questra_app/features/wallet/repository/wallet_repository.dart';
 import 'package:questra_app/imports.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final serverClientId = dotenv.env['SERVERCLIENTID'] ?? '';
+final playStoreClientKey = dotenv.env['GOOGLE_PLAY_CLIENT_ID'] ?? '';
+final serverClientId = '39700937787-s7jag52vgu7pnd2n1d4scnja55ih854a.apps.googleusercontent.com';
 final clientId = kDebugMode ? dotenv.env['CLIENTID'] ?? '' : releaseId;
 final releaseId = '39700937787-d7prd0sk55q10bi2jffttm5e4c1rggnk.apps.googleusercontent.com';
 
@@ -88,12 +93,12 @@ class AuthNotifier extends StateNotifier<UserModel?> {
           .from(TableNames.player_levels)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(const Duration(milliseconds: 550)),
+          .debounceTime(const Duration(milliseconds: 500)),
       _supabase
           .from(TableNames.wallet)
           .stream(primaryKey: [KeyNames.user_id])
           .eq(KeyNames.user_id, userId)
-          .debounceTime(const Duration(milliseconds: 700)),
+          .debounceTime(const Duration(milliseconds: 600)),
     ]).listen(
       (events) => _handleUserDataUpdate(events, userId),
       onError: (error) {
@@ -245,9 +250,13 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
   Future<bool> googleSignIn() async {
     try {
+      final isGooglePlay = await isInstalledFromPlayStore();
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('current_daily_quest', '');
       final GoogleSignIn googleSignIn = GoogleSignIn(
         serverClientId: serverClientId,
-        clientId: clientId,
+        clientId: isGooglePlay ? playStoreClientKey : clientId,
         scopes: ["profile", "email"],
       );
 
@@ -291,7 +300,10 @@ class AuthNotifier extends StateNotifier<UserModel?> {
 
   Future<void> logout() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('current_daily_quest', '');
       final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ["profile", "email"]);
+      await FirebaseMessaging.instance.deleteToken();
       await googleSignIn.signOut();
       await _supabase.auth.signOut();
       _cleanup();
@@ -308,6 +320,7 @@ class AuthNotifier extends StateNotifier<UserModel?> {
     _stateStreamController.add(null);
     _ref.read(isLoggedInProvider.notifier).state = false;
     _ref.read(hasValidAccountProvider.notifier).state = false;
+    _ref.read(usersWithActiveRequestFromMe.notifier).state = [];
   }
 
   Future<bool> hasValidAccount() async {

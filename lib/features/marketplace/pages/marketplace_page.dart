@@ -4,8 +4,6 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:questra_app/core/shared/widgets/background_widget.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
 import 'package:questra_app/features/marketplace/controller/marketplace_controller.dart';
 import 'package:questra_app/features/marketplace/models/item_model.dart';
@@ -70,6 +68,8 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
       return BuyItemWidget(item: selectedItem!);
     }
 
+    bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,7 +83,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                 Text(
                   AppLocalizations.of(context).free_coins,
                   style: TextStyle(
-                    fontFamily: AppFonts.header,
+                    fontFamily: isArabic ? null : AppFonts.header,
                     fontSize: 18,
                     color: AppColors.primary,
                   ),
@@ -152,7 +152,7 @@ class _MarketplacePageState extends ConsumerState<MarketplacePage> {
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   itemCount: filteredItems.length,
                   itemBuilder: (context, i) {
-                    final item = filteredItems[i];
+                    final item = filteredItems.reversed.toList()[i];
                     return AnimationConfiguration.staggeredList(
                       position: i,
                       duration: const Duration(milliseconds: 900),

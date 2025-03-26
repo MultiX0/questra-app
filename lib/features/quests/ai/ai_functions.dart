@@ -2,6 +2,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:questra_app/features/shared_quests/models/shared_quest_model.dart';
+import 'package:questra_app/features/shared_quests/providers/shared_quests_providers.dart';
+import 'package:questra_app/features/shared_quests/repository/shared_quests_repository.dart';
+import 'package:questra_app/features/translate/translate_service.dart';
 import 'package:questra_app/imports.dart';
 
 final aiFunctionsProvider = Provider<AiFunctions>((ref) => AiFunctions(ref: ref));
@@ -215,20 +219,31 @@ class AiFunctions {
     }
   }
 
-  Future<void> customQuestAnalizer(String questDescription, int errors, String userId) async {
+  Future<void> customQuestAnalizer({
+    required String questDescription,
+    required int errors,
+    required String userId,
+    bool isCustomQuest = true,
+  }) async {
     try {
       if (errors >= 2) {
         throw appError;
       }
+      log(questDescription);
 
       final data = await _ref
           .read(aiModelObjectProvider)
           .makeAiResponse(
+            temp: 0.0,
+            topP: 0.1,
+            topK: 30,
+            maxTokens: isCustomQuest ? null : 300,
             content: [
-              {"role": "user", "content": "quest description: $questDescription"},
               ...userQuestProcessingSystemPrompts,
+              {"role": "user", "content": "quest description: $questDescription"},
             ],
           );
+      log(data.toString());
       final jsonData = isJson(data);
       if (jsonData != null) {
         String title = jsonData['quest_title'] ?? "";
@@ -252,9 +267,11 @@ class AiFunctions {
             estimated_completion_time == 0 ||
             difficulty.isEmpty) {
           return customQuestAnalizer(
-            "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
-            errors++,
-            userId,
+            questDescription:
+                "$questDescription (please provide the all fields quest_title && quest_description && difficulty && estimated_completion_time)",
+            errors: errors++,
+            userId: userId,
+            isCustomQuest: isCustomQuest,
           );
         }
 
@@ -272,37 +289,26 @@ class AiFunctions {
           coin_reward = (coin_reward / 2).toInt();
         }
 
-        QuestModel questModel = QuestModel(
-          id: "",
-          created_at: DateTime.now(),
-          user_id: user.id,
-          description: description,
-          xp_reward: xp_reward,
-          coin_reward: coin_reward,
-          difficulty: difficulty,
-          status: StatusEnum.in_progress.name,
-          estimated_completion_time: estimated_completion_time,
-          images: [],
-          title: title,
-          isCustom: true,
-          isActive: true,
-        );
+        if (isCustomQuest) {
+          await _hanldeCustomQuest(
+            coin_reward: coin_reward,
+            description: description,
+            difficulty: difficulty,
+            estimated_completion_time: estimated_completion_time,
+            title: title,
+            xp_reward: xp_reward,
+          );
+        } else {
+          await _handleCustomSharedQuest(
+            coin_reward: coin_reward,
+            description: description,
+            difficulty: difficulty,
+            estimated_completion_time: estimated_completion_time,
+            title: title,
+            xp_reward: xp_reward,
+          );
+        }
 
-        final _quest = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
-        questModel = questModel.copyWith(
-          id: _quest.id,
-          ar_description: _quest.ar_description,
-          ar_title: _quest.ar_title,
-        );
-
-        final currentQuests = _ref.read(customQuestsProvider);
-        _ref.invalidate(customQuestsProvider);
-        _ref.read(customQuestsProvider.notifier).state = [...currentQuests, questModel];
-        final isArabic = _ref.read(localeProvider).languageCode == 'ar';
-        CustomToast.systemToast(
-          isArabic ? "تمت اضافة المهمة بنجاح" : "The quest has been added successfully.",
-          systemMessage: true,
-        );
         return;
       }
 
@@ -310,6 +316,89 @@ class AiFunctions {
     } catch (e) {
       log(e.toString());
       // CustomToast.systemToast(e.toString(), systemMessage: true);
+      rethrow;
+    }
+  }
+
+  Future<void> _handleCustomSharedQuest({
+    required String description,
+    required int xp_reward,
+    required int coin_reward,
+    required String difficulty,
+    required int estimated_completion_time,
+    required String title,
+  }) async {
+    try {
+      final sharedQuestRequestId = _ref.read(insertedSharedQuestId);
+      final _translateService = TranslationService();
+      final translation = await Future.wait<dynamic>([
+        _translateService.translate('en', 'ar', title),
+        _translateService.translate('en', 'ar', description),
+      ]);
+
+      final [arTitle, arDescription] = translation;
+
+      final sharedQuest = SharedQuestModel(
+        id: -1,
+        createdAt: DateTime.now(),
+        requestId: sharedQuestRequestId ?? -1,
+        description: description,
+        title: title,
+        arDescription: arDescription,
+        arTitle: arTitle,
+        difficulty: difficulty,
+        playersCompleted: [],
+      );
+
+      await _ref.read(sharedQuestsProvider).insertQuest(sharedQuest);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> _hanldeCustomQuest({
+    required String description,
+    required int xp_reward,
+    required int coin_reward,
+    required String difficulty,
+    required int estimated_completion_time,
+    required String title,
+  }) async {
+    try {
+      final user = _ref.read(authStateProvider)!;
+      log("quest difficculty is $difficulty");
+      QuestModel questModel = QuestModel(
+        id: "",
+        created_at: DateTime.now(),
+        user_id: user.id,
+        description: description,
+        xp_reward: xp_reward,
+        coin_reward: coin_reward,
+        difficulty: difficulty.toLowerCase(),
+        status: StatusEnum.in_progress.name,
+        estimated_completion_time: estimated_completion_time,
+        images: [],
+        title: title,
+        isCustom: true,
+        isActive: true,
+      );
+
+      final _quest = await _ref.read(questsRepositoryProvider).insertQuest(questModel);
+      questModel = questModel.copyWith(
+        id: _quest.id,
+        ar_description: _quest.ar_description,
+        ar_title: _quest.ar_title,
+      );
+
+      final currentQuests = _ref.read(customQuestsProvider);
+      _ref.invalidate(customQuestsProvider);
+      _ref.read(customQuestsProvider.notifier).state = [...currentQuests, questModel];
+      final isArabic = _ref.read(localeProvider).languageCode == 'ar';
+      CustomToast.systemToast(
+        isArabic ? "تمت اضافة المهمة بنجاح" : "The quest has been added successfully.",
+        systemMessage: true,
+      );
+    } catch (e) {
       rethrow;
     }
   }

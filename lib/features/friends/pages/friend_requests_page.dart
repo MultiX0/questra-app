@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:questra_app/core/shared/widgets/beat_loader.dart';
 import 'package:questra_app/core/shared/widgets/refresh_indicator.dart';
 import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/friends/repository/friends_repository.dart';
 import 'package:questra_app/imports.dart';
 
@@ -101,12 +101,14 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
         child: SystemCard(
+          padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(LucideIcons.shield_alert, color: AppColors.primary, size: 45),
               const SizedBox(height: 15),
               Text(
+                textAlign: TextAlign.center,
                 AppLocalizations.of(context).no_friend_requests,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
@@ -163,36 +165,43 @@ class _FriendRequestsPageState extends ConsumerState<FriendRequestsPage> {
                   );
                 }
                 final user = state.users[i];
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SystemCard(
-                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              user.name,
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            subtitle: Text(user.username, style: TextStyle(fontSize: 16)),
-
-                            leading: CircleAvatar(
-                              radius: 22,
-                              backgroundColor: AppColors.primary.withValues(alpha: 0.25),
-                              backgroundImage: CachedNetworkImageProvider(user.avatar!),
-                            ),
-                          ),
-                        ),
-                        buildActions(user.id),
-                      ],
-                    ),
-                  ),
-                );
+                return buildPlayerCard(user);
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Padding buildPlayerCard(UserModel user) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SystemCard(
+        onTap: () {
+          ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+          ref.read(selectedFriendProvider.notifier).state = user;
+
+          context.push("${Routes.player}/${user.id}");
+        },
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+        child: Row(
+          children: [
+            Expanded(
+              child: ListTile(
+                title: Text(user.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                subtitle: Text(user.username, style: TextStyle(fontSize: 16)),
+
+                leading: CircleAvatar(
+                  radius: 22,
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.25),
+                  backgroundImage: CachedNetworkImageProvider(user.avatar!),
+                ),
+              ),
+            ),
+            buildActions(user.id),
+          ],
+        ),
       ),
     );
   }
