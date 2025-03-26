@@ -54,6 +54,7 @@ class DailyQuestState extends StateNotifier<DailyQuestHelper> {
 
   Future<void> updateState(DailyQuestModel quest) async {
     try {
+      log(quest.id.toString());
       state = state.copyWith(quest: quest);
       final prefs = await SharedPreferences.getInstance();
       final val = jsonEncode(quest.toLocal());
@@ -64,12 +65,20 @@ class DailyQuestState extends StateNotifier<DailyQuestHelper> {
     }
   }
 
-  Future<void> finishQuest() async {
+  Future<void> finishQuest(BuildContext context) async {
     try {
+      final user = _ref.read(authStateProvider)!;
       await _repo.completeQuest(state.quest!);
+      final xp = questXp(user.level!.level, "medium");
+      final coins = calculateQuestCoins(user.level!.level, 'easy');
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('current_daily_quest');
+      await prefs.setString('current_daily_quest', '');
       await init();
+      _ref.read(soundEffectsServiceProvider).playCongrats();
+      // ignore: use_build_context_synchronously
+      CustomToast.systemToast(AppLocalizations.of(context).daily_quest_complete_alert(coins, xp));
+      // ignore: use_build_context_synchronously
+      context.pop();
     } catch (e) {
       log(e.toString());
       rethrow;

@@ -402,5 +402,9 @@
   "squats_title": "Squats",
   "running_label": "🏃‍♂️ Running (KM): Push your limits and keep moving!",
   "running_title": "Running",
-  "exercice_hint": "You can do more than what is required (if you can)"
+  "exercice_hint": "You can do more than what is required (if you can)",
+  "daily_quest_complete_confirmation": "Are you sure you finished the Quest?",
+  "daily_quest_complete_alert": "The mission has been successfully completed.\nYour reward is {xp} experience points and {coins} coins.",
+  "cooldown_over": "Cooldown Over!",
+  "cooldown": "Cooldown"
 }

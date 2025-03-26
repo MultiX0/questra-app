@@ -56,14 +56,14 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
               GlowText(
                 text: AppLocalizations.of(context).firstPageTitle,
                 textAlign: TextAlign.center,
-                glowColor: HexColor('7AD5FF'),
+                glowColor: AppColors.primary,
                 spreadRadius: .75,
                 blurRadius: 30,
                 style: TextStyle(
                   fontSize: 28,
                   fontFamily: isArabic ? null : AppFonts.header,
                   fontWeight: FontWeight.bold,
-                  color: HexColor('7AD5FF'),
+                  color: AppColors.primary,
                 ),
               ).fadeInDown(duration: const Duration(milliseconds: 900)),
               const SizedBox(height: 15),
@@ -93,7 +93,7 @@ class _OnboardingFirstPageState extends ConsumerState<OnboardingFirstPage> {
                   child: GlowButton(
                     spreadRadius: 1.5,
                     blurRadius: 20,
-                    glowColor: HexColor('7AD5FF').withValues(alpha: 0.4),
+                    glowColor: AppColors.primary.withValues(alpha: 0.4),
                     color: Color.fromARGB(151, 99, 206, 255),
                     onPressed: handleLogin,
                     padding: EdgeInsets.symmetric(vertical: 10, horizontal: size.width * .35),

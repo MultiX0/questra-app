@@ -1209,4 +1209,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exercice_hint => 'يمكنك أداء أكثر من المطلوب (اذا كنت تستطيع)';
+
+  @override
+  String get daily_quest_complete_confirmation => 'هل أنت متأكد من انهائك المهمة؟';
+
+  @override
+  String daily_quest_complete_alert(Object coins, Object xp) {
+    return 'تم اكمال المهمة بنجاح. مكافأتك هي $xp نقاط خبرة، و $coins عملة';
+  }
+
+  @override
+  String get cooldown_over => 'انتهت فترة التهدئة!';
+
+  @override
+  String get cooldown => 'فترة التهدئة';
 }

@@ -1209,4 +1209,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exercice_hint => 'You can do more than what is required (if you can)';
+
+  @override
+  String get daily_quest_complete_confirmation => 'Are you sure you finished the Quest?';
+
+  @override
+  String daily_quest_complete_alert(Object coins, Object xp) {
+    return 'The mission has been successfully completed.\nYour reward is $xp experience points and $coins coins.';
+  }
+
+  @override
+  String get cooldown_over => 'Cooldown Over!';
+
+  @override
+  String get cooldown => 'Cooldown';
 }

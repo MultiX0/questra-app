@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:questra_app/core/enums/friends_status_enum.dart';
 import 'package:questra_app/features/friends/models/friend_request_model.dart';
 import 'package:questra_app/features/friends/models/friendship_model.dart';
+import 'package:questra_app/features/friends/providers/friends_provider.dart';
+import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/notifications/controller/notifications_controller.dart';
 import 'package:questra_app/imports.dart';
@@ -48,6 +50,7 @@ class FriendsRepository {
 
   Future<void> sendFriendRequest(FriendRequestModel request) async {
     try {
+      final me = _ref.read(authStateProvider)!;
       final _request = await getFriendRequest(user1: request.senderId, user2: request.receiverId);
       log("the request is: ${_request?.toMap()}");
       if (_request == null) {
@@ -62,8 +65,19 @@ class FriendsRepository {
         return;
       }
 
-      if (_request.status == FriendsStatusEnum.pending) {
+      if (_request.status == FriendsStatusEnum.pending && request.senderId == me.id) {
         await _cancelFriendRequest(_request);
+        return;
+      }
+
+      if (_request.status == FriendsStatusEnum.pending && request.senderId != me.id) {
+        CustomToast.systemToast(
+          isArabic
+              ? "هذا المستخدم قد قام بارسال طلب صداقة لك قبل أن تقوم أنت بذالك"
+              : "This user has sent you a friend request before you did.",
+        );
+        _ref.read(friendsRequestsProvider.notifier).refresh();
+        _ref.read(friendsStateProvider.notifier).refresh(me.id);
         return;
       }
 
@@ -71,12 +85,15 @@ class FriendsRepository {
 
       if (_request.status != FriendsStatusEnum.pending &&
           _request.status != FriendsStatusEnum.accepted) {
+        final playerName = await _ref
+            .read(profileRepositoryProvider)
+            .getUserNameById(request.senderId);
         await _sendNotification(
           userId: request.receiverId,
           arContent: "لديك طلب صداقة جديد",
-          arTitle: "لقد قام أحد اللاعبين بارسال طلب صداقة لك",
+          arTitle: "لقد قام $playerName بارسال طلب صداقة لك",
           enTitle: "New friend request",
-          enContent: "check your friend requests in the app",
+          enContent: "$playerName has sent you a friend request.",
         );
       }
 

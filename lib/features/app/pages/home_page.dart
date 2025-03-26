@@ -8,6 +8,7 @@ import 'package:questra_app/features/app/widgets/daily_quests_card.dart';
 import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 // import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
+import 'package:questra_app/features/daily_quests/providers/daily_quest_state.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -28,6 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     handleLootBoxes(user!.id);
     handleFCMInsert(user.id);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(dailyQuestStateProvider);
       _checkDevice();
       await NotificationsRepository.insertLog(user.id);
 
@@ -113,7 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: 2),
             children: [
-              const SizedBox(height: 8),
+              const SizedBox(height: 5),
               SystemCard(
                 duration: duration,
                 onTap: () {

@@ -35,8 +35,13 @@ class DailyQuestsRepository {
       });
 
       log(quest.toString());
+      if (quest.submittedAt == null) {
+        final val = jsonEncode(quest.toLocal());
+        await prefs.setString('current_daily_quest', val);
+        return quest;
+      }
 
-      if (quest.createdAt!.add(const Duration(hours: 6)).isBefore(now)) {
+      if (now.isBefore(quest.submittedAt!.add(const Duration(hours: 6)))) {
         final val = jsonEncode(quest.toLocal());
         await prefs.setString('current_daily_quest', val);
       } else {
@@ -77,21 +82,21 @@ Future _fetchDailyQuest(dynamic args) async {
         .order(KeyNames.created_at, ascending: false)
         .limit(14);
 
+    final quests = data.map((quest) => DailyQuestModel.fromLocal(quest)).toList();
+    if (data.isNotEmpty && now.isBefore(quests.first.submittedAt!.add(const Duration(hours: 6)))) {
+      return quests.first;
+    }
+
     if (data.isEmpty || data.length == 1) {
       return DailyQuestModel(
         id: -1,
         userId: id,
         pushUps: pushUpsBase,
-        createdAt: now,
+        createdAt: now.subtract(const Duration(hours: 6)),
         setUps: setUpsBase,
         kmRun: runningBase,
         squats: sqautsBase,
       );
-    }
-
-    final quests = data.map((quest) => DailyQuestModel.fromLocal(quest)).toList();
-    if (quests.first.createdAt!.add(const Duration(hours: 6)).isAfter(now)) {
-      return quests.first;
     }
 
     return prepareNewQuest(quests, id);

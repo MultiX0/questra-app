@@ -7,11 +7,12 @@ class DailyQuestModel {
   final int setUps;
   final double kmRun;
   final int squats;
-  final DateTime? createdAt;
+  final DateTime createdAt;
   final int? pushUpsIdid;
   final int? squatsIdid;
   final int? setUpsIdid;
   final double? runningIdid;
+  final DateTime? submittedAt;
   DailyQuestModel({
     required this.id,
     required this.userId,
@@ -19,7 +20,8 @@ class DailyQuestModel {
     required this.setUps,
     required this.kmRun,
     required this.squats,
-    this.createdAt,
+    required this.createdAt,
+    this.submittedAt,
     this.pushUpsIdid = 0,
     this.runningIdid = 0.0,
     this.setUpsIdid = 0,
@@ -38,6 +40,7 @@ class DailyQuestModel {
     int? squatsIdid,
     int? setUpsIdid,
     double? runningIdid,
+    DateTime? submittedAt,
   }) {
     return DailyQuestModel(
       id: id ?? this.id,
@@ -51,6 +54,7 @@ class DailyQuestModel {
       squatsIdid: squatsIdid ?? this.squatsIdid,
       setUpsIdid: setUpsIdid ?? this.setUpsIdid,
       runningIdid: runningIdid ?? this.runningIdid,
+      submittedAt: submittedAt ?? this.submittedAt,
     );
   }
 
@@ -71,16 +75,19 @@ class DailyQuestModel {
     return <String, dynamic>{
       // KeyNames.id: id,
       KeyNames.user_id: userId,
+      if (submittedAt != null) KeyNames.submitted_at: submittedAt!.toIso8601String(),
       KeyNames.data: {
         KeyNames.push_ups: pushUps,
         KeyNames.set_ups: setUps,
         KeyNames.km_run: kmRun,
         KeyNames.squats: squats,
+
         'pIdid': pushUpsIdid,
         'setIdid': setUpsIdid,
         'sIdid': squatsIdid,
         'rIdid': runningIdid,
       },
+      KeyNames.created_at: createdAt.toUtc().toIso8601String(),
     };
   }
 
@@ -96,6 +103,9 @@ class DailyQuestModel {
       runningIdid: map[KeyNames.data]?['rIdid'] ?? 0.0,
       setUpsIdid: map[KeyNames.data]?['setIdid'] ?? 0,
       squatsIdid: map[KeyNames.data]?['sIdid'] ?? 0,
+      createdAt: DateTime.tryParse(map[KeyNames.created_at]) ?? DateTime.now(),
+      submittedAt:
+          map[KeyNames.submitted_at] == null ? null : DateTime.tryParse(map[KeyNames.submitted_at]),
     );
   }
 

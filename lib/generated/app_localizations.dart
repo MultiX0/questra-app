@@ -2446,6 +2446,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You can do more than what is required (if you can)'**
   String get exercice_hint;
+
+  /// No description provided for @daily_quest_complete_confirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you finished the Quest?'**
+  String get daily_quest_complete_confirmation;
+
+  /// No description provided for @daily_quest_complete_alert.
+  ///
+  /// In en, this message translates to:
+  /// **'The mission has been successfully completed.\nYour reward is {xp} experience points and {coins} coins.'**
+  String daily_quest_complete_alert(Object coins, Object xp);
+
+  /// No description provided for @cooldown_over.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooldown Over!'**
+  String get cooldown_over;
+
+  /// No description provided for @cooldown.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooldown'**
+  String get cooldown;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

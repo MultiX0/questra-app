@@ -116,4 +116,5 @@ class KeyNames {
   static const km_run = 'km_run';
   static const data = 'data';
   static const squats = 'squats';
+  static const submitted_at = 'submitted_at';
 }
