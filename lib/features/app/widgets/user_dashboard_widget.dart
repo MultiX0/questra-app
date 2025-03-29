@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:questra_app/core/shared/utils/xp_bar_calc.dart';
 import 'package:questra_app/core/shared/widgets/glow_text.dart';
+import 'package:questra_app/features/profiles/providers/profile_providers.dart';
 import 'package:questra_app/features/ranking/providers/ranking_providers.dart';
 import 'package:questra_app/imports.dart';
 
@@ -34,20 +35,31 @@ class UserDashboardWidget extends ConsumerWidget {
     return SystemCard(
       duration: duration ?? const Duration(seconds: 2),
       padding: EdgeInsets.symmetric(vertical: 22, horizontal: 20),
-      child: buildBody(aspects, user, ref, context, rank, size, barSize < 0 ? 0 : barSize),
+      child: buildBody(
+        aspects: aspects,
+        user: user,
+        ref: ref,
+        context: context,
+        rank: rank,
+        size: size,
+        barSize: barSize < 0 ? 0 : barSize,
+        isMe: isMe,
+      ),
     );
   }
 
-  Column buildBody(
-    double aspects,
-    UserModel user,
-    WidgetRef ref,
-    BuildContext context,
-    rank,
-    Size size,
-    double barSize,
-  ) {
+  Column buildBody({
+    required double aspects,
+    required UserModel user,
+    required WidgetRef ref,
+    required bool isMe,
+    required BuildContext context,
+    required rank,
+    required Size size,
+    required double barSize,
+  }) {
     bool isArabic = ref.watch(localeProvider).languageCode == 'ar';
+    final myStreak = ref.watch(userStreakProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,18 +155,18 @@ class UserDashboardWidget extends ConsumerWidget {
               ),
             ),
             const SizedBox(),
-
-            // TODO implement streak system
-            // GlowText(
-            //   glowColor: Colors.white.withValues(alpha: .85),
-            //   text: "Streak: #5",
-            //   style: TextStyle(
-            //     fontSize: 12,
-            //     color: Colors.white.withValues(alpha: .85),
-            //     fontWeight: FontWeight.bold,
-            //     fontFamily: AppFonts.primary,
-            //   ),
-            // ),
+            if (isMe) ...[
+              GlowText(
+                glowColor: AppColors.primary.withValues(alpha: .5),
+                text: "${AppLocalizations.of(context).streak}: $myStreak",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: AppFonts.primary,
+                ),
+              ),
+            ],
           ],
         ),
         SizedBox(height: size.height * 0.02),

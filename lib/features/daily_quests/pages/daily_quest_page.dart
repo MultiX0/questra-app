@@ -275,7 +275,7 @@ class _DailyQuestPageState extends ConsumerState<DailyQuestPage> {
             child: Icon(LucideIcons.plus),
           ),
           Text(
-            "${iAchive is double ? iAchive.toStringAsFixed(1) : iAchive} / $count",
+            "${iAchive is double ? iAchive.toStringAsFixed(1) : iAchive} / ${count is double ? count.toStringAsFixed(1) : count}",
             textDirection: TextDirection.ltr,
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),

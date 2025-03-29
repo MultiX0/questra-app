@@ -1223,4 +1223,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cooldown => 'Cooldown';
+
+  @override
+  String get streak => 'Streak';
+
+  @override
+  String get player_streak => 'Current Player Streak';
 }

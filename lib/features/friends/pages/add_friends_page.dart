@@ -123,9 +123,7 @@ class _AddFriendsPageState extends ConsumerState<AddFriendsPage> {
       child: SystemCard(
         onTap: () {
           ref.read(soundEffectsServiceProvider).playSystemButtonClick();
-          ref.read(selectedFriendProvider.notifier).state = user;
-
-          context.push("${Routes.player}/${user.id}");
+          Navs(context, ref).goPlayerProfile(user);
         },
         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
         child: Row(

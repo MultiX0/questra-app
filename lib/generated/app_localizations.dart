@@ -2470,6 +2470,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cooldown'**
   String get cooldown;
+
+  /// No description provided for @streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streak;
+
+  /// No description provided for @player_streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Player Streak'**
+  String get player_streak;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

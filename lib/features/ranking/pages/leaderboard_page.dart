@@ -104,46 +104,55 @@ class _LeaderboardPageState extends ConsumerState<LeaderboardPage> {
     );
   }
 
-  Row buildCard(int i, Color playerColor, UserModel player, bool header) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "${header ? i : i + 1} - ",
-          style: TextStyle(fontFamily: AppFonts.header, fontSize: 16, color: playerColor),
-        ),
-        const SizedBox(width: 15),
-        CircleAvatar(
-          radius: 24,
-          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-          backgroundImage: CachedNetworkImageProvider(player.avatar!),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(player.name, style: TextStyle(color: playerColor, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 5),
-              Text(
-                player.username,
-                style: TextStyle(
-                  fontWeight: FontWeight.w300,
-                  color: AppColors.descriptionColor,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 10),
-        // const Spacer(),
-        if (!header)
+  Widget buildCard(int i, Color playerColor, UserModel player, bool header) {
+    return GestureDetector(
+      onTap: () {
+        ref.read(soundEffectsServiceProvider).playSystemButtonClick();
+        Navs(context, ref).goPlayerProfile(player);
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Text(
-            "LVL ${player.level?.level}\n${player.level?.xp == 0 ? "Zero " : player.level?.xp}XP",
-            style: TextStyle(fontFamily: AppFonts.header, fontSize: 13),
+            "${header ? i : i + 1} - ",
+            style: TextStyle(fontFamily: AppFonts.header, fontSize: 16, color: playerColor),
           ),
-      ],
+          const SizedBox(width: 15),
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+            backgroundImage: CachedNetworkImageProvider(player.avatar!),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  player.name,
+                  style: TextStyle(color: playerColor, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  player.username,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w300,
+                    color: AppColors.descriptionColor,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          // const Spacer(),
+          if (!header)
+            Text(
+              "LVL ${player.level?.level}\n${player.level?.xp == 0 ? "Zero " : player.level?.xp}XP",
+              style: TextStyle(fontFamily: AppFonts.header, fontSize: 13),
+            ),
+        ],
+      ),
     );
   }
 

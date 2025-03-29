@@ -4,8 +4,10 @@ import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/friends/providers/friends_provider.dart';
 import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/features/profiles/controller/profile_controller.dart';
+import 'package:questra_app/features/profiles/providers/profile_providers.dart';
 import 'package:questra_app/features/profiles/widgets/friendship_status_widget.dart';
 import 'package:questra_app/features/profiles/widgets/shared_quests_card.dart';
+import 'package:questra_app/features/profiles/widgets/user_streak_card.dart';
 import 'package:questra_app/imports.dart';
 
 class OtherProfile extends ConsumerStatefulWidget {
@@ -21,8 +23,14 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
   String userId = '';
   @override
   void initState() {
+    refreshStreak();
     super.initState();
     userId = widget.userId;
+  }
+
+  void refreshStreak() async {
+    final streak = await ref.read(profileRepositoryProvider).getUserStreak(userId);
+    ref.watch(selectedProfileStreak.notifier).state = streak;
   }
 
   @override
@@ -30,6 +38,7 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
     log(userId);
     final _user = ref.watch(selectedFriendProvider)!;
     final isAlreadyFrined = ref.watch(friendsStateProvider).users.contains(_user);
+    final userStreak = ref.watch(selectedProfileStreak);
 
     return BackgroundWidget(
       child: Scaffold(
@@ -43,6 +52,7 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
                   child: ListView(
                     children: [
                       UserDashboardWidget(user: user, duration: const Duration(seconds: 1)),
+                      UserStreakCard(userStreak: userStreak),
                       FriendshipStatusWidget(user: _user),
                       if (isAlreadyFrined) SharedQuestsCard(),
                     ],
