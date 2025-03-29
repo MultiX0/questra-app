@@ -29,8 +29,8 @@ class _OtherProfileState extends ConsumerState<OtherProfile> {
   }
 
   void refreshStreak() async {
-    final streak = await ref.read(profileRepositoryProvider).getUserStreak(userId);
-    ref.watch(selectedProfileStreak.notifier).state = streak;
+    final streak = await ref.read(profileRepositoryProvider).getUserStreak(widget.userId);
+    ref.read(selectedProfileStreak.notifier).state = streak;
   }
 
   @override
