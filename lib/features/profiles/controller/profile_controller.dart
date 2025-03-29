@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:questra_app/core/enums/religions_enum.dart';
 import 'package:questra_app/features/ads/ads_service.dart';
+import 'package:questra_app/features/profiles/providers/profile_providers.dart';
 import 'package:questra_app/imports.dart';
 
 import '../../../core/shared/utils/upload_storage.dart';
@@ -118,7 +119,17 @@ class ProfileController extends StateNotifier<bool> {
 
   Future<UserModel> getUserProfileById(String userId) async {
     try {
-      return await _repo.getUserProfileById(userId);
+      final data = await Future.wait<dynamic>([
+        _repo.getUserProfileById(userId),
+        _repo.getUserStreak(userId),
+      ]);
+
+      final [profile, streak] = data;
+
+      log(streak.toString());
+
+      _ref.read(selectedProfileStreak.notifier).state = streak;
+      return profile;
     } catch (e) {
       log(e.toString());
       rethrow;

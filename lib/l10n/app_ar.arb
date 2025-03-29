@@ -402,7 +402,11 @@
   "daily_quest_complete_confirmation": "هل أنت متأكد من انهائك المهمة؟",
   "daily_quest_complete_alert": "تم اكمال المهمة بنجاح. مكافأتك هي {xp} نقاط خبرة، و {coins} عملة",
   "cooldown_over": "انتهت فترة التهدئة!",
-  "cooldown": "فترة التهدئة"
+  "cooldown": "فترة التهدئة",
+  "streak": "ستريك",
+  "player_streak": "الستريك الحالي"
+
+
 
 
 

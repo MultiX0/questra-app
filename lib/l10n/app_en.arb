@@ -406,5 +406,7 @@
   "daily_quest_complete_confirmation": "Are you sure you finished the Quest?",
   "daily_quest_complete_alert": "The mission has been successfully completed.\nYour reward is {xp} experience points and {coins} coins.",
   "cooldown_over": "Cooldown Over!",
-  "cooldown": "Cooldown"
+  "cooldown": "Cooldown",
+  "streak": "Streak",
+  "player_streak": "Current Player Streak"
 }

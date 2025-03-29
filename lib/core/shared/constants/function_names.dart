@@ -9,4 +9,5 @@ class FunctionNames {
   static const get_friend_requests_count = 'get_friend_requests_count';
   static const addCompletedPlayersToSharedQuest = 'add_player_to_quest';
   static const get_shared_quests_between_users = 'get_shared_quests_between_users';
+  static const get_user_streak = 'get_user_streak';
 }

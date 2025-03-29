@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:questra_app/core/providers/package_into_provider.dart';
 import 'package:questra_app/core/services/package_info_service.dart';
+import 'package:questra_app/features/profiles/providers/profile_providers.dart';
 import 'package:questra_app/l10n/l10n.dart';
 import 'package:questra_app/router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,19 +28,19 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await initializeUnityAds();
 
+      handleApp();
       final userId = Supabase.instance.client.auth.currentUser?.id;
       if (userId != null) {
         updateUserOnlineStatus(true);
         final prefs = await SharedPreferences.getInstance();
         prefs.setString(KeyNames.user_id, userId);
-
-        handleAppPackage();
+        await getStreak(userId);
       }
     });
     super.initState();
   }
 
-  void handleAppPackage() async {
+  void handleApp() async {
     ref.read(appVersionProvider.notifier).state = await PackageInfoService.getAppVersion();
     ref.read(appBuildNumberProvider.notifier).state = await PackageInfoService.getAppBuildNumber();
   }
@@ -47,10 +48,12 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   // final _gameId = dotenv.env["UNITY_GAME_ID"] ?? "";
 
   Future<void> setAllConsentsToTrue() async {
-    await UnityAds.setPrivacyConsent(PrivacyConsentType.gdpr, true);
-    await UnityAds.setPrivacyConsent(PrivacyConsentType.ccpa, true);
-    await UnityAds.setPrivacyConsent(PrivacyConsentType.pipl, true);
-    await UnityAds.setPrivacyConsent(PrivacyConsentType.ageGate, true);
+    await Future.wait([
+      UnityAds.setPrivacyConsent(PrivacyConsentType.gdpr, true),
+      UnityAds.setPrivacyConsent(PrivacyConsentType.ccpa, true),
+      UnityAds.setPrivacyConsent(PrivacyConsentType.pipl, true),
+      UnityAds.setPrivacyConsent(PrivacyConsentType.ageGate, true),
+    ]);
   }
 
   Future<void> initializeUnityAds() async {
@@ -125,6 +128,12 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void _saveSessionTime() async {
     final lootBoxManager = LootBoxManager();
     await lootBoxManager.saveSessionTime();
+  }
+
+  Future<void> getStreak(String userId) async {
+    ref.read(userStreakProvider.notifier).state = await ref
+        .read(profileRepositoryProvider)
+        .getUserStreak(userId);
   }
 
   void updateUserOnlineStatus(bool online) {

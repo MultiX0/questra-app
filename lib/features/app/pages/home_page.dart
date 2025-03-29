@@ -9,6 +9,8 @@ import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 // import 'package:questra_app/features/app/widgets/dashboard_quest_widget.dart';
 import 'package:questra_app/features/app/widgets/user_dashboard_widget.dart';
 import 'package:questra_app/features/daily_quests/providers/daily_quest_state.dart';
+import 'package:questra_app/features/friends/providers/friends_provider.dart';
+import 'package:questra_app/features/friends/providers/friends_requests_provider.dart';
 import 'package:questra_app/features/lootbox/lootbox_manager.dart';
 import 'package:questra_app/features/notifications/repository/notifications_repository.dart';
 import 'package:questra_app/imports.dart';
@@ -29,9 +31,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     handleLootBoxes(user!.id);
     handleFCMInsert(user.id);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      ref.read(dailyQuestStateProvider);
       _checkDevice();
       await NotificationsRepository.insertLog(user.id);
+      handleStartUp(user.id);
 
       // ref.read(soundEffectsServiceProvider).playBackgroundMusic();
       _timer = Timer.periodic(const Duration(minutes: 10), (_) async {
@@ -44,6 +46,13 @@ class _HomePageState extends ConsumerState<HomePage> {
       });
     });
     super.initState();
+  }
+
+  void handleStartUp(String userId) {
+    ref.read(dailyQuestStateProvider);
+    ref.read(friendsStateProvider);
+    ref.read(friendsStateProvider.notifier).fetchItems(userId: userId);
+    ref.read(friendsRequestsProvider.notifier).fetchItems();
   }
 
   void handleFCMInsert(String userId) async {

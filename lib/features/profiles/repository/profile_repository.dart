@@ -225,4 +225,19 @@ class ProfileRepository {
       rethrow;
     }
   }
+
+  Future<int> getUserStreak(String userId) async {
+    try {
+      final data = await _client.rpc(FunctionNames.get_user_streak, params: {'p_user_id': userId});
+      return data;
+    } catch (e, trace) {
+      await ExceptionService.insertException(
+        error: "$e\ntrace:${trace.toString()}",
+        path: '/profile_repository',
+        userId: userId,
+      );
+      log(e.toString());
+      return 0;
+    }
+  }
 }

@@ -1223,4 +1223,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cooldown => 'فترة التهدئة';
+
+  @override
+  String get streak => 'ستريك';
+
+  @override
+  String get player_streak => 'الستريك الحالي';
 }

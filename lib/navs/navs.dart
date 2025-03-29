@@ -1,3 +1,4 @@
+import 'package:questra_app/features/friends/providers/providers.dart';
 import 'package:questra_app/imports.dart';
 
 class Navs {
@@ -20,5 +21,10 @@ class Navs {
 
   void goToEventPlayerQuestCompletionPage(String userId) {
     context.push('${Routes.playerCompletionPage}/$userId');
+  }
+
+  void goPlayerProfile(UserModel user) {
+    ref.read(selectedFriendProvider.notifier).state = user;
+    context.push("${Routes.player}/${user.id}");
   }
 }
